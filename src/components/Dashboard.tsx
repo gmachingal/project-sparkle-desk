@@ -14,8 +14,10 @@ import {
   Filter,
   MoreHorizontal 
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
 
   // Mock data
@@ -139,7 +141,7 @@ const Dashboard = () => {
             Here's what's happening with your projects today.
           </p>
         </div>
-        <Button variant="hero" className="gap-2">
+        <Button variant="hero" className="gap-2" onClick={() => navigate("/new-project")}>
           <Plus className="w-4 h-4" />
           New Project
         </Button>
@@ -202,7 +204,7 @@ const Dashboard = () => {
                 <Filter className="w-4 h-4 mr-2" />
                 Filter
               </Button>
-              <Button variant="hero" size="sm">
+              <Button variant="hero" size="sm" onClick={() => navigate("/new-project")}>
                 <Plus className="w-4 h-4 mr-2" />
                 New Project
               </Button>
@@ -223,7 +225,7 @@ const Dashboard = () => {
                 <Filter className="w-4 h-4 mr-2" />
                 Filter
               </Button>
-              <Button variant="hero" size="sm">
+              <Button variant="hero" size="sm" onClick={() => navigate("/create-task")}>
                 <Plus className="w-4 h-4 mr-2" />
                 New Task
               </Button>

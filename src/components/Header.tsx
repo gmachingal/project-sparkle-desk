@@ -2,8 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Bell, Plus, Settings, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate();
   return (
     <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
       <div className="flex items-center justify-between px-6 py-4">
@@ -34,7 +36,7 @@ const Header = () => {
             />
           </div>
           
-          <Button variant="hero" size="sm" className="gap-2">
+          <Button variant="hero" size="sm" className="gap-2" onClick={() => navigate("/create-task")}>
             <Plus className="w-4 h-4" />
             Create
           </Button>
@@ -43,7 +45,7 @@ const Header = () => {
             <Bell className="w-4 h-4" />
           </Button>
           
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" onClick={() => navigate("/settings")}>
             <Settings className="w-4 h-4" />
           </Button>
           
