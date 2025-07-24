@@ -5,6 +5,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/Header";
 import { 
   Users, 
@@ -18,14 +23,34 @@ import {
   Briefcase,
   Settings,
   UserPlus,
-  MoreHorizontal
+  MoreHorizontal,
+  Shield,
+  ShieldCheck,
+  User,
+  Edit,
+  Trash2
 } from "lucide-react";
 
 const Teams = () => {
   const [activeTab, setActiveTab] = useState("members");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
+  const [isEditMemberOpen, setIsEditMemberOpen] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<any>(null);
+  const [currentUserRole, setCurrentUserRole] = useState("admin"); // Mock current user role
+  const { toast } = useToast();
 
-  const teamMembers = [
+  // Form states for adding/editing members
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    role: "",
+    department: "",
+    permissions: [] as string[],
+    skills: ""
+  });
+
+  const [teamMembers, setTeamMembers] = useState([
     {
       id: "1",
       name: "Alex Johnson",
@@ -37,7 +62,9 @@ const Teams = () => {
       joinDate: "Jan 2023",
       projects: ["Website Redesign", "Mobile App"],
       skills: ["React", "TypeScript", "Node.js"],
-      isLead: true
+      isLead: true,
+      permissions: ["admin", "create_projects", "manage_team", "view_analytics"],
+      systemRole: "admin"
     },
     {
       id: "2",
@@ -49,7 +76,9 @@ const Teams = () => {
       status: "online",
       joinDate: "Mar 2023",
       projects: ["Website Redesign", "Marketing Campaign"],
-      skills: ["Figma", "Sketch", "Prototyping"]
+      skills: ["Figma", "Sketch", "Prototyping"],
+      permissions: ["create_projects", "view_analytics"],
+      systemRole: "manager"
     },
     {
       id: "3",
@@ -61,7 +90,9 @@ const Teams = () => {
       status: "away",
       joinDate: "Feb 2023",
       projects: ["Mobile App", "Data Analytics"],
-      skills: ["Python", "PostgreSQL", "AWS"]
+      skills: ["Python", "PostgreSQL", "AWS"],
+      permissions: ["create_projects"],
+      systemRole: "member"
     },
     {
       id: "4",
@@ -73,7 +104,9 @@ const Teams = () => {
       status: "offline",
       joinDate: "Dec 2022",
       projects: ["Marketing Campaign"],
-      skills: ["Content Strategy", "SEO", "Analytics"]
+      skills: ["Content Strategy", "SEO", "Analytics"],
+      permissions: ["create_projects", "view_analytics"],
+      systemRole: "manager"
     },
     {
       id: "5",
@@ -85,7 +118,9 @@ const Teams = () => {
       status: "online",
       joinDate: "Apr 2023",
       projects: ["Website Redesign", "Mobile App"],
-      skills: ["React", "CSS", "JavaScript"]
+      skills: ["React", "CSS", "JavaScript"],
+      permissions: [],
+      systemRole: "member"
     },
     {
       id: "6",
@@ -97,9 +132,11 @@ const Teams = () => {
       status: "online",
       joinDate: "Nov 2022",
       projects: ["Mobile App", "Data Analytics"],
-      skills: ["Product Strategy", "User Research", "Agile"]
+      skills: ["Product Strategy", "User Research", "Agile"],
+      permissions: ["create_projects", "manage_team", "view_analytics"],
+      systemRole: "manager"
     }
-  ];
+  ]);
 
   const departments = [
     {
@@ -146,6 +183,120 @@ const Teams = () => {
     }
   };
 
+  const rolePermissions = {
+    admin: ["admin", "create_projects", "manage_team", "view_analytics", "delete_projects"],
+    manager: ["create_projects", "manage_team", "view_analytics"],
+    member: ["create_projects"],
+    viewer: ["view_analytics"]
+  };
+
+  const systemRoles = [
+    { value: "admin", label: "Admin", icon: Crown, color: "text-yellow-500" },
+    { value: "manager", label: "Manager", icon: ShieldCheck, color: "text-blue-500" },
+    { value: "member", label: "Member", icon: User, color: "text-green-500" },
+    { value: "viewer", label: "Viewer", icon: Shield, color: "text-gray-500" }
+  ];
+
+  const handleAddMember = () => {
+    if (!formData.name || !formData.email || !formData.role || !formData.department) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const newMember = {
+      id: Date.now().toString(),
+      name: formData.name,
+      email: formData.email,
+      role: formData.role,
+      department: formData.department,
+      avatar: "",
+      status: "offline",
+      joinDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+      projects: [],
+      skills: formData.skills.split(',').map(s => s.trim()).filter(s => s),
+      permissions: formData.permissions,
+      systemRole: formData.role.toLowerCase()
+    };
+
+    setTeamMembers([...teamMembers, newMember]);
+    setFormData({
+      name: "",
+      email: "",
+      role: "",
+      department: "",
+      permissions: [],
+      skills: ""
+    });
+    setIsAddMemberOpen(false);
+    toast({
+      title: "Success",
+      description: "Team member added successfully"
+    });
+  };
+
+  const handleEditMember = (member: any) => {
+    setSelectedMember(member);
+    setFormData({
+      name: member.name,
+      email: member.email,
+      role: member.systemRole,
+      department: member.department,
+      permissions: member.permissions,
+      skills: member.skills.join(', ')
+    });
+    setIsEditMemberOpen(true);
+  };
+
+  const handleUpdateMember = () => {
+    if (!selectedMember) return;
+
+    const updatedMembers = teamMembers.map(member => 
+      member.id === selectedMember.id 
+        ? {
+            ...member,
+            name: formData.name,
+            email: formData.email,
+            role: formData.role === "admin" ? "Team Lead" : formData.role,
+            department: formData.department,
+            permissions: formData.permissions,
+            skills: formData.skills.split(',').map(s => s.trim()).filter(s => s),
+            systemRole: formData.role,
+            isLead: formData.role === "admin"
+          }
+        : member
+    );
+
+    setTeamMembers(updatedMembers);
+    setIsEditMemberOpen(false);
+    setSelectedMember(null);
+    toast({
+      title: "Success",
+      description: "Team member updated successfully"
+    });
+  };
+
+  const handleDeleteMember = (memberId: string) => {
+    setTeamMembers(teamMembers.filter(member => member.id !== memberId));
+    toast({
+      title: "Success",
+      description: "Team member removed successfully"
+    });
+  };
+
+  const getRoleIcon = (systemRole: string) => {
+    const role = systemRoles.find(r => r.value === systemRole);
+    return role ? role.icon : User;
+  };
+
+  const getRoleColor = (systemRole: string) => {
+    const role = systemRoles.find(r => r.value === systemRole);
+    return role ? role.color : "text-gray-500";
+  };
+
   const teamStats = {
     total: teamMembers.length,
     online: teamMembers.filter(m => m.status === "online").length,
@@ -166,10 +317,119 @@ const Teams = () => {
               Manage your team members and departments
             </p>
           </div>
-          <Button variant="hero" className="gap-2">
-            <UserPlus className="w-4 h-4" />
-            Invite Member
-          </Button>
+          {currentUserRole === "admin" && (
+            <Dialog open={isAddMemberOpen} onOpenChange={setIsAddMemberOpen}>
+              <DialogTrigger asChild>
+                <Button variant="hero" className="gap-2">
+                  <UserPlus className="w-4 h-4" />
+                  Add Member
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[600px]">
+                <DialogHeader>
+                  <DialogTitle>Add New Team Member</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="name">Full Name *</Label>
+                      <Input
+                        id="name"
+                        value={formData.name}
+                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        placeholder="Enter full name"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="email">Email *</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        placeholder="Enter email address"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="role">System Role *</Label>
+                      <Select value={formData.role} onValueChange={(value) => {
+                        setFormData({
+                          ...formData, 
+                          role: value,
+                          permissions: rolePermissions[value as keyof typeof rolePermissions] || []
+                        });
+                      }}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {systemRoles.map((role) => {
+                            const Icon = role.icon;
+                            return (
+                              <SelectItem key={role.value} value={role.value}>
+                                <div className="flex items-center gap-2">
+                                  <Icon className={`w-4 h-4 ${role.color}`} />
+                                  {role.label}
+                                </div>
+                              </SelectItem>
+                            );
+                          })}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="department">Department *</Label>
+                      <Select value={formData.department} onValueChange={(value) => setFormData({...formData, department: value})}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select department" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {departments.map((dept) => (
+                            <SelectItem key={dept.name} value={dept.name}>
+                              {dept.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="skills">Skills (comma-separated)</Label>
+                    <Input
+                      id="skills"
+                      value={formData.skills}
+                      onChange={(e) => setFormData({...formData, skills: e.target.value})}
+                      placeholder="React, TypeScript, Node.js"
+                    />
+                  </div>
+
+                  <div>
+                    <Label>Permissions</Label>
+                    <div className="grid grid-cols-2 gap-2 mt-2">
+                      {Object.entries(rolePermissions).map(([role, perms]) => (
+                        <div key={role} className="text-sm">
+                          <strong className="capitalize">{role}:</strong> {perms.join(", ")}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end gap-2">
+                    <Button variant="outline" onClick={() => setIsAddMemberOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button onClick={handleAddMember}>
+                      Add Member
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
 
         {/* Stats Cards */}
@@ -245,14 +505,27 @@ const Teams = () => {
                         <div>
                           <div className="flex items-center gap-2">
                             <h3 className="font-semibold">{member.name}</h3>
-                            {member.isLead && <Crown className="w-4 h-4 text-yellow-500" />}
+                            {(() => {
+                              const RoleIcon = getRoleIcon(member.systemRole);
+                              return <RoleIcon className={`w-4 h-4 ${getRoleColor(member.systemRole)}`} />;
+                            })()}
                           </div>
                           <p className="text-sm text-muted-foreground">{member.role}</p>
+                          <Badge variant="outline" className="text-xs mt-1 capitalize">
+                            {member.systemRole}
+                          </Badge>
                         </div>
                       </div>
-                      <Button variant="ghost" size="sm">
-                        <MoreHorizontal className="w-4 h-4" />
-                      </Button>
+                      {currentUserRole === "admin" && (
+                        <div className="flex gap-1">
+                          <Button variant="ghost" size="sm" onClick={() => handleEditMember(member)}>
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => handleDeleteMember(member.id)}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-3">
@@ -288,6 +561,17 @@ const Teams = () => {
                         {member.skills.map((skill) => (
                           <Badge key={skill} variant="outline" className="text-xs">
                             {skill}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-sm font-medium mb-2">Permissions</p>
+                      <div className="flex flex-wrap gap-1">
+                        {member.permissions.map((permission) => (
+                          <Badge key={permission} variant="secondary" className="text-xs">
+                            {permission.replace('_', ' ')}
                           </Badge>
                         ))}
                       </div>
@@ -351,6 +635,113 @@ const Teams = () => {
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* Edit Member Dialog */}
+        <Dialog open={isEditMemberOpen} onOpenChange={setIsEditMemberOpen}>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Edit Team Member</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-name">Full Name *</Label>
+                  <Input
+                    id="edit-name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    placeholder="Enter full name"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-email">Email *</Label>
+                  <Input
+                    id="edit-email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    placeholder="Enter email address"
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-role">System Role *</Label>
+                  <Select value={formData.role} onValueChange={(value) => {
+                    setFormData({
+                      ...formData, 
+                      role: value,
+                      permissions: rolePermissions[value as keyof typeof rolePermissions] || []
+                    });
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {systemRoles.map((role) => {
+                        const Icon = role.icon;
+                        return (
+                          <SelectItem key={role.value} value={role.value}>
+                            <div className="flex items-center gap-2">
+                              <Icon className={`w-4 h-4 ${role.color}`} />
+                              {role.label}
+                            </div>
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="edit-department">Department *</Label>
+                  <Select value={formData.department} onValueChange={(value) => setFormData({...formData, department: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select department" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {departments.map((dept) => (
+                        <SelectItem key={dept.name} value={dept.name}>
+                          {dept.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="edit-skills">Skills (comma-separated)</Label>
+                <Input
+                  id="edit-skills"
+                  value={formData.skills}
+                  onChange={(e) => setFormData({...formData, skills: e.target.value})}
+                  placeholder="React, TypeScript, Node.js"
+                />
+              </div>
+
+              <div>
+                <Label>Current Permissions</Label>
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {formData.permissions.map((permission) => (
+                    <Badge key={permission} variant="secondary" className="text-xs">
+                      {permission.replace('_', ' ')}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setIsEditMemberOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleUpdateMember}>
+                  Update Member
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
