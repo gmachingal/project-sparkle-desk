@@ -20,10 +20,10 @@ const Header = () => {
           </div>
           
           <nav className="hidden md:flex items-center gap-1">
-            <Button variant="ghost" size="sm">Home</Button>
-            <Button variant="ghost" size="sm">My Tasks</Button>
-            <Button variant="ghost" size="sm">Projects</Button>
-            <Button variant="ghost" size="sm">Teams</Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/")}>Home</Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/my-tasks")}>My Tasks</Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/projects")}>Projects</Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/teams")}>Teams</Button>
           </nav>
         </div>
 

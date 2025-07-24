@@ -8,6 +8,9 @@ import CreateTask from "./pages/CreateTask";
 import NewProject from "./pages/NewProject";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import MyTasks from "./pages/MyTasks";
+import Projects from "./pages/Projects";
+import Teams from "./pages/Teams";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +22,9 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/my-tasks" element={<MyTasks />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/teams" element={<Teams />} />
           <Route path="/create-task" element={<CreateTask />} />
           <Route path="/new-project" element={<NewProject />} />
           <Route path="/settings" element={<Settings />} />
