@@ -53,9 +53,11 @@ const MyTasks = () => {
       description: "Create initial wireframes and high-fidelity designs for the new homepage",
       status: "in-progress" as const,
       priority: "high" as const,
+      startDate: new Date(currentYear, currentMonth, 5),
       dueDate: new Date(currentYear, currentMonth, 10),
       assignee: { name: "You", avatar: "" },
       project: "Website Redesign",
+      sprint: "Sprint 3",
       tags: ["design", "ui/ux", "homepage"]
     },
     {
@@ -64,9 +66,11 @@ const MyTasks = () => {
       description: "Go through the new API docs and provide feedback",
       status: "todo" as const,
       priority: "medium" as const,
+      startDate: new Date(currentYear, currentMonth, 12),
       dueDate: new Date(currentYear, currentMonth, 15),
       assignee: { name: "You", avatar: "" },
       project: "Mobile App",
+      sprint: "Sprint 4",
       tags: ["api", "documentation", "review"]
     },
     {
@@ -75,9 +79,11 @@ const MyTasks = () => {
       description: "Revise the product page copy based on user feedback",
       status: "completed" as const,
       priority: "low" as const,
+      startDate: new Date(currentYear, currentMonth, 6),
       dueDate: new Date(currentYear, currentMonth, 8),
       assignee: { name: "You", avatar: "" },
       project: "Marketing Campaign",
+      sprint: "Sprint 2",
       tags: ["marketing", "copywriting", "content"]
     },
     {
@@ -86,9 +92,11 @@ const MyTasks = () => {
       description: "Fix authentication issues reported by users",
       status: "todo" as const,
       priority: "high" as const,
+      startDate: new Date(currentYear, currentMonth, 18),
       dueDate: new Date(currentYear, currentMonth, 20),
       assignee: { name: "You", avatar: "" },
       project: "Website Redesign",
+      sprint: "Sprint 3",
       tags: ["bug-fix", "authentication", "urgent"]
     },
     {
@@ -97,9 +105,11 @@ const MyTasks = () => {
       description: "Create slides for the quarterly review meeting",
       status: "in-progress" as const,
       priority: "medium" as const,
+      startDate: new Date(currentYear, currentMonth, 23),
       dueDate: new Date(currentYear, currentMonth, 25),
       assignee: { name: "You", avatar: "" },
       project: "Internal",
+      sprint: "Sprint 4",
       tags: ["presentation", "quarterly", "slides"]
     },
     {
@@ -108,9 +118,11 @@ const MyTasks = () => {
       description: "Review pull requests for new API endpoints",
       status: "todo" as const,
       priority: "medium" as const,
+      startDate: new Date(currentYear, currentMonth, 16),
       dueDate: new Date(currentYear, currentMonth, 18),
       assignee: { name: "You", avatar: "" },
       project: "Mobile App",
+      sprint: "Sprint 4",
       tags: ["code-review", "api", "backend"]
     },
     {
@@ -119,9 +131,11 @@ const MyTasks = () => {
       description: "Test responsive design on various devices",
       status: "in-progress" as const,
       priority: "high" as const,
+      startDate: new Date(currentYear, currentMonth, 20),
       dueDate: new Date(currentYear, currentMonth, 22),
       assignee: { name: "You", avatar: "" },
       project: "Website Redesign",
+      sprint: "Sprint 3",
       tags: ["testing", "mobile", "responsive"]
     },
     {
@@ -130,9 +144,11 @@ const MyTasks = () => {
       description: "Update project documentation with latest changes",
       status: "todo" as const,
       priority: "low" as const,
+      startDate: new Date(currentYear, currentMonth, 26),
       dueDate: new Date(currentYear, currentMonth, 28),
       assignee: { name: "You", avatar: "" },
       project: "Internal",
+      sprint: "Sprint 4",
       tags: ["documentation", "maintenance", "update"]
     }
   ];
@@ -205,6 +221,7 @@ const MyTasks = () => {
   // Convert task to format expected by TaskCard
   const formatTaskForCard = (task: typeof tasks[0]) => ({
     ...task,
+    startDate: format(task.startDate, 'MMM dd'),
     dueDate: format(task.dueDate, 'MMM dd'),
     tags: task.tags || []
   });
