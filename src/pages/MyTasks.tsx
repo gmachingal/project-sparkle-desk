@@ -16,7 +16,8 @@ import {
   Search,
   Calendar as CalendarIcon,
   SortAsc,
-  List
+  List,
+  Timer
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek } from 'date-fns';
@@ -205,10 +206,16 @@ const MyTasks = () => {
               Manage and track all your assigned tasks
             </p>
           </div>
-          <Button variant="hero" className="gap-2" onClick={() => navigate("/create-task")}>
-            <Plus className="w-4 h-4" />
-            New Task
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" className="gap-2" onClick={() => navigate("/time-logging")}>
+              <Timer className="w-4 h-4" />
+              Log Time
+            </Button>
+            <Button variant="hero" className="gap-2" onClick={() => navigate("/create-task")}>
+              <Plus className="w-4 h-4" />
+              New Task
+            </Button>
+          </div>
         </div>
 
         {/* Stats Cards */}

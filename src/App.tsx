@@ -14,6 +14,7 @@ import Teams from "./pages/Teams";
 import EditProject from "./pages/EditProject";
 import EditTask from "./pages/EditTask";
 import TaskView from "./pages/TaskView";
+import TimeLogging from "./pages/TimeLogging";
 import ProjectCalendar from "./pages/ProjectCalendar";
 import Attendance from "./pages/Attendance";
 import AdminAttendance from "./pages/AdminAttendance";
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/edit-project/:id" element={<EditProject />} />
           <Route path="/task/:id" element={<TaskView />} />
           <Route path="/edit-task/:id" element={<EditTask />} />
+          <Route path="/time-logging" element={<TimeLogging />} />
           <Route path="/project-calendar/:id" element={<ProjectCalendar />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/admin-attendance" element={<AdminAttendance />} />

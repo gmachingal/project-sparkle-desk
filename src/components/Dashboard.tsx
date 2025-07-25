@@ -12,7 +12,8 @@ import {
   Briefcase, 
   Plus,
   Filter,
-  MoreHorizontal 
+  MoreHorizontal,
+  Timer
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -141,10 +142,16 @@ const Dashboard = () => {
             Here's what's happening with your projects today.
           </p>
         </div>
-        <Button variant="hero" className="gap-2" onClick={() => navigate("/new-project")}>
-          <Plus className="w-4 h-4" />
-          New Project
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" className="gap-2" onClick={() => navigate("/time-logging")}>
+            <Timer className="w-4 h-4" />
+            Log Time
+          </Button>
+          <Button variant="hero" className="gap-2" onClick={() => navigate("/new-project")}>
+            <Plus className="w-4 h-4" />
+            New Project
+          </Button>
+        </div>
       </div>
 
       {/* Stats Grid */}
