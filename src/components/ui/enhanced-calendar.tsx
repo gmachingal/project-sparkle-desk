@@ -45,33 +45,31 @@ function EnhancedCalendar({
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end items-center px-4 py-3 bg-muted/30 rounded-lg border-b">
-        <div className="flex items-center gap-3">
-          <Select value={currentMonth.toString()} onValueChange={handleMonthChange}>
-            <SelectTrigger className="h-8 w-auto min-w-[90px] border bg-secondary text-secondary-foreground hover:bg-secondary/80 text-xs font-medium px-3">
-              <SelectValue>{months[currentMonth]}</SelectValue>
-            </SelectTrigger>
-            <SelectContent className="bg-background border z-50">
-              {months.map((month, index) => (
-                <SelectItem key={index} value={index.toString()}>
-                  {month}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={currentCalendarYear.toString()} onValueChange={handleYearChange}>
-            <SelectTrigger className="h-8 w-auto min-w-[75px] border bg-accent text-accent-foreground hover:bg-accent/80 text-xs font-medium px-3">
-              <SelectValue>{currentCalendarYear}</SelectValue>
-            </SelectTrigger>
-            <SelectContent className="bg-background border z-50">
-              {years.map((year) => (
-                <SelectItem key={year} value={year.toString()}>
-                  {year}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+      <div className="flex justify-between items-center px-4 py-3 bg-muted/30 rounded-lg border-b">
+        <Select value={currentMonth.toString()} onValueChange={handleMonthChange}>
+          <SelectTrigger className="h-8 w-auto min-w-[90px] border bg-secondary text-secondary-foreground hover:bg-secondary/80 text-xs font-medium px-3">
+            <SelectValue>{months[currentMonth]}</SelectValue>
+          </SelectTrigger>
+          <SelectContent className="bg-background border z-50">
+            {months.map((month, index) => (
+              <SelectItem key={index} value={index.toString()}>
+                {month}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={currentCalendarYear.toString()} onValueChange={handleYearChange}>
+          <SelectTrigger className="h-8 w-auto min-w-[75px] border bg-accent text-accent-foreground hover:bg-accent/80 text-xs font-medium px-3">
+            <SelectValue>{currentCalendarYear}</SelectValue>
+          </SelectTrigger>
+          <SelectContent className="bg-background border z-50">
+            {years.map((year) => (
+              <SelectItem key={year} value={year.toString()}>
+                {year}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <DayPicker
         showOutsideDays={showOutsideDays}
