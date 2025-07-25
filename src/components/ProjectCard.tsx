@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { MoreHorizontal, Users, Calendar, Eye } from "lucide-react";
+import { MoreHorizontal, Users, Calendar, Eye, Target } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -80,7 +80,7 @@ const ProjectCard = ({ project, className }: ProjectCardProps) => {
         </div>
         
         <div className="flex items-center justify-between pt-2">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Button
               variant="outline"
               size="sm"
@@ -98,6 +98,15 @@ const ProjectCard = ({ project, className }: ProjectCardProps) => {
             >
               <Calendar className="h-3 w-3 mr-1" />
               Calendar
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate(`/sprint-dashboard/${project.id}/1`)}
+              className="opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <Target className="h-3 w-3 mr-1" />
+              Sprints
             </Button>
           </div>
         </div>
