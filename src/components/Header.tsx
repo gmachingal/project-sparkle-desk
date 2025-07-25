@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Bell, Plus, Settings, User } from "lucide-react";
+import { Search, Bell, Plus, Settings, User, Clock } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 
@@ -24,6 +24,10 @@ const Header = () => {
             <Button variant="ghost" size="sm" onClick={() => navigate("/my-tasks")}>My Tasks</Button>
             <Button variant="ghost" size="sm" onClick={() => navigate("/projects")}>Projects</Button>
             <Button variant="ghost" size="sm" onClick={() => navigate("/teams")}>Teams</Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/attendance")}>
+              <Clock className="w-4 h-4 mr-1" />
+              Attendance
+            </Button>
             <Button variant="ghost" size="sm" onClick={() => navigate("/departments")}>Departments</Button>
           </nav>
         </div>
