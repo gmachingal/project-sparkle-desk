@@ -22,7 +22,11 @@ import {
   CheckCircle,
   XCircle,
   Settings,
-  AlertTriangle
+  AlertTriangle,
+  MapPin,
+  Plus,
+  Edit,
+  Trash2
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -33,11 +37,25 @@ const AdminAttendance = () => {
   const [selectedDepartment, setSelectedDepartment] = useState('all');
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [isWfhPolicyOpen, setIsWfhPolicyOpen] = useState(false);
+  const [isLocationMasterOpen, setIsLocationMasterOpen] = useState(false);
+  const [isGeoTaggingOpen, setIsGeoTaggingOpen] = useState(false);
   const [wfhPolicyForm, setWfhPolicyForm] = useState({
     department: 'all',
     maxWfhDays: '2',
     requireApproval: true,
     advanceNotice: '1'
+  });
+  const [newLocation, setNewLocation] = useState({
+    name: '',
+    address: '',
+    latitude: '',
+    longitude: '',
+    radius: '100'
+  });
+  const [geoTagSettings, setGeoTagSettings] = useState({
+    enabled: true,
+    accuracy: 'high',
+    allowedRadius: '50'
   });
 
   // Mock data
@@ -123,6 +141,12 @@ const AdminAttendance = () => {
   ];
 
   const departments = ['Engineering', 'Design', 'Marketing', 'Sales', 'HR'];
+  
+  const workLocations = [
+    { id: '1', name: 'Main Office', address: '123 Business St, City', latitude: 40.7128, longitude: -74.0060, radius: 100 },
+    { id: '2', name: 'Branch Office', address: '456 Corporate Ave, City', latitude: 40.7589, longitude: -73.9851, radius: 150 },
+    { id: '3', name: 'Client Site A', address: '789 Client Rd, City', latitude: 40.7505, longitude: -73.9934, radius: 75 }
+  ];
 
   const getFilteredEmployees = () => {
     let filtered = employeeAttendance;
@@ -175,6 +199,32 @@ const AdminAttendance = () => {
     });
   };
 
+  const handleAddLocation = () => {
+    if (!newLocation.name || !newLocation.address) {
+      toast({
+        title: "Validation Error",
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    toast({
+      title: "Location Added",
+      description: `${newLocation.name} has been added successfully`,
+    });
+    setNewLocation({ name: '', address: '', latitude: '', longitude: '', radius: '100' });
+    setIsLocationMasterOpen(false);
+  };
+
+  const handleUpdateGeoTagging = () => {
+    toast({
+      title: "Geo-tagging Settings Updated",
+      description: "Location tracking settings have been updated successfully",
+    });
+    setIsGeoTaggingOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -194,6 +244,175 @@ const AdminAttendance = () => {
               <Download className="h-4 w-4 mr-2" />
               Export
             </Button>
+            
+            <Dialog open={isLocationMasterOpen} onOpenChange={setIsLocationMasterOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline">
+                  <Building className="h-4 w-4 mr-2" />
+                  Work Locations
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl">
+                <DialogHeader>
+                  <DialogTitle>Work Location Master</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-6">
+                  {/* Add New Location */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Add New Location</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label>Location Name *</Label>
+                          <Input
+                            placeholder="e.g., Main Office"
+                            value={newLocation.name}
+                            onChange={(e) => setNewLocation({...newLocation, name: e.target.value})}
+                          />
+                        </div>
+                        <div>
+                          <Label>Address *</Label>
+                          <Input
+                            placeholder="Full address"
+                            value={newLocation.address}
+                            onChange={(e) => setNewLocation({...newLocation, address: e.target.value})}
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div>
+                          <Label>Latitude</Label>
+                          <Input
+                            placeholder="40.7128"
+                            value={newLocation.latitude}
+                            onChange={(e) => setNewLocation({...newLocation, latitude: e.target.value})}
+                          />
+                        </div>
+                        <div>
+                          <Label>Longitude</Label>
+                          <Input
+                            placeholder="-74.0060"
+                            value={newLocation.longitude}
+                            onChange={(e) => setNewLocation({...newLocation, longitude: e.target.value})}
+                          />
+                        </div>
+                        <div>
+                          <Label>Radius (meters)</Label>
+                          <Input
+                            placeholder="100"
+                            value={newLocation.radius}
+                            onChange={(e) => setNewLocation({...newLocation, radius: e.target.value})}
+                          />
+                        </div>
+                      </div>
+                      <Button onClick={handleAddLocation} className="w-full">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Location
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  {/* Existing Locations */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Existing Locations</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {workLocations.map((location) => (
+                          <div key={location.id} className="flex items-center justify-between p-4 border rounded-lg">
+                            <div className="flex items-center gap-3">
+                              <MapPin className="h-5 w-5 text-primary" />
+                              <div>
+                                <div className="font-medium">{location.name}</div>
+                                <div className="text-sm text-muted-foreground">{location.address}</div>
+                                <div className="text-xs text-muted-foreground">
+                                  Radius: {location.radius}m • Lat: {location.latitude}, Lng: {location.longitude}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button size="sm" variant="outline">
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button size="sm" variant="outline">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            <Dialog open={isGeoTaggingOpen} onOpenChange={setIsGeoTaggingOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline">
+                  <MapPin className="h-4 w-4 mr-2" />
+                  Geo Tagging
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Geo-tagging Settings</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label>Enable Location Tracking</Label>
+                      <p className="text-sm text-muted-foreground">Track employee location for check-ins</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={geoTagSettings.enabled}
+                      onChange={(e) => setGeoTagSettings({...geoTagSettings, enabled: e.target.checked})}
+                      className="rounded"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>Location Accuracy</Label>
+                    <Select value={geoTagSettings.accuracy} onValueChange={(value) => setGeoTagSettings({...geoTagSettings, accuracy: value})}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="high">High Accuracy</SelectItem>
+                        <SelectItem value="medium">Medium Accuracy</SelectItem>
+                        <SelectItem value="low">Low Accuracy</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label>Allowed Radius (meters)</Label>
+                    <Input
+                      placeholder="50"
+                      value={geoTagSettings.allowedRadius}
+                      onChange={(e) => setGeoTagSettings({...geoTagSettings, allowedRadius: e.target.value})}
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Maximum distance from work location for valid check-in
+                    </p>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <Button onClick={handleUpdateGeoTagging} className="flex-1">
+                      Update Settings
+                    </Button>
+                    <Button variant="outline" onClick={() => setIsGeoTaggingOpen(false)}>
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+
             <Dialog open={isWfhPolicyOpen} onOpenChange={setIsWfhPolicyOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline">
@@ -311,9 +530,10 @@ const AdminAttendance = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Today's Attendance</TabsTrigger>
             <TabsTrigger value="requests">Pending Requests ({pendingRequests.length})</TabsTrigger>
+            <TabsTrigger value="locations">Work Locations</TabsTrigger>
             <TabsTrigger value="reports">Reports & Analytics</TabsTrigger>
           </TabsList>
 
@@ -453,6 +673,61 @@ const AdminAttendance = () => {
                         <Button size="sm" variant="outline" onClick={() => handleRequestAction(request.id, 'reject')}>
                           <XCircle className="h-4 w-4 mr-1" />
                           Reject
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="locations" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  Work Locations
+                  <div className="flex gap-2">
+                    <Button 
+                      size="sm" 
+                      onClick={() => setIsGeoTaggingOpen(true)}
+                      variant="outline"
+                    >
+                      <MapPin className="h-4 w-4 mr-2" />
+                      Geo Settings
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      onClick={() => setIsLocationMasterOpen(true)}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Location
+                    </Button>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {workLocations.map((location) => (
+                    <div key={location.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50">
+                      <div className="flex items-center gap-4">
+                        <div className="p-2 bg-primary/10 rounded-lg">
+                          <MapPin className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <div className="font-medium">{location.name}</div>
+                          <div className="text-sm text-muted-foreground">{location.address}</div>
+                          <div className="text-xs text-muted-foreground">
+                            Coverage: {location.radius}m radius • Coordinates: {location.latitude}, {location.longitude}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="text-green-600 border-green-200">
+                          Active
+                        </Badge>
+                        <Button size="sm" variant="outline">
+                          <Edit className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
