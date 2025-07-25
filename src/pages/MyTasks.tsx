@@ -5,6 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import TaskCard from "@/components/TaskCard";
 import Header from "@/components/Header";
 import { 
@@ -17,7 +19,9 @@ import {
   Calendar as CalendarIcon,
   SortAsc,
   List,
-  Timer
+  Timer,
+  User,
+  CalendarDays
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek } from 'date-fns';
@@ -443,17 +447,41 @@ const MyTasks = () => {
                               <div className="font-medium text-sm mb-1">{format(day, 'd')}</div>
                               <div className="space-y-1 overflow-hidden">
                                 {tasksForDay.slice(0, 2).map(task => (
-                                  <div 
-                                    key={task.id} 
-                                    className={`text-xs p-1 rounded border-l-2 ${getPriorityColor(task.priority)} truncate cursor-pointer`}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      navigate(`/task/${task.id}`);
-                                    }}
-                                    title={`${task.title} - ${task.assignee?.name}`}
-                                  >
-                                    {task.title}
-                                  </div>
+                                  <HoverCard key={task.id}>
+                                    <HoverCardTrigger asChild>
+                                      <div 
+                                        className={`text-xs p-1 rounded border-l-2 ${getPriorityColor(task.priority)} truncate cursor-pointer`}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          navigate(`/task/${task.id}`);
+                                        }}
+                                      >
+                                        {task.title}
+                                      </div>
+                                    </HoverCardTrigger>
+                                    <HoverCardContent className="w-80">
+                                      <div className="space-y-3">
+                                        <div>
+                                          <h4 className="font-semibold">{task.title}</h4>
+                                          <p className="text-sm text-muted-foreground">{task.description}</p>
+                                        </div>
+                                        <div className="space-y-2">
+                                          <div className="flex items-center gap-2">
+                                            <User className="h-4 w-4 text-muted-foreground" />
+                                            <span className="text-sm">Resource: {task.assignee?.name}</span>
+                                          </div>
+                                          <div className="flex items-center gap-2">
+                                            <CalendarDays className="h-4 w-4 text-muted-foreground" />
+                                            <span className="text-sm">Due: {format(task.dueDate, 'MMM dd, yyyy')}</span>
+                                          </div>
+                                          <div className="flex items-center gap-2">
+                                            <Badge variant="outline">{task.project}</Badge>
+                                            <Badge className={getPriorityColor(task.priority)}>{task.priority}</Badge>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </HoverCardContent>
+                                  </HoverCard>
                                 ))}
                                 {tasksForDay.length > 2 && (
                                   <div className="text-xs text-muted-foreground">+{tasksForDay.length - 2} more</div>
@@ -512,10 +540,18 @@ const MyTasks = () => {
                                     className={`text-xs p-2 rounded border-l-2 ${getPriorityColor(task.priority)} cursor-pointer`}
                             onClick={() => navigate(`/task/${task.id}`)}
                                   >
-                                    <div className="font-medium truncate">{task.title}</div>
-                                    <div className={`text-xs mt-1 ${getStatusBgColor(task.status)} px-1 rounded`}>
-                                      {task.status.replace('-', ' ')}
-                                    </div>
+                                     <div className="font-medium truncate">{task.title}</div>
+                                     <div className="flex items-center justify-between mt-1">
+                                       <div className={`text-xs ${getStatusBgColor(task.status)} px-1 rounded`}>
+                                         {task.status.replace('-', ' ')}
+                                       </div>
+                                       <div className="text-xs text-muted-foreground">
+                                         {task.assignee?.name}
+                                       </div>
+                                     </div>
+                                     <div className="text-xs text-muted-foreground mt-1">
+                                       Due: {format(task.dueDate, 'MMM dd')}
+                                     </div>
                                   </div>
                                 ))}
                               </div>
