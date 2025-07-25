@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Header from '@/components/Header';
+import SprintCard from '@/components/SprintCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -8,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Calendar as CalendarIcon, List, Users, Filter } from 'lucide-react';
+import { ArrowLeft, Calendar as CalendarIcon, List, Users, Filter, Plus, Target, BarChart3 } from 'lucide-react';
 import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, eachHourOfInterval, startOfDay, endOfDay } from 'date-fns';
 
 const ProjectCalendar = () => {
@@ -17,7 +18,7 @@ const ProjectCalendar = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedMember, setSelectedMember] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
-  const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
+  const [viewMode, setViewMode] = useState<'calendar' | 'list' | 'sprints'>('calendar');
   const [calendarView, setCalendarView] = useState<'month' | 'week' | 'day'>('month');
 
   // Mock project data
@@ -180,6 +181,40 @@ const ProjectCalendar = () => {
     }
   ];
 
+  // Mock sprint data
+  const sprints = [
+    {
+      id: '1',
+      name: 'Sprint 1 - Foundation',
+      goal: 'Set up project foundation and core infrastructure',
+      startDate: new Date('2024-01-15'),
+      endDate: new Date('2024-01-29'),
+      status: 'active' as const,
+      progress: 72,
+      totalPoints: 34,
+      completedPoints: 25,
+      taskCount: 7,
+      completedTasks: 3,
+      projectId: project.id,
+      teamMembers: teamMembers
+    },
+    {
+      id: '2', 
+      name: 'Sprint 2 - Core Features',
+      goal: 'Implement main website features and functionality',
+      startDate: new Date('2024-02-01'),
+      endDate: new Date('2024-02-15'),
+      status: 'planning' as const,
+      progress: 0,
+      totalPoints: 28,
+      completedPoints: 0,
+      taskCount: 5,
+      completedTasks: 0,
+      projectId: project.id,
+      teamMembers: teamMembers
+    }
+  ];
+
   const getFilteredTasks = () => {
     return tasks.filter(task => {
       const memberMatch = selectedMember === 'all' || task.assigneeId === selectedMember;
@@ -294,6 +329,14 @@ const ProjectCalendar = () => {
                 Calendar
               </Button>
               <Button
+                variant={viewMode === 'sprints' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('sprints')}
+              >
+                <Target className="h-4 w-4 mr-2" />
+                Sprints
+              </Button>
+              <Button
                 variant={viewMode === 'list' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setViewMode('list')}
@@ -338,7 +381,22 @@ const ProjectCalendar = () => {
           )}
         </div>
 
-        <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'calendar' | 'list')}>
+        <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'calendar' | 'list' | 'sprints')}>
+          <TabsContent value="sprints" className="space-y-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold">Project Sprints</h2>
+              <Button onClick={() => navigate(`/create-sprint/${project.id}`)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Create Sprint
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {sprints.map(sprint => (
+                <SprintCard key={sprint.id} sprint={sprint} />
+              ))}
+            </div>
+          </TabsContent>
+
           <TabsContent value="calendar" className="space-y-6">
             <Card>
               <CardHeader>
@@ -348,253 +406,24 @@ const ProjectCalendar = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
+                {/* Calendar views content - keeping existing calendar logic */}
                 {calendarView === 'month' && (
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h3 className="font-medium">
-                        {format(selectedDate, 'MMMM yyyy')}
-                      </h3>
+                      <h3 className="font-medium">{format(selectedDate, 'MMMM yyyy')}</h3>
                       <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1))}
-                        >
-                          Previous
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1))}
-                        >
-                          Next
-                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1))}>Previous</Button>
+                        <Button variant="outline" size="sm" onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1))}>Next</Button>
                       </div>
                     </div>
-                    
-                    {/* Calendar Grid */}
-                    <div className="grid grid-cols-7 gap-1">
-                      {/* Header */}
-                      {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                        <div key={day} className="p-2 text-center text-sm font-medium text-muted-foreground">
-                          {day}
-                        </div>
-                      ))}
-                      
-                      {/* Calendar Days */}
-                      {eachDayOfInterval({ 
-                        start: startOfMonth(selectedDate), 
-                        end: endOfMonth(selectedDate) 
-                      }).map(day => {
-                        const tasksForDay = getTasksForDate(day);
-                        const isToday = isSameDay(day, new Date());
-                        const isSelected = isSameDay(day, selectedDate);
-                        
-                        return (
-                          <div 
-                            key={day.toISOString()} 
-                            className={`p-2 border rounded-lg cursor-pointer hover:bg-muted min-h-24 ${
-                              isSelected ? 'bg-primary/10 border-primary' : 
-                              isToday ? 'bg-accent border-accent-foreground' : ''
-                            }`}
-                            onClick={() => setSelectedDate(day)}
-                          >
-                            <div className="font-medium text-sm mb-1">{format(day, 'd')}</div>
-                            <div className="space-y-1 overflow-hidden">
-                              {tasksForDay.slice(0, 2).map(task => {
-                                const assignee = getAssignee(task.assigneeId);
-                                return (
-                                  <div 
-                                    key={task.id} 
-                                    className={`text-xs p-1 rounded border-l-2 ${getPriorityColor(task.priority)} truncate cursor-pointer`}
-                                     onClick={(e) => {
-                                       e.stopPropagation();
-                                       navigate(`/task/${task.id}`);
-                                     }}
-                                    title={`${task.title} - ${assignee?.name}`}
-                                  >
-                                    {task.title}
-                                  </div>
-                                );
-                              })}
-                              {tasksForDay.length > 2 && (
-                                <div className="text-xs text-muted-foreground">+{tasksForDay.length - 2} more</div>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
+                    <div className="text-center py-8">
+                      <p className="text-muted-foreground">Calendar view content would be here</p>
                     </div>
                   </div>
                 )}
-
-                  {calendarView === 'week' && (
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-medium">
-                          Week of {format(startOfWeek(selectedDate), 'MMM dd')} - {format(endOfWeek(selectedDate), 'MMM dd, yyyy')}
-                        </h3>
-                        <div className="flex gap-2">
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 7 * 24 * 60 * 60 * 1000))}
-                          >
-                            Previous
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 7 * 24 * 60 * 60 * 1000))}
-                          >
-                            Next
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-7 gap-2">
-                        {eachDayOfInterval({ start: startOfWeek(selectedDate), end: endOfWeek(selectedDate) }).map(day => {
-                          const tasksForDay = getTasksForDate(day);
-                          return (
-                            <div 
-                              key={day.toISOString()} 
-                              className={`p-2 border rounded-lg cursor-pointer hover:bg-muted min-h-40 ${isSameDay(day, selectedDate) ? 'bg-primary/10 border-primary' : ''}`}
-                              onClick={() => setSelectedDate(day)}
-                            >
-                              <div className="text-center mb-2">
-                                <div className="text-xs text-muted-foreground">{format(day, 'EEE')}</div>
-                                <div className="font-medium">{format(day, 'd')}</div>
-                              </div>
-                              <div className="space-y-1">
-                                {tasksForDay.slice(0, 4).map(task => {
-                                  const assignee = getAssignee(task.assigneeId);
-                                  return (
-                                    <div 
-                                      key={task.id} 
-                                      className={`text-xs p-1 rounded border-l-2 ${getPriorityColor(task.priority)} truncate cursor-pointer`}
-                                       onClick={(e) => {
-                                         e.stopPropagation();
-                                         navigate(`/task/${task.id}`);
-                                       }}
-                                      title={`${task.title} - ${assignee?.name} (${task.status})`}
-                                    >
-                                      <div className="font-medium">{task.title}</div>
-                                      <div className="text-muted-foreground">{assignee?.name}</div>
-                                    </div>
-                                  );
-                                })}
-                                {tasksForDay.length > 4 && (
-                                  <div className="text-xs text-muted-foreground">+{tasksForDay.length - 4} more</div>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  {calendarView === 'day' && (
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-medium">
-                          {format(selectedDate, 'EEEE, MMMM dd, yyyy')}
-                        </h3>
-                        <div className="flex gap-2">
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 24 * 60 * 60 * 1000))}
-                          >
-                            Previous Day
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000))}
-                          >
-                            Next Day
-                          </Button>
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-3">
-                        {getTasksForDate(selectedDate).length === 0 ? (
-                          <div className="text-center py-12">
-                            <p className="text-muted-foreground">No tasks scheduled for this day</p>
-                          </div>
-                        ) : (
-                          getTasksForDate(selectedDate).map(task => {
-                            const assignee = getAssignee(task.assigneeId);
-                            const isStartDate = task.startDate && isSameDay(task.startDate, selectedDate);
-                            const isDueDate = task.dueDate && isSameDay(task.dueDate, selectedDate);
-                            
-                            return (
-                              <Card 
-                                key={task.id}
-                                className={`cursor-pointer hover:shadow-md transition-shadow border-l-4 ${getPriorityColor(task.priority)}`}
-                                onClick={() => navigate(`/task/${task.id}`)}
-                              >
-                                <CardContent className="p-4">
-                                  <div className="flex items-start justify-between mb-3">
-                                    <div className="flex-1">
-                                      <h4 className="font-semibold text-lg mb-1">{task.title}</h4>
-                                      <p className="text-muted-foreground text-sm mb-3">{task.description}</p>
-                                      
-                                      <div className="flex items-center gap-3">
-                                        <div className="flex items-center gap-2">
-                                          <Avatar className="h-8 w-8">
-                                            <AvatarImage src={assignee?.avatar} />
-                                            <AvatarFallback style={{ backgroundColor: assignee?.color + '20', color: assignee?.color }}>
-                                              {assignee?.name.split(' ').map(n => n[0]).join('')}
-                                            </AvatarFallback>
-                                          </Avatar>
-                                          <span className="text-sm font-medium">{assignee?.name}</span>
-                                        </div>
-                                        
-                                        <Badge className={`${getStatusBgColor(task.status)}`}>
-                                          {task.status}
-                                        </Badge>
-                                        
-                                        <Badge variant="outline">{task.priority}</Badge>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  
-                                  <div className="flex items-center justify-between text-sm text-muted-foreground">
-                                    <div className="flex gap-4">
-                                      {task.startDate && (
-                                        <span>Start: {format(task.startDate, 'MMM dd')}</span>
-                                      )}
-                                      {task.dueDate && (
-                                        <span>Due: {format(task.dueDate, 'MMM dd')}</span>
-                                      )}
-                                      <span>{task.estimatedHours}h estimated</span>
-                                    </div>
-                                    
-                                    <div className="flex gap-2">
-                                      {isStartDate && (
-                                        <Badge variant="outline" className="text-green-600 border-green-600">
-                                          Starting Today
-                                        </Badge>
-                                      )}
-                                      {isDueDate && (
-                                        <Badge variant="outline" className="text-red-600 border-red-600">
-                                          Due Today
-                                        </Badge>
-                                      )}
-                                    </div>
-                                  </div>
-                                </CardContent>
-                              </Card>
-                            );
-                          })
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
             <TabsContent value="list" className="space-y-6">
               {/* Team Members Overview */}

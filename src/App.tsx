@@ -16,6 +16,9 @@ import EditTask from "./pages/EditTask";
 import TaskView from "./pages/TaskView";
 import TimeLogging from "./pages/TimeLogging";
 import ProjectCalendar from "./pages/ProjectCalendar";
+import SprintDashboard from "./pages/SprintDashboard";
+import CreateSprint from "./pages/CreateSprint";
+import EditSprint from "./pages/EditSprint";
 import Attendance from "./pages/Attendance";
 import AdminAttendance from "./pages/AdminAttendance";
 import LeaveManagement from "./pages/LeaveManagement";
@@ -42,6 +45,9 @@ const App = () => (
           <Route path="/edit-task/:id" element={<EditTask />} />
           <Route path="/time-logging" element={<TimeLogging />} />
           <Route path="/project-calendar/:id" element={<ProjectCalendar />} />
+          <Route path="/sprint-dashboard/:projectId/:sprintId" element={<SprintDashboard />} />
+          <Route path="/create-sprint/:projectId" element={<CreateSprint />} />
+          <Route path="/edit-sprint/:projectId/:sprintId" element={<EditSprint />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/admin-attendance" element={<AdminAttendance />} />
           <Route path="/leave-management" element={<LeaveManagement />} />
