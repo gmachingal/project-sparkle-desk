@@ -314,17 +314,19 @@ const ProjectCalendar = () => {
       <Header />
       
       <div className="container mx-auto px-4 py-8">
+        {/* Back Button - Separate Section */}
+        <div className="pb-4 mb-6 border-b border-border">
+          <Button variant="ghost" onClick={() => navigate('/projects')}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Projects
+          </Button>
+        </div>
+        
         {/* Header Section */}
         <div className="mb-8">
-          <div className="flex items-center gap-4 mb-6">
-            <Button variant="ghost" onClick={() => navigate('/projects')}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Projects
-            </Button>
-            <div>
-              <h1 className="text-3xl font-bold">{project.name}</h1>
-              <p className="text-muted-foreground">{project.description}</p>
-            </div>
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold">{project.name}</h1>
+            <p className="text-muted-foreground">{project.description}</p>
           </div>
 
           {/* Filters and View Toggle */}
