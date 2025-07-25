@@ -577,84 +577,244 @@ const SprintDashboard = () => {
                   Sprint Calendar - {calendarView.charAt(0).toUpperCase() + calendarView.slice(1)} View
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                {calendarView === 'week' && (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-medium">
-                        Week of {format(startOfWeek(selectedDate), 'MMM dd')} - {format(endOfWeek(selectedDate), 'MMM dd, yyyy')}
-                      </h3>
-                      <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 7 * 24 * 60 * 60 * 1000))}
-                        >
-                          Previous
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 7 * 24 * 60 * 60 * 1000))}
-                        >
-                          Next
-                        </Button>
-                      </div>
-                    </div>
-                    
-                    {/* Week Grid */}
-                    <div className="grid grid-cols-7 gap-2">
-                      {eachDayOfInterval({ 
-                        start: startOfWeek(selectedDate), 
-                        end: endOfWeek(selectedDate) 
-                      }).map(day => {
-                        const tasksForDay = getTasksForDate(day);
-                        const isToday = isSameDay(day, new Date());
-                        const isSelected = isSameDay(day, selectedDate);
-                        const isInSprint = day >= sprint.startDate && day <= sprint.endDate;
-                        
-                        return (
-                          <div 
-                            key={day.toISOString()} 
-                            className={`p-3 border rounded-lg cursor-pointer hover:bg-muted min-h-32 ${
-                              isSelected ? 'bg-primary/10 border-primary' : 
-                              isToday ? 'bg-accent border-accent-foreground' : 
-                              !isInSprint ? 'opacity-50 bg-muted/50' : ''
-                            }`}
-                            onClick={() => setSelectedDate(day)}
-                          >
-                            <div className="font-medium text-sm mb-2 flex items-center justify-between">
-                              <span>{format(day, 'EEE dd')}</span>
-                              {isToday && <Badge variant="outline" className="text-xs">Today</Badge>}
-                            </div>
-                            <div className="space-y-1 overflow-hidden">
-                              {tasksForDay.map(task => {
-                                const assignee = getAssignee(task.assigneeId);
-                                return (
-                                  <div 
-                                    key={task.id} 
-                                    className={`text-xs p-2 rounded border-l-2 ${getPriorityColor(task.priority)} cursor-pointer hover:opacity-80`}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      navigate(`/task/${task.id}`);
-                                    }}
-                                    title={`${task.title} - ${assignee?.name}`}
-                                  >
-                                    <div className="font-medium truncate">{task.title}</div>
-                                    <div className="flex items-center gap-1 mt-1">
-                                      <div className={`w-2 h-2 rounded-full ${getStatusColor(task.status)}`}></div>
-                                      <span className="text-xs opacity-70">{task.storyPoints}pt</span>
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
+               <CardContent>
+                 {calendarView === 'month' && (
+                   <div className="space-y-4">
+                     <div className="flex items-center justify-between">
+                       <h3 className="font-medium">{format(selectedDate, 'MMMM yyyy')}</h3>
+                       <div className="flex gap-2">
+                         <Button 
+                           variant="outline" 
+                           size="sm" 
+                           onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1))}
+                         >
+                           Previous
+                         </Button>
+                         <Button 
+                           variant="outline" 
+                           size="sm" 
+                           onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1))}
+                         >
+                           Next
+                         </Button>
+                       </div>
+                     </div>
+                     
+                     {/* Calendar Grid */}
+                     <div className="grid grid-cols-7 gap-1">
+                       {/* Header */}
+                       {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                         <div key={day} className="p-2 text-center text-sm font-medium text-muted-foreground">
+                           {day}
+                         </div>
+                       ))}
+                       
+                       {/* Calendar Days */}
+                       {eachDayOfInterval({ 
+                         start: startOfMonth(selectedDate), 
+                         end: endOfMonth(selectedDate) 
+                       }).map(day => {
+                         const tasksForDay = getTasksForDate(day);
+                         const isToday = isSameDay(day, new Date());
+                         const isSelected = isSameDay(day, selectedDate);
+                         const isInSprint = day >= sprint.startDate && day <= sprint.endDate;
+                         
+                         return (
+                           <div 
+                             key={day.toISOString()} 
+                             className={`p-2 border rounded-lg cursor-pointer hover:bg-muted min-h-24 ${
+                               isSelected ? 'bg-primary/10 border-primary' : 
+                               isToday ? 'bg-accent border-accent-foreground' : 
+                               !isInSprint ? 'opacity-50 bg-muted/50' : ''
+                             }`}
+                             onClick={() => setSelectedDate(day)}
+                           >
+                             <div className="font-medium text-sm mb-1 flex items-center justify-between">
+                               <span>{format(day, 'd')}</span>
+                               {isToday && <Badge variant="outline" className="text-xs">Today</Badge>}
+                             </div>
+                             <div className="space-y-1 overflow-hidden">
+                               {tasksForDay.slice(0, 2).map(task => {
+                                 const assignee = getAssignee(task.assigneeId);
+                                 return (
+                                   <div 
+                                     key={task.id} 
+                                     className={`text-xs p-1 rounded border-l-2 ${getPriorityColor(task.priority)} truncate cursor-pointer`}
+                                     onClick={(e) => {
+                                       e.stopPropagation();
+                                       navigate(`/task/${task.id}`);
+                                     }}
+                                     title={`${task.title} - ${assignee?.name}`}
+                                   >
+                                     {task.title}
+                                   </div>
+                                 );
+                               })}
+                               {tasksForDay.length > 2 && (
+                                 <div className="text-xs text-muted-foreground">+{tasksForDay.length - 2} more</div>
+                               )}
+                             </div>
+                           </div>
+                         );
+                       })}
+                     </div>
+                   </div>
+                 )}
+
+                 {calendarView === 'week' && (
+                   <div className="space-y-4">
+                     <div className="flex items-center justify-between">
+                       <h3 className="font-medium">
+                         Week of {format(startOfWeek(selectedDate), 'MMM dd')} - {format(endOfWeek(selectedDate), 'MMM dd, yyyy')}
+                       </h3>
+                       <div className="flex gap-2">
+                         <Button 
+                           variant="outline" 
+                           size="sm"
+                           onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 7 * 24 * 60 * 60 * 1000))}
+                         >
+                           Previous
+                         </Button>
+                         <Button 
+                           variant="outline" 
+                           size="sm"
+                           onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 7 * 24 * 60 * 60 * 1000))}
+                         >
+                           Next
+                         </Button>
+                       </div>
+                     </div>
+                     
+                     {/* Week Grid */}
+                     <div className="grid grid-cols-7 gap-2">
+                       {eachDayOfInterval({ 
+                         start: startOfWeek(selectedDate), 
+                         end: endOfWeek(selectedDate) 
+                       }).map(day => {
+                         const tasksForDay = getTasksForDate(day);
+                         const isToday = isSameDay(day, new Date());
+                         const isSelected = isSameDay(day, selectedDate);
+                         const isInSprint = day >= sprint.startDate && day <= sprint.endDate;
+                         
+                         return (
+                           <div 
+                             key={day.toISOString()} 
+                             className={`p-3 border rounded-lg cursor-pointer hover:bg-muted min-h-32 ${
+                               isSelected ? 'bg-primary/10 border-primary' : 
+                               isToday ? 'bg-accent border-accent-foreground' : 
+                               !isInSprint ? 'opacity-50 bg-muted/50' : ''
+                             }`}
+                             onClick={() => setSelectedDate(day)}
+                           >
+                             <div className="font-medium text-sm mb-2 flex items-center justify-between">
+                               <span>{format(day, 'EEE dd')}</span>
+                               {isToday && <Badge variant="outline" className="text-xs">Today</Badge>}
+                             </div>
+                             <div className="space-y-1 overflow-hidden">
+                               {tasksForDay.map(task => {
+                                 const assignee = getAssignee(task.assigneeId);
+                                 return (
+                                   <div 
+                                     key={task.id} 
+                                     className={`text-xs p-2 rounded border-l-2 ${getPriorityColor(task.priority)} cursor-pointer hover:opacity-80`}
+                                     onClick={(e) => {
+                                       e.stopPropagation();
+                                       navigate(`/task/${task.id}`);
+                                     }}
+                                     title={`${task.title} - ${assignee?.name}`}
+                                   >
+                                     <div className="font-medium truncate">{task.title}</div>
+                                     <div className="flex items-center gap-1 mt-1">
+                                       <div className={`w-2 h-2 rounded-full ${getStatusColor(task.status)}`}></div>
+                                       <span className="text-xs opacity-70">{task.storyPoints}pt</span>
+                                     </div>
+                                   </div>
+                                 );
+                               })}
+                             </div>
+                           </div>
+                         );
+                       })}
+                     </div>
+                   </div>
+                 )}
+
+                 {calendarView === 'day' && (
+                   <div className="space-y-4">
+                     <div className="flex items-center justify-between">
+                       <h3 className="font-medium">
+                         {format(selectedDate, 'EEEE, MMMM dd, yyyy')}
+                       </h3>
+                       <div className="flex gap-2">
+                         <Button 
+                           variant="outline" 
+                           size="sm"
+                           onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 24 * 60 * 60 * 1000))}
+                         >
+                           Previous Day
+                         </Button>
+                         <Button 
+                           variant="outline" 
+                           size="sm"
+                           onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000))}
+                         >
+                           Next Day
+                         </Button>
+                       </div>
+                     </div>
+                     
+                     <div className="space-y-3">
+                       {getTasksForDate(selectedDate).length === 0 ? (
+                         <div className="text-center py-12">
+                           <p className="text-muted-foreground">No tasks scheduled for this day</p>
+                         </div>
+                       ) : (
+                         getTasksForDate(selectedDate).map(task => {
+                           const assignee = getAssignee(task.assigneeId);
+                           const isStartDate = task.startDate && isSameDay(task.startDate, selectedDate);
+                           const isDueDate = task.dueDate && isSameDay(task.dueDate, selectedDate);
+                           
+                           return (
+                             <Card 
+                               key={task.id}
+                               className={`cursor-pointer hover:shadow-md transition-shadow border-l-4 ${getPriorityColor(task.priority)}`}
+                               onClick={() => navigate(`/task/${task.id}`)}
+                             >
+                               <CardContent className="p-4">
+                                 <div className="flex items-start justify-between">
+                                   <div className="flex-1">
+                                     <h4 className="font-medium mb-1">{task.title}</h4>
+                                     <p className="text-sm text-muted-foreground mb-2">{task.description}</p>
+                                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                                       <span className={`px-2 py-1 rounded-full ${getStatusBadgeColor(task.status)}`}>
+                                         {task.status.replace('-', ' ')}
+                                       </span>
+                                       <span>{task.storyPoints} SP</span>
+                                       <span>{task.estimatedHours}h estimated</span>
+                                       {isStartDate && <Badge variant="outline" className="text-green-600">Start Date</Badge>}
+                                       {isDueDate && <Badge variant="outline" className="text-red-600">Due Date</Badge>}
+                                     </div>
+                                   </div>
+                                   <div className="flex items-center gap-2 ml-4">
+                                     <Avatar className="h-8 w-8">
+                                       <AvatarImage src={assignee?.avatar} />
+                                       <AvatarFallback className="text-xs bg-primary text-primary-foreground">
+                                         {assignee?.name.split(' ').map(n => n[0]).join('')}
+                                       </AvatarFallback>
+                                     </Avatar>
+                                     <Badge variant="outline" className={getPriorityColor(task.priority)}>
+                                       {task.priority}
+                                     </Badge>
+                                   </div>
+                                 </div>
+                               </CardContent>
+                             </Card>
+                           );
+                         })
+                       )}
+                     </div>
+                   </div>
+                 )}
 
                 {/* Month and Day views would be similar to Project Calendar */}
               </CardContent>
