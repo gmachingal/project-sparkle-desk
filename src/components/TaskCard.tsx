@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Calendar, Flag, MoreHorizontal, User, Edit } from "lucide-react";
+import { Calendar, Flag, MoreHorizontal, User, Edit, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
@@ -19,6 +19,7 @@ interface TaskCardProps {
       avatar?: string;
     };
     project: string;
+    tags?: string[];
   };
   className?: string;
 }
@@ -73,6 +74,22 @@ const TaskCard = ({ task, className }: TaskCardProps) => {
               <p className="text-xs text-muted-foreground line-clamp-2">
                 {task.description}
               </p>
+            )}
+            
+            {/* Tags */}
+            {task.tags && task.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {task.tags.map((tag, index) => (
+                  <Badge 
+                    key={index} 
+                    variant="outline" 
+                    className="text-xs px-2 py-1 bg-primary/10 text-primary border-primary/20"
+                  >
+                    <Tag className="w-2 h-2 mr-1" />
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
             )}
             
             <div className="flex items-center justify-between">

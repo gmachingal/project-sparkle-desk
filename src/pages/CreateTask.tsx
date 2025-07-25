@@ -10,7 +10,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Header from "@/components/Header";
-import { CalendarIcon, User, ArrowLeft, Save, Plus, Target } from "lucide-react";
+import { CalendarIcon, User, ArrowLeft, Save, Plus, Target, Tag, X } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -22,6 +22,8 @@ const CreateTask = () => {
   const { toast } = useToast();
   const [dueDate, setDueDate] = useState<Date>();
   const [startDate, setStartDate] = useState<Date>();
+  const [tags, setTags] = useState<string[]>([]);
+  const [newTag, setNewTag] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -76,6 +78,24 @@ const CreateTask = () => {
     { id: "3", name: "Emily Davis", email: "emily@company.com" },
     { id: "4", name: "Alex Kim", email: "alex@company.com" }
   ];
+
+  const addTag = () => {
+    if (newTag.trim() && !tags.includes(newTag.trim())) {
+      setTags([...tags, newTag.trim()]);
+      setNewTag("");
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setTags(tags.filter(tag => tag !== tagToRemove));
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addTag();
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -239,6 +259,53 @@ const CreateTask = () => {
                         />
                       </PopoverContent>
                     </Popover>
+                  </div>
+
+                  <div>
+                    <Label>Tags</Label>
+                    <div className="space-y-2">
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="Add a tag..."
+                          value={newTag}
+                          onChange={(e) => setNewTag(e.target.value)}
+                          onKeyPress={handleKeyPress}
+                          className="flex-1"
+                        />
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={addTag}
+                          disabled={!newTag.trim()}
+                        >
+                          <Plus className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      {tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {tags.map((tag, index) => (
+                            <Badge 
+                              key={index} 
+                              variant="outline" 
+                              className="bg-primary/10 text-primary border-primary/20 px-2 py-1"
+                            >
+                              <Tag className="w-3 h-3 mr-1" />
+                              {tag}
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="ml-1 h-auto p-0 hover:bg-transparent"
+                                onClick={() => removeTag(tag)}
+                              >
+                                <X className="w-3 h-3" />
+                              </Button>
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div>

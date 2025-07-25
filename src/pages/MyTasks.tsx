@@ -36,6 +36,7 @@ const MyTasks = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("dueDate");
   const [filterPriority, setFilterPriority] = useState("all");
+  const [filterTag, setFilterTag] = useState("all");
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
   const [calendarView, setCalendarView] = useState<'month' | 'week' | 'day'>('month');
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -54,7 +55,8 @@ const MyTasks = () => {
       priority: "high" as const,
       dueDate: new Date(currentYear, currentMonth, 10),
       assignee: { name: "You", avatar: "" },
-      project: "Website Redesign"
+      project: "Website Redesign",
+      tags: ["design", "ui/ux", "homepage"]
     },
     {
       id: "2",
@@ -64,7 +66,8 @@ const MyTasks = () => {
       priority: "medium" as const,
       dueDate: new Date(currentYear, currentMonth, 15),
       assignee: { name: "You", avatar: "" },
-      project: "Mobile App"
+      project: "Mobile App",
+      tags: ["api", "documentation", "review"]
     },
     {
       id: "3",
@@ -74,7 +77,8 @@ const MyTasks = () => {
       priority: "low" as const,
       dueDate: new Date(currentYear, currentMonth, 8),
       assignee: { name: "You", avatar: "" },
-      project: "Marketing Campaign"
+      project: "Marketing Campaign",
+      tags: ["marketing", "copywriting", "content"]
     },
     {
       id: "4",
@@ -84,7 +88,8 @@ const MyTasks = () => {
       priority: "high" as const,
       dueDate: new Date(currentYear, currentMonth, 20),
       assignee: { name: "You", avatar: "" },
-      project: "Website Redesign"
+      project: "Website Redesign",
+      tags: ["bug-fix", "authentication", "urgent"]
     },
     {
       id: "5",
@@ -94,7 +99,8 @@ const MyTasks = () => {
       priority: "medium" as const,
       dueDate: new Date(currentYear, currentMonth, 25),
       assignee: { name: "You", avatar: "" },
-      project: "Internal"
+      project: "Internal",
+      tags: ["presentation", "quarterly", "slides"]
     },
     {
       id: "6",
@@ -104,7 +110,8 @@ const MyTasks = () => {
       priority: "medium" as const,
       dueDate: new Date(currentYear, currentMonth, 18),
       assignee: { name: "You", avatar: "" },
-      project: "Mobile App"
+      project: "Mobile App",
+      tags: ["code-review", "api", "backend"]
     },
     {
       id: "7",
@@ -114,7 +121,8 @@ const MyTasks = () => {
       priority: "high" as const,
       dueDate: new Date(currentYear, currentMonth, 22),
       assignee: { name: "You", avatar: "" },
-      project: "Website Redesign"
+      project: "Website Redesign",
+      tags: ["testing", "mobile", "responsive"]
     },
     {
       id: "8",
@@ -124,7 +132,8 @@ const MyTasks = () => {
       priority: "low" as const,
       dueDate: new Date(currentYear, currentMonth, 28),
       assignee: { name: "You", avatar: "" },
-      project: "Internal"
+      project: "Internal",
+      tags: ["documentation", "maintenance", "update"]
     }
   ];
 
@@ -147,13 +156,19 @@ const MyTasks = () => {
     if (searchQuery) {
       filtered = filtered.filter(task => 
         task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        task.description.toLowerCase().includes(searchQuery.toLowerCase())
+        task.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (task.tags && task.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())))
       );
     }
 
     // Filter by priority
     if (filterPriority !== "all") {
       filtered = filtered.filter(task => task.priority === filterPriority);
+    }
+
+    // Filter by tag
+    if (filterTag !== "all") {
+      filtered = filtered.filter(task => task.tags && task.tags.includes(filterTag));
     }
 
     return filtered;
@@ -190,8 +205,12 @@ const MyTasks = () => {
   // Convert task to format expected by TaskCard
   const formatTaskForCard = (task: typeof tasks[0]) => ({
     ...task,
-    dueDate: format(task.dueDate, 'MMM dd')
+    dueDate: format(task.dueDate, 'MMM dd'),
+    tags: task.tags || []
   });
+  
+  // Get all unique tags for filtering
+  const allTags = Array.from(new Set(tasks.flatMap(task => task.tags || [])));
 
   const taskStats = {
     total: tasks.length,
@@ -287,6 +306,17 @@ const MyTasks = () => {
                   <SelectItem value="high">High Priority</SelectItem>
                   <SelectItem value="medium">Medium Priority</SelectItem>
                   <SelectItem value="low">Low Priority</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={filterTag} onValueChange={setFilterTag}>
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <SelectValue placeholder="Tag" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Tags</SelectItem>
+                  {allTags.map(tag => (
+                    <SelectItem key={tag} value={tag}>{tag}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <Select value={sortBy} onValueChange={setSortBy}>
@@ -492,20 +522,29 @@ const MyTasks = () => {
                                           <h4 className="font-semibold">{task.title}</h4>
                                           <p className="text-sm text-muted-foreground">{task.description}</p>
                                         </div>
-                                        <div className="space-y-2">
-                                          <div className="flex items-center gap-2">
-                                            <User className="h-4 w-4 text-muted-foreground" />
-                                            <span className="text-sm">Resource: {task.assignee?.name}</span>
-                                          </div>
-                                          <div className="flex items-center gap-2">
-                                            <CalendarDays className="h-4 w-4 text-muted-foreground" />
-                                            <span className="text-sm">Due: {format(task.dueDate, 'MMM dd, yyyy')}</span>
-                                          </div>
-                                          <div className="flex items-center gap-2">
-                                            <Badge variant="outline">{task.project}</Badge>
-                                            <Badge className={getPriorityColor(task.priority)}>{task.priority}</Badge>
-                                          </div>
-                                        </div>
+                                         <div className="space-y-2">
+                                           <div className="flex items-center gap-2">
+                                             <User className="h-4 w-4 text-muted-foreground" />
+                                             <span className="text-sm">Resource: {task.assignee?.name}</span>
+                                           </div>
+                                           <div className="flex items-center gap-2">
+                                             <CalendarDays className="h-4 w-4 text-muted-foreground" />
+                                             <span className="text-sm">Due: {format(task.dueDate, 'MMM dd, yyyy')}</span>
+                                           </div>
+                                           {task.tags && task.tags.length > 0 && (
+                                             <div className="flex flex-wrap gap-1">
+                                               {task.tags.map((tag, index) => (
+                                                 <Badge key={index} variant="outline" className="text-xs">
+                                                   {tag}
+                                                 </Badge>
+                                               ))}
+                                             </div>
+                                           )}
+                                           <div className="flex items-center gap-2">
+                                             <Badge variant="outline">{task.project}</Badge>
+                                             <Badge className={getPriorityColor(task.priority)}>{task.priority}</Badge>
+                                           </div>
+                                         </div>
                                       </div>
                                     </HoverCardContent>
                                   </HoverCard>
@@ -620,6 +659,15 @@ const MyTasks = () => {
                                              <CalendarDays className="h-4 w-4 text-muted-foreground" />
                                              <span className="text-sm">Due: {format(task.dueDate, 'MMM dd, yyyy')}</span>
                                            </div>
+                                           {task.tags && task.tags.length > 0 && (
+                                             <div className="flex flex-wrap gap-1">
+                                               {task.tags.map((tag, index) => (
+                                                 <Badge key={index} variant="outline" className="text-xs">
+                                                   {tag}
+                                                 </Badge>
+                                               ))}
+                                             </div>
+                                           )}
                                            <div className="flex items-center gap-2">
                                              <Badge variant="outline">{task.project}</Badge>
                                              <Badge className={getPriorityColor(task.priority)}>{task.priority}</Badge>
