@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Header from '@/components/Header';
 import SprintCard from '@/components/SprintCard';
+import SprintTaskManager from '@/components/SprintTaskManager';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -9,12 +10,14 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Calendar as CalendarIcon, List, Users, Filter, Plus, Target, BarChart3 } from 'lucide-react';
 import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, eachHourOfInterval, startOfDay, endOfDay } from 'date-fns';
 
 const ProjectCalendar = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedMember, setSelectedMember] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
@@ -215,6 +218,42 @@ const ProjectCalendar = () => {
     }
   ];
 
+  // Convert tasks to the format expected by SprintTaskManager
+  const allProjectTasks = tasks.map(task => ({
+    ...task,
+    status: task.status as 'todo' | 'in-progress' | 'completed',
+    priority: task.priority === 'urgent' ? 'high' as const : task.priority as 'low' | 'medium' | 'high',
+    projectId: project.id,
+    sprintId: undefined // These are backlog tasks by default
+  }));
+
+  // Mock sprint data with proper typing
+  const allSprints = sprints.map(sprint => ({
+    id: sprint.id,
+    name: sprint.name,
+    status: sprint.status === 'planning' ? 'planned' as const : sprint.status as 'active' | 'completed' | 'planned',
+    startDate: sprint.startDate,
+    endDate: sprint.endDate,
+    projectId: sprint.projectId
+  }));
+
+  // Handlers for the SprintTaskManager
+  const handleMoveTask = (taskId: string, fromSprintId: string | null, toSprintId: string | null) => {
+    toast({
+      title: "Task Moved",
+      description: `Task has been moved ${toSprintId ? 'to sprint' : 'to backlog'} successfully`,
+    });
+    // In a real app, this would update the task's sprintId in the database
+  };
+
+  const handleAddTaskToSprint = (taskId: string, sprintId: string) => {
+    toast({
+      title: "Task Added to Sprint", 
+      description: "Task has been added to the sprint successfully",
+    });
+    // In a real app, this would update the task's sprintId in the database
+  };
+
   const getFilteredTasks = () => {
     return tasks.filter(task => {
       const memberMatch = selectedMember === 'all' || task.assigneeId === selectedMember;
@@ -385,10 +424,20 @@ const ProjectCalendar = () => {
           <TabsContent value="sprints" className="space-y-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold">Project Sprints</h2>
-              <Button onClick={() => navigate(`/create-sprint/${project.id}`)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Create Sprint
-              </Button>
+              <div className="flex gap-2">
+                <SprintTaskManager
+                  projectId={project.id}
+                  currentSprintId={undefined}
+                  sprints={allSprints}
+                  tasks={allProjectTasks}
+                  onMoveTask={handleMoveTask}
+                  onAddTaskToSprint={handleAddTaskToSprint}
+                />
+                <Button onClick={() => navigate(`/create-sprint/${project.id}`)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Sprint
+                </Button>
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {sprints.map(sprint => (
