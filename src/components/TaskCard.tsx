@@ -2,8 +2,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Calendar, Flag, MoreHorizontal, User } from "lucide-react";
+import { Calendar, Flag, MoreHorizontal, User, Edit } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 interface TaskCardProps {
   task: {
@@ -23,6 +24,7 @@ interface TaskCardProps {
 }
 
 const TaskCard = ({ task, className }: TaskCardProps) => {
+  const navigate = useNavigate();
   const priorityColors = {
     low: 'bg-muted text-muted-foreground',
     medium: 'bg-warning text-warning-foreground',
@@ -36,11 +38,14 @@ const TaskCard = ({ task, className }: TaskCardProps) => {
   };
 
   return (
-    <Card className={cn(
-      "group hover:shadow-lg transition-all duration-300 border-l-4 cursor-pointer",
-      statusColors[task.status],
-      className
-    )}>
+    <Card 
+      className={cn(
+        "group hover:shadow-lg transition-all duration-300 border-l-4 cursor-pointer",
+        statusColors[task.status],
+        className
+      )}
+      onClick={() => navigate(`/edit-task/${task.id}`)}
+    >
       <CardContent className="p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 space-y-3">
@@ -51,8 +56,16 @@ const TaskCard = ({ task, className }: TaskCardProps) => {
               )}>
                 {task.title}
               </h3>
-              <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                <MoreHorizontal className="w-4 h-4" />
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/edit-task/${task.id}`);
+                }}
+              >
+                <Edit className="w-4 h-4" />
               </Button>
             </div>
             
