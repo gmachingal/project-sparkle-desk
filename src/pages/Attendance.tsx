@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar } from '@/components/ui/calendar';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,8 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { 
   Clock, 
   MapPin, 
-  Calendar as CalendarIcon, 
-  Home, 
+  Home,
   Building, 
   CheckCircle, 
   XCircle,
@@ -27,7 +25,6 @@ import { format } from 'date-fns';
 
 const Attendance = () => {
   const { toast } = useToast();
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [isCheckedIn, setIsCheckedIn] = useState(false);
   const [workLocation, setWorkLocation] = useState<'office' | 'wfh'>('office');
   const [isBackdateDialogOpen, setIsBackdateDialogOpen] = useState(false);
@@ -158,78 +155,133 @@ const Attendance = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Quick Actions */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Check In/Out Card */}
-            <Card>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Hours Summary - Now Top Sidebar */}
+          <div className="lg:col-span-1">
+            <Card className="sticky top-4">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5" />
-                  Today's Attendance
+                  <Clock className="h-5 w-5 text-primary" />
+                  Hours Summary
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center p-4 bg-muted rounded-lg">
-                    <Clock className="h-8 w-8 mx-auto mb-2 text-green-500" />
-                    <div className="text-lg font-semibold">
+                <div className="text-center p-4 bg-gradient-to-br from-primary/10 to-primary-glow/10 rounded-lg border border-primary/20">
+                  <div className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+                    {todaysHours}h
+                  </div>
+                  <div className="text-sm text-muted-foreground">Today</div>
+                </div>
+                <div className="space-y-3">
+                  <div className="text-center p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                    <div className="text-xl font-semibold">{weeklyHours}h</div>
+                    <div className="text-xs text-muted-foreground">This Week</div>
+                  </div>
+                  <div className="text-center p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                    <div className="text-xl font-semibold">{monthlyHours}h</div>
+                    <div className="text-xs text-muted-foreground">This Month</div>
+                  </div>
+                </div>
+                
+                {/* Quick Stats */}
+                <div className="pt-4 border-t space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Days Present</span>
+                    <span className="font-medium">22</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Avg. Hours/Day</span>
+                    <span className="font-medium">8.2h</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Late Days</span>
+                    <span className="font-medium text-amber-600">3</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Main Content Area */}
+          <div className="lg:col-span-3 space-y-6">
+            {/* Check In/Out Card - Enhanced */}
+            <Card className="border-primary/20 shadow-lg">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <Clock className="h-6 w-6 text-primary" />
+                  Today's Attendance
+                  <Badge variant="outline" className="ml-auto">
+                    {format(new Date(), 'EEEE, MMM dd')}
+                  </Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950/20 dark:to-green-900/20 rounded-xl border border-green-200 dark:border-green-800">
+                    <Clock className="h-10 w-10 mx-auto mb-3 text-green-600" />
+                    <div className="text-2xl font-bold text-green-700 dark:text-green-400">
                       {isCheckedIn ? format(new Date(), 'hh:mm a') : '--:--'}
                     </div>
-                    <div className="text-sm text-muted-foreground">Check In</div>
+                    <div className="text-sm text-green-600 dark:text-green-400 font-medium">Check In</div>
                   </div>
-                  <div className="text-center p-4 bg-muted rounded-lg">
-                    <Clock className="h-8 w-8 mx-auto mb-2 text-red-500" />
-                    <div className="text-lg font-semibold">--:--</div>
-                    <div className="text-sm text-muted-foreground">Check Out</div>
+                  <div className="text-center p-6 bg-gradient-to-br from-red-50 to-red-100 dark:from-red-950/20 dark:to-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
+                    <Clock className="h-10 w-10 mx-auto mb-3 text-red-600" />
+                    <div className="text-2xl font-bold text-red-700 dark:text-red-400">--:--</div>
+                    <div className="text-sm text-red-600 dark:text-red-400 font-medium">Check Out</div>
                   </div>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <div>
-                    <Label>Work Location</Label>
+                    <Label className="text-base font-medium">Work Location</Label>
                     <Select value={workLocation} onValueChange={(value: 'office' | 'wfh') => setWorkLocation(value)}>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-12 mt-2">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="office">
-                          <div className="flex items-center gap-2">
-                            <Building className="h-4 w-4" />
-                            Office
+                          <div className="flex items-center gap-3 p-1">
+                            <Building className="h-5 w-5 text-gray-600" />
+                            <div>
+                              <div className="font-medium">Office</div>
+                              <div className="text-xs text-muted-foreground">Work from office</div>
+                            </div>
                           </div>
                         </SelectItem>
                         <SelectItem value="wfh">
-                          <div className="flex items-center gap-2">
-                            <Home className="h-4 w-4" />
-                            Work from Home
+                          <div className="flex items-center gap-3 p-1">
+                            <Home className="h-5 w-5 text-blue-600" />
+                            <div>
+                              <div className="font-medium">Work from Home</div>
+                              <div className="text-xs text-muted-foreground">Remote work</div>
+                            </div>
                           </div>
                         </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="flex gap-3">
                     {!isCheckedIn ? (
-                      <Button onClick={handleCheckIn} className="flex-1">
-                        <CheckCircle className="h-4 w-4 mr-2" />
+                      <Button onClick={handleCheckIn} className="flex-1 h-12 text-base">
+                        <CheckCircle className="h-5 w-5 mr-2" />
                         Check In
                       </Button>
                     ) : (
-                      <Button onClick={handleCheckOut} variant="outline" className="flex-1">
-                        <XCircle className="h-4 w-4 mr-2" />
+                      <Button onClick={handleCheckOut} variant="outline" className="flex-1 h-12 text-base border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+                        <XCircle className="h-5 w-5 mr-2" />
                         Check Out
                       </Button>
                     )}
                     
                     <Dialog open={isBackdateDialogOpen} onOpenChange={setIsBackdateDialogOpen}>
                       <DialogTrigger asChild>
-                        <Button variant="outline">
-                          <Edit className="h-4 w-4 mr-2" />
+                        <Button variant="outline" className="h-12">
+                          <Edit className="h-5 w-5 mr-2" />
                           Request Update
                         </Button>
                       </DialogTrigger>
-                      <DialogContent>
+                      <DialogContent className="max-w-md">
                         <DialogHeader>
                           <DialogTitle>Request Attendance Update</DialogTitle>
                         </DialogHeader>
@@ -300,88 +352,59 @@ const Attendance = () => {
               </CardContent>
             </Card>
 
-            {/* Attendance History */}
+            {/* Attendance History - Enhanced */}
             <Card>
               <CardHeader>
-                <CardTitle>Recent Attendance</CardTitle>
+                <CardTitle className="flex items-center justify-between">
+                  <span>Recent Attendance</span>
+                  <Badge variant="secondary">{attendanceRecords.length} records</Badge>
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   {attendanceRecords.map((record) => (
-                    <div key={record.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className="text-center">
-                          <div className="font-medium">{format(new Date(record.date), 'MMM dd')}</div>
+                    <div key={record.id} className="group flex items-center justify-between p-4 border rounded-xl hover:bg-muted/50 transition-all duration-200 hover:shadow-md">
+                      <div className="flex items-center gap-4">
+                        <div className="text-center min-w-[60px]">
+                          <div className="font-bold text-lg">{format(new Date(record.date), 'dd')}</div>
+                          <div className="text-xs text-muted-foreground uppercase font-medium">{format(new Date(record.date), 'MMM')}</div>
                           <div className="text-xs text-muted-foreground">{format(new Date(record.date), 'EEE')}</div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          {record.location === 'wfh' ? (
-                            <Home className="h-4 w-4 text-blue-500" />
-                          ) : (
-                            <Building className="h-4 w-4 text-gray-500" />
-                          )}
-                          <span className="text-sm">{record.location === 'wfh' ? 'WFH' : 'Office'}</span>
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-lg bg-muted">
+                            {record.location === 'wfh' ? (
+                              <Home className="h-5 w-5 text-blue-600" />
+                            ) : (
+                              <Building className="h-5 w-5 text-gray-600" />
+                            )}
+                          </div>
+                          <div>
+                            <div className="font-medium">{record.location === 'wfh' ? 'Work from Home' : 'Office'}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {record.hours}h worked
+                              {record.overtime > 0 && (
+                                <span className="text-amber-600 ml-1">+{record.overtime}h OT</span>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <div className="text-center">
-                          <div className="text-sm font-medium">{record.checkIn}</div>
-                          <div className="text-xs text-muted-foreground">Check In</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-sm font-medium">{record.checkOut}</div>
-                          <div className="text-xs text-muted-foreground">Check Out</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-sm font-medium">{record.hours}h</div>
-                          <div className="text-xs text-muted-foreground">Total</div>
+                      <div className="flex items-center gap-6">
+                        <div className="grid grid-cols-2 gap-4 text-center">
+                          <div>
+                            <div className="text-sm font-bold">{record.checkIn}</div>
+                            <div className="text-xs text-muted-foreground">In</div>
+                          </div>
+                          <div>
+                            <div className="text-sm font-bold">{record.checkOut}</div>
+                            <div className="text-xs text-muted-foreground">Out</div>
+                          </div>
                         </div>
                         {getStatusBadge(record.status)}
                       </div>
                     </div>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Hours Summary */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Hours Summary</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-center p-3 bg-muted rounded-lg">
-                  <div className="text-2xl font-bold">{todaysHours}h</div>
-                  <div className="text-sm text-muted-foreground">Today</div>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="text-center p-3 border rounded-lg">
-                    <div className="text-lg font-semibold">{weeklyHours}h</div>
-                    <div className="text-xs text-muted-foreground">This Week</div>
-                  </div>
-                  <div className="text-center p-3 border rounded-lg">
-                    <div className="text-lg font-semibold">{monthlyHours}h</div>
-                    <div className="text-xs text-muted-foreground">This Month</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Calendar */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Calendar</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Calendar
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={setSelectedDate}
-                  className="rounded-md border"
-                />
               </CardContent>
             </Card>
           </div>
