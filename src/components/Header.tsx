@@ -24,6 +24,7 @@ const Header = () => {
             <Button variant="ghost" size="sm" onClick={() => navigate("/my-tasks")}>My Tasks</Button>
             <Button variant="ghost" size="sm" onClick={() => navigate("/projects")}>Projects</Button>
             <Button variant="ghost" size="sm" onClick={() => navigate("/teams")}>Teams</Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/departments")}>Departments</Button>
           </nav>
         </div>
 
