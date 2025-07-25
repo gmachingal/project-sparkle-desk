@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { CalendarIcon, ArrowLeft, Trash2, Clock, Plus } from 'lucide-react';
+import { CalendarIcon, ArrowLeft, Trash2, Clock, Plus, Target } from 'lucide-react';
 import { format } from 'date-fns';
 
 const EditTask = () => {
@@ -29,6 +29,7 @@ const EditTask = () => {
     startDate: new Date('2024-02-10'),
     assigneeId: '2',
     projectId: '1',
+    sprintId: '1',
     estimatedHours: 16,
     tags: ['design', 'homepage'],
     loggedHours: [
@@ -68,6 +69,45 @@ const EditTask = () => {
     { id: '1', name: 'Website Redesign' },
     { id: '2', name: 'Mobile App Development' },
     { id: '3', name: 'Marketing Campaign' },
+  ];
+
+  const sprints = [
+    { 
+      id: '1', 
+      name: 'Sprint 1 - Foundation', 
+      projectId: '1', 
+      status: 'active' as const,
+      startDate: new Date('2024-01-15'),
+      endDate: new Date('2024-01-29'),
+      progress: 65
+    },
+    { 
+      id: '2', 
+      name: 'Sprint 2 - Core Features', 
+      projectId: '1', 
+      status: 'planned' as const,
+      startDate: new Date('2024-01-30'),
+      endDate: new Date('2024-02-13'),
+      progress: 0
+    },
+    { 
+      id: '3', 
+      name: 'Sprint 1 - MVP', 
+      projectId: '2', 
+      status: 'active' as const,
+      startDate: new Date('2024-01-20'),
+      endDate: new Date('2024-02-10'),
+      progress: 45
+    },
+    { 
+      id: '4', 
+      name: 'Sprint 1 - Launch', 
+      projectId: '3', 
+      status: 'completed' as const,
+      startDate: new Date('2024-01-01'),
+      endDate: new Date('2024-01-20'),
+      progress: 100
+    }
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -318,6 +358,33 @@ const EditTask = () => {
                 </div>
 
                 <div>
+                  <label className="text-sm font-medium">Sprint</label>
+                  <Select value={taskData.sprintId || ''} onValueChange={(value) => setTaskData({...taskData, sprintId: value === 'none' ? null : value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select sprint" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">No Sprint</SelectItem>
+                      {sprints
+                        .filter(sprint => sprint.projectId === taskData.projectId)
+                        .map(sprint => (
+                          <SelectItem key={sprint.id} value={sprint.id}>
+                            <div className="flex items-center gap-2">
+                              <Badge 
+                                variant={sprint.status === 'active' ? 'default' : sprint.status === 'completed' ? 'secondary' : 'outline'}
+                                className="text-xs"
+                              >
+                                {sprint.status}
+                              </Badge>
+                              {sprint.name}
+                            </div>
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
                   <label className="text-sm font-medium">Tags</label>
                   <div className="flex flex-wrap gap-2 mb-2">
                     {taskData.tags.map(tag => (
@@ -421,7 +488,85 @@ const EditTask = () => {
             </Card>
           </div>
 
-          <div className="flex gap-4">
+          {/* Sprint Details Card - Full Width */}
+          {taskData.sprintId && (
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5" />
+                  Sprint Details
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {(() => {
+                  const currentSprint = sprints.find(s => s.id === taskData.sprintId);
+                  if (!currentSprint) return null;
+                  
+                  return (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="space-y-3">
+                        <div>
+                          <div className="text-sm text-muted-foreground">Sprint Name</div>
+                          <div className="font-medium">{currentSprint.name}</div>
+                        </div>
+                        <div>
+                          <div className="text-sm text-muted-foreground">Status</div>
+                          <Badge 
+                            variant={currentSprint.status === 'active' ? 'default' : currentSprint.status === 'completed' ? 'secondary' : 'outline'}
+                            className="mt-1"
+                          >
+                            {currentSprint.status.charAt(0).toUpperCase() + currentSprint.status.slice(1)}
+                          </Badge>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">Sprint Progress</span>
+                            <span className="font-medium">{currentSprint.progress}%</span>
+                          </div>
+                          <div className="w-full bg-muted rounded-full h-2">
+                            <div 
+                              className={`h-2 rounded-full transition-all duration-300 ${
+                                currentSprint.status === 'active' ? 'bg-blue-500' : 
+                                currentSprint.status === 'completed' ? 'bg-green-500' : 'bg-gray-400'
+                              }`}
+                              style={{ width: `${currentSprint.progress}%` }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="grid grid-cols-2 gap-3 text-sm">
+                          <div>
+                            <div className="text-muted-foreground">Start Date</div>
+                            <div className="font-medium">{format(currentSprint.startDate, 'MMM dd, yyyy')}</div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">End Date</div>
+                            <div className="font-medium">{format(currentSprint.endDate, 'MMM dd, yyyy')}</div>
+                          </div>
+                        </div>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="w-full"
+                          onClick={() => navigate(`/sprint-dashboard/${taskData.projectId}/${currentSprint.id}`)}
+                        >
+                          <Target className="w-3 h-3 mr-2" />
+                          View Sprint Dashboard
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </CardContent>
+            </Card>
+          )}
+
+          <div className="flex gap-4 mt-6">
             <Button type="submit" className="flex-1">Update Task</Button>
             <Button type="button" variant="outline" onClick={() => navigate('/my-tasks')}>
               Cancel
