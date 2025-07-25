@@ -21,11 +21,14 @@ import {
   Plus,
   Users,
   Calendar as CalendarIcon,
-  User
+  User,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { format, isSameDay, isSameMonth, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
-import { EnhancedCalendar } from '@/components/ui/enhanced-calendar';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
+import { EnhancedCalendar } from '@/components/ui/enhanced-calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 const Attendance = () => {
   const { toast } = useToast();
@@ -649,7 +652,7 @@ const Attendance = () => {
                       <CalendarIcon className="h-6 w-6 text-primary" />
                       Attendance Calendar
                     </CardTitle>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full bg-green-500"></div>
                         <span>Present</span>
@@ -669,21 +672,183 @@ const Attendance = () => {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="relative">
-                      <EnhancedCalendar
-                        mode="single"
-                        selected={selectedDate}
-                        onSelect={(date) => date && setSelectedDate(date)}
-                        className="rounded-md border"
-                        components={{
-                          DayContent: ({ date }) => (
-                            <div className="relative w-full h-full flex items-center justify-center">
-                              <span className="relative z-10">{date.getDate()}</span>
-                              {renderCalendarDay(date)}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-medium">{format(selectedDate, 'MMMM yyyy')}</h3>
+                        <div className="flex items-center gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1))}
+                          >
+                            <ChevronLeft className="h-4 w-4" />
+                          </Button>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                <CalendarIcon className="h-4 w-4 mr-2" />
+                                {format(selectedDate, 'MMM yyyy')}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <EnhancedCalendar
+                                mode="single"
+                                selected={selectedDate}
+                                onSelect={(date) => date && setSelectedDate(date)}
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setSelectedDate(new Date())}
+                          >
+                            Today
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1))}
+                          >
+                            <ChevronRight className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      {/* Calendar Grid */}
+                      <div className="grid grid-cols-7 gap-1">
+                        {/* Header */}
+                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                          <div key={day} className="p-2 text-center text-sm font-medium text-muted-foreground">
+                            {day}
+                          </div>
+                        ))}
+                        
+                        {/* Calendar Days */}
+                        {eachDayOfInterval({ 
+                          start: startOfMonth(selectedDate), 
+                          end: endOfMonth(selectedDate) 
+                        }).map(day => {
+                          const attendance = getAttendanceForDate(day);
+                          const isToday = isSameDay(day, new Date());
+                          const isSelected = isSameDay(day, selectedDate);
+                          
+                          return (
+                            <div 
+                              key={day.toISOString()} 
+                              className={`p-2 border rounded-lg cursor-pointer hover:bg-muted min-h-24 ${
+                                isSelected ? 'bg-primary/10 border-primary' : 
+                                isToday ? 'bg-accent border-accent-foreground' : ''
+                              }`}
+                              onClick={() => setSelectedDate(day)}
+                            >
+                              <div className="font-medium text-sm mb-1">{format(day, 'd')}</div>
+                              <div className="space-y-1 overflow-hidden">
+                                {attendance && (
+                                  <HoverCard>
+                                    <HoverCardTrigger asChild>
+                                      <div 
+                                        className={`text-xs p-1 rounded border-l-4 truncate cursor-pointer ${
+                                          attendance.status === 'present' ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-950/20 dark:text-green-400' :
+                                          attendance.status === 'late' ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:bg-yellow-950/20 dark:text-yellow-400' :
+                                          attendance.status === 'absent' ? 'border-red-500 bg-red-50 text-red-700 dark:bg-red-950/20 dark:text-red-400' :
+                                          attendance.status === 'leave' ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400' :
+                                          'border-gray-500 bg-gray-50 text-gray-700'
+                                        }`}
+                                      >
+                                        {attendance.status === 'present' ? 'Present' :
+                                         attendance.status === 'late' ? 'Late' :
+                                         attendance.status === 'absent' ? 'Absent' :
+                                         attendance.status === 'leave' ? attendance.leaveType || 'On Leave' :
+                                         attendance.status}
+                                      </div>
+                                    </HoverCardTrigger>
+                                    <HoverCardContent className="w-80 bg-background border shadow-lg z-50">
+                                      <div className="space-y-3">
+                                        <div className="flex items-center justify-between">
+                                          <h4 className="font-semibold text-lg">
+                                            {format(day, 'EEEE, MMM dd')}
+                                          </h4>
+                                          {getStatusBadge(attendance.status)}
+                                        </div>
+                                        
+                                        {attendance.status === 'present' || attendance.status === 'late' ? (
+                                          <div className="space-y-2">
+                                            <div className="grid grid-cols-2 gap-4">
+                                              <div className="flex items-center gap-2">
+                                                <Clock className="h-4 w-4 text-green-600" />
+                                                <div>
+                                                  <div className="text-sm font-medium">Check In</div>
+                                                  <div className="text-sm text-muted-foreground">{attendance.checkIn}</div>
+                                                </div>
+                                              </div>
+                                              <div className="flex items-center gap-2">
+                                                <Clock className="h-4 w-4 text-red-600" />
+                                                <div>
+                                                  <div className="text-sm font-medium">Check Out</div>
+                                                  <div className="text-sm text-muted-foreground">{attendance.checkOut || 'Not yet'}</div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            
+                                            <div className="flex items-center gap-2">
+                                              {attendance.location === 'wfh' ? (
+                                                <Home className="h-4 w-4 text-blue-600" />
+                                              ) : (
+                                                <Building className="h-4 w-4 text-gray-600" />
+                                              )}
+                                              <div>
+                                                <div className="text-sm font-medium">Location</div>
+                                                <div className="text-sm text-muted-foreground">
+                                                  {attendance.location === 'wfh' ? 'Work from Home' : 'Office'}
+                                                </div>
+                                              </div>
+                                            </div>
+                                            
+                                            <div className="flex justify-between pt-2 border-t">
+                                              <div className="text-sm">
+                                                <span className="text-muted-foreground">Hours: </span>
+                                                <span className="font-medium">{attendance.hours}h</span>
+                                              </div>
+                                              {attendance.overtime > 0 && (
+                                                <div className="text-sm">
+                                                  <span className="text-muted-foreground">Overtime: </span>
+                                                  <span className="font-medium text-amber-600">+{attendance.overtime}h</span>
+                                                </div>
+                                              )}
+                                            </div>
+                                          </div>
+                                        ) : attendance.status === 'leave' ? (
+                                          <div className="space-y-2">
+                                            <div className="flex items-center gap-2">
+                                              <CalendarIcon className="h-4 w-4 text-blue-600" />
+                                              <div>
+                                                <div className="text-sm font-medium">Leave Type</div>
+                                                <div className="text-sm text-muted-foreground">{attendance.leaveType}</div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        ) : attendance.status === 'absent' ? (
+                                          <div className="space-y-2">
+                                            <div className="flex items-center gap-2">
+                                              <XCircle className="h-4 w-4 text-red-600" />
+                                              <div>
+                                                <div className="text-sm font-medium">Reason</div>
+                                                <div className="text-sm text-muted-foreground">{attendance.reason || 'Not specified'}</div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        ) : null}
+                                      </div>
+                                    </HoverCardContent>
+                                  </HoverCard>
+                                )}
+                              </div>
                             </div>
-                          )
-                        }}
-                      />
+                          );
+                        })}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
