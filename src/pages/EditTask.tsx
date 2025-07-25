@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { CalendarIcon, ArrowLeft, Trash2 } from 'lucide-react';
+import { CalendarIcon, ArrowLeft, Trash2, Clock, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 
 const EditTask = () => {
@@ -29,7 +29,17 @@ const EditTask = () => {
     assigneeId: '2',
     projectId: '1',
     estimatedHours: 16,
-    tags: ['design', 'homepage']
+    tags: ['design', 'homepage'],
+    loggedHours: [
+      { id: '1', date: '2024-01-15', hours: 3, description: 'Initial wireframe sketches' },
+      { id: '2', date: '2024-01-16', hours: 2.5, description: 'Hero section design' }
+    ]
+  });
+
+  const [newLogEntry, setNewLogEntry] = useState({
+    hours: '',
+    description: '',
+    date: format(new Date(), 'yyyy-MM-dd')
   });
 
   const statusOptions = [
@@ -87,6 +97,37 @@ const EditTask = () => {
     setTaskData({...taskData, tags: taskData.tags.filter(tag => tag !== tagToRemove)});
   };
 
+  const handleLogHours = () => {
+    if (newLogEntry.hours && newLogEntry.description) {
+      const newLog = {
+        id: Date.now().toString(),
+        date: newLogEntry.date,
+        hours: parseFloat(newLogEntry.hours),
+        description: newLogEntry.description
+      };
+      
+      setTaskData({
+        ...taskData,
+        loggedHours: [...taskData.loggedHours, newLog]
+      });
+      
+      setNewLogEntry({
+        hours: '',
+        description: '',
+        date: format(new Date(), 'yyyy-MM-dd')
+      });
+      
+      toast({
+        title: "Hours Logged",
+        description: `Logged ${newLogEntry.hours} hours successfully.`,
+      });
+    }
+  };
+
+  const getTotalLoggedHours = () => {
+    return taskData.loggedHours.reduce((total, log) => total + log.hours, 0);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -107,7 +148,7 @@ const EditTask = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Task Details */}
             <Card>
               <CardHeader>
@@ -274,6 +315,81 @@ const EditTask = () => {
                       }
                     }}
                   />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Time Logging */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="h-5 w-5" />
+                  Time Logging
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="bg-muted p-3 rounded-lg">
+                  <div className="text-sm text-muted-foreground">Progress</div>
+                  <div className="text-lg font-semibold">
+                    {getTotalLoggedHours()}h / {taskData.estimatedHours}h
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {Math.round((getTotalLoggedHours() / taskData.estimatedHours) * 100)}% complete
+                  </div>
+                </div>
+
+                {/* Log new hours */}
+                <div className="space-y-3">
+                  <h4 className="font-medium">Log Hours</h4>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <Input
+                        type="number"
+                        step="0.5"
+                        placeholder="Hours"
+                        value={newLogEntry.hours}
+                        onChange={(e) => setNewLogEntry({...newLogEntry, hours: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Input
+                        type="date"
+                        value={newLogEntry.date}
+                        onChange={(e) => setNewLogEntry({...newLogEntry, date: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  <Textarea
+                    placeholder="What did you work on?"
+                    value={newLogEntry.description}
+                    onChange={(e) => setNewLogEntry({...newLogEntry, description: e.target.value})}
+                    rows={2}
+                  />
+                  <Button 
+                    type="button" 
+                    onClick={handleLogHours}
+                    disabled={!newLogEntry.hours || !newLogEntry.description}
+                    className="w-full"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Log Hours
+                  </Button>
+                </div>
+
+                {/* Time log entries */}
+                <div className="space-y-2">
+                  <h4 className="font-medium">Recent Entries</h4>
+                  <div className="max-h-40 overflow-y-auto space-y-2">
+                    {taskData.loggedHours.map(log => (
+                      <div key={log.id} className="border rounded p-2 text-sm">
+                        <div className="flex justify-between items-start">
+                          <span className="font-medium">{log.hours}h</span>
+                          <span className="text-muted-foreground text-xs">{log.date}</span>
+                        </div>
+                        <p className="text-muted-foreground mt-1">{log.description}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </CardContent>
             </Card>
