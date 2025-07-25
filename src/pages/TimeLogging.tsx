@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { format } from "date-fns";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Header from "@/components/Header";
 import { 
   CalendarIcon, 
@@ -16,7 +18,10 @@ import {
   Plus,
   Flag,
   ArrowLeft,
-  Timer
+  Timer,
+  ChevronLeft,
+  ChevronRight,
+  Filter
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -26,6 +31,10 @@ const TimeLogging = () => {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [timeEntries, setTimeEntries] = useState<Record<string, { hours: string; notes: string }>>({});
+  const [calendarDate, setCalendarDate] = useState<Date>(new Date());
+  const [filterProject, setFilterProject] = useState<string>('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 10;
 
   // Mock tasks data - in real app this would come from API
   const currentDate = new Date();
@@ -188,6 +197,49 @@ const TimeLogging = () => {
     }, 0);
   };
 
+  // Mock time log history data
+  const timeLogHistory = [
+    { id: '1', date: '2024-01-22', task: 'Design homepage mockups', project: 'Website Redesign', hours: 4.5, notes: 'Created wireframes and mockups' },
+    { id: '2', date: '2024-01-22', task: 'Code review for API', project: 'Mobile App', hours: 2, notes: 'Reviewed pull requests' },
+    { id: '3', date: '2024-01-21', task: 'Testing mobile layout', project: 'Website Redesign', hours: 6, notes: 'Tested on various devices' },
+    { id: '4', date: '2024-01-21', task: 'Update marketing copy', project: 'Marketing Campaign', hours: 3, notes: 'Revised product page copy' },
+    { id: '5', date: '2024-01-20', task: 'Prepare presentation slides', project: 'Internal', hours: 2.5, notes: 'Created quarterly review slides' },
+    { id: '6', date: '2024-01-19', task: 'Design homepage mockups', project: 'Website Redesign', hours: 3.5, notes: 'Finalized design concepts' },
+    { id: '7', date: '2024-01-19', task: 'Review API documentation', project: 'Mobile App', hours: 2, notes: 'Provided feedback on docs' },
+    { id: '8', date: '2024-01-18', task: 'Bug fixes for login flow', project: 'Website Redesign', hours: 5, notes: 'Fixed authentication issues' },
+  ];
+
+  // Get time logs for a specific date
+  const getTimeLogsForDate = (date: Date) => {
+    const dateStr = format(date, 'yyyy-MM-dd');
+    return timeLogHistory.filter(log => log.date === dateStr);
+  };
+
+  // Get total hours for a specific date
+  const getTotalHoursForDate = (date: Date) => {
+    return getTimeLogsForDate(date).reduce((total, log) => total + log.hours, 0);
+  };
+
+  // Get calendar days for current month
+  const getCalendarDays = () => {
+    const start = startOfMonth(calendarDate);
+    const end = endOfMonth(calendarDate);
+    return eachDayOfInterval({ start, end });
+  };
+
+  // Navigate calendar months
+  const navigateMonth = (direction: 'prev' | 'next') => {
+    setCalendarDate(prev => {
+      const newDate = new Date(prev);
+      if (direction === 'prev') {
+        newDate.setMonth(prev.getMonth() - 1);
+      } else {
+        newDate.setMonth(prev.getMonth() + 1);
+      }
+      return newDate;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -222,155 +274,400 @@ const TimeLogging = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Date Picker Sidebar */}
-          <div className="lg:col-span-1">
+        {/* Main Content Tabs */}
+        <Tabs defaultValue="log" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="log" className="flex items-center gap-2">
+              <Timer className="h-4 w-4" />
+              Log Time
+            </TabsTrigger>
+            <TabsTrigger value="calendar" className="flex items-center gap-2">
+              <CalendarIcon className="h-4 w-4" />
+              Calendar View
+            </TabsTrigger>
+            <TabsTrigger value="history" className="flex items-center gap-2">
+              <Clock className="h-4 w-4" />
+              Time History
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="log" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              {/* Date Picker Sidebar */}
+              <div className="lg:col-span-1">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <CalendarIcon className="w-5 h-5" />
+                      Select Date
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal mb-4"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {format(selectedDate, "PPP")}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={selectedDate}
+                          onSelect={(date) => date && setSelectedDate(date)}
+                          initialFocus
+                          className={cn("p-3 pointer-events-auto")}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    
+                    <div className="space-y-4">
+                      <div className="text-sm">
+                        <div className="flex justify-between mb-2">
+                          <span className="text-muted-foreground">Active Tasks</span>
+                          <span className="font-medium">{allTasks.filter(t => t.status !== 'completed').length}</span>
+                        </div>
+                        <div className="flex justify-between mb-2">
+                          <span className="text-muted-foreground">Completed Tasks</span>
+                          <span className="font-medium">{allTasks.filter(t => t.status === 'completed').length}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Total Tasks</span>
+                          <span className="font-medium">{allTasks.length}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Tasks List */}
+              <div className="lg:col-span-3">
+                <div className="space-y-4">
+                  {allTasks.map((task) => {
+                    const entry = timeEntries[task.id] || { hours: '', notes: '' };
+                    const progressPercentage = task.estimatedHours > 0 ? Math.round((task.loggedHours / task.estimatedHours) * 100) : 0;
+                    
+                    return (
+                      <Card key={task.id}>
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <h3 className="font-semibold text-lg">{task.title}</h3>
+                                <Badge className={getStatusColor(task.status)}>
+                                  {task.status.replace('-', ' ')}
+                                </Badge>
+                                <Badge className={getPriorityColor(task.priority)}>
+                                  <Flag className="w-3 h-3 mr-1" />
+                                  {task.priority}
+                                </Badge>
+                              </div>
+                              <p className="text-muted-foreground text-sm mb-2">{task.description}</p>
+                              <Badge variant="secondary">{task.project}</Badge>
+                            </div>
+                          </div>
+
+                          {/* Time Progress */}
+                          <div className="mb-4">
+                            <div className="flex justify-between text-sm mb-2">
+                              <span>Progress: {task.loggedHours}h / {task.estimatedHours}h</span>
+                              <span>{progressPercentage}%</span>
+                            </div>
+                            <div className="w-full bg-muted rounded-full h-2">
+                              <div 
+                                className="bg-primary h-2 rounded-full transition-all duration-300" 
+                                style={{ width: `${Math.min(progressPercentage, 100)}%` }}
+                              />
+                            </div>
+                          </div>
+
+                          {/* Time Entry Form */}
+                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                            <div className="md:col-span-2">
+                              <Label htmlFor={`hours-${task.id}`} className="text-sm font-medium">
+                                Hours
+                              </Label>
+                              <div className="relative">
+                                <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                                <Input
+                                  id={`hours-${task.id}`}
+                                  type="number"
+                                  step="0.25"
+                                  min="0"
+                                  max="24"
+                                  placeholder="0.00"
+                                  value={entry.hours}
+                                  onChange={(e) => handleTimeChange(task.id, e.target.value)}
+                                  className="pl-10"
+                                />
+                              </div>
+                            </div>
+                            
+                            <div className="md:col-span-8">
+                              <Label htmlFor={`notes-${task.id}`} className="text-sm font-medium">
+                                Notes (Optional)
+                              </Label>
+                              <Textarea
+                                id={`notes-${task.id}`}
+                                placeholder="What did you work on?"
+                                value={entry.notes}
+                                onChange={(e) => handleNotesChange(task.id, e.target.value)}
+                                className="resize-none"
+                                rows={1}
+                              />
+                            </div>
+                            
+                            <div className="md:col-span-2">
+                              <Button 
+                                onClick={() => handleSaveTimeEntry(task.id)}
+                                disabled={!entry.hours || parseFloat(entry.hours) <= 0}
+                                className="w-full gap-2"
+                              >
+                                <Timer className="w-4 h-4" />
+                                Log Time
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Calendar View */}
+          <TabsContent value="calendar" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Calendar */}
+              <Card className="lg:col-span-2">
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <span className="flex items-center gap-2">
+                      <CalendarIcon className="h-5 w-5 text-primary" />
+                      Time Log Calendar
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm" onClick={() => navigateMonth('prev')}>
+                        <ChevronLeft className="h-4 w-4" />
+                      </Button>
+                      <span className="text-sm font-medium min-w-[120px] text-center">
+                        {format(calendarDate, 'MMMM yyyy')}
+                      </span>
+                      <Button variant="outline" size="sm" onClick={() => navigateMonth('next')}>
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-7 gap-1 mb-4">
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                      <div key={day} className="text-center text-sm font-medium text-muted-foreground p-2">
+                        {day}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-7 gap-1">
+                    {getCalendarDays().map((day) => {
+                      const totalHours = getTotalHoursForDate(day);
+                      const hasEntries = totalHours > 0;
+                      const isSelected = isSameDay(day, selectedDate);
+                      const dayIsToday = isToday(day);
+                      
+                      return (
+                        <div
+                          key={day.toString()}
+                          className={cn(
+                            "p-2 text-center text-sm cursor-pointer rounded-lg transition-colors min-h-[60px] flex flex-col justify-between",
+                            dayIsToday && "bg-primary/10 border-primary border",
+                            isSelected && "bg-primary text-primary-foreground",
+                            hasEntries && !isSelected && "bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800",
+                            !hasEntries && !isSelected && !dayIsToday && "hover:bg-muted",
+                          )}
+                          onClick={() => setSelectedDate(day)}
+                        >
+                          <span className="font-medium">{format(day, 'd')}</span>
+                          {hasEntries && (
+                            <span className="text-xs text-green-600 dark:text-green-400 font-medium">
+                              {totalHours}h
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Selected Date Details */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">
+                    {format(selectedDate, 'MMM dd, yyyy')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {(() => {
+                    const dayLogs = getTimeLogsForDate(selectedDate);
+                    const totalHours = getTotalHoursForDate(selectedDate);
+                    
+                    if (dayLogs.length === 0) {
+                      return (
+                        <div className="text-center text-muted-foreground py-8">
+                          <Timer className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                          <p>No time logged for this day</p>
+                        </div>
+                      );
+                    }
+                    
+                    return (
+                      <div className="space-y-4">
+                        <div className="text-center pb-4 border-b">
+                          <div className="text-2xl font-bold text-primary">{totalHours}h</div>
+                          <div className="text-sm text-muted-foreground">Total logged</div>
+                        </div>
+                        <div className="space-y-3">
+                          {dayLogs.map((log) => (
+                            <div key={log.id} className="p-3 bg-muted/50 rounded-lg">
+                              <div className="font-medium text-sm mb-1">{log.task}</div>
+                              <div className="text-xs text-muted-foreground mb-2">{log.project}</div>
+                              <div className="flex justify-between items-center">
+                                <span className="text-xs font-medium">{log.hours}h</span>
+                              </div>
+                              {log.notes && (
+                                <div className="text-xs text-muted-foreground mt-2 italic">
+                                  "{log.notes}"
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Time History */}
+          <TabsContent value="history" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CalendarIcon className="w-5 h-5" />
-                  Select Date
+                <CardTitle className="flex items-center justify-between">
+                  <span>Time Log History</span>
+                  <Badge variant="secondary">{
+                    timeLogHistory.filter(log => {
+                      const projectMatch = filterProject === 'all' || log.project === filterProject;
+                      return projectMatch;
+                    }).length
+                  } entries</Badge>
                 </CardTitle>
+                {/* Filters */}
+                <div className="flex flex-wrap gap-4 mt-4">
+                  <Select value={filterProject} onValueChange={setFilterProject}>
+                    <SelectTrigger className="w-48">
+                      <SelectValue placeholder="Filter by project" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Projects</SelectItem>
+                      <SelectItem value="Website Redesign">Website Redesign</SelectItem>
+                      <SelectItem value="Mobile App">Mobile App</SelectItem>
+                      <SelectItem value="Marketing Campaign">Marketing Campaign</SelectItem>
+                      <SelectItem value="Internal">Internal</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setFilterProject('all');
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <Filter className="h-4 w-4 mr-2" />
+                    Clear Filters
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal mb-4"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {format(selectedDate, "PPP")}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={selectedDate}
-                      onSelect={(date) => date && setSelectedDate(date)}
-                      initialFocus
-                      className={cn("p-3 pointer-events-auto")}
-                    />
-                  </PopoverContent>
-                </Popover>
-                
-                <div className="space-y-4">
-                  <div className="text-sm">
-                    <div className="flex justify-between mb-2">
-                      <span className="text-muted-foreground">Active Tasks</span>
-                      <span className="font-medium">{allTasks.filter(t => t.status !== 'completed').length}</span>
-                    </div>
-                    <div className="flex justify-between mb-2">
-                      <span className="text-muted-foreground">Completed Tasks</span>
-                      <span className="font-medium">{allTasks.filter(t => t.status === 'completed').length}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Total Tasks</span>
-                      <span className="font-medium">{allTasks.length}</span>
-                    </div>
-                  </div>
+                <div className="space-y-2">
+                  {(() => {
+                    const filteredLogs = timeLogHistory.filter(log => {
+                      const projectMatch = filterProject === 'all' || log.project === filterProject;
+                      return projectMatch;
+                    });
+                    
+                    const totalPages = Math.ceil(filteredLogs.length / recordsPerPage);
+                    const startIndex = (currentPage - 1) * recordsPerPage;
+                    const endIndex = startIndex + recordsPerPage;
+                    const currentLogs = filteredLogs.slice(startIndex, endIndex);
+                    
+                    return (
+                      <>
+                        {currentLogs.map((log) => (
+                          <div key={log.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                            <div className="flex items-center gap-4">
+                              <div className="text-center min-w-[60px]">
+                                <div className="font-bold">{format(new Date(log.date), 'dd')}</div>
+                                <div className="text-xs text-muted-foreground">{format(new Date(log.date), 'MMM')}</div>
+                                <div className="text-xs text-muted-foreground">{format(new Date(log.date), 'EEE')}</div>
+                              </div>
+                              <div>
+                                <div className="font-medium">{log.task}</div>
+                                <div className="text-sm text-muted-foreground">{log.project}</div>
+                                {log.notes && (
+                                  <div className="text-xs text-muted-foreground mt-1 italic">
+                                    "{log.notes}"
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="font-bold text-primary">{log.hours}h</div>
+                            </div>
+                          </div>
+                        ))}
+                        
+                        {/* Pagination */}
+                        {totalPages > 1 && (
+                          <div className="flex justify-center gap-2 mt-6">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                              disabled={currentPage === 1}
+                            >
+                              <ChevronLeft className="h-4 w-4" />
+                            </Button>
+                            <span className="flex items-center px-3 text-sm">
+                              Page {currentPage} of {totalPages}
+                            </span>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                              disabled={currentPage === totalPages}
+                            >
+                              <ChevronRight className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        )}
+                      </>
+                    );
+                  })()}
                 </div>
               </CardContent>
             </Card>
-          </div>
-
-          {/* Tasks List */}
-          <div className="lg:col-span-3">
-            <div className="space-y-4">
-              {allTasks.map((task) => {
-                const entry = timeEntries[task.id] || { hours: '', notes: '' };
-                const progressPercentage = task.estimatedHours > 0 ? Math.round((task.loggedHours / task.estimatedHours) * 100) : 0;
-                
-                return (
-                  <Card key={task.id}>
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <h3 className="font-semibold text-lg">{task.title}</h3>
-                            <Badge className={getStatusColor(task.status)}>
-                              {task.status.replace('-', ' ')}
-                            </Badge>
-                            <Badge className={getPriorityColor(task.priority)}>
-                              <Flag className="w-3 h-3 mr-1" />
-                              {task.priority}
-                            </Badge>
-                          </div>
-                          <p className="text-muted-foreground text-sm mb-2">{task.description}</p>
-                          <Badge variant="secondary">{task.project}</Badge>
-                        </div>
-                      </div>
-
-                      {/* Time Progress */}
-                      <div className="mb-4">
-                        <div className="flex justify-between text-sm mb-2">
-                          <span>Progress: {task.loggedHours}h / {task.estimatedHours}h</span>
-                          <span>{progressPercentage}%</span>
-                        </div>
-                        <div className="w-full bg-muted rounded-full h-2">
-                          <div 
-                            className="bg-primary h-2 rounded-full transition-all duration-300" 
-                            style={{ width: `${Math.min(progressPercentage, 100)}%` }}
-                          />
-                        </div>
-                      </div>
-
-                      {/* Time Entry Form */}
-                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-                        <div className="md:col-span-2">
-                          <Label htmlFor={`hours-${task.id}`} className="text-sm font-medium">
-                            Hours
-                          </Label>
-                          <div className="relative">
-                            <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                            <Input
-                              id={`hours-${task.id}`}
-                              type="number"
-                              step="0.25"
-                              min="0"
-                              max="24"
-                              placeholder="0.00"
-                              value={entry.hours}
-                              onChange={(e) => handleTimeChange(task.id, e.target.value)}
-                              className="pl-10"
-                            />
-                          </div>
-                        </div>
-                        
-                        <div className="md:col-span-8">
-                          <Label htmlFor={`notes-${task.id}`} className="text-sm font-medium">
-                            Notes (Optional)
-                          </Label>
-                          <Textarea
-                            id={`notes-${task.id}`}
-                            placeholder="What did you work on?"
-                            value={entry.notes}
-                            onChange={(e) => handleNotesChange(task.id, e.target.value)}
-                            className="resize-none"
-                            rows={1}
-                          />
-                        </div>
-                        
-                        <div className="md:col-span-2">
-                          <Button 
-                            onClick={() => handleSaveTimeEntry(task.id)}
-                            disabled={!entry.hours || parseFloat(entry.hours) <= 0}
-                            className="w-full gap-2"
-                          >
-                            <Timer className="w-4 h-4" />
-                            Log Time
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </div>
-        </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
