@@ -9,12 +9,15 @@ import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
+import SprintTaskManager from '@/components/SprintTaskManager';
+import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Calendar as CalendarIcon, List, Users, Filter, Plus, Edit, BarChart3, Target, Clock, TrendingUp } from 'lucide-react';
 import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, addDays, differenceInDays } from 'date-fns';
 
 const SprintDashboard = () => {
   const { projectId, sprintId } = useParams();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedMember, setSelectedMember] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
@@ -150,6 +153,119 @@ const SprintDashboard = () => {
     }
   ];
 
+  // Mock all sprints in the project
+  const allSprints = [
+    {
+      id: '1',
+      name: 'Sprint 1 - Foundation',
+      status: 'active' as const,
+      startDate: new Date('2024-01-15'),
+      endDate: new Date('2024-01-29'),
+      projectId: projectId || '1'
+    },
+    {
+      id: '2', 
+      name: 'Sprint 2 - Core Features',
+      status: 'planned' as const,
+      startDate: new Date('2024-01-30'),
+      endDate: new Date('2024-02-13'),
+      projectId: projectId || '1'
+    },
+    {
+      id: '3',
+      name: 'Sprint 3 - Polish & Testing',
+      status: 'planned' as const,
+      startDate: new Date('2024-02-14'),
+      endDate: new Date('2024-02-28'),
+      projectId: projectId || '1'
+    }
+  ];
+
+  // Mock all project tasks (including backlog tasks)
+  const allProjectTasks = [
+    // Current sprint tasks (with sprintId) - fixing type compatibility
+    ...sprintTasks.map(task => ({ 
+      ...task, 
+      sprintId: sprintId, 
+      projectId: projectId || '1',
+      status: task.status as 'todo' | 'in-progress' | 'completed',
+      priority: task.priority as 'low' | 'medium' | 'high'
+    })),
+    // Backlog tasks (without sprintId)
+    {
+      id: '8',
+      title: 'Performance Optimization',
+      description: 'Optimize application performance and loading times',
+      status: 'todo' as const,
+      priority: 'medium' as const,
+      assigneeId: '3',
+      storyPoints: 5,
+      dueDate: new Date('2024-02-05'),
+      projectId: projectId || '1'
+    },
+    {
+      id: '9',
+      title: 'Mobile Responsive Design',
+      description: 'Ensure all pages work well on mobile devices',
+      status: 'todo' as const,
+      priority: 'high' as const,
+      assigneeId: '2',
+      storyPoints: 8,
+      dueDate: new Date('2024-02-10'),
+      projectId: projectId || '1'
+    },
+    {
+      id: '10',
+      title: 'User Profile Management',
+      description: 'Allow users to edit their profiles and preferences',
+      status: 'todo' as const,
+      priority: 'medium' as const,
+      assigneeId: '3',
+      storyPoints: 6,
+      dueDate: new Date('2024-02-15'),
+      projectId: projectId || '1'
+    },
+    {
+      id: '11',
+      title: 'Email Notifications',
+      description: 'Set up email notification system for important events',
+      status: 'todo' as const,
+      priority: 'low' as const,
+      assigneeId: '1',
+      storyPoints: 4,
+      dueDate: new Date('2024-02-20'),
+      projectId: projectId || '1'
+    },
+    {
+      id: '12',
+      title: 'Advanced Search Functionality',
+      description: 'Implement advanced search with filters and sorting',
+      status: 'todo' as const,
+      priority: 'medium' as const,
+      assigneeId: '3',
+      storyPoints: 7,
+      dueDate: new Date('2024-02-25'),
+      projectId: projectId || '1'
+    }
+  ];
+
+  // Handlers for the SprintTaskManager
+  const handleMoveTask = (taskId: string, fromSprintId: string | null, toSprintId: string | null) => {
+    toast({
+      title: "Task Moved",
+      description: `Task has been moved ${toSprintId ? 'to sprint' : 'to backlog'} successfully`,
+    });
+    // In a real app, this would update the task's sprintId in the database
+  };
+
+  const handleAddTaskToSprint = (taskId: string, sprintId: string) => {
+    toast({
+      title: "Task Added to Sprint",
+      description: "Task has been added to the sprint successfully",
+    });
+    // In a real app, this would update the task's sprintId in the database
+  };
+
   const getFilteredTasks = () => {
     return sprintTasks.filter(task => {
       const memberMatch = selectedMember === 'all' || task.assigneeId === selectedMember;
@@ -235,6 +351,14 @@ const SprintDashboard = () => {
               </p>
             </div>
             <div className="flex gap-2">
+              <SprintTaskManager
+                projectId={projectId || '1'}
+                currentSprintId={sprintId}
+                sprints={allSprints}
+                tasks={allProjectTasks}
+                onMoveTask={handleMoveTask}
+                onAddTaskToSprint={handleAddTaskToSprint}
+              />
               <Button variant="outline" onClick={() => navigate(`/edit-sprint/${projectId}/${sprintId}`)}>
                 <Edit className="h-4 w-4 mr-2" />
                 Edit Sprint
