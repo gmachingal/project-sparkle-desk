@@ -96,6 +96,83 @@ const ProjectCalendar = () => {
       dueDate: new Date('2024-02-25'),
       startDate: new Date('2024-02-20'),
       estimatedHours: 10
+    },
+    {
+      id: '6',
+      title: 'Mobile Responsive Design',
+      description: 'Optimize website for mobile devices',
+      status: 'todo',
+      priority: 'high',
+      assigneeId: '2',
+      dueDate: new Date('2024-02-28'),
+      startDate: new Date('2024-02-22'),
+      estimatedHours: 24
+    },
+    {
+      id: '7',
+      title: 'Performance Optimization',
+      description: 'Improve page load times and overall performance',
+      status: 'todo',
+      priority: 'medium',
+      assigneeId: '3',
+      dueDate: new Date('2024-03-05'),
+      startDate: new Date('2024-03-01'),
+      estimatedHours: 16
+    },
+    {
+      id: '8',
+      title: 'SEO Implementation',
+      description: 'Implement SEO best practices',
+      status: 'in-progress',
+      priority: 'medium',
+      assigneeId: '1',
+      dueDate: new Date('2024-02-14'),
+      startDate: new Date('2024-02-10'),
+      estimatedHours: 12
+    },
+    {
+      id: '9',
+      title: 'Content Management System',
+      description: 'Set up CMS for content management',
+      status: 'todo',
+      priority: 'low',
+      assigneeId: '4',
+      dueDate: new Date('2024-02-26'),
+      startDate: new Date('2024-02-24'),
+      estimatedHours: 20
+    },
+    {
+      id: '10',
+      title: 'Security Audit',
+      description: 'Conduct security review and testing',
+      status: 'todo',
+      priority: 'high',
+      assigneeId: '4',
+      dueDate: new Date('2024-03-10'),
+      startDate: new Date('2024-03-08'),
+      estimatedHours: 8
+    },
+    {
+      id: '11',
+      title: 'Browser Compatibility Testing',
+      description: 'Test across different browsers',
+      status: 'completed',
+      priority: 'medium',
+      assigneeId: '4',
+      dueDate: new Date('2024-02-12'),
+      startDate: new Date('2024-02-09'),
+      estimatedHours: 6
+    },
+    {
+      id: '12',
+      title: 'Launch Preparation',
+      description: 'Final preparations for website launch',
+      status: 'todo',
+      priority: 'urgent',
+      assigneeId: '1',
+      dueDate: new Date('2024-03-15'),
+      startDate: new Date('2024-03-12'),
+      estimatedHours: 10
     }
   ];
 
@@ -133,11 +210,20 @@ const ProjectCalendar = () => {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'border-red-500';
-      case 'high': return 'border-orange-500';
-      case 'medium': return 'border-yellow-500';
-      case 'low': return 'border-green-500';
-      default: return 'border-gray-500';
+      case 'urgent': return 'border-red-500 bg-red-50 text-red-700';
+      case 'high': return 'border-orange-500 bg-orange-50 text-orange-700';
+      case 'medium': return 'border-yellow-500 bg-yellow-50 text-yellow-700';
+      case 'low': return 'border-green-500 bg-green-50 text-green-700';
+      default: return 'border-gray-500 bg-gray-50 text-gray-700';
+    }
+  };
+
+  const getStatusBgColor = (status: string) => {
+    switch (status) {
+      case 'completed': return 'bg-green-100 text-green-800';
+      case 'in-progress': return 'bg-blue-100 text-blue-800';
+      case 'todo': return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -250,47 +336,54 @@ const ProjectCalendar = () => {
 
         <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'calendar' | 'list')}>
           <TabsContent value="calendar" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Calendar */}
-              <Card className="lg:col-span-2">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CalendarIcon className="h-5 w-5" />
-                    Project Calendar - {calendarView.charAt(0).toUpperCase() + calendarView.slice(1)} View
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {calendarView === 'month' && (
-                    <Calendar
-                      mode="single"
-                      selected={selectedDate}
-                      onSelect={(date) => date && setSelectedDate(date)}
-                      className="rounded-md border"
-                      components={{
-                        Day: ({ date, ...props }: any) => {
-                          const tasksForDay = getTasksForDate(date);
-                          const hasStartingTasks = tasksForDay.some(task => task.startDate && isSameDay(task.startDate, date));
-                          const hasDueTasks = tasksForDay.some(task => task.dueDate && isSameDay(task.dueDate, date));
-                          
-                          return (
-                            <div className="relative">
-                              <button {...props}>
-                                {format(date, 'd')}
-                                {(hasStartingTasks || hasDueTasks) && (
-                                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
-                                    <div className="flex gap-0.5">
-                                      {hasStartingTasks && <div className="w-1 h-1 rounded-full bg-green-500"></div>}
-                                      {hasDueTasks && <div className="w-1 h-1 rounded-full bg-red-500"></div>}
-                                    </div>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CalendarIcon className="h-5 w-5" />
+                  Project Calendar - {calendarView.charAt(0).toUpperCase() + calendarView.slice(1)} View
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {calendarView === 'month' && (
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={(date) => date && setSelectedDate(date)}
+                    className="rounded-md border w-full"
+                    components={{
+                      Day: ({ date, ...props }: any) => {
+                        const tasksForDay = getTasksForDate(date);
+                        
+                        return (
+                          <div className="relative w-full h-24 p-1 border rounded cursor-pointer hover:bg-muted" onClick={() => setSelectedDate(date)}>
+                            <div className="font-medium text-sm mb-1">{format(date, 'd')}</div>
+                            <div className="space-y-1 overflow-hidden">
+                              {tasksForDay.slice(0, 2).map(task => {
+                                const assignee = getAssignee(task.assigneeId);
+                                return (
+                                  <div 
+                                    key={task.id} 
+                                    className={`text-xs p-1 rounded border-l-2 ${getPriorityColor(task.priority)} truncate cursor-pointer`}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      navigate(`/edit-task/${task.id}`);
+                                    }}
+                                    title={`${task.title} - ${assignee?.name}`}
+                                  >
+                                    {task.title}
                                   </div>
-                                )}
-                              </button>
+                                );
+                              })}
+                              {tasksForDay.length > 2 && (
+                                <div className="text-xs text-muted-foreground">+{tasksForDay.length - 2} more</div>
+                              )}
                             </div>
-                          );
-                        }
-                      }}
-                    />
-                  )}
+                          </div>
+                        );
+                      }
+                    }}
+                  />
+                )}
 
                   {calendarView === 'week' && (
                     <div className="space-y-4">
@@ -321,7 +414,7 @@ const ProjectCalendar = () => {
                           return (
                             <div 
                               key={day.toISOString()} 
-                              className={`p-3 border rounded-lg cursor-pointer hover:bg-muted ${isSameDay(day, selectedDate) ? 'bg-primary/10 border-primary' : ''}`}
+                              className={`p-2 border rounded-lg cursor-pointer hover:bg-muted min-h-40 ${isSameDay(day, selectedDate) ? 'bg-primary/10 border-primary' : ''}`}
                               onClick={() => setSelectedDate(day)}
                             >
                               <div className="text-center mb-2">
@@ -329,13 +422,25 @@ const ProjectCalendar = () => {
                                 <div className="font-medium">{format(day, 'd')}</div>
                               </div>
                               <div className="space-y-1">
-                                {tasksForDay.slice(0, 3).map(task => (
-                                  <div key={task.id} className={`text-xs p-1 rounded ${getStatusColor(task.status)} text-white truncate`}>
-                                    {task.title}
-                                  </div>
-                                ))}
-                                {tasksForDay.length > 3 && (
-                                  <div className="text-xs text-muted-foreground">+{tasksForDay.length - 3} more</div>
+                                {tasksForDay.slice(0, 4).map(task => {
+                                  const assignee = getAssignee(task.assigneeId);
+                                  return (
+                                    <div 
+                                      key={task.id} 
+                                      className={`text-xs p-1 rounded border-l-2 ${getPriorityColor(task.priority)} truncate cursor-pointer`}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        navigate(`/edit-task/${task.id}`);
+                                      }}
+                                      title={`${task.title} - ${assignee?.name} (${task.status})`}
+                                    >
+                                      <div className="font-medium">{task.title}</div>
+                                      <div className="text-muted-foreground">{assignee?.name}</div>
+                                    </div>
+                                  );
+                                })}
+                                {tasksForDay.length > 4 && (
+                                  <div className="text-xs text-muted-foreground">+{tasksForDay.length - 4} more</div>
                                 )}
                               </div>
                             </div>
@@ -392,17 +497,16 @@ const ProjectCalendar = () => {
                                   }}
                                   onClick={() => navigate(`/edit-task/${task.id}`)}
                                 >
-                                  <div className="flex items-center justify-between">
-                                    <div>
+                                  <div className="flex items-center justify-between h-full">
+                                    <div className="flex-1 min-w-0">
                                       <div className="font-medium text-sm truncate">{task.title}</div>
-                                      <div className="text-xs text-muted-foreground">{assignee?.name}</div>
+                                      <div className="text-xs text-muted-foreground flex items-center gap-2">
+                                        <span>{assignee?.name}</span>
+                                        <Badge className={`${getStatusBgColor(task.status)} text-xs`}>
+                                          {task.status}
+                                        </Badge>
+                                      </div>
                                     </div>
-                                    <Badge
-                                      variant="secondary"
-                                      className={`${getStatusColor(task.status)} text-white text-xs`}
-                                    >
-                                      {task.status}
-                                    </Badge>
                                   </div>
                                 </div>
                               );
@@ -418,173 +522,108 @@ const ProjectCalendar = () => {
                   )}
                 </CardContent>
               </Card>
+            </TabsContent>
 
-              {/* Selected Date Tasks */}
+            <TabsContent value="list" className="space-y-6">
+              {/* Team Members Overview */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                {teamMembers.map(member => {
+                  const memberTasks = getFilteredTasks().filter(task => task.assigneeId === member.id);
+                  const completedTasks = memberTasks.filter(task => task.status === 'completed').length;
+                  
+                  return (
+                    <Card key={member.id} className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-3 mb-3">
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={member.avatar} />
+                            <AvatarFallback style={{ backgroundColor: member.color + '20', color: member.color }}>
+                              {member.name.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <h4 className="font-medium">{member.name}</h4>
+                            <p className="text-sm text-muted-foreground">{member.role}</p>
+                          </div>
+                        </div>
+                        <div className="space-y-1 text-sm">
+                          <div className="flex justify-between">
+                            <span>Total Tasks:</span>
+                            <Badge variant="secondary">{memberTasks.length}</Badge>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Completed:</span>
+                            <Badge variant="secondary" className="bg-green-100 text-green-800">
+                              {completedTasks}
+                            </Badge>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+
+              {/* Tasks List */}
               <Card>
                 <CardHeader>
-                  <CardTitle>
-                    Tasks for {format(selectedDate, 'MMM dd, yyyy')}
+                  <CardTitle className="flex items-center gap-2">
+                    <List className="h-5 w-5" />
+                    All Tasks
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {getTasksForSelectedDate().length === 0 ? (
-                      <p className="text-muted-foreground text-sm">No tasks for this date</p>
-                    ) : (
-                      getTasksForSelectedDate().map(task => {
-                        const assignee = getAssignee(task.assigneeId);
-                        const isStartDate = task.startDate && isSameDay(task.startDate, selectedDate);
-                        const isDueDate = task.dueDate && isSameDay(task.dueDate, selectedDate);
-                        
-                        return (
-                          <div
-                            key={task.id}
-                            className={`p-3 rounded-lg border-l-4 ${getPriorityColor(task.priority)} bg-card hover:bg-muted/50 cursor-pointer transition-colors`}
-                            onClick={() => navigate(`/edit-task/${task.id}`)}
-                          >
-                            <div className="flex items-start justify-between mb-2">
-                              <h4 className="font-medium text-sm">{task.title}</h4>
-                              <Badge
-                                variant="secondary"
-                                className={`${getStatusColor(task.status)} text-white text-xs`}
-                              >
-                                {task.status}
-                              </Badge>
+                    {getFilteredTasks().map(task => {
+                      const assignee = getAssignee(task.assigneeId);
+                      
+                      return (
+                        <div
+                          key={task.id}
+                          className={`p-4 rounded-lg border-l-4 ${getPriorityColor(task.priority)} bg-card hover:bg-muted/50 cursor-pointer transition-colors`}
+                          onClick={() => navigate(`/edit-task/${task.id}`)}
+                        >
+                          <div className="flex items-start justify-between mb-3">
+                            <div>
+                              <h4 className="font-medium">{task.title}</h4>
+                              <p className="text-sm text-muted-foreground">{task.description}</p>
                             </div>
-                            
-                            <div className="flex items-center gap-2 mb-2">
-                              <Avatar className="h-6 w-6">
+                            <Badge
+                              className={`${getStatusBgColor(task.status)}`}
+                            >
+                              {task.status}
+                            </Badge>
+                          </div>
+                          
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <Avatar className="h-8 w-8">
                                 <AvatarImage src={assignee?.avatar} />
-                                <AvatarFallback className="text-xs">
+                                <AvatarFallback style={{ backgroundColor: assignee?.color + '20', color: assignee?.color }}>
                                   {assignee?.name.split(' ').map(n => n[0]).join('')}
                                 </AvatarFallback>
                               </Avatar>
-                              <span className="text-xs text-muted-foreground">{assignee?.name}</span>
+                              <span className="text-sm font-medium">{assignee?.name}</span>
                             </div>
                             
-                            <div className="flex gap-2 text-xs">
-                              {isStartDate && (
-                                <Badge variant="outline" className="text-green-600 border-green-600">
-                                  Start
-                                </Badge>
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                              {task.startDate && (
+                                <span>Start: {format(task.startDate, 'MMM dd')}</span>
                               )}
-                              {isDueDate && (
-                                <Badge variant="outline" className="text-red-600 border-red-600">
-                                  Due
-                                </Badge>
+                              {task.dueDate && (
+                                <span>Due: {format(task.dueDate, 'MMM dd')}</span>
                               )}
+                              <Badge variant="outline">{task.priority}</Badge>
                             </div>
                           </div>
-                        );
-                      })
-                    )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="list" className="space-y-6">
-            {/* Team Members Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              {teamMembers.map(member => {
-                const memberTasks = getFilteredTasks().filter(task => task.assigneeId === member.id);
-                const completedTasks = memberTasks.filter(task => task.status === 'completed').length;
-                
-                return (
-                  <Card key={member.id} className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-3 mb-3">
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src={member.avatar} />
-                          <AvatarFallback style={{ backgroundColor: member.color + '20', color: member.color }}>
-                            {member.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <h4 className="font-medium">{member.name}</h4>
-                          <p className="text-sm text-muted-foreground">{member.role}</p>
-                        </div>
-                      </div>
-                      <div className="space-y-1 text-sm">
-                        <div className="flex justify-between">
-                          <span>Total Tasks:</span>
-                          <Badge variant="secondary">{memberTasks.length}</Badge>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Completed:</span>
-                          <Badge variant="secondary" className="bg-green-100 text-green-800">
-                            {completedTasks}
-                          </Badge>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-
-            {/* Tasks List */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <List className="h-5 w-5" />
-                  All Tasks
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {getFilteredTasks().map(task => {
-                    const assignee = getAssignee(task.assigneeId);
-                    
-                    return (
-                      <div
-                        key={task.id}
-                        className={`p-4 rounded-lg border-l-4 ${getPriorityColor(task.priority)} bg-card hover:bg-muted/50 cursor-pointer transition-colors`}
-                        onClick={() => navigate(`/edit-task/${task.id}`)}
-                      >
-                        <div className="flex items-start justify-between mb-3">
-                          <div>
-                            <h4 className="font-medium">{task.title}</h4>
-                            <p className="text-sm text-muted-foreground">{task.description}</p>
-                          </div>
-                          <Badge
-                            variant="secondary"
-                            className={`${getStatusColor(task.status)} text-white`}
-                          >
-                            {task.status}
-                          </Badge>
-                        </div>
-                        
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <Avatar className="h-8 w-8">
-                              <AvatarImage src={assignee?.avatar} />
-                              <AvatarFallback style={{ backgroundColor: assignee?.color + '20', color: assignee?.color }}>
-                                {assignee?.name.split(' ').map(n => n[0]).join('')}
-                              </AvatarFallback>
-                            </Avatar>
-                            <span className="text-sm font-medium">{assignee?.name}</span>
-                          </div>
-                          
-                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                            {task.startDate && (
-                              <span>Start: {format(task.startDate, 'MMM dd')}</span>
-                            )}
-                            {task.dueDate && (
-                              <span>Due: {format(task.dueDate, 'MMM dd')}</span>
-                            )}
-                            <Badge variant="outline">{task.priority}</Badge>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+            </TabsContent>
+          </Tabs>
       </div>
     </div>
   );
