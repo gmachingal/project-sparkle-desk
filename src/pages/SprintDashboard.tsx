@@ -58,8 +58,11 @@ const SprintDashboard = () => {
     { id: '4', name: 'Sarah Wilson', avatar: '', role: 'QA Engineer', color: '#EF4444' },
   ];
 
-  // Mock sprint tasks
+  // Mock sprint tasks - using current month dates
   const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth();
+  
   const sprintTasks = [
     {
       id: '1',
@@ -69,8 +72,8 @@ const SprintDashboard = () => {
       priority: 'high',
       assigneeId: '3',
       storyPoints: 3,
-      dueDate: new Date('2024-01-18'),
-      startDate: new Date('2024-01-15'),
+      dueDate: new Date(currentYear, currentMonth, 5),
+      startDate: new Date(currentYear, currentMonth, 2),
       estimatedHours: 8,
       loggedHours: 6
     },
@@ -82,8 +85,8 @@ const SprintDashboard = () => {
       priority: 'high',
       assigneeId: '2',
       storyPoints: 8,
-      dueDate: new Date('2024-01-20'),
-      startDate: new Date('2024-01-16'),
+      dueDate: new Date(currentYear, currentMonth, 8),
+      startDate: new Date(currentYear, currentMonth, 4),
       estimatedHours: 16,
       loggedHours: 14
     },
@@ -95,8 +98,8 @@ const SprintDashboard = () => {
       priority: 'high',
       assigneeId: '3',
       storyPoints: 5,
-      dueDate: new Date('2024-01-22'),
-      startDate: new Date('2024-01-18'),
+      dueDate: new Date(currentYear, currentMonth, 12),
+      startDate: new Date(currentYear, currentMonth, 8),
       estimatedHours: 12,
       loggedHours: 10
     },
@@ -108,8 +111,8 @@ const SprintDashboard = () => {
       priority: 'high',
       assigneeId: '3',
       storyPoints: 8,
-      dueDate: new Date('2024-01-26'),
-      startDate: new Date('2024-01-23'),
+      dueDate: new Date(currentYear, currentMonth, 18),
+      startDate: new Date(currentYear, currentMonth, 14),
       estimatedHours: 20,
       loggedHours: 12
     },
@@ -121,8 +124,8 @@ const SprintDashboard = () => {
       priority: 'medium',
       assigneeId: '2',
       storyPoints: 5,
-      dueDate: new Date('2024-01-27'),
-      startDate: new Date('2024-01-24'),
+      dueDate: new Date(currentYear, currentMonth, 20),
+      startDate: new Date(currentYear, currentMonth, 16),
       estimatedHours: 10,
       loggedHours: 6
     },
@@ -134,8 +137,8 @@ const SprintDashboard = () => {
       priority: 'medium',
       assigneeId: '1',
       storyPoints: 3,
-      dueDate: new Date('2024-01-28'),
-      startDate: new Date('2024-01-26'),
+      dueDate: new Date(currentYear, currentMonth, 25),
+      startDate: new Date(currentYear, currentMonth, 22),
       estimatedHours: 6,
       loggedHours: 0
     },
@@ -147,8 +150,8 @@ const SprintDashboard = () => {
       priority: 'medium',
       assigneeId: '4',
       storyPoints: 5,
-      dueDate: new Date('2024-01-29'),
-      startDate: new Date('2024-01-27'),
+      dueDate: new Date(currentYear, currentMonth, 28),
+      startDate: new Date(currentYear, currentMonth, 25),
       estimatedHours: 8,
       loggedHours: 0
     }
@@ -285,10 +288,22 @@ const SprintDashboard = () => {
   };
 
   const getTasksForDate = (date: Date) => {
-    return getFilteredTasks().filter(task => 
-      (task.startDate && isSameDay(task.startDate, date)) ||
-      (task.dueDate && isSameDay(task.dueDate, date))
-    );
+    return getFilteredTasks().filter(task => {
+      // Show task if the date falls between start and due date, or matches either
+      if (task.startDate && task.dueDate) {
+        return date >= task.startDate && date <= task.dueDate;
+      }
+      // Show task if it matches start date (when no due date)
+      if (task.startDate && !task.dueDate) {
+        return isSameDay(task.startDate, date);
+      }
+      // Show task if it matches due date (when no start date)
+      if (!task.startDate && task.dueDate) {
+        return isSameDay(task.dueDate, date);
+      }
+      // For tasks with no dates, don't show in calendar
+      return false;
+    });
   };
 
   const getAssignee = (assigneeId: string) => {
