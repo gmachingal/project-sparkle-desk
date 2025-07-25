@@ -164,11 +164,11 @@ const ProjectCard = ({ project, className }: ProjectCardProps) => {
             <Button
               variant="default"
               size="sm"
-              onClick={() => navigate(`/sprint-dashboard/${project.id}/1`)}
+              onClick={() => navigate(`/project-calendar/${project.id}`)}
               className="w-full"
             >
               <Target className="h-3 w-3 mr-1" />
-              Sprint Dashboard
+              Sprint View
             </Button>
           </div>
         </div>
