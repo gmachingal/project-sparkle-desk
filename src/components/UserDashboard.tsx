@@ -142,23 +142,8 @@ const UserDashboard = () => {
           <LeaveCard {...leaveData} />
         </div>
 
-        {/* Middle Column - Task Snapshot */}
-        <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg">Today's Focus</CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => navigate('/my-tasks')}>
-                View All Tasks
-              </Button>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {recentTasks.slice(0, 3).map((task) => (
-                <TaskCard key={task.id} task={task} size="compact" />
-              ))}
-            </CardContent>
-          </Card>
-
-          {/* Quick Actions */}
+        {/* Middle Column - Quick Actions */}
+        <div className="lg:col-span-2">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Quick Actions</CardTitle>
@@ -198,6 +183,23 @@ const UserDashboard = () => {
                   <span className="text-xs">Projects</span>
                 </Button>
               </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Column - Today's Focus (aligned with Leave Balance width) */}
+        <div className="lg:col-span-1">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-lg">Today's Focus</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => navigate('/my-tasks')}>
+                View All
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {recentTasks.slice(0, 3).map((task) => (
+                <TaskCard key={task.id} task={task} size="compact" />
+              ))}
             </CardContent>
           </Card>
         </div>
