@@ -28,6 +28,7 @@ const Header = () => {
               <Clock className="w-4 h-4 mr-1" />
               Attendance
             </Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/leave-management")}>Leave</Button>
             <Button variant="ghost" size="sm" onClick={() => navigate("/departments")}>Departments</Button>
           </nav>
         </div>

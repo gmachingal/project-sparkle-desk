@@ -17,6 +17,8 @@ import Departments from "./pages/Departments";
 import ProjectCalendar from "./pages/ProjectCalendar";
 import Attendance from "./pages/Attendance";
 import AdminAttendance from "./pages/AdminAttendance";
+import LeaveManagement from "./pages/LeaveManagement";
+import AdminLeaveManagement from "./pages/AdminLeaveManagement";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +42,8 @@ const App = () => (
           <Route path="/departments" element={<Departments />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/admin-attendance" element={<AdminAttendance />} />
+          <Route path="/leave-management" element={<LeaveManagement />} />
+          <Route path="/admin-leave-management" element={<AdminLeaveManagement />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
