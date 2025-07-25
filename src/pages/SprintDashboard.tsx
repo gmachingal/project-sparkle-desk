@@ -349,16 +349,16 @@ const SprintDashboard = () => {
       <Header />
       
       <div className="container mx-auto px-4 py-8">
+        {/* Back Button - Separate Section */}
+        <div className="pb-4 mb-6 border-b border-border">
+          <Button variant="ghost" onClick={() => navigate(`/project-calendar/${projectId}`)}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Project
+          </Button>
+        </div>
+        
         {/* Header Section */}
         <div className="mb-8">
-          {/* Back Button */}
-          <div className="mb-6">
-            <Button variant="ghost" onClick={() => navigate(`/project-calendar/${projectId}`)}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Project
-            </Button>
-          </div>
-          
           {/* Title and Actions */}
           <div className="flex items-start justify-between gap-6">
             <div className="flex-1">
@@ -387,6 +387,37 @@ const SprintDashboard = () => {
                 Add Task
               </Button>
               
+              {/* Close Sprint Button - Standing Out */}
+              {sprint.status === 'active' && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" className="bg-orange-600 hover:bg-orange-700 text-white">
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Close Sprint
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Close Sprint</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to close "{sprint.name}"? This will mark the sprint as completed and you won't be able to add new tasks to it.
+                        <br /><br />
+                        <strong>Sprint Summary:</strong>
+                        <br />• Completed: {sprint.completedPoints}/{sprint.totalPoints} story points ({Math.round((sprint.completedPoints / sprint.totalPoints) * 100)}%)
+                        <br />• Tasks: {sprintTasks.filter(t => t.status === 'completed').length}/{sprintTasks.length} completed
+                        <br />• Remaining tasks will be moved to backlog
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleCloseSprint} className="bg-orange-600 hover:bg-orange-700">
+                        Close Sprint
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+              
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">
@@ -410,41 +441,6 @@ const SprintDashboard = () => {
                     onAddTaskToSprint={handleAddTaskToSprint}
                     asDropdownItem={true}
                   />
-                  
-                  <DropdownMenuSeparator />
-                  
-                  {sprint.status === 'active' && (
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <DropdownMenuItem
-                          onSelect={(e) => e.preventDefault()}
-                          className="text-orange-600 hover:text-orange-700 hover:bg-orange-50"
-                        >
-                          <CheckCircle className="h-4 w-4 mr-2" />
-                          Close Sprint
-                        </DropdownMenuItem>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Close Sprint</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Are you sure you want to close "{sprint.name}"? This will mark the sprint as completed and you won't be able to add new tasks to it.
-                            <br /><br />
-                            <strong>Sprint Summary:</strong>
-                            <br />• Completed: {sprint.completedPoints}/{sprint.totalPoints} story points ({Math.round((sprint.completedPoints / sprint.totalPoints) * 100)}%)
-                            <br />• Tasks: {sprintTasks.filter(t => t.status === 'completed').length}/{sprintTasks.length} completed
-                            <br />• Remaining tasks will be moved to backlog
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={handleCloseSprint} className="bg-orange-600 hover:bg-orange-700">
-                            Close Sprint
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
