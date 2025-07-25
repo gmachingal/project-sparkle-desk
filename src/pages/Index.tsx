@@ -1,11 +1,16 @@
+import { useState } from "react";
 import Header from "@/components/Header";
-import Dashboard from "@/components/Dashboard";
+import UserDashboard from "@/components/UserDashboard";
+import AdminDashboard from "@/components/AdminDashboard";
 
 const Index = () => {
+  // Mock user role - in real app this would come from auth context
+  const [userRole] = useState<'admin' | 'user'>('user'); // Change to 'admin' to see admin view
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <Dashboard />
+      {userRole === 'admin' ? <AdminDashboard /> : <UserDashboard />}
     </div>
   );
 };
