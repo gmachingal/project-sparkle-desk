@@ -168,7 +168,7 @@ const ProjectCard = ({ project, className }: ProjectCardProps) => {
               className="w-full"
             >
               <Target className="h-3 w-3 mr-1" />
-              View Sprints
+              Sprint Dashboard
             </Button>
           </div>
         </div>
