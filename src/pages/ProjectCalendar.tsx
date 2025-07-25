@@ -407,10 +407,10 @@ const ProjectCalendar = () => {
                                   <div 
                                     key={task.id} 
                                     className={`text-xs p-1 rounded border-l-2 ${getPriorityColor(task.priority)} truncate cursor-pointer`}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      navigate(`/edit-task/${task.id}`);
-                                    }}
+                                     onClick={(e) => {
+                                       e.stopPropagation();
+                                       navigate(`/task/${task.id}`);
+                                     }}
                                     title={`${task.title} - ${assignee?.name}`}
                                   >
                                     {task.title}
@@ -471,10 +471,10 @@ const ProjectCalendar = () => {
                                     <div 
                                       key={task.id} 
                                       className={`text-xs p-1 rounded border-l-2 ${getPriorityColor(task.priority)} truncate cursor-pointer`}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        navigate(`/edit-task/${task.id}`);
-                                      }}
+                                       onClick={(e) => {
+                                         e.stopPropagation();
+                                         navigate(`/task/${task.id}`);
+                                       }}
                                       title={`${task.title} - ${assignee?.name} (${task.status})`}
                                     >
                                       <div className="font-medium">{task.title}</div>
@@ -532,7 +532,7 @@ const ProjectCalendar = () => {
                               <Card 
                                 key={task.id}
                                 className={`cursor-pointer hover:shadow-md transition-shadow border-l-4 ${getPriorityColor(task.priority)}`}
-                                onClick={() => navigate(`/edit-task/${task.id}`)}
+                                onClick={() => navigate(`/task/${task.id}`)}
                               >
                                 <CardContent className="p-4">
                                   <div className="flex items-start justify-between mb-3">
@@ -653,7 +653,7 @@ const ProjectCalendar = () => {
                         <div
                           key={task.id}
                           className={`p-4 rounded-lg border-l-4 ${getPriorityColor(task.priority)} bg-card hover:bg-muted/50 cursor-pointer transition-colors`}
-                          onClick={() => navigate(`/edit-task/${task.id}`)}
+                          onClick={() => navigate(`/task/${task.id}`)}
                         >
                           <div className="flex items-start justify-between mb-3">
                             <div>
