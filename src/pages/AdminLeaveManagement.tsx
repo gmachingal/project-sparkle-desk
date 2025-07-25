@@ -2,14 +2,17 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Users, Calendar, CheckCircle, XCircle, Clock, FileText } from "lucide-react";
+import { Users, Calendar, CheckCircle, XCircle, Clock, FileText, Plus, Edit } from "lucide-react";
 import Header from "@/components/Header";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const AdminLeaveManagement = () => {
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
@@ -131,9 +134,16 @@ const AdminLeaveManagement = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Admin Leave Management</h1>
-          <p className="text-muted-foreground mt-2">Manage employee leave requests and approvals</p>
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Admin Leave Management</h1>
+            <p className="text-muted-foreground mt-2">Manage employee leave requests and approvals</p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => window.location.href = '/leave-management'}>
+              Employee View
+            </Button>
+          </div>
         </div>
 
         {/* Stats Cards */}
@@ -196,9 +206,10 @@ const AdminLeaveManagement = () => {
         </div>
 
         <Tabs defaultValue="pending" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="pending">Pending Requests</TabsTrigger>
             <TabsTrigger value="all">All Requests</TabsTrigger>
+            <TabsTrigger value="balance">Leave Balance Management</TabsTrigger>
           </TabsList>
 
           <TabsContent value="pending" className="space-y-6">
@@ -321,6 +332,157 @@ const AdminLeaveManagement = () => {
                     ))}
                   </TableBody>
                 </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="balance" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Team Leave Balance Overview
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {/* Team Summary */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Card className="border border-border/50">
+                      <CardContent className="p-4 text-center">
+                        <div className="text-2xl font-bold text-green-600">85%</div>
+                        <div className="text-sm text-muted-foreground">Team Available</div>
+                      </CardContent>
+                    </Card>
+                    <Card className="border border-border/50">
+                      <CardContent className="p-4 text-center">
+                        <div className="text-2xl font-bold text-orange-600">12</div>
+                        <div className="text-sm text-muted-foreground">On Leave Today</div>
+                      </CardContent>
+                    </Card>
+                    <Card className="border border-border/50">
+                      <CardContent className="p-4 text-center">
+                        <div className="text-2xl font-bold text-blue-600">8</div>
+                        <div className="text-sm text-muted-foreground">Upcoming Leaves</div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Employee Leave Balance Table */}
+                  <Card>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Employee Leave Balance</CardTitle>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button className="gap-2">
+                              <Plus className="h-4 w-4" />
+                              Add Leave Balance
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Add Leave Balance</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              <div>
+                                <Label>Employee</Label>
+                                <Select>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select employee" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="john">John Doe</SelectItem>
+                                    <SelectItem value="sarah">Sarah Wilson</SelectItem>
+                                    <SelectItem value="mike">Mike Johnson</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              <div>
+                                <Label>Leave Type</Label>
+                                <Select>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select leave type" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="CL">Casual Leave</SelectItem>
+                                    <SelectItem value="SL">Sick Leave</SelectItem>
+                                    <SelectItem value="PL">Paid Leave</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              <div>
+                                <Label>Days to Add</Label>
+                                <Input type="number" placeholder="Enter number of days" />
+                              </div>
+                              <div>
+                                <Label>Reason</Label>
+                                <Textarea placeholder="Reason for adding leave balance" />
+                              </div>
+                              <div className="flex gap-2 justify-end">
+                                <Button variant="outline">Cancel</Button>
+                                <Button>Add Balance</Button>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Employee</TableHead>
+                            <TableHead>CL</TableHead>
+                            <TableHead>SL</TableHead>
+                            <TableHead>PL</TableHead>
+                            <TableHead>Total Used</TableHead>
+                            <TableHead>Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {[
+                            { name: "John Doe", cl: "7/12", sl: "10/12", pl: "13/21", used: 25 },
+                            { name: "Sarah Wilson", cl: "5/12", sl: "2/12", pl: "8/21", used: 15 },
+                            { name: "Mike Johnson", cl: "3/12", sl: "6/12", pl: "15/21", used: 24 },
+                            { name: "Emily Davis", cl: "8/12", sl: "4/12", pl: "10/21", used: 22 },
+                          ].map((emp, index) => (
+                            <TableRow key={index}>
+                              <TableCell>
+                                <div className="flex items-center gap-3">
+                                  <Avatar className="h-8 w-8">
+                                    <AvatarFallback>
+                                      {emp.name.split(" ").map(n => n[0]).join("")}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <span className="font-medium">{emp.name}</span>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline">{emp.cl}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline">{emp.sl}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline">{emp.pl}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                <span className="font-medium">{emp.used} days</span>
+                              </TableCell>
+                              <TableCell>
+                                <Button variant="outline" size="sm">
+                                  <Edit className="h-4 w-4 mr-1" />
+                                  Edit
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </CardContent>
+                  </Card>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

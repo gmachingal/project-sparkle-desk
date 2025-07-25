@@ -109,7 +109,11 @@ const LeaveManagement = () => {
             <h1 className="text-3xl font-bold text-foreground">Leave Management</h1>
             <p className="text-muted-foreground mt-2">Manage your leave applications and track balance</p>
           </div>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => window.location.href = '/admin-leave-management'}>
+              Admin View
+            </Button>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button className="flex items-center gap-2">
                 <Plus className="h-4 w-4" />
@@ -201,8 +205,9 @@ const LeaveManagement = () => {
                   </div>
                 </form>
               </Form>
-            </DialogContent>
-          </Dialog>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
 
         <Tabs defaultValue="balance" className="space-y-6">
