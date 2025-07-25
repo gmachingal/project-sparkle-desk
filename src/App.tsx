@@ -14,6 +14,7 @@ import Teams from "./pages/Teams";
 import EditProject from "./pages/EditProject";
 import EditTask from "./pages/EditTask";
 import Departments from "./pages/Departments";
+import ProjectCalendar from "./pages/ProjectCalendar";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/settings" element={<Settings />} />
           <Route path="/edit-project/:id" element={<EditProject />} />
           <Route path="/edit-task/:id" element={<EditTask />} />
+          <Route path="/project-calendar/:id" element={<ProjectCalendar />} />
           <Route path="/departments" element={<Departments />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
