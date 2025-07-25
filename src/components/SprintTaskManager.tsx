@@ -63,7 +63,7 @@ const SprintTaskManager: React.FC<SprintTaskManagerProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
-  const [selectedSprint, setSelectedSprint] = useState('');
+  const [selectedSprint, setSelectedSprint] = useState('all');
   const [targetSprint, setTargetSprint] = useState('');
 
   // Filter tasks by project
@@ -94,7 +94,7 @@ const SprintTaskManager: React.FC<SprintTaskManagerProps> = ({
       const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            task.description.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesStatus = selectedStatus === 'all' || task.status === selectedStatus;
-      const matchesSprint = selectedSprint === '' || task.sprintId === selectedSprint;
+      const matchesSprint = selectedSprint === 'all' || selectedSprint === '' || task.sprintId === selectedSprint;
       return matchesSearch && matchesStatus && matchesSprint;
     });
   };
@@ -260,7 +260,7 @@ const SprintTaskManager: React.FC<SprintTaskManagerProps> = ({
                       <SelectValue placeholder="Select sprint..." />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Sprints</SelectItem>
+                      <SelectItem value="all">All Sprints</SelectItem>
                       {sprints.map(sprint => (
                         <SelectItem key={sprint.id} value={sprint.id}>
                           {sprint.name}
