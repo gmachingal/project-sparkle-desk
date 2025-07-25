@@ -19,7 +19,8 @@ const CreateTask = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const [date, setDate] = useState<Date>();
+  const [dueDate, setDueDate] = useState<Date>();
+  const [startDate, setStartDate] = useState<Date>();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -197,6 +198,33 @@ const CreateTask = () => {
                     </div>
 
                     <div className="space-y-2">
+                      <Label>Start Date</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              !startDate && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {startDate ? format(startDate, "PPP") : "Pick start date"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={startDate}
+                            onSelect={setStartDate}
+                            initialFocus
+                            className={cn("p-3 pointer-events-auto")}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+
+                    <div className="space-y-2">
                       <Label>Due Date</Label>
                       <Popover>
                         <PopoverTrigger asChild>
@@ -204,19 +232,21 @@ const CreateTask = () => {
                             variant="outline"
                             className={cn(
                               "w-full justify-start text-left font-normal",
-                              !date && "text-muted-foreground"
+                              !dueDate && "text-muted-foreground"
                             )}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {date ? format(date, "PPP") : "Pick a date"}
+                            {dueDate ? format(dueDate, "PPP") : "Pick due date"}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
                           <Calendar
                             mode="single"
-                            selected={date}
-                            onSelect={setDate}
+                            selected={dueDate}
+                            onSelect={setDueDate}
                             initialFocus
+                            disabled={(date) => startDate ? date < startDate : false}
+                            className={cn("p-3 pointer-events-auto")}
                           />
                         </PopoverContent>
                       </Popover>

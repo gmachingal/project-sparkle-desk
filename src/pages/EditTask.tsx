@@ -26,6 +26,7 @@ const EditTask = () => {
     status: 'in-progress',
     priority: 'high',
     dueDate: new Date('2024-02-15'),
+    startDate: new Date('2024-02-10'),
     assigneeId: '2',
     projectId: '1',
     estimatedHours: 16,
@@ -209,7 +210,30 @@ const EditTask = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium">Start Date</label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start text-left font-normal"
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {taskData.startDate ? format(taskData.startDate, "PPP") : "Pick start date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={taskData.startDate}
+                          onSelect={(date) => date && setTaskData({...taskData, startDate: date})}
+                          className="p-3 pointer-events-auto"
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
                   <div>
                     <label className="text-sm font-medium">Due Date</label>
                     <Popover>
@@ -219,7 +243,7 @@ const EditTask = () => {
                           className="w-full justify-start text-left font-normal"
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {taskData.dueDate ? format(taskData.dueDate, "PPP") : "Pick a date"}
+                          {taskData.dueDate ? format(taskData.dueDate, "PPP") : "Pick due date"}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0">
@@ -227,6 +251,8 @@ const EditTask = () => {
                           mode="single"
                           selected={taskData.dueDate}
                           onSelect={(date) => date && setTaskData({...taskData, dueDate: date})}
+                          disabled={(date) => taskData.startDate ? date < taskData.startDate : false}
+                          className="p-3 pointer-events-auto"
                         />
                       </PopoverContent>
                     </Popover>
