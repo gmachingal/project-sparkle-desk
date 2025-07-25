@@ -583,56 +583,145 @@ const Teams = () => {
           </TabsContent>
 
           <TabsContent value="departments" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-lg font-semibold">Departments</h3>
+                <p className="text-sm text-muted-foreground">Manage organizational departments</p>
+              </div>
+              {currentUserRole === "admin" && (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="gap-2">
+                      <Plus className="w-4 h-4" />
+                      Add Department
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Create New Department</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="dept-name">Department Name</Label>
+                        <Input id="dept-name" placeholder="Enter department name" />
+                      </div>
+                      <div>
+                        <Label htmlFor="dept-description">Description</Label>
+                        <Textarea id="dept-description" placeholder="Enter description" />
+                      </div>
+                      <div>
+                        <Label htmlFor="dept-manager">Manager</Label>
+                        <Select>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select manager" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {teamMembers.filter(m => m.systemRole === "admin" || m.systemRole === "manager").map((member) => (
+                              <SelectItem key={member.id} value={member.id}>
+                                {member.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="dept-budget">Budget</Label>
+                        <Input id="dept-budget" type="number" placeholder="Enter budget" />
+                      </div>
+                      <div>
+                        <Label htmlFor="dept-location">Location</Label>
+                        <Input id="dept-location" placeholder="Enter location" />
+                      </div>
+                      <div className="flex gap-2 justify-end pt-4">
+                        <Button variant="outline">Cancel</Button>
+                        <Button>Create Department</Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {departments.map((dept) => (
-                <Card key={dept.name}>
-                  <CardHeader>
+                <Card key={dept.name} className="group hover:shadow-lg transition-shadow">
+                  <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
+                      <CardTitle className="text-lg flex items-center gap-2">
                         <div 
-                          className="w-4 h-4 rounded-full" 
+                          className="w-3 h-3 rounded-full" 
                           style={{ backgroundColor: dept.color }}
                         />
-                        <CardTitle className="text-lg">{dept.name}</CardTitle>
-                      </div>
-                      <Badge variant="secondary">{dept.members} members</Badge>
+                        {dept.name}
+                      </CardTitle>
+                      {currentUserRole === "admin" && (
+                        <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                          <MoreHorizontal className="w-4 h-4" />
+                        </Button>
+                      )}
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div>
-                      <p className="text-sm font-medium mb-2">Department Lead</p>
-                      <div className="flex items-center gap-3">
-                        <Avatar className="w-8 h-8">
-                          <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                            {dept.lead.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="text-sm">{dept.lead}</span>
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src="" />
+                        <AvatarFallback>
+                          {dept.lead.split(" ").map(n => n[0]).join("")}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-sm font-medium">{dept.lead}</p>
+                        <p className="text-xs text-muted-foreground">Department Lead</p>
                       </div>
                     </div>
                     
-                    <div>
-                      <p className="text-sm font-medium mb-2">Team Members</p>
-                      <div className="flex flex-wrap gap-2">
-                        {teamMembers
-                          .filter(member => member.department === dept.name)
-                          .map((member) => (
-                            <div key={member.id} className="flex items-center gap-2 p-2 rounded-lg border">
-                              <Avatar className="w-6 h-6">
-                                <AvatarFallback className="bg-muted text-xs">
-                                  {member.name.split(' ').map(n => n[0]).join('')}
-                                </AvatarFallback>
-                              </Avatar>
-                              <span className="text-sm">{member.name}</span>
-                            </div>
-                          ))
-                        }
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="flex items-center gap-1">
+                          <Users className="h-4 w-4" />
+                          Members
+                        </span>
+                        <Badge variant="secondary">{dept.members}</Badge>
                       </div>
+                      
+                      <div className="flex items-center justify-between text-sm">
+                        <span>Active Projects</span>
+                        <span className="font-medium">
+                          {Math.floor(Math.random() * 5) + 1}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between text-sm">
+                        <span>Location</span>
+                        <span className="text-muted-foreground">Floor {Math.floor(Math.random() * 3) + 1}</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-2">
+                      <Button variant="outline" size="sm" className="w-full">
+                        View Details
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
+
+            {departments.length === 0 && (
+              <div className="text-center py-12">
+                <Briefcase className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-lg font-medium mb-2">No departments found</h3>
+                <p className="text-muted-foreground mb-4">
+                  Get started by creating your first department
+                </p>
+                {currentUserRole === "admin" && (
+                  <Button>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create Department
+                  </Button>
+                )}
+              </div>
+            )}
           </TabsContent>
         </Tabs>
 

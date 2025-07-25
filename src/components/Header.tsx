@@ -29,7 +29,6 @@ const Header = () => {
               Attendance
             </Button>
             <Button variant="ghost" size="sm" onClick={() => navigate("/leave-management")}>Leave</Button>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/departments")}>Departments</Button>
           </nav>
         </div>
 
