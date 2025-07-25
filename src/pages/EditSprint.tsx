@@ -110,7 +110,7 @@ const EditSprint = () => {
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center gap-4 mb-6">
-              <Button variant="ghost" onClick={() => navigate(`/sprint-dashboard/${projectId}/${sprintId}`)}>
+              <Button variant="back" onClick={() => navigate(`/sprint-dashboard/${projectId}/${sprintId}`)}>
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Sprint
               </Button>

@@ -176,7 +176,7 @@ const EditTask = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" onClick={() => navigate('/my-tasks')}>
+            <Button variant="back" onClick={() => navigate('/my-tasks')}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to My Tasks
             </Button>
