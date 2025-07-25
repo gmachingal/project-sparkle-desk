@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
 import { 
   Users, 
@@ -26,7 +27,10 @@ import {
   MapPin,
   Plus,
   Edit,
-  Trash2
+  Trash2,
+  Bell,
+  ChevronDown,
+  Cog
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -39,6 +43,7 @@ const AdminAttendance = () => {
   const [isWfhPolicyOpen, setIsWfhPolicyOpen] = useState(false);
   const [isLocationMasterOpen, setIsLocationMasterOpen] = useState(false);
   const [isGeoTaggingOpen, setIsGeoTaggingOpen] = useState(false);
+  const [isWfhNotificationOpen, setIsWfhNotificationOpen] = useState(false);
   const [wfhPolicyForm, setWfhPolicyForm] = useState({
     department: 'all',
     maxWfhDays: '2',
@@ -56,6 +61,12 @@ const AdminAttendance = () => {
     enabled: true,
     accuracy: 'high',
     allowedRadius: '50'
+  });
+  const [wfhNotificationSettings, setWfhNotificationSettings] = useState({
+    notifyDate: format(new Date(), 'yyyy-MM-dd'),
+    notifyDepartment: 'all',
+    message: '',
+    urgency: 'medium'
   });
 
   // Mock data
@@ -225,6 +236,24 @@ const AdminAttendance = () => {
     setIsGeoTaggingOpen(false);
   };
 
+  const handleSendWfhNotification = () => {
+    if (!wfhNotificationSettings.message.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter a notification message",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    toast({
+      title: "WFH Notification Sent",
+      description: `Notification sent to ${wfhNotificationSettings.notifyDepartment === 'all' ? 'all departments' : wfhNotificationSettings.notifyDepartment} for ${format(new Date(wfhNotificationSettings.notifyDate), 'MMM dd, yyyy')}`,
+    });
+    setWfhNotificationSettings({ ...wfhNotificationSettings, message: '' });
+    setIsWfhNotificationOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -245,242 +274,332 @@ const AdminAttendance = () => {
               Export
             </Button>
             
-            <Dialog open={isLocationMasterOpen} onOpenChange={setIsLocationMasterOpen}>
-              <DialogTrigger asChild>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
                 <Button variant="outline">
+                  <Cog className="h-4 w-4 mr-2" />
+                  Admin Settings
+                  <ChevronDown className="h-4 w-4 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>Attendance Management</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => setIsLocationMasterOpen(true)}>
                   <Building className="h-4 w-4 mr-2" />
-                  Work Locations
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-4xl">
-                <DialogHeader>
-                  <DialogTitle>Work Location Master</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-6">
-                  {/* Add New Location */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Add New Location</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <Label>Location Name *</Label>
-                          <Input
-                            placeholder="e.g., Main Office"
-                            value={newLocation.name}
-                            onChange={(e) => setNewLocation({...newLocation, name: e.target.value})}
-                          />
-                        </div>
-                        <div>
-                          <Label>Address *</Label>
-                          <Input
-                            placeholder="Full address"
-                            value={newLocation.address}
-                            onChange={(e) => setNewLocation({...newLocation, address: e.target.value})}
-                          />
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-3 gap-4">
-                        <div>
-                          <Label>Latitude</Label>
-                          <Input
-                            placeholder="40.7128"
-                            value={newLocation.latitude}
-                            onChange={(e) => setNewLocation({...newLocation, latitude: e.target.value})}
-                          />
-                        </div>
-                        <div>
-                          <Label>Longitude</Label>
-                          <Input
-                            placeholder="-74.0060"
-                            value={newLocation.longitude}
-                            onChange={(e) => setNewLocation({...newLocation, longitude: e.target.value})}
-                          />
-                        </div>
-                        <div>
-                          <Label>Radius (meters)</Label>
-                          <Input
-                            placeholder="100"
-                            value={newLocation.radius}
-                            onChange={(e) => setNewLocation({...newLocation, radius: e.target.value})}
-                          />
-                        </div>
-                      </div>
-                      <Button onClick={handleAddLocation} className="w-full">
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Location
-                      </Button>
-                    </CardContent>
-                  </Card>
-
-                  {/* Existing Locations */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Existing Locations</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        {workLocations.map((location) => (
-                          <div key={location.id} className="flex items-center justify-between p-4 border rounded-lg">
-                            <div className="flex items-center gap-3">
-                              <MapPin className="h-5 w-5 text-primary" />
-                              <div>
-                                <div className="font-medium">{location.name}</div>
-                                <div className="text-sm text-muted-foreground">{location.address}</div>
-                                <div className="text-xs text-muted-foreground">
-                                  Radius: {location.radius}m • Lat: {location.latitude}, Lng: {location.longitude}
-                                </div>
-                              </div>
-                            </div>
-                            <div className="flex gap-2">
-                              <Button size="sm" variant="outline">
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button size="sm" variant="outline">
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </DialogContent>
-            </Dialog>
-
-            <Dialog open={isGeoTaggingOpen} onOpenChange={setIsGeoTaggingOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline">
+                  Work Location Master
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setIsGeoTaggingOpen(true)}>
                   <MapPin className="h-4 w-4 mr-2" />
-                  Geo Tagging
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Geo-tagging Settings</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label>Enable Location Tracking</Label>
-                      <p className="text-sm text-muted-foreground">Track employee location for check-ins</p>
-                    </div>
-                    <input
-                      type="checkbox"
-                      checked={geoTagSettings.enabled}
-                      onChange={(e) => setGeoTagSettings({...geoTagSettings, enabled: e.target.checked})}
-                      className="rounded"
-                    />
-                  </div>
-                  
-                  <div>
-                    <Label>Location Accuracy</Label>
-                    <Select value={geoTagSettings.accuracy} onValueChange={(value) => setGeoTagSettings({...geoTagSettings, accuracy: value})}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="high">High Accuracy</SelectItem>
-                        <SelectItem value="medium">Medium Accuracy</SelectItem>
-                        <SelectItem value="low">Low Accuracy</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div>
-                    <Label>Allowed Radius (meters)</Label>
-                    <Input
-                      placeholder="50"
-                      value={geoTagSettings.allowedRadius}
-                      onChange={(e) => setGeoTagSettings({...geoTagSettings, allowedRadius: e.target.value})}
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Maximum distance from work location for valid check-in
-                    </p>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <Button onClick={handleUpdateGeoTagging} className="flex-1">
-                      Update Settings
-                    </Button>
-                    <Button variant="outline" onClick={() => setIsGeoTaggingOpen(false)}>
-                      Cancel
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-
-            <Dialog open={isWfhPolicyOpen} onOpenChange={setIsWfhPolicyOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline">
+                  Geo Tagging Settings
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel>WFH Management</DropdownMenuLabel>
+                <DropdownMenuItem onClick={() => setIsWfhPolicyOpen(true)}>
                   <Settings className="h-4 w-4 mr-2" />
                   WFH Policy
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Work From Home Policy</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <Label>Department</Label>
-                    <Select value={wfhPolicyForm.department} onValueChange={(value) => setWfhPolicyForm({...wfhPolicyForm, department: value})}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Departments</SelectItem>
-                        {departments.map(dept => (
-                          <SelectItem key={dept} value={dept}>{dept}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label>Max WFH Days per Week</Label>
-                    <Select value={wfhPolicyForm.maxWfhDays} onValueChange={(value) => setWfhPolicyForm({...wfhPolicyForm, maxWfhDays: value})}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1">1 Day</SelectItem>
-                        <SelectItem value="2">2 Days</SelectItem>
-                        <SelectItem value="3">3 Days</SelectItem>
-                        <SelectItem value="4">4 Days</SelectItem>
-                        <SelectItem value="5">5 Days</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label>Advance Notice Required (Days)</Label>
-                    <Select value={wfhPolicyForm.advanceNotice} onValueChange={(value) => setWfhPolicyForm({...wfhPolicyForm, advanceNotice: value})}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="0">Same Day</SelectItem>
-                        <SelectItem value="1">1 Day</SelectItem>
-                        <SelectItem value="2">2 Days</SelectItem>
-                        <SelectItem value="3">3 Days</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button onClick={handleUpdateWfhPolicy} className="flex-1">
-                      Update Policy
-                    </Button>
-                    <Button variant="outline" onClick={() => setIsWfhPolicyOpen(false)}>
-                      Cancel
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setIsWfhNotificationOpen(true)}>
+                  <Bell className="h-4 w-4 mr-2" />
+                  WFH Notifications
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
+
+        {/* Dialogs */}
+        {/* Work Location Master Dialog */}
+        <Dialog open={isLocationMasterOpen} onOpenChange={setIsLocationMasterOpen}>
+          <DialogContent className="max-w-4xl">
+            <DialogHeader>
+              <DialogTitle>Work Location Master</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              {/* Add New Location */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Add New Location</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>Location Name *</Label>
+                      <Input
+                        placeholder="e.g., Main Office"
+                        value={newLocation.name}
+                        onChange={(e) => setNewLocation({...newLocation, name: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label>Address *</Label>
+                      <Input
+                        placeholder="Full address"
+                        value={newLocation.address}
+                        onChange={(e) => setNewLocation({...newLocation, address: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <Label>Latitude</Label>
+                      <Input
+                        placeholder="40.7128"
+                        value={newLocation.latitude}
+                        onChange={(e) => setNewLocation({...newLocation, latitude: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label>Longitude</Label>
+                      <Input
+                        placeholder="-74.0060"
+                        value={newLocation.longitude}
+                        onChange={(e) => setNewLocation({...newLocation, longitude: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label>Radius (meters)</Label>
+                      <Input
+                        placeholder="100"
+                        value={newLocation.radius}
+                        onChange={(e) => setNewLocation({...newLocation, radius: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  <Button onClick={handleAddLocation} className="w-full">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Location
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Existing Locations */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Existing Locations</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {workLocations.map((location) => (
+                      <div key={location.id} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <MapPin className="h-5 w-5 text-primary" />
+                          <div>
+                            <div className="font-medium">{location.name}</div>
+                            <div className="text-sm text-muted-foreground">{location.address}</div>
+                            <div className="text-xs text-muted-foreground">
+                              Radius: {location.radius}m • Lat: {location.latitude}, Lng: {location.longitude}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="outline">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button size="sm" variant="outline">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Geo Tagging Dialog */}
+        <Dialog open={isGeoTaggingOpen} onOpenChange={setIsGeoTaggingOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Geo-tagging Settings</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Enable Location Tracking</Label>
+                  <p className="text-sm text-muted-foreground">Track employee location for check-ins</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={geoTagSettings.enabled}
+                  onChange={(e) => setGeoTagSettings({...geoTagSettings, enabled: e.target.checked})}
+                  className="rounded"
+                />
+              </div>
+              
+              <div>
+                <Label>Location Accuracy</Label>
+                <Select value={geoTagSettings.accuracy} onValueChange={(value) => setGeoTagSettings({...geoTagSettings, accuracy: value})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="high">High Accuracy</SelectItem>
+                    <SelectItem value="medium">Medium Accuracy</SelectItem>
+                    <SelectItem value="low">Low Accuracy</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label>Allowed Radius (meters)</Label>
+                <Input
+                  placeholder="50"
+                  value={geoTagSettings.allowedRadius}
+                  onChange={(e) => setGeoTagSettings({...geoTagSettings, allowedRadius: e.target.value})}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Maximum distance from work location for valid check-in
+                </p>
+              </div>
+              
+              <div className="flex gap-2">
+                <Button onClick={handleUpdateGeoTagging} className="flex-1">
+                  Update Settings
+                </Button>
+                <Button variant="outline" onClick={() => setIsGeoTaggingOpen(false)}>
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* WFH Policy Dialog */}
+        <Dialog open={isWfhPolicyOpen} onOpenChange={setIsWfhPolicyOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Work From Home Policy</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label>Department</Label>
+                <Select value={wfhPolicyForm.department} onValueChange={(value) => setWfhPolicyForm({...wfhPolicyForm, department: value})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Departments</SelectItem>
+                    {departments.map(dept => (
+                      <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Max WFH Days per Week</Label>
+                <Select value={wfhPolicyForm.maxWfhDays} onValueChange={(value) => setWfhPolicyForm({...wfhPolicyForm, maxWfhDays: value})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1 Day</SelectItem>
+                    <SelectItem value="2">2 Days</SelectItem>
+                    <SelectItem value="3">3 Days</SelectItem>
+                    <SelectItem value="4">4 Days</SelectItem>
+                    <SelectItem value="5">5 Days</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Advance Notice Required (Days)</Label>
+                <Select value={wfhPolicyForm.advanceNotice} onValueChange={(value) => setWfhPolicyForm({...wfhPolicyForm, advanceNotice: value})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">Same Day</SelectItem>
+                    <SelectItem value="1">1 Day</SelectItem>
+                    <SelectItem value="2">2 Days</SelectItem>
+                    <SelectItem value="3">3 Days</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex gap-2">
+                <Button onClick={handleUpdateWfhPolicy} className="flex-1">
+                  Update Policy
+                </Button>
+                <Button variant="outline" onClick={() => setIsWfhPolicyOpen(false)}>
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* WFH Notification Dialog */}
+        <Dialog open={isWfhNotificationOpen} onOpenChange={setIsWfhNotificationOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Send WFH Notification</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label>Notification Date</Label>
+                <Input
+                  type="date"
+                  value={wfhNotificationSettings.notifyDate}
+                  onChange={(e) => setWfhNotificationSettings({...wfhNotificationSettings, notifyDate: e.target.value})}
+                />
+              </div>
+              
+              <div>
+                <Label>Target Department</Label>
+                <Select value={wfhNotificationSettings.notifyDepartment} onValueChange={(value) => setWfhNotificationSettings({...wfhNotificationSettings, notifyDepartment: value})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Departments</SelectItem>
+                    {departments.map(dept => (
+                      <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label>Urgency Level</Label>
+                <Select value={wfhNotificationSettings.urgency} onValueChange={(value) => setWfhNotificationSettings({...wfhNotificationSettings, urgency: value})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="low">Low Priority</SelectItem>
+                    <SelectItem value="medium">Medium Priority</SelectItem>
+                    <SelectItem value="high">High Priority</SelectItem>
+                    <SelectItem value="urgent">Urgent</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label>Notification Message *</Label>
+                <textarea
+                  placeholder="Enter your WFH notification message..."
+                  value={wfhNotificationSettings.message}
+                  onChange={(e) => setWfhNotificationSettings({...wfhNotificationSettings, message: e.target.value})}
+                  className="w-full min-h-[100px] p-3 border border-input rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  This message will be sent to employees about WFH arrangements for the selected date.
+                </p>
+              </div>
+              
+              <div className="flex gap-2">
+                <Button onClick={handleSendWfhNotification} className="flex-1">
+                  <Bell className="h-4 w-4 mr-2" />
+                  Send Notification
+                </Button>
+                <Button variant="outline" onClick={() => setIsWfhNotificationOpen(false)}>
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
