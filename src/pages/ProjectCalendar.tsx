@@ -40,7 +40,11 @@ const ProjectCalendar = () => {
     { id: '4', name: 'Sarah Wilson', avatar: '', role: 'QA Engineer', color: '#EF4444' },
   ];
 
-  // Mock tasks with calendar dates
+  // Mock tasks with calendar dates - using current month dates
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth();
+  
   const tasks = [
     {
       id: '1',
@@ -49,8 +53,8 @@ const ProjectCalendar = () => {
       status: 'in-progress',
       priority: 'high',
       assigneeId: '2',
-      dueDate: new Date('2024-02-10'),
-      startDate: new Date('2024-02-05'),
+      dueDate: new Date(currentYear, currentMonth, 10),
+      startDate: new Date(currentYear, currentMonth, 5),
       estimatedHours: 16
     },
     {
@@ -60,8 +64,8 @@ const ProjectCalendar = () => {
       status: 'todo',
       priority: 'medium',
       assigneeId: '3',
-      dueDate: new Date('2024-02-15'),
-      startDate: new Date('2024-02-12'),
+      dueDate: new Date(currentYear, currentMonth, 15),
+      startDate: new Date(currentYear, currentMonth, 12),
       estimatedHours: 8
     },
     {
@@ -71,8 +75,8 @@ const ProjectCalendar = () => {
       status: 'todo',
       priority: 'high',
       assigneeId: '4',
-      dueDate: new Date('2024-02-20'),
-      startDate: new Date('2024-02-18'),
+      dueDate: new Date(currentYear, currentMonth, 20),
+      startDate: new Date(currentYear, currentMonth, 18),
       estimatedHours: 12
     },
     {
@@ -82,8 +86,8 @@ const ProjectCalendar = () => {
       status: 'completed',
       priority: 'high',
       assigneeId: '3',
-      dueDate: new Date('2024-02-08'),
-      startDate: new Date('2024-02-01'),
+      dueDate: new Date(currentYear, currentMonth, 8),
+      startDate: new Date(currentYear, currentMonth, 1),
       estimatedHours: 20
     },
     {
@@ -93,8 +97,8 @@ const ProjectCalendar = () => {
       status: 'in-progress',
       priority: 'medium',
       assigneeId: '1',
-      dueDate: new Date('2024-02-25'),
-      startDate: new Date('2024-02-20'),
+      dueDate: new Date(currentYear, currentMonth, 25),
+      startDate: new Date(currentYear, currentMonth, 20),
       estimatedHours: 10
     },
     {
@@ -104,8 +108,8 @@ const ProjectCalendar = () => {
       status: 'todo',
       priority: 'high',
       assigneeId: '2',
-      dueDate: new Date('2024-02-28'),
-      startDate: new Date('2024-02-22'),
+      dueDate: new Date(currentYear, currentMonth, 28),
+      startDate: new Date(currentYear, currentMonth, 22),
       estimatedHours: 24
     },
     {
@@ -115,8 +119,8 @@ const ProjectCalendar = () => {
       status: 'todo',
       priority: 'medium',
       assigneeId: '3',
-      dueDate: new Date('2024-03-05'),
-      startDate: new Date('2024-03-01'),
+      dueDate: new Date(currentYear, currentMonth + 1, 5),
+      startDate: new Date(currentYear, currentMonth + 1, 1),
       estimatedHours: 16
     },
     {
@@ -126,8 +130,8 @@ const ProjectCalendar = () => {
       status: 'in-progress',
       priority: 'medium',
       assigneeId: '1',
-      dueDate: new Date('2024-02-14'),
-      startDate: new Date('2024-02-10'),
+      dueDate: new Date(currentYear, currentMonth, 14),
+      startDate: new Date(currentYear, currentMonth, 10),
       estimatedHours: 12
     },
     {
@@ -137,8 +141,8 @@ const ProjectCalendar = () => {
       status: 'todo',
       priority: 'low',
       assigneeId: '4',
-      dueDate: new Date('2024-02-26'),
-      startDate: new Date('2024-02-24'),
+      dueDate: new Date(currentYear, currentMonth, 26),
+      startDate: new Date(currentYear, currentMonth, 24),
       estimatedHours: 20
     },
     {
@@ -148,8 +152,8 @@ const ProjectCalendar = () => {
       status: 'todo',
       priority: 'high',
       assigneeId: '4',
-      dueDate: new Date('2024-03-10'),
-      startDate: new Date('2024-03-08'),
+      dueDate: new Date(currentYear, currentMonth + 1, 10),
+      startDate: new Date(currentYear, currentMonth + 1, 8),
       estimatedHours: 8
     },
     {
@@ -159,8 +163,8 @@ const ProjectCalendar = () => {
       status: 'completed',
       priority: 'medium',
       assigneeId: '4',
-      dueDate: new Date('2024-02-12'),
-      startDate: new Date('2024-02-09'),
+      dueDate: new Date(currentYear, currentMonth, 12),
+      startDate: new Date(currentYear, currentMonth, 9),
       estimatedHours: 6
     },
     {
@@ -170,8 +174,8 @@ const ProjectCalendar = () => {
       status: 'todo',
       priority: 'urgent',
       assigneeId: '1',
-      dueDate: new Date('2024-03-15'),
-      startDate: new Date('2024-03-12'),
+      dueDate: new Date(currentYear, currentMonth + 1, 15),
+      startDate: new Date(currentYear, currentMonth + 1, 12),
       estimatedHours: 10
     }
   ];
@@ -227,9 +231,9 @@ const ProjectCalendar = () => {
     }
   };
 
-  const currentMonth = startOfMonth(selectedDate);
+  const calendarStartMonth = startOfMonth(selectedDate);
   const monthEnd = endOfMonth(selectedDate);
-  const monthDays = eachDayOfInterval({ start: currentMonth, end: monthEnd });
+  const monthDays = eachDayOfInterval({ start: calendarStartMonth, end: monthEnd });
 
   return (
     <div className="min-h-screen bg-background">
@@ -512,50 +516,79 @@ const ProjectCalendar = () => {
                           </Button>
                         </div>
                       </div>
-                      <div className="border rounded-lg">
-                        <div className="grid grid-cols-12 gap-0 min-h-[600px]">
-                          {/* Time column */}
-                          <div className="col-span-2 border-r">
-                            {Array.from({ length: 24 }, (_, i) => (
-                              <div key={i} className="h-12 border-b p-2 text-xs text-muted-foreground">
-                                {format(new Date().setHours(i, 0, 0, 0), 'HH:mm')}
-                              </div>
-                            ))}
+                      
+                      <div className="space-y-3">
+                        {getTasksForDate(selectedDate).length === 0 ? (
+                          <div className="text-center py-12">
+                            <p className="text-muted-foreground">No tasks scheduled for this day</p>
                           </div>
-                          {/* Tasks column */}
-                          <div className="col-span-10 relative">
-                            {getTasksForDate(selectedDate).map((task, index) => {
-                              const assignee = getAssignee(task.assigneeId);
-                              return (
-                                <div 
-                                  key={task.id}
-                                  className={`absolute left-2 right-2 p-2 rounded border-l-4 ${getPriorityColor(task.priority)} bg-card hover:bg-muted/50 cursor-pointer z-10`}
-                                  style={{ 
-                                    top: `${(index * 60) + 48}px`,
-                                    height: '48px'
-                                  }}
-                                  onClick={() => navigate(`/edit-task/${task.id}`)}
-                                >
-                                  <div className="flex items-center justify-between h-full">
-                                    <div className="flex-1 min-w-0">
-                                      <div className="font-medium text-sm truncate">{task.title}</div>
-                                      <div className="text-xs text-muted-foreground flex items-center gap-2">
-                                        <span>{assignee?.name}</span>
-                                        <Badge className={`${getStatusBgColor(task.status)} text-xs`}>
+                        ) : (
+                          getTasksForDate(selectedDate).map(task => {
+                            const assignee = getAssignee(task.assigneeId);
+                            const isStartDate = task.startDate && isSameDay(task.startDate, selectedDate);
+                            const isDueDate = task.dueDate && isSameDay(task.dueDate, selectedDate);
+                            
+                            return (
+                              <Card 
+                                key={task.id}
+                                className={`cursor-pointer hover:shadow-md transition-shadow border-l-4 ${getPriorityColor(task.priority)}`}
+                                onClick={() => navigate(`/edit-task/${task.id}`)}
+                              >
+                                <CardContent className="p-4">
+                                  <div className="flex items-start justify-between mb-3">
+                                    <div className="flex-1">
+                                      <h4 className="font-semibold text-lg mb-1">{task.title}</h4>
+                                      <p className="text-muted-foreground text-sm mb-3">{task.description}</p>
+                                      
+                                      <div className="flex items-center gap-3">
+                                        <div className="flex items-center gap-2">
+                                          <Avatar className="h-8 w-8">
+                                            <AvatarImage src={assignee?.avatar} />
+                                            <AvatarFallback style={{ backgroundColor: assignee?.color + '20', color: assignee?.color }}>
+                                              {assignee?.name.split(' ').map(n => n[0]).join('')}
+                                            </AvatarFallback>
+                                          </Avatar>
+                                          <span className="text-sm font-medium">{assignee?.name}</span>
+                                        </div>
+                                        
+                                        <Badge className={`${getStatusBgColor(task.status)}`}>
                                           {task.status}
                                         </Badge>
+                                        
+                                        <Badge variant="outline">{task.priority}</Badge>
                                       </div>
                                     </div>
                                   </div>
-                                </div>
-                              );
-                            })}
-                            {/* Hour lines */}
-                            {Array.from({ length: 24 }, (_, i) => (
-                              <div key={i} className="h-12 border-b"></div>
-                            ))}
-                          </div>
-                        </div>
+                                  
+                                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                                    <div className="flex gap-4">
+                                      {task.startDate && (
+                                        <span>Start: {format(task.startDate, 'MMM dd')}</span>
+                                      )}
+                                      {task.dueDate && (
+                                        <span>Due: {format(task.dueDate, 'MMM dd')}</span>
+                                      )}
+                                      <span>{task.estimatedHours}h estimated</span>
+                                    </div>
+                                    
+                                    <div className="flex gap-2">
+                                      {isStartDate && (
+                                        <Badge variant="outline" className="text-green-600 border-green-600">
+                                          Starting Today
+                                        </Badge>
+                                      )}
+                                      {isDueDate && (
+                                        <Badge variant="outline" className="text-red-600 border-red-600">
+                                          Due Today
+                                        </Badge>
+                                      )}
+                                    </div>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            );
+                          })
+                        )}
                       </div>
                     </div>
                   )}
