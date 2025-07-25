@@ -25,9 +25,10 @@ interface TaskCardProps {
     tags?: string[];
   };
   className?: string;
+  size?: 'default' | 'compact';
 }
 
-const TaskCard = ({ task, className }: TaskCardProps) => {
+const TaskCard = ({ task, className, size = 'default' }: TaskCardProps) => {
   const navigate = useNavigate();
   const priorityColors = {
     low: 'bg-green-100 text-green-800 border-green-200',
@@ -57,59 +58,100 @@ const TaskCard = ({ task, className }: TaskCardProps) => {
       <HoverCardTrigger asChild>
         <Card 
           className={cn(
-            "group hover:shadow-md transition-all duration-200 border-l-4 cursor-pointer h-24",
+            "group hover:shadow-md transition-all duration-200 border-l-4 cursor-pointer",
+            size === 'compact' ? 'h-16' : 'h-24',
             statusColors[task.status],
             className
           )}
           onClick={() => navigate(`/edit-task/${task.id}`)}
         >
-          <CardContent className="p-3 h-full flex flex-col justify-between">
+          <CardContent className={cn(
+            "h-full flex flex-col justify-between",
+            size === 'compact' ? 'p-2' : 'p-3'
+          )}>
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm opacity-60">{getStatusIcon(task.status)}</span>
+                  <span className={cn(
+                    "opacity-60",
+                    size === 'compact' ? 'text-xs' : 'text-sm'
+                  )}>
+                    {getStatusIcon(task.status)}
+                  </span>
                   <h3 className={cn(
-                    "font-medium text-sm truncate",
+                    "font-medium truncate",
+                    size === 'compact' ? 'text-xs' : 'text-sm',
                     task.status === 'completed' && "line-through text-muted-foreground"
                   )}>
                     {task.title}
                   </h3>
                 </div>
-                <div className="flex items-center gap-2 mt-1">
-                  <Badge variant="secondary" className="text-xs px-1 py-0">
-                    {task.project}
-                  </Badge>
-                  <Badge 
-                    variant="outline" 
-                    className={cn("text-xs px-1 py-0", priorityColors[task.priority])}
-                  >
-                    {task.priority}
-                  </Badge>
-                </div>
+                {size === 'default' && (
+                  <div className="flex items-center gap-2 mt-1">
+                    <Badge variant="secondary" className="text-xs px-1 py-0">
+                      {task.project}
+                    </Badge>
+                    <Badge 
+                      variant="outline" 
+                      className={cn("text-xs px-1 py-0", priorityColors[task.priority])}
+                    >
+                      {task.priority}
+                    </Badge>
+                  </div>
+                )}
               </div>
               {task.assignee && (
-                <Avatar className="w-6 h-6 flex-shrink-0">
+                <Avatar className={cn(
+                  "flex-shrink-0",
+                  size === 'compact' ? 'w-4 h-4' : 'w-6 h-6'
+                )}>
                   <AvatarImage src={task.assignee.avatar} />
-                  <AvatarFallback className="text-xs bg-primary text-primary-foreground">
+                  <AvatarFallback className={cn(
+                    "bg-primary text-primary-foreground",
+                    size === 'compact' ? 'text-[10px]' : 'text-xs'
+                  )}>
                     {task.assignee.name.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
               )}
             </div>
             
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              {task.dueDate && (
-                <div className="flex items-center gap-1">
-                  <Calendar className="w-3 h-3" />
-                  <span className="truncate">{task.dueDate}</span>
+            {size === 'default' && (
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                {task.dueDate && (
+                  <div className="flex items-center gap-1">
+                    <Calendar className="w-3 h-3" />
+                    <span className="truncate">{task.dueDate}</span>
+                  </div>
+                )}
+                <div className="flex gap-1">
+                  {task.tags && task.tags.length > 0 && (
+                    <span className="text-xs opacity-60">+{task.tags.length}</span>
+                  )}
                 </div>
-              )}
-              <div className="flex gap-1">
-                {task.tags && task.tags.length > 0 && (
-                  <span className="text-xs opacity-60">+{task.tags.length}</span>
+              </div>
+            )}
+            {size === 'compact' && (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1">
+                  <Badge variant="secondary" className="text-[10px] px-1 py-0 h-4">
+                    {task.project}
+                  </Badge>
+                  <Badge 
+                    variant="outline" 
+                    className={cn("text-[10px] px-1 py-0 h-4", priorityColors[task.priority])}
+                  >
+                    {task.priority}
+                  </Badge>
+                </div>
+                {task.dueDate && (
+                  <div className="flex items-center gap-1">
+                    <Calendar className="w-2 h-2" />
+                    <span className="text-[10px] text-muted-foreground truncate">{task.dueDate}</span>
+                  </div>
                 )}
               </div>
-            </div>
+            )}
           </CardContent>
         </Card>
       </HoverCardTrigger>
