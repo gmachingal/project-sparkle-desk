@@ -431,19 +431,19 @@ const Attendance = () => {
         </div>
 
         {/* Main Content Tabs */}
-        <Tabs defaultValue="dashboard" className="space-y-6">
+        <Tabs defaultValue="calendar" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="dashboard" className="flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              Dashboard
-            </TabsTrigger>
             <TabsTrigger value="calendar" className="flex items-center gap-2">
               <CalendarIcon className="h-4 w-4" />
               Calendar View
             </TabsTrigger>
+            <TabsTrigger value="details" className="flex items-center gap-2">
+              <Clock className="h-4 w-4" />
+              Log Details
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="dashboard" className="space-y-6">
+          <TabsContent value="details" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Today's Attendance - Compact */}
               <Card className="lg:col-span-2">
