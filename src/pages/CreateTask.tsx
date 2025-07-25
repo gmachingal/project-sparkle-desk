@@ -156,7 +156,7 @@ const CreateTask = () => {
                           <SelectValue placeholder="Select a sprint" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">No Sprint</SelectItem>
+                          <SelectItem value="none">No Sprint</SelectItem>
                           {sprints
                             .filter(sprint => !formData.project || sprint.projectId === formData.project)
                             .map((sprint) => (
