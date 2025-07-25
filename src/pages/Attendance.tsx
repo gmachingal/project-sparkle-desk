@@ -312,6 +312,10 @@ const Attendance = () => {
   ];
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterLocation, setFilterLocation] = useState<string>('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 10;
 
   const handleCheckIn = () => {
     setIsCheckedIn(true);
@@ -616,64 +620,165 @@ const Attendance = () => {
               </Card>
             </div>
 
-            {/* Recent Attendance - Simplified */}
+            {/* Attendance Details with Filters and Pagination */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
-                  <span>Recent Attendance</span>
-                  <Badge variant="secondary">{attendanceRecords.slice(0, 5).length} recent</Badge>
+                  <span>Attendance Details</span>
+                  <Badge variant="secondary">{
+                    attendanceRecords.filter(record => {
+                      const statusMatch = filterStatus === 'all' || record.status === filterStatus;
+                      const locationMatch = filterLocation === 'all' || record.location === filterLocation;
+                      return statusMatch && locationMatch;
+                    }).length
+                  } records</Badge>
                 </CardTitle>
+                {/* Filters */}
+                <div className="flex flex-wrap gap-4 mt-4">
+                  <Select value={filterStatus} onValueChange={setFilterStatus}>
+                    <SelectTrigger className="w-40">
+                      <SelectValue placeholder="Filter by status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="present">Present</SelectItem>
+                      <SelectItem value="late">Late</SelectItem>
+                      <SelectItem value="absent">Absent</SelectItem>
+                      <SelectItem value="leave">On Leave</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={filterLocation} onValueChange={setFilterLocation}>
+                    <SelectTrigger className="w-40">
+                      <SelectValue placeholder="Filter by location" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Locations</SelectItem>
+                      <SelectItem value="office">Office</SelectItem>
+                      <SelectItem value="wfh">Work from Home</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setFilterStatus('all');
+                      setFilterLocation('all');
+                      setCurrentPage(1);
+                    }}
+                  >
+                    Clear Filters
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {attendanceRecords.slice(0, 5).map((record) => (
-                    <div key={record.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
-                      <div className="flex items-center gap-3">
-                        <div className="text-center min-w-[50px]">
-                          <div className="font-bold">{format(new Date(record.date), 'dd')}</div>
-                          <div className="text-xs text-muted-foreground">{format(new Date(record.date), 'MMM')}</div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {record.status === 'leave' ? (
-                            <CalendarIcon className="h-4 w-4 text-blue-600" />
-                          ) : record.status === 'absent' ? (
-                            <XCircle className="h-4 w-4 text-red-600" />
-                          ) : record.location === 'wfh' ? (
-                            <Home className="h-4 w-4 text-blue-600" />
-                          ) : (
-                            <Building className="h-4 w-4 text-gray-600" />
-                          )}
-                          <div>
-                            <div className="font-medium text-sm">
-                              {record.status === 'leave' ? record.leaveType : 
-                               record.status === 'absent' ? 'Absent' :
-                               record.location === 'wfh' ? 'Work from Home' : 'Office'}
+                  {(() => {
+                    const filteredRecords = attendanceRecords.filter(record => {
+                      const statusMatch = filterStatus === 'all' || record.status === filterStatus;
+                      const locationMatch = filterLocation === 'all' || record.location === filterLocation;
+                      return statusMatch && locationMatch;
+                    });
+                    
+                    const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
+                    const startIndex = (currentPage - 1) * recordsPerPage;
+                    const endIndex = startIndex + recordsPerPage;
+                    const currentRecords = filteredRecords.slice(startIndex, endIndex);
+                    
+                    return (
+                      <>
+                        {currentRecords.map((record) => (
+                          <div key={record.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                            <div className="flex items-center gap-3">
+                              <div className="text-center min-w-[60px]">
+                                <div className="font-bold">{format(new Date(record.date), 'dd')}</div>
+                                <div className="text-xs text-muted-foreground">{format(new Date(record.date), 'MMM')}</div>
+                                <div className="text-xs text-muted-foreground">{format(new Date(record.date), 'EEE')}</div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                {record.status === 'leave' ? (
+                                  <CalendarIcon className="h-4 w-4 text-blue-600" />
+                                ) : record.status === 'absent' ? (
+                                  <XCircle className="h-4 w-4 text-red-600" />
+                                ) : record.location === 'wfh' ? (
+                                  <Home className="h-4 w-4 text-blue-600" />
+                                ) : (
+                                  <Building className="h-4 w-4 text-gray-600" />
+                                )}
+                                <div>
+                                  <div className="font-medium text-sm">
+                                    {record.status === 'leave' ? record.leaveType : 
+                                     record.status === 'absent' ? 'Absent' :
+                                     record.location === 'wfh' ? 'Work from Home' : 'Office'}
+                                  </div>
+                                  <div className="text-xs text-muted-foreground">
+                                    {record.status === 'present' || record.status === 'late' ? (
+                                      `${record.hours}h worked`
+                                    ) : record.status === 'absent' ? (
+                                      record.reason
+                                    ) : record.status === 'leave' ? (
+                                      'On Leave'
+                                    ) : null}
+                                  </div>
+                                </div>
+                              </div>
                             </div>
-                            <div className="text-xs text-muted-foreground">
-                              {record.status === 'present' || record.status === 'late' ? (
-                                `${record.hours}h worked`
-                              ) : record.status === 'absent' ? (
-                                record.reason
-                              ) : record.status === 'leave' ? (
-                                'On Leave'
-                              ) : null}
+                            <div className="flex items-center gap-3">
+                              {(record.status === 'present' || record.status === 'late') && (
+                                <div className="text-right text-xs">
+                                  <div className="font-medium">{record.checkIn} - {record.checkOut}</div>
+                                  {record.overtime > 0 && (
+                                    <div className="text-amber-600">+{record.overtime}h OT</div>
+                                  )}
+                                </div>
+                              )}
+                              {getStatusBadge(record.status)}
                             </div>
                           </div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        {(record.status === 'present' || record.status === 'late') && (
-                          <div className="text-right text-xs">
-                            <div className="font-medium">{record.checkIn} - {record.checkOut}</div>
-                            {record.overtime > 0 && (
-                              <div className="text-amber-600">+{record.overtime}h OT</div>
-                            )}
+                        ))}
+                        
+                        {/* Pagination */}
+                        {totalPages > 1 && (
+                          <div className="flex items-center justify-between pt-4 border-t">
+                            <div className="text-sm text-muted-foreground">
+                              Showing {startIndex + 1}-{Math.min(endIndex, filteredRecords.length)} of {filteredRecords.length} records
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setCurrentPage(currentPage - 1)}
+                                disabled={currentPage === 1}
+                              >
+                                <ChevronLeft className="h-4 w-4" />
+                                Previous
+                              </Button>
+                              <div className="flex items-center gap-1">
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                  <Button
+                                    key={page}
+                                    variant={currentPage === page ? "default" : "outline"}
+                                    size="sm"
+                                    onClick={() => setCurrentPage(page)}
+                                    className="w-8 h-8"
+                                  >
+                                    {page}
+                                  </Button>
+                                ))}
+                              </div>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setCurrentPage(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                              >
+                                Next
+                                <ChevronRight className="h-4 w-4" />
+                              </Button>
+                            </div>
                           </div>
                         )}
-                        {getStatusBadge(record.status)}
-                      </div>
-                    </div>
-                  ))}
+                      </>
+                    );
+                  })()}
                 </div>
               </CardContent>
             </Card>
