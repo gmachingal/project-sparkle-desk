@@ -202,259 +202,254 @@ const TaskView = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <div className="container mx-auto px-4 py-8">
-        {/* Header Section */}
-        <div className="mb-8">
-          <div className="flex items-center gap-4 mb-6">
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        {/* Navigation Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
             <Button variant="ghost" onClick={() => navigate('/my-tasks')}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to My Tasks
             </Button>
-            <Button onClick={() => navigate(`/edit-task/${task.id}`)}>
-              <Edit className="h-4 w-4 mr-2" />
-              Edit Task
-            </Button>
           </div>
+          <Button onClick={() => navigate(`/edit-task/${task.id}`)}>
+            <Edit className="h-4 w-4 mr-2" />
+            Edit Task
+          </Button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Task Details */}
-          <div className="lg:col-span-2 space-y-6">
-            <Card>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2 flex-1">
-                    <CardTitle className="text-2xl">{task.title}</CardTitle>
-                    <div className="flex items-center gap-2">
-                      <Badge className={getStatusColor(task.status)}>
-                        {getStatusIcon(task.status)}
-                        <span className="ml-1 capitalize">{task.status.replace('-', ' ')}</span>
-                      </Badge>
-                      <Badge className={getPriorityColor(task.priority)}>
-                        <Flag className="w-3 h-3 mr-1" />
-                        {task.priority} priority
-                      </Badge>
-                    </div>
+        {/* Task Header Card */}
+        <Card className="mb-8">
+          <CardHeader className="pb-4">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <CardTitle className="text-3xl mb-3">{task.title}</CardTitle>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <Badge className={getStatusColor(task.status)}>
+                    {getStatusIcon(task.status)}
+                    <span className="ml-1 capitalize">{task.status.replace('-', ' ')}</span>
+                  </Badge>
+                  <Badge className={getPriorityColor(task.priority)}>
+                    <Flag className="w-3 h-3 mr-1" />
+                    {task.priority} priority
+                  </Badge>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <FolderOpen className="w-4 h-4" />
+                    {task.project}
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <h3 className="font-semibold mb-2">Description</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {task.description}
-                  </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Avatar className="w-10 h-10">
+                  <AvatarImage src={task.assignee.avatar} />
+                  <AvatarFallback className="bg-primary text-primary-foreground">
+                    {task.assignee.name.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="text-sm">
+                  <div className="font-medium">{task.assignee.name}</div>
+                  <div className="text-muted-foreground">Assignee</div>
                 </div>
-
-                {task.tags && task.tags.length > 0 && (
-                  <div>
-                    <h3 className="font-semibold mb-2">Tags</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {task.tags.map((tag) => (
-                        <Badge key={tag} variant="secondary" className="text-xs">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Progress Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Progress</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between text-sm">
-                    <span>Time Progress</span>
-                    <span>{task.actualHours}h / {task.estimatedHours}h</span>
-                  </div>
-                  <div className="w-full bg-muted rounded-full h-2">
-                    <div 
-                      className="bg-primary h-2 rounded-full transition-all duration-300" 
-                      style={{ width: `${Math.min(progressPercentage, 100)}%` }}
-                    />
-                  </div>
-                  <div className="text-center text-sm text-muted-foreground">
-                    {progressPercentage}% completed
-                  </div>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="mb-6">
+              <h3 className="font-semibold mb-3">Description</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                {task.description}
+              </p>
+            </div>
+            
+            {task.tags && task.tags.length > 0 && (
+              <div>
+                <h3 className="font-semibold mb-3">Tags</h3>
+                <div className="flex flex-wrap gap-2">
+                  {task.tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Task Details */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Task Details</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <FolderOpen className="w-4 h-4 text-muted-foreground" />
-                  <div>
-                    <div className="text-sm text-muted-foreground">Project</div>
-                    <div className="font-medium">{task.project}</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <User className="w-4 h-4 text-muted-foreground" />
-                  <div>
-                    <div className="text-sm text-muted-foreground">Assignee</div>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="w-6 h-6">
-                        <AvatarImage src={task.assignee.avatar} />
-                        <AvatarFallback className="text-xs bg-primary text-primary-foreground">
-                          {task.assignee.name.charAt(0)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="font-medium">{task.assignee.name}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Play className="w-4 h-4 text-muted-foreground" />
-                  <div>
-                    <div className="text-sm text-muted-foreground">Start Date</div>
-                    <div className="font-medium">{format(task.startDate, 'MMM dd, yyyy')}</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Calendar className="w-4 h-4 text-muted-foreground" />
-                  <div>
-                    <div className="text-sm text-muted-foreground">Due Date</div>
-                    <div className="font-medium">{format(task.dueDate, 'MMM dd, yyyy')}</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Clock className="w-4 h-4 text-muted-foreground" />
-                  <div>
-                    <div className="text-sm text-muted-foreground">Created</div>
-                    <div className="font-medium">{format(task.createdDate, 'MMM dd, yyyy')}</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Sprint Details */}
-            {task.sprint && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <Target className="w-4 h-4" />
-                    Sprint Details
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <div className="text-sm text-muted-foreground">Sprint Name</div>
-                    <div className="font-medium">{task.sprint.name}</div>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1">
-                      <div className="text-sm text-muted-foreground">Status</div>
-                      <Badge 
-                        variant={task.sprint.status === 'active' ? 'default' : task.sprint.status === 'completed' ? 'secondary' : 'outline'}
-                        className="mt-1"
-                      >
-                        {task.sprint.status.charAt(0).toUpperCase() + task.sprint.status.slice(1)}
-                      </Badge>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Sprint Progress</span>
-                      <span className="font-medium">{task.sprint.progress}%</span>
-                    </div>
-                    <div className="w-full bg-muted rounded-full h-2">
-                      <div 
-                        className={`h-2 rounded-full transition-all duration-300 ${
-                          task.sprint.status === 'active' ? 'bg-blue-500' : 
-                          task.sprint.status === 'completed' ? 'bg-green-500' : 'bg-gray-400'
-                        }`}
-                        style={{ width: `${task.sprint.progress}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div>
-                      <div className="text-muted-foreground">Start Date</div>
-                      <div className="font-medium">{format(task.sprint.startDate, 'MMM dd')}</div>
-                    </div>
-                    <div>
-                      <div className="text-muted-foreground">End Date</div>
-                      <div className="font-medium">{format(task.sprint.endDate, 'MMM dd')}</div>
-                    </div>
-                  </div>
-
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="w-full"
-                    onClick={() => navigate(`/sprint-dashboard/${task.projectId}/${task.sprint.id}`)}
-                  >
-                    <Target className="w-3 h-3 mr-2" />
-                    View Sprint Dashboard
-                  </Button>
-                </CardContent>
-              </Card>
+              </div>
             )}
+          </CardContent>
+        </Card>
 
-            {!task.sprint && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <Target className="w-4 h-4" />
-                    Sprint Assignment
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-4">
-                    <div className="text-sm text-muted-foreground mb-3">
-                      This task is not assigned to any sprint
-                    </div>
-                    <Button variant="outline" size="sm">
-                      Assign to Sprint
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {/* Progress & Time Tracking */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Clock className="w-4 h-4" />
+                Progress & Time
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span>Time Progress</span>
+                  <span className="font-medium">{task.actualHours}h / {task.estimatedHours}h</span>
+                </div>
+                <div className="w-full bg-muted rounded-full h-3">
+                  <div 
+                    className="bg-primary h-3 rounded-full transition-all duration-300" 
+                    style={{ width: `${Math.min(progressPercentage, 100)}%` }}
+                  />
+                </div>
+                <div className="text-center text-sm font-medium">
+                  {progressPercentage}% completed
+                </div>
+              </div>
 
-            {/* Time Tracking */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Time Tracking</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
+              <div className="pt-4 border-t space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Estimated</span>
+                  <span className="text-sm text-muted-foreground">Estimated Hours</span>
                   <span className="font-medium">{task.estimatedHours}h</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Actual</span>
+                  <span className="text-sm text-muted-foreground">Actual Hours</span>
                   <span className="font-medium">{task.actualHours}h</span>
                 </div>
-                <div className="flex justify-between border-t pt-2">
+                <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">Remaining</span>
                   <span className="font-medium">
                     {Math.max(0, task.estimatedHours - task.actualHours)}h
                   </span>
                 </div>
+                <Button variant="outline" size="sm" className="w-full mt-4">
+                  <Clock className="w-3 h-3 mr-2" />
+                  Log Time
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Dates & Timeline */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <CalendarDays className="w-4 h-4" />
+                Timeline
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                  <Play className="w-4 h-4 text-green-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm text-muted-foreground">Start Date</div>
+                  <div className="font-medium">{format(task.startDate, 'MMM dd, yyyy')}</div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                  <Calendar className="w-4 h-4 text-red-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm text-muted-foreground">Due Date</div>
+                  <div className="font-medium">{format(task.dueDate, 'MMM dd, yyyy')}</div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                  <Clock className="w-4 h-4 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm text-muted-foreground">Created</div>
+                  <div className="font-medium">{format(task.createdDate, 'MMM dd, yyyy')}</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Sprint Details */}
+          {task.sprint && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Target className="w-4 h-4" />
+                  Sprint Details
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <div className="text-sm text-muted-foreground">Sprint Name</div>
+                  <div className="font-medium">{task.sprint.name}</div>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-muted-foreground">Status</div>
+                  <Badge 
+                    variant={task.sprint.status === 'active' ? 'default' : task.sprint.status === 'completed' ? 'secondary' : 'outline'}
+                  >
+                    {task.sprint.status.charAt(0).toUpperCase() + task.sprint.status.slice(1)}
+                  </Badge>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Sprint Progress</span>
+                    <span className="font-medium">{task.sprint.progress}%</span>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-2">
+                    <div 
+                      className={`h-2 rounded-full transition-all duration-300 ${
+                        task.sprint.status === 'active' ? 'bg-blue-500' : 
+                        task.sprint.status === 'completed' ? 'bg-green-500' : 'bg-gray-400'
+                      }`}
+                      style={{ width: `${task.sprint.progress}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <div className="text-muted-foreground">Start</div>
+                    <div className="font-medium">{format(task.sprint.startDate, 'MMM dd')}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">End</div>
+                    <div className="font-medium">{format(task.sprint.endDate, 'MMM dd')}</div>
+                  </div>
+                </div>
+
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full"
+                  onClick={() => navigate(`/sprint-dashboard/${task.projectId}/${task.sprint.id}`)}
+                >
+                  <Target className="w-3 h-3 mr-2" />
+                  View Sprint Dashboard
+                </Button>
               </CardContent>
             </Card>
-          </div>
+          )}
+
+          {!task.sprint && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Target className="w-4 h-4" />
+                  Sprint Assignment
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-6">
+                  <Target className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
+                  <div className="text-sm text-muted-foreground mb-4">
+                    This task is not assigned to any sprint
+                  </div>
+                  <Button variant="outline" size="sm">
+                    Assign to Sprint
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>
