@@ -441,7 +441,7 @@ const MyTasks = () => {
                                     className={`text-xs p-1 rounded border-l-2 ${getPriorityColor(task.priority)} truncate cursor-pointer`}
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      navigate(`/edit-task/${task.id}`);
+                                      navigate(`/task/${task.id}`);
                                     }}
                                     title={`${task.title} - ${task.assignee?.name}`}
                                   >
@@ -503,7 +503,7 @@ const MyTasks = () => {
                                   <div
                                     key={task.id}
                                     className={`text-xs p-2 rounded border-l-2 ${getPriorityColor(task.priority)} cursor-pointer`}
-                                    onClick={() => navigate(`/edit-task/${task.id}`)}
+                            onClick={() => navigate(`/task/${task.id}`)}
                                   >
                                     <div className="font-medium truncate">{task.title}</div>
                                     <div className={`text-xs mt-1 ${getStatusBgColor(task.status)} px-1 rounded`}>
@@ -548,7 +548,7 @@ const MyTasks = () => {
                         {getTasksForSelectedDate().length > 0 ? (
                           getTasksForSelectedDate().map(task => (
                             <Card key={task.id} className="cursor-pointer hover:shadow-md transition-shadow"
-                                  onClick={() => navigate(`/edit-task/${task.id}`)}>
+                                  onClick={() => navigate(`/task/${task.id}`)}>
                               <CardContent className="p-4">
                                 <div className="flex items-start justify-between">
                                   <div className="space-y-2 flex-1">
