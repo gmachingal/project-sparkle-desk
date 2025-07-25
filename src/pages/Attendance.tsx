@@ -53,7 +53,7 @@ const Attendance = () => {
   const attendanceRecords = [
     {
       id: '1',
-      date: '2025-01-24',
+      date: '2025-01-25',
       checkIn: '09:15 AM',
       checkOut: '06:30 PM',
       location: 'office',
@@ -63,7 +63,7 @@ const Attendance = () => {
     },
     {
       id: '2',
-      date: '2025-01-23',
+      date: '2025-01-24',
       checkIn: '09:00 AM',
       checkOut: '05:45 PM',
       location: 'wfh',
@@ -73,7 +73,7 @@ const Attendance = () => {
     },
     {
       id: '3',
-      date: '2025-01-22',
+      date: '2025-01-23',
       checkIn: '10:30 AM',
       checkOut: '06:15 PM',
       location: 'office',
@@ -83,7 +83,7 @@ const Attendance = () => {
     },
     {
       id: '4',
-      date: '2025-01-21',
+      date: '2025-01-22',
       checkIn: null,
       checkOut: null,
       location: null,
@@ -94,7 +94,7 @@ const Attendance = () => {
     },
     {
       id: '5',
-      date: '2025-01-20',
+      date: '2025-01-21',
       checkIn: '09:05 AM',
       checkOut: '05:30 PM',
       location: 'office',
@@ -104,6 +104,16 @@ const Attendance = () => {
     },
     {
       id: '6',
+      date: '2025-01-20',
+      checkIn: '08:45 AM',
+      checkOut: '05:15 PM',
+      location: 'wfh',
+      status: 'present',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '7',
       date: '2025-01-17',
       checkIn: null,
       checkOut: null,
@@ -114,7 +124,7 @@ const Attendance = () => {
       leaveType: 'Annual Leave'
     },
     {
-      id: '7',
+      id: '8',
       date: '2025-01-16',
       checkIn: '08:45 AM',
       checkOut: '05:15 PM',
@@ -124,7 +134,7 @@ const Attendance = () => {
       overtime: 0.5
     },
     {
-      id: '8',
+      id: '9',
       date: '2025-01-15',
       checkIn: '09:30 AM',
       checkOut: '06:00 PM',
@@ -134,7 +144,7 @@ const Attendance = () => {
       overtime: 0.5
     },
     {
-      id: '9',
+      id: '10',
       date: '2025-01-14',
       checkIn: '09:00 AM',
       checkOut: '05:30 PM',
@@ -144,7 +154,7 @@ const Attendance = () => {
       overtime: 0.5
     },
     {
-      id: '10',
+      id: '11',
       date: '2025-01-13',
       checkIn: null,
       checkOut: null,
@@ -153,6 +163,151 @@ const Attendance = () => {
       hours: 0,
       overtime: 0,
       leaveType: 'Personal Leave'
+    },
+    {
+      id: '12',
+      date: '2025-01-10',
+      checkIn: '09:15 AM',
+      checkOut: '06:00 PM',
+      location: 'office',
+      status: 'present',
+      hours: 8.75,
+      overtime: 0.75
+    },
+    {
+      id: '13',
+      date: '2025-01-09',
+      checkIn: '09:45 AM',
+      checkOut: '05:45 PM',
+      location: 'wfh',
+      status: 'late',
+      hours: 8.0,
+      overtime: 0
+    },
+    {
+      id: '14',
+      date: '2025-01-08',
+      checkIn: '08:30 AM',
+      checkOut: '05:00 PM',
+      location: 'office',
+      status: 'present',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '15',
+      date: '2025-01-07',
+      checkIn: '09:00 AM',
+      checkOut: '05:30 PM',
+      location: 'office',
+      status: 'present',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '16',
+      date: '2025-01-06',
+      checkIn: null,
+      checkOut: null,
+      location: null,
+      status: 'leave',
+      hours: 0,
+      overtime: 0,
+      leaveType: 'Maternity Leave'
+    },
+    {
+      id: '17',
+      date: '2025-01-03',
+      checkIn: '09:10 AM',
+      checkOut: '06:15 PM',
+      location: 'wfh',
+      status: 'present',
+      hours: 9.08,
+      overtime: 1.08
+    },
+    {
+      id: '18',
+      date: '2025-01-02',
+      checkIn: '10:00 AM',
+      checkOut: '06:30 PM',
+      location: 'office',
+      status: 'late',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '19',
+      date: '2025-01-01',
+      checkIn: null,
+      checkOut: null,
+      location: null,
+      status: 'leave',
+      hours: 0,
+      overtime: 0,
+      leaveType: 'Public Holiday'
+    },
+    {
+      id: '20',
+      date: '2024-12-31',
+      checkIn: '09:00 AM',
+      checkOut: '03:00 PM',
+      location: 'office',
+      status: 'present',
+      hours: 6.0,
+      overtime: 0
+    },
+    {
+      id: '21',
+      date: '2024-12-30',
+      checkIn: null,
+      checkOut: null,
+      location: null,
+      status: 'absent',
+      hours: 0,
+      overtime: 0,
+      reason: 'Family emergency'
+    },
+    {
+      id: '22',
+      date: '2024-12-27',
+      checkIn: '08:45 AM',
+      checkOut: '05:30 PM',
+      location: 'wfh',
+      status: 'present',
+      hours: 8.75,
+      overtime: 0.75
+    },
+    {
+      id: '23',
+      date: '2024-12-26',
+      checkIn: null,
+      checkOut: null,
+      location: null,
+      status: 'leave',
+      hours: 0,
+      overtime: 0,
+      leaveType: 'Boxing Day'
+    },
+    {
+      id: '24',
+      date: '2024-12-25',
+      checkIn: null,
+      checkOut: null,
+      location: null,
+      status: 'leave',
+      hours: 0,
+      overtime: 0,
+      leaveType: 'Christmas Day'
+    },
+    {
+      id: '25',
+      date: '2024-12-24',
+      checkIn: '09:00 AM',
+      checkOut: '02:00 PM',
+      location: 'office',
+      status: 'present',
+      hours: 5.0,
+      overtime: 0
     }
   ];
 
