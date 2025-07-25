@@ -12,9 +12,10 @@ import { Progress } from '@/components/ui/progress';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import SprintTaskManager from '@/components/SprintTaskManager';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Calendar as CalendarIcon, List, Users, Filter, Plus, Edit, BarChart3, Target, Clock, TrendingUp, CheckCircle, MoreVertical, Settings, User, CalendarDays } from 'lucide-react';
+import { ArrowLeft, Calendar as CalendarIcon, List, Users, Filter, Plus, Edit, BarChart3, Target, Clock, TrendingUp, CheckCircle, MoreVertical, Settings, User, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
 import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, addDays, differenceInDays } from 'date-fns';
 
 const SprintDashboard = () => {
@@ -618,25 +619,48 @@ const SprintDashboard = () => {
                <CardContent>
                  {calendarView === 'month' && (
                    <div className="space-y-4">
-                     <div className="flex items-center justify-between">
-                       <h3 className="font-medium">{format(selectedDate, 'MMMM yyyy')}</h3>
-                       <div className="flex gap-2">
-                         <Button 
-                           variant="outline" 
-                           size="sm" 
-                           onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1))}
-                         >
-                           Previous
-                         </Button>
-                         <Button 
-                           variant="outline" 
-                           size="sm" 
-                           onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1))}
-                         >
-                           Next
-                         </Button>
-                       </div>
-                     </div>
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-medium">{format(selectedDate, 'MMMM yyyy')}</h3>
+                        <div className="flex items-center gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1))}
+                          >
+                            <ChevronLeft className="h-4 w-4" />
+                          </Button>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                <CalendarIcon className="h-4 w-4 mr-2" />
+                                {format(selectedDate, 'MMM yyyy')}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={selectedDate}
+                                onSelect={(date) => date && setSelectedDate(date)}
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setSelectedDate(new Date())}
+                          >
+                            Today
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1))}
+                          >
+                            <ChevronRight className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
                      
                      {/* Calendar Grid */}
                      <div className="grid grid-cols-7 gap-1">
@@ -738,22 +762,45 @@ const SprintDashboard = () => {
                        <h3 className="font-medium">
                          Week of {format(startOfWeek(selectedDate), 'MMM dd')} - {format(endOfWeek(selectedDate), 'MMM dd, yyyy')}
                        </h3>
-                       <div className="flex gap-2">
-                         <Button 
-                           variant="outline" 
-                           size="sm"
-                           onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 7 * 24 * 60 * 60 * 1000))}
-                         >
-                           Previous
-                         </Button>
-                         <Button 
-                           variant="outline" 
-                           size="sm"
-                           onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 7 * 24 * 60 * 60 * 1000))}
-                         >
-                           Next
-                         </Button>
-                       </div>
+                        <div className="flex items-center gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 7 * 24 * 60 * 60 * 1000))}
+                          >
+                            <ChevronLeft className="h-4 w-4" />
+                          </Button>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                <CalendarIcon className="h-4 w-4 mr-2" />
+                                Week of {format(startOfWeek(selectedDate), 'MMM dd')}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={selectedDate}
+                                onSelect={(date) => date && setSelectedDate(date)}
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setSelectedDate(new Date())}
+                          >
+                            Today
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 7 * 24 * 60 * 60 * 1000))}
+                          >
+                            <ChevronRight className="h-4 w-4" />
+                          </Button>
+                        </div>
                      </div>
                      
                      {/* Week Grid */}
@@ -782,31 +829,64 @@ const SprintDashboard = () => {
                                {isToday && <Badge variant="outline" className="text-xs">Today</Badge>}
                              </div>
                              <div className="space-y-1 overflow-hidden">
-                               {tasksForDay.map(task => {
-                                 const assignee = getAssignee(task.assigneeId);
-                                 return (
-                                   <div 
-                                     key={task.id} 
-                                     className={`text-xs p-2 rounded border-l-2 ${getPriorityColor(task.priority)} cursor-pointer hover:opacity-80`}
-                                     onClick={(e) => {
-                                       e.stopPropagation();
-                                       navigate(`/task/${task.id}`);
-                                     }}
-                                     title={`${task.title} - ${assignee?.name}`}
-                                   >
-                                      <div className="font-medium truncate">{task.title}</div>
-                                      <div className="flex items-center gap-1 mt-1">
-                                        <div className={`w-2 h-2 rounded-full ${getStatusColor(task.status)}`}></div>
-                                        <span className="text-xs opacity-70">{assignee?.name}</span>
-                                      </div>
-                                      <div className="text-xs text-muted-foreground mt-1">
-                                        {task.startDate && `Start: ${format(task.startDate, 'MMM dd')}`}
-                                        {task.startDate && task.dueDate && ' • '}
-                                        {task.dueDate && `Due: ${format(task.dueDate, 'MMM dd')}`}
-                                      </div>
-                                   </div>
-                                 );
-                               })}
+                                {tasksForDay.map(task => {
+                                  const assignee = getAssignee(task.assigneeId);
+                                  return (
+                                    <HoverCard key={task.id}>
+                                      <HoverCardTrigger asChild>
+                                        <div 
+                                          className={`text-xs p-2 rounded border-l-2 ${getPriorityColor(task.priority)} cursor-pointer hover:opacity-80`}
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            navigate(`/task/${task.id}`);
+                                          }}
+                                        >
+                                          <div className="font-medium truncate">{task.title}</div>
+                                          <div className="flex items-center gap-1 mt-1">
+                                            <div className={`w-2 h-2 rounded-full ${getStatusColor(task.status)}`}></div>
+                                            <span className="text-xs opacity-70">{assignee?.name}</span>
+                                          </div>
+                                          <div className="text-xs text-muted-foreground mt-1">
+                                            {task.startDate && `Start: ${format(task.startDate, 'MMM dd')}`}
+                                            {task.startDate && task.dueDate && ' • '}
+                                            {task.dueDate && `Due: ${format(task.dueDate, 'MMM dd')}`}
+                                          </div>
+                                        </div>
+                                      </HoverCardTrigger>
+                                      <HoverCardContent className="w-80">
+                                        <div className="space-y-3">
+                                          <div>
+                                            <h4 className="font-semibold">{task.title}</h4>
+                                            <p className="text-sm text-muted-foreground">{task.description}</p>
+                                          </div>
+                                          <div className="space-y-2">
+                                            <div className="flex items-center gap-2">
+                                              <User className="h-4 w-4 text-muted-foreground" />
+                                              <span className="text-sm">Resource: {assignee?.name}</span>
+                                            </div>
+                                            {task.startDate && (
+                                              <div className="flex items-center gap-2">
+                                                <CalendarDays className="h-4 w-4 text-muted-foreground" />
+                                                <span className="text-sm">Start: {format(task.startDate, 'MMM dd, yyyy')}</span>
+                                              </div>
+                                            )}
+                                            {task.dueDate && (
+                                              <div className="flex items-center gap-2">
+                                                <CalendarDays className="h-4 w-4 text-muted-foreground" />
+                                                <span className="text-sm">Due: {format(task.dueDate, 'MMM dd, yyyy')}</span>
+                                              </div>
+                                            )}
+                                            <div className="flex items-center gap-2">
+                                              <Badge variant="outline">{sprint.name}</Badge>
+                                              <Badge className={getPriorityColor(task.priority)}>{task.priority}</Badge>
+                                              <Badge variant="secondary">{task.storyPoints} SP</Badge>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </HoverCardContent>
+                                    </HoverCard>
+                                  );
+                                })}
                              </div>
                            </div>
                          );
@@ -821,22 +901,45 @@ const SprintDashboard = () => {
                        <h3 className="font-medium">
                          {format(selectedDate, 'EEEE, MMMM dd, yyyy')}
                        </h3>
-                       <div className="flex gap-2">
-                         <Button 
-                           variant="outline" 
-                           size="sm"
-                           onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 24 * 60 * 60 * 1000))}
-                         >
-                           Previous Day
-                         </Button>
-                         <Button 
-                           variant="outline" 
-                           size="sm"
-                           onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000))}
-                         >
-                           Next Day
-                         </Button>
-                       </div>
+                        <div className="flex items-center gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 24 * 60 * 60 * 1000))}
+                          >
+            <ChevronRight className="h-4 w-4" />
+                          </Button>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                <CalendarIcon className="h-4 w-4 mr-2" />
+                                {format(selectedDate, 'MMM dd, yyyy')}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={selectedDate}
+                                onSelect={(date) => date && setSelectedDate(date)}
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setSelectedDate(new Date())}
+                          >
+                            Today
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000))}
+                          >
+                            <ChevronLeft className="h-4 w-4" />
+                          </Button>
+                        </div>
                      </div>
                      
                      <div className="space-y-3">

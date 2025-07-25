@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import TaskCard from "@/components/TaskCard";
 import Header from "@/components/Header";
@@ -21,7 +23,9 @@ import {
   List,
   Timer,
   User,
-  CalendarDays
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek } from 'date-fns';
@@ -399,20 +403,43 @@ const MyTasks = () => {
                         <h3 className="font-medium">
                           {format(selectedDate, 'MMMM yyyy')}
                         </h3>
-                        <div className="flex gap-2">
+                        <div className="flex items-center gap-2">
                           <Button 
                             variant="outline" 
                             size="sm"
                             onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1))}
                           >
-                            Previous
+                            <ChevronLeft className="h-4 w-4" />
+                          </Button>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                <CalendarIcon className="h-4 w-4 mr-2" />
+                                {format(selectedDate, 'MMM yyyy')}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={selectedDate}
+                                onSelect={(date) => date && setSelectedDate(date)}
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setSelectedDate(new Date())}
+                          >
+                            Today
                           </Button>
                           <Button 
                             variant="outline" 
                             size="sm"
                             onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1))}
                           >
-                            Next
+                            <ChevronRight className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>
@@ -500,20 +527,43 @@ const MyTasks = () => {
                         <h3 className="font-medium">
                           Week of {format(startOfWeek(selectedDate), 'MMM dd')} - {format(endOfWeek(selectedDate), 'MMM dd, yyyy')}
                         </h3>
-                        <div className="flex gap-2">
+                        <div className="flex items-center gap-2">
                           <Button 
                             variant="outline" 
                             size="sm"
                             onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 7 * 24 * 60 * 60 * 1000))}
                           >
-                            Previous
+                            <ChevronLeft className="h-4 w-4" />
+                          </Button>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                <CalendarIcon className="h-4 w-4 mr-2" />
+                                Week of {format(startOfWeek(selectedDate), 'MMM dd')}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={selectedDate}
+                                onSelect={(date) => date && setSelectedDate(date)}
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setSelectedDate(new Date())}
+                          >
+                            Today
                           </Button>
                           <Button 
                             variant="outline" 
                             size="sm"
                             onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 7 * 24 * 60 * 60 * 1000))}
                           >
-                            Next
+                            <ChevronRight className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>
@@ -533,28 +583,53 @@ const MyTasks = () => {
                                 <div className="text-sm font-medium">{format(day, 'EEE')}</div>
                                 <div className="text-lg">{format(day, 'd')}</div>
                               </div>
-                              <div className="space-y-1 min-h-32">
-                                {tasksForDay.map(task => (
-                                  <div
-                                    key={task.id}
-                                    className={`text-xs p-2 rounded border-l-2 ${getPriorityColor(task.priority)} cursor-pointer`}
-                            onClick={() => navigate(`/task/${task.id}`)}
-                                  >
-                                     <div className="font-medium truncate">{task.title}</div>
-                                     <div className="flex items-center justify-between mt-1">
-                                       <div className={`text-xs ${getStatusBgColor(task.status)} px-1 rounded`}>
-                                         {task.status.replace('-', ' ')}
+                                <div className="space-y-1 min-h-32">
+                                 {tasksForDay.map(task => (
+                                   <HoverCard key={task.id}>
+                                     <HoverCardTrigger asChild>
+                                       <div
+                                         className={`text-xs p-2 rounded border-l-2 ${getPriorityColor(task.priority)} cursor-pointer`}
+                                         onClick={() => navigate(`/task/${task.id}`)}
+                                       >
+                                         <div className="font-medium truncate">{task.title}</div>
+                                         <div className="flex items-center justify-between mt-1">
+                                           <div className={`text-xs ${getStatusBgColor(task.status)} px-1 rounded`}>
+                                             {task.status.replace('-', ' ')}
+                                           </div>
+                                           <div className="text-xs text-muted-foreground">
+                                             {task.assignee?.name}
+                                           </div>
+                                         </div>
+                                         <div className="text-xs text-muted-foreground mt-1">
+                                           Due: {format(task.dueDate, 'MMM dd')}
+                                         </div>
                                        </div>
-                                       <div className="text-xs text-muted-foreground">
-                                         {task.assignee?.name}
+                                     </HoverCardTrigger>
+                                     <HoverCardContent className="w-80">
+                                       <div className="space-y-3">
+                                         <div>
+                                           <h4 className="font-semibold">{task.title}</h4>
+                                           <p className="text-sm text-muted-foreground">{task.description}</p>
+                                         </div>
+                                         <div className="space-y-2">
+                                           <div className="flex items-center gap-2">
+                                             <User className="h-4 w-4 text-muted-foreground" />
+                                             <span className="text-sm">Resource: {task.assignee?.name}</span>
+                                           </div>
+                                           <div className="flex items-center gap-2">
+                                             <CalendarDays className="h-4 w-4 text-muted-foreground" />
+                                             <span className="text-sm">Due: {format(task.dueDate, 'MMM dd, yyyy')}</span>
+                                           </div>
+                                           <div className="flex items-center gap-2">
+                                             <Badge variant="outline">{task.project}</Badge>
+                                             <Badge className={getPriorityColor(task.priority)}>{task.priority}</Badge>
+                                           </div>
+                                         </div>
                                        </div>
-                                     </div>
-                                     <div className="text-xs text-muted-foreground mt-1">
-                                       Due: {format(task.dueDate, 'MMM dd')}
-                                     </div>
-                                  </div>
-                                ))}
-                              </div>
+                                     </HoverCardContent>
+                                   </HoverCard>
+                                 ))}
+                               </div>
                             </div>
                           );
                         })}
@@ -568,20 +643,43 @@ const MyTasks = () => {
                         <h3 className="font-medium">
                           {format(selectedDate, 'EEEE, MMMM dd, yyyy')}
                         </h3>
-                        <div className="flex gap-2">
+                        <div className="flex items-center gap-2">
                           <Button 
                             variant="outline" 
                             size="sm"
                             onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 24 * 60 * 60 * 1000))}
                           >
-                            Previous
+                            <ChevronLeft className="h-4 w-4" />
+                          </Button>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                <CalendarIcon className="h-4 w-4 mr-2" />
+                                {format(selectedDate, 'MMM dd, yyyy')}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={selectedDate}
+                                onSelect={(date) => date && setSelectedDate(date)}
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setSelectedDate(new Date())}
+                          >
+                            Today
                           </Button>
                           <Button 
                             variant="outline" 
                             size="sm"
                             onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000))}
                           >
-                            Next
+                            <ChevronRight className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>
