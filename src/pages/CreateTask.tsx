@@ -12,26 +12,36 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CalendarIcon, User, ArrowLeft, Save, Plus } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
 const CreateTask = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const [date, setDate] = useState<Date>();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    project: "",
+    project: searchParams.get('project') || "",
+    sprint: searchParams.get('sprint') || "",
     priority: "",
     assignee: "",
-    status: "todo"
+    status: "todo",
+    storyPoints: "",
+    estimatedHours: ""
   });
 
   const projects = [
     { id: "1", name: "Website Redesign", color: "#8B5CF6" },
     { id: "2", name: "Mobile App", color: "#06B6D4" },
     { id: "3", name: "Marketing Campaign", color: "#10B981" }
+  ];
+
+  const sprints = [
+    { id: "1", name: "Sprint 1 - Foundation", projectId: "1", status: "active" },
+    { id: "2", name: "Sprint 2 - Core Features", projectId: "1", status: "planning" },
+    { id: "3", name: "Sprint 1 - MVP", projectId: "2", status: "active" }
   ];
 
   const teamMembers = [
@@ -137,6 +147,31 @@ const CreateTask = () => {
                         </SelectContent>
                       </Select>
                     </div>
+
+                    {/* Sprint Selection */}
+                    <div className="space-y-2">
+                      <Label>Sprint (Optional)</Label>
+                      <Select value={formData.sprint} onValueChange={(value) => setFormData({ ...formData, sprint: value })}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a sprint" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="">No Sprint</SelectItem>
+                          {sprints
+                            .filter(sprint => !formData.project || sprint.projectId === formData.project)
+                            .map((sprint) => (
+                            <SelectItem key={sprint.id} value={sprint.id}>
+                              <div className="flex items-center gap-2">
+                                <Badge variant={sprint.status === 'active' ? 'default' : 'secondary'} className="text-xs">
+                                  {sprint.status}
+                                </Badge>
+                                {sprint.name}
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
 
                   {/* Right Column */}
@@ -185,6 +220,33 @@ const CreateTask = () => {
                           />
                         </PopoverContent>
                       </Popover>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Story Points</Label>
+                      <Select value={formData.storyPoints} onValueChange={(value) => setFormData({ ...formData, storyPoints: value })}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select story points" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">1 Point</SelectItem>
+                          <SelectItem value="2">2 Points</SelectItem>
+                          <SelectItem value="3">3 Points</SelectItem>
+                          <SelectItem value="5">5 Points</SelectItem>
+                          <SelectItem value="8">8 Points</SelectItem>
+                          <SelectItem value="13">13 Points</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Estimated Hours</Label>
+                      <Input
+                        type="number"
+                        placeholder="Enter estimated hours"
+                        value={formData.estimatedHours}
+                        onChange={(e) => setFormData({ ...formData, estimatedHours: e.target.value })}
+                      />
                     </div>
 
                     <div className="space-y-2">
