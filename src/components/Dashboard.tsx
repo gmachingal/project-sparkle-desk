@@ -168,7 +168,7 @@ const Dashboard = () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-lg">Recent Projects</CardTitle>
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" onClick={() => navigate('/projects')}>
                   <MoreHorizontal className="w-4 h-4" />
                 </Button>
               </CardHeader>
@@ -183,7 +183,7 @@ const Dashboard = () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-lg">Recent Tasks</CardTitle>
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" onClick={() => navigate('/my-tasks')}>
                   <MoreHorizontal className="w-4 h-4" />
                 </Button>
               </CardHeader>

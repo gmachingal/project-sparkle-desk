@@ -37,7 +37,15 @@ const ProjectCard = ({ project, className }: ProjectCardProps) => {
             />
             <CardTitle className="text-lg font-semibold">{project.name}</CardTitle>
           </div>
-          <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/edit-project/${project.id}`);
+            }}
+          >
             <MoreHorizontal className="w-4 h-4" />
           </Button>
         </div>
