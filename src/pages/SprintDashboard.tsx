@@ -408,6 +408,7 @@ const SprintDashboard = () => {
                     tasks={allProjectTasks}
                     onMoveTask={handleMoveTask}
                     onAddTaskToSprint={handleAddTaskToSprint}
+                    asDropdownItem={true}
                   />
                   
                   <DropdownMenuSeparator />

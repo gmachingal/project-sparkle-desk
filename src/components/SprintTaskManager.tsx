@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { 
@@ -49,6 +50,7 @@ interface SprintTaskManagerProps {
   tasks: Task[];
   onMoveTask: (taskId: string, fromSprintId: string | null, toSprintId: string | null) => void;
   onAddTaskToSprint: (taskId: string, sprintId: string) => void;
+  asDropdownItem?: boolean;
 }
 
 const SprintTaskManager: React.FC<SprintTaskManagerProps> = ({
@@ -57,7 +59,8 @@ const SprintTaskManager: React.FC<SprintTaskManagerProps> = ({
   sprints,
   tasks,
   onMoveTask,
-  onAddTaskToSprint
+  onAddTaskToSprint,
+  asDropdownItem = false
 }) => {
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
@@ -212,10 +215,17 @@ const SprintTaskManager: React.FC<SprintTaskManagerProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost">
-          <ArrowRightLeft className="h-4 w-4 mr-2" />
-          Manage Sprint Tasks
-        </Button>
+        {asDropdownItem ? (
+          <DropdownMenuItem onSelect={(e) => { e.preventDefault(); setIsOpen(true); }}>
+            <ArrowRightLeft className="h-4 w-4 mr-2" />
+            Manage Sprint Tasks
+          </DropdownMenuItem>
+        ) : (
+          <Button variant="ghost">
+            <ArrowRightLeft className="h-4 w-4 mr-2" />
+            Manage Sprint Tasks
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="max-w-6xl max-h-[90vh]">
         <DialogHeader>
