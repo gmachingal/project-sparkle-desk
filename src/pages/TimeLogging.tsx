@@ -197,16 +197,40 @@ const TimeLogging = () => {
     }, 0);
   };
 
-  // Mock time log history data
+  // Mock time log history data with current month entries
+  const currentMonthEntries = [
+    { id: '1', date: format(new Date(), 'yyyy-MM-dd'), task: 'Design homepage mockups', project: 'Website Redesign', hours: 4.5, notes: 'Created wireframes and mockups' },
+    { id: '2', date: format(new Date(), 'yyyy-MM-dd'), task: 'Code review for API', project: 'Mobile App', hours: 2, notes: 'Reviewed pull requests' },
+    { id: '3', date: format(new Date(2024, 0, 22), 'yyyy-MM-dd'), task: 'Testing mobile layout', project: 'Website Redesign', hours: 6, notes: 'Tested on various devices' },
+    { id: '4', date: format(new Date(2024, 0, 22), 'yyyy-MM-dd'), task: 'Update marketing copy', project: 'Marketing Campaign', hours: 3, notes: 'Revised product page copy' },
+    { id: '5', date: format(new Date(2024, 0, 21), 'yyyy-MM-dd'), task: 'Prepare presentation slides', project: 'Internal', hours: 2.5, notes: 'Created quarterly review slides' },
+    { id: '6', date: format(new Date(2024, 0, 21), 'yyyy-MM-dd'), task: 'Bug fixes for login flow', project: 'Website Redesign', hours: 5, notes: 'Fixed authentication issues' },
+    { id: '7', date: format(new Date(2024, 0, 20), 'yyyy-MM-dd'), task: 'Design homepage mockups', project: 'Website Redesign', hours: 3.5, notes: 'Finalized design concepts' },
+    { id: '8', date: format(new Date(2024, 0, 20), 'yyyy-MM-dd'), task: 'Review API documentation', project: 'Mobile App', hours: 2, notes: 'Provided feedback on docs' },
+    { id: '9', date: format(new Date(2024, 0, 19), 'yyyy-MM-dd'), task: 'Testing mobile layout', project: 'Website Redesign', hours: 4, notes: 'Cross-browser testing' },
+    { id: '10', date: format(new Date(2024, 0, 19), 'yyyy-MM-dd'), task: 'Prepare presentation slides', project: 'Internal', hours: 1.5, notes: 'Added charts and graphs' },
+    { id: '11', date: format(new Date(2024, 0, 18), 'yyyy-MM-dd'), task: 'Code review for API', project: 'Mobile App', hours: 3, notes: 'Security review' },
+    { id: '12', date: format(new Date(2024, 0, 18), 'yyyy-MM-dd'), task: 'Update marketing copy', project: 'Marketing Campaign', hours: 2, notes: 'A/B testing copy variations' },
+    { id: '13', date: format(new Date(2024, 0, 17), 'yyyy-MM-dd'), task: 'Design homepage mockups', project: 'Website Redesign', hours: 6, notes: 'User feedback integration' },
+    { id: '14', date: format(new Date(2024, 0, 17), 'yyyy-MM-dd'), task: 'Bug fixes for login flow', project: 'Website Redesign', hours: 2.5, notes: 'OAuth integration fixes' },
+    { id: '15', date: format(new Date(2024, 0, 16), 'yyyy-MM-dd'), task: 'Testing mobile layout', project: 'Website Redesign', hours: 5, notes: 'Responsive design testing' },
+    { id: '16', date: format(new Date(2024, 0, 16), 'yyyy-MM-dd'), task: 'Review API documentation', project: 'Mobile App', hours: 1.5, notes: 'API versioning review' },
+    { id: '17', date: format(new Date(2024, 0, 15), 'yyyy-MM-dd'), task: 'Prepare presentation slides', project: 'Internal', hours: 4, notes: 'Quarterly metrics compilation' },
+    { id: '18', date: format(new Date(2024, 0, 15), 'yyyy-MM-dd'), task: 'Code review for API', project: 'Mobile App', hours: 2, notes: 'Performance optimization review' },
+  ];
+  
   const timeLogHistory = [
-    { id: '1', date: '2024-01-22', task: 'Design homepage mockups', project: 'Website Redesign', hours: 4.5, notes: 'Created wireframes and mockups' },
-    { id: '2', date: '2024-01-22', task: 'Code review for API', project: 'Mobile App', hours: 2, notes: 'Reviewed pull requests' },
-    { id: '3', date: '2024-01-21', task: 'Testing mobile layout', project: 'Website Redesign', hours: 6, notes: 'Tested on various devices' },
-    { id: '4', date: '2024-01-21', task: 'Update marketing copy', project: 'Marketing Campaign', hours: 3, notes: 'Revised product page copy' },
-    { id: '5', date: '2024-01-20', task: 'Prepare presentation slides', project: 'Internal', hours: 2.5, notes: 'Created quarterly review slides' },
-    { id: '6', date: '2024-01-19', task: 'Design homepage mockups', project: 'Website Redesign', hours: 3.5, notes: 'Finalized design concepts' },
-    { id: '7', date: '2024-01-19', task: 'Review API documentation', project: 'Mobile App', hours: 2, notes: 'Provided feedback on docs' },
-    { id: '8', date: '2024-01-18', task: 'Bug fixes for login flow', project: 'Website Redesign', hours: 5, notes: 'Fixed authentication issues' },
+    ...currentMonthEntries,
+    { id: '19', date: '2024-01-19', task: 'Bug fixes for login flow', project: 'Website Redesign', hours: 5, notes: 'Fixed authentication issues' },
+    { id: '20', date: '2024-01-18', task: 'Design homepage mockups', project: 'Website Redesign', hours: 3.5, notes: 'Finalized design concepts' },
+    { id: '21', date: '2024-01-17', task: 'Review API documentation', project: 'Mobile App', hours: 2, notes: 'Provided feedback on docs' },
+    { id: '22', date: '2024-01-16', task: 'Testing mobile layout', project: 'Website Redesign', hours: 4, notes: 'Cross-browser testing' },
+    { id: '23', date: '2024-01-15', task: 'Prepare presentation slides', project: 'Internal', hours: 1.5, notes: 'Added charts and graphs' },
+    { id: '24', date: '2024-01-14', task: 'Code review for API', project: 'Mobile App', hours: 3, notes: 'Security review' },
+    { id: '25', date: '2024-01-13', task: 'Update marketing copy', project: 'Marketing Campaign', hours: 2, notes: 'A/B testing copy variations' },
+    { id: '26', date: '2024-01-12', task: 'Design homepage mockups', project: 'Website Redesign', hours: 6, notes: 'User feedback integration' },
+    { id: '27', date: '2024-01-11', task: 'Bug fixes for login flow', project: 'Website Redesign', hours: 2.5, notes: 'OAuth integration fixes' },
+    { id: '28', date: '2024-01-10', task: 'Testing mobile layout', project: 'Website Redesign', hours: 5, notes: 'Responsive design testing' },
   ];
 
   // Get time logs for a specific date
@@ -248,7 +272,7 @@ const TimeLogging = () => {
         {/* Header Section */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" onClick={() => navigate(-1)}>
+            <Button variant="back" onClick={() => navigate(-1)}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back
             </Button>
@@ -346,99 +370,134 @@ const TimeLogging = () => {
                 </Card>
               </div>
 
-              {/* Tasks List */}
-              <div className="lg:col-span-3">
-                <div className="space-y-4">
-                  {allTasks.map((task) => {
-                    const entry = timeEntries[task.id] || { hours: '', notes: '' };
-                    const progressPercentage = task.estimatedHours > 0 ? Math.round((task.loggedHours / task.estimatedHours) * 100) : 0;
-                    
-                    return (
-                      <Card key={task.id}>
-                        <CardContent className="p-6">
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-2">
-                                <h3 className="font-semibold text-lg">{task.title}</h3>
-                                <Badge className={getStatusColor(task.status)}>
-                                  {task.status.replace('-', ' ')}
-                                </Badge>
-                                <Badge className={getPriorityColor(task.priority)}>
-                                  <Flag className="w-3 h-3 mr-1" />
-                                  {task.priority}
-                                </Badge>
+              {/* Tasks List with Pagination */}
+              <div className="lg:col-span-3 space-y-4">
+                {(() => {
+                  const totalPages = Math.ceil(allTasks.length / recordsPerPage);
+                  const startIndex = (currentPage - 1) * recordsPerPage;
+                  const endIndex = startIndex + recordsPerPage;
+                  const currentTasks = allTasks.slice(startIndex, endIndex);
+                  
+                  return (
+                    <>
+                      {currentTasks.map((task) => {
+                        const entry = timeEntries[task.id] || { hours: '', notes: '' };
+                        const progressPercentage = task.estimatedHours > 0 ? Math.round((task.loggedHours / task.estimatedHours) * 100) : 0;
+                        
+                        return (
+                          <Card key={task.id} className="compact">
+                            <CardContent className="p-4">
+                              <div className="flex items-start justify-between mb-3">
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <h3 className="font-semibold text-base">{task.title}</h3>
+                                    <Badge className={getStatusColor(task.status)} variant="secondary">
+                                      {task.status.replace('-', ' ')}
+                                    </Badge>
+                                    <Badge className={getPriorityColor(task.priority)} variant="outline">
+                                      <Flag className="w-3 h-3 mr-1" />
+                                      {task.priority}
+                                    </Badge>
+                                  </div>
+                                  <p className="text-muted-foreground text-sm mb-2 line-clamp-2">{task.description}</p>
+                                  <Badge variant="secondary" className="text-xs">{task.project}</Badge>
+                                </div>
                               </div>
-                              <p className="text-muted-foreground text-sm mb-2">{task.description}</p>
-                              <Badge variant="secondary">{task.project}</Badge>
-                            </div>
-                          </div>
 
-                          {/* Time Progress */}
-                          <div className="mb-4">
-                            <div className="flex justify-between text-sm mb-2">
-                              <span>Progress: {task.loggedHours}h / {task.estimatedHours}h</span>
-                              <span>{progressPercentage}%</span>
-                            </div>
-                            <div className="w-full bg-muted rounded-full h-2">
-                              <div 
-                                className="bg-primary h-2 rounded-full transition-all duration-300" 
-                                style={{ width: `${Math.min(progressPercentage, 100)}%` }}
-                              />
-                            </div>
-                          </div>
-
-                          {/* Time Entry Form */}
-                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-                            <div className="md:col-span-2">
-                              <Label htmlFor={`hours-${task.id}`} className="text-sm font-medium">
-                                Hours
-                              </Label>
-                              <div className="relative">
-                                <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                                <Input
-                                  id={`hours-${task.id}`}
-                                  type="number"
-                                  step="0.25"
-                                  min="0"
-                                  max="24"
-                                  placeholder="0.00"
-                                  value={entry.hours}
-                                  onChange={(e) => handleTimeChange(task.id, e.target.value)}
-                                  className="pl-10"
-                                />
+                              {/* Compact Time Progress */}
+                              <div className="mb-3">
+                                <div className="flex justify-between text-xs mb-1">
+                                  <span>{task.loggedHours}h / {task.estimatedHours}h</span>
+                                  <span>{progressPercentage}%</span>
+                                </div>
+                                <div className="w-full bg-muted rounded-full h-1.5">
+                                  <div 
+                                    className="bg-primary h-1.5 rounded-full transition-all duration-300" 
+                                    style={{ width: `${Math.min(progressPercentage, 100)}%` }}
+                                  />
+                                </div>
                               </div>
-                            </div>
-                            
-                            <div className="md:col-span-8">
-                              <Label htmlFor={`notes-${task.id}`} className="text-sm font-medium">
-                                Notes (Optional)
-                              </Label>
-                              <Textarea
-                                id={`notes-${task.id}`}
-                                placeholder="What did you work on?"
-                                value={entry.notes}
-                                onChange={(e) => handleNotesChange(task.id, e.target.value)}
-                                className="resize-none"
-                                rows={1}
-                              />
-                            </div>
-                            
-                            <div className="md:col-span-2">
-                              <Button 
-                                onClick={() => handleSaveTimeEntry(task.id)}
-                                disabled={!entry.hours || parseFloat(entry.hours) <= 0}
-                                className="w-full gap-2"
-                              >
-                                <Timer className="w-4 h-4" />
-                                Log Time
-                              </Button>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-                </div>
+
+                              {/* Compact Time Entry Form */}
+                              <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                                <div className="md:col-span-2">
+                                  <Label htmlFor={`hours-${task.id}`} className="text-xs font-medium">
+                                    Hours
+                                  </Label>
+                                  <div className="relative">
+                                    <Clock className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground w-3 h-3" />
+                                    <Input
+                                      id={`hours-${task.id}`}
+                                      type="number"
+                                      step="0.25"
+                                      min="0"
+                                      max="24"
+                                      placeholder="0.00"
+                                      value={entry.hours}
+                                      onChange={(e) => handleTimeChange(task.id, e.target.value)}
+                                      className="pl-8 h-8 text-sm"
+                                    />
+                                  </div>
+                                </div>
+                                
+                                <div className="md:col-span-8">
+                                  <Label htmlFor={`notes-${task.id}`} className="text-xs font-medium">
+                                    Notes (Optional)
+                                  </Label>
+                                  <Textarea
+                                    id={`notes-${task.id}`}
+                                    placeholder="What did you work on?"
+                                    value={entry.notes}
+                                    onChange={(e) => handleNotesChange(task.id, e.target.value)}
+                                    className="resize-none h-8 text-sm"
+                                    rows={1}
+                                  />
+                                </div>
+                                
+                                <div className="md:col-span-2">
+                                  <Button 
+                                    onClick={() => handleSaveTimeEntry(task.id)}
+                                    disabled={!entry.hours || parseFloat(entry.hours) <= 0}
+                                    className="w-full gap-1 h-8 text-xs"
+                                    size="sm"
+                                  >
+                                    <Timer className="w-3 h-3" />
+                                    Log
+                                  </Button>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
+                      
+                      {/* Pagination for Log Time */}
+                      {totalPages > 1 && (
+                        <div className="flex justify-center gap-2 mt-6">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                          >
+                            <ChevronLeft className="h-4 w-4" />
+                          </Button>
+                          <span className="flex items-center px-3 text-sm">
+                            Page {currentPage} of {totalPages}
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                          >
+                            <ChevronRight className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
             </div>
           </TabsContent>
