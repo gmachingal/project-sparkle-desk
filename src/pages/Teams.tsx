@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import { 
   Users, 
@@ -30,13 +30,17 @@ import {
   Edit,
   Trash2
 } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const Teams = () => {
   const [activeTab, setActiveTab] = useState("members");
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
   const [isEditMemberOpen, setIsEditMemberOpen] = useState(false);
+  const [isAddDepartmentOpen, setIsAddDepartmentOpen] = useState(false);
+  const [isEditDepartmentOpen, setIsEditDepartmentOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<any>(null);
+  const [selectedDepartment, setSelectedDepartment] = useState<any>(null);
   const [currentUserRole, setCurrentUserRole] = useState("admin"); // Mock current user role
   const { toast } = useToast();
 
@@ -48,6 +52,15 @@ const Teams = () => {
     department: "",
     permissions: [] as string[],
     skills: ""
+  });
+
+  // Department form state
+  const [departmentFormData, setDepartmentFormData] = useState({
+    name: "",
+    description: "",
+    managerId: "",
+    budget: "",
+    location: ""
   });
 
   const [teamMembers, setTeamMembers] = useState([
@@ -138,32 +151,52 @@ const Teams = () => {
     }
   ]);
 
-  const departments = [
+  const [departments, setDepartments] = useState([
     {
+      id: "1",
       name: "Engineering",
+      description: "Software development and technical architecture",
       members: teamMembers.filter(m => m.department === "Engineering").length,
       lead: "Alex Johnson",
-      color: "#8B5CF6"
+      leadId: "1",
+      color: "#8B5CF6",
+      budget: 500000,
+      location: "Building A, Floor 3"
     },
     {
+      id: "2",
       name: "Design",
+      description: "UI/UX design and creative direction",
       members: teamMembers.filter(m => m.department === "Design").length,
       lead: "Sarah Chen",
-      color: "#06B6D4"
+      leadId: "2",
+      color: "#06B6D4",
+      budget: 300000,
+      location: "Building A, Floor 2"
     },
     {
+      id: "3",
       name: "Marketing",
+      description: "Brand management and customer acquisition",
       members: teamMembers.filter(m => m.department === "Marketing").length,
       lead: "Emily Davis",
-      color: "#10B981"
+      leadId: "4",
+      color: "#10B981",
+      budget: 400000,
+      location: "Building B, Floor 1"
     },
     {
+      id: "4",
       name: "Product",
+      description: "Product strategy and roadmap",
       members: teamMembers.filter(m => m.department === "Product").length,
       lead: "Lisa Wang",
-      color: "#F59E0B"
+      leadId: "6",
+      color: "#F59E0B",
+      budget: 350000,
+      location: "Building A, Floor 4"
     }
-  ];
+  ]);
 
   const getFilteredMembers = () => {
     if (!searchQuery) return teamMembers;
@@ -284,6 +317,85 @@ const Teams = () => {
     toast({
       title: "Success",
       description: "Team member removed successfully"
+    });
+  };
+
+  const handleAddDepartment = () => {
+    if (!departmentFormData.name || !departmentFormData.managerId) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const manager = teamMembers.find(m => m.id === departmentFormData.managerId);
+    const newDepartment = {
+      id: Date.now().toString(),
+      name: departmentFormData.name,
+      description: departmentFormData.description,
+      members: 0,
+      lead: manager?.name || "",
+      leadId: departmentFormData.managerId,
+      color: `#${Math.floor(Math.random()*16777215).toString(16)}`,
+      budget: parseInt(departmentFormData.budget) || 0,
+      location: departmentFormData.location
+    };
+
+    setDepartments([...departments, newDepartment]);
+    setDepartmentFormData({ name: "", description: "", managerId: "", budget: "", location: "" });
+    setIsAddDepartmentOpen(false);
+    toast({
+      title: "Success",
+      description: "Department created successfully"
+    });
+  };
+
+  const handleEditDepartment = (department: any) => {
+    setSelectedDepartment(department);
+    setDepartmentFormData({
+      name: department.name,
+      description: department.description,
+      managerId: department.leadId,
+      budget: department.budget.toString(),
+      location: department.location
+    });
+    setIsEditDepartmentOpen(true);
+  };
+
+  const handleUpdateDepartment = () => {
+    if (!selectedDepartment) return;
+
+    const manager = teamMembers.find(m => m.id === departmentFormData.managerId);
+    const updatedDepartments = departments.map(dept => 
+      dept.id === selectedDepartment.id 
+        ? {
+            ...dept,
+            name: departmentFormData.name,
+            description: departmentFormData.description,
+            lead: manager?.name || "",
+            leadId: departmentFormData.managerId,
+            budget: parseInt(departmentFormData.budget) || 0,
+            location: departmentFormData.location
+          }
+        : dept
+    );
+
+    setDepartments(updatedDepartments);
+    setIsEditDepartmentOpen(false);
+    setSelectedDepartment(null);
+    toast({
+      title: "Success",
+      description: "Department updated successfully"
+    });
+  };
+
+  const handleDeleteDepartment = (departmentId: string) => {
+    setDepartments(departments.filter(dept => dept.id !== departmentId));
+    toast({
+      title: "Success",
+      description: "Department deleted successfully"
     });
   };
 
@@ -493,87 +605,107 @@ const Teams = () => {
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="relative">
-                          <Avatar className="w-12 h-12">
-                            <AvatarImage src={member.avatar} />
-                            <AvatarFallback className="bg-primary text-primary-foreground">
-                              {member.name.split(' ').map(n => n[0]).join('')}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className={`absolute -bottom-1 -right-1 w-4 h-4 ${getStatusColor(member.status)} rounded-full border-2 border-background`} />
-                        </div>
+                        <Avatar className="w-10 h-10">
+                          <AvatarImage src={member.avatar} />
+                          <AvatarFallback className="bg-primary text-primary-foreground">
+                            {member.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
                         <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-semibold">{member.name}</h3>
-                            {(() => {
-                              const RoleIcon = getRoleIcon(member.systemRole);
-                              return <RoleIcon className={`w-4 h-4 ${getRoleColor(member.systemRole)}`} />;
-                            })()}
-                          </div>
-                          <p className="text-sm text-muted-foreground">{member.role}</p>
-                          <Badge variant="outline" className="text-xs mt-1 capitalize">
-                            {member.systemRole}
-                          </Badge>
+                          <h4 className="font-semibold text-sm flex items-center gap-2">
+                            {member.name}
+                            {member.isLead && <Crown className="w-4 h-4 text-yellow-500" />}
+                          </h4>
+                          <p className="text-xs text-muted-foreground">{member.role}</p>
                         </div>
                       </div>
-                      {currentUserRole === "admin" && (
-                        <div className="flex gap-1">
-                          <Button variant="ghost" size="sm" onClick={() => handleEditMember(member)}>
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm" onClick={() => handleDeleteMember(member.id)}>
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      )}
+                      <div className="flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${getStatusColor(member.status)}`} />
+                        {currentUserRole === "admin" && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                                <MoreHorizontal className="w-4 h-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => handleEditMember(member)}>
+                                <Edit className="w-4 h-4 mr-2" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleDeleteMember(member.id)}
+                                className="text-destructive"
+                              >
+                                <Trash2 className="w-4 h-4 mr-2" />
+                                Remove
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Mail className="w-3 h-3 text-muted-foreground" />
-                        <span className="text-muted-foreground">{member.email}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Briefcase className="w-3 h-3 text-muted-foreground" />
-                        <span className="text-muted-foreground">{member.department}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Calendar className="w-3 h-3 text-muted-foreground" />
-                        <span className="text-muted-foreground">Joined {member.joinDate}</span>
-                      </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Mail className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">{member.email}</span>
                     </div>
                     
-                    <div>
-                      <p className="text-sm font-medium mb-2">Active Projects</p>
-                      <div className="flex flex-wrap gap-1">
-                        {member.projects.map((project) => (
-                          <Badge key={project} variant="secondary" className="text-xs">
-                            {project}
-                          </Badge>
-                        ))}
-                      </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Briefcase className="w-4 h-4 text-muted-foreground" />
+                      <Badge variant="outline" className="text-xs">
+                        {member.department}
+                      </Badge>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-sm">
+                      <Calendar className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">Joined {member.joinDate}</span>
                     </div>
 
                     <div>
                       <p className="text-sm font-medium mb-2">Skills</p>
                       <div className="flex flex-wrap gap-1">
-                        {member.skills.map((skill) => (
-                          <Badge key={skill} variant="outline" className="text-xs">
+                        {member.skills.slice(0, 3).map((skill, index) => (
+                          <Badge key={index} variant="secondary" className="text-xs">
                             {skill}
                           </Badge>
                         ))}
+                        {member.skills.length > 3 && (
+                          <Badge variant="secondary" className="text-xs">
+                            +{member.skills.length - 3}
+                          </Badge>
+                        )}
                       </div>
                     </div>
 
                     <div>
-                      <p className="text-sm font-medium mb-2">Permissions</p>
+                      <p className="text-sm font-medium mb-2">System Role</p>
+                      <div className="flex items-center gap-2">
+                        {(() => {
+                          const RoleIcon = getRoleIcon(member.systemRole);
+                          return <RoleIcon className={`w-4 h-4 ${getRoleColor(member.systemRole)}`} />;
+                        })()}
+                        <Badge variant="outline" className={`text-xs ${getRoleColor(member.systemRole)}`}>
+                          {member.systemRole}
+                        </Badge>
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-sm font-medium mb-2">Active Projects</p>
                       <div className="flex flex-wrap gap-1">
-                        {member.permissions.map((permission) => (
-                          <Badge key={permission} variant="secondary" className="text-xs">
-                            {permission.replace('_', ' ')}
+                        {member.projects.slice(0, 2).map((project, index) => (
+                          <Badge key={index} variant="outline" className="text-xs">
+                            {project}
                           </Badge>
                         ))}
+                        {member.projects.length > 2 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{member.projects.length - 2}
+                          </Badge>
+                        )}
                       </div>
                     </div>
                   </CardContent>
@@ -589,7 +721,7 @@ const Teams = () => {
                 <p className="text-sm text-muted-foreground">Manage organizational departments</p>
               </div>
               {currentUserRole === "admin" && (
-                <Dialog>
+                <Dialog open={isAddDepartmentOpen} onOpenChange={setIsAddDepartmentOpen}>
                   <DialogTrigger asChild>
                     <Button variant="outline" className="gap-2">
                       <Plus className="w-4 h-4" />
@@ -603,15 +735,25 @@ const Teams = () => {
                     <div className="space-y-4">
                       <div>
                         <Label htmlFor="dept-name">Department Name</Label>
-                        <Input id="dept-name" placeholder="Enter department name" />
+                        <Input 
+                          id="dept-name" 
+                          placeholder="Enter department name"
+                          value={departmentFormData.name}
+                          onChange={(e) => setDepartmentFormData({...departmentFormData, name: e.target.value})}
+                        />
                       </div>
                       <div>
                         <Label htmlFor="dept-description">Description</Label>
-                        <Textarea id="dept-description" placeholder="Enter description" />
+                        <Textarea 
+                          id="dept-description" 
+                          placeholder="Enter description"
+                          value={departmentFormData.description}
+                          onChange={(e) => setDepartmentFormData({...departmentFormData, description: e.target.value})}
+                        />
                       </div>
                       <div>
                         <Label htmlFor="dept-manager">Manager</Label>
-                        <Select>
+                        <Select value={departmentFormData.managerId} onValueChange={(value) => setDepartmentFormData({...departmentFormData, managerId: value})}>
                           <SelectTrigger>
                             <SelectValue placeholder="Select manager" />
                           </SelectTrigger>
@@ -626,15 +768,26 @@ const Teams = () => {
                       </div>
                       <div>
                         <Label htmlFor="dept-budget">Budget</Label>
-                        <Input id="dept-budget" type="number" placeholder="Enter budget" />
+                        <Input 
+                          id="dept-budget" 
+                          type="number" 
+                          placeholder="Enter budget"
+                          value={departmentFormData.budget}
+                          onChange={(e) => setDepartmentFormData({...departmentFormData, budget: e.target.value})}
+                        />
                       </div>
                       <div>
                         <Label htmlFor="dept-location">Location</Label>
-                        <Input id="dept-location" placeholder="Enter location" />
+                        <Input 
+                          id="dept-location" 
+                          placeholder="Enter location"
+                          value={departmentFormData.location}
+                          onChange={(e) => setDepartmentFormData({...departmentFormData, location: e.target.value})}
+                        />
                       </div>
                       <div className="flex gap-2 justify-end pt-4">
-                        <Button variant="outline">Cancel</Button>
-                        <Button>Create Department</Button>
+                        <Button variant="outline" onClick={() => setIsAddDepartmentOpen(false)}>Cancel</Button>
+                        <Button onClick={handleAddDepartment}>Create Department</Button>
                       </div>
                     </div>
                   </DialogContent>
@@ -655,11 +808,29 @@ const Teams = () => {
                         {dept.name}
                       </CardTitle>
                       {currentUserRole === "admin" && (
-                        <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                          <MoreHorizontal className="w-4 h-4" />
-                        </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                              <MoreHorizontal className="w-4 h-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => handleEditDepartment(dept)}>
+                              <Edit className="w-4 h-4 mr-2" />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleDeleteDepartment(dept.id)}
+                              className="text-destructive"
+                            >
+                              <Trash2 className="w-4 h-4 mr-2" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       )}
                     </div>
+                    <p className="text-sm text-muted-foreground">{dept.description}</p>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex items-center gap-3">
@@ -685,15 +856,13 @@ const Teams = () => {
                       </div>
                       
                       <div className="flex items-center justify-between text-sm">
-                        <span>Active Projects</span>
-                        <span className="font-medium">
-                          {Math.floor(Math.random() * 5) + 1}
-                        </span>
+                        <span>Budget</span>
+                        <span className="font-medium">${dept.budget?.toLocaleString() || 'N/A'}</span>
                       </div>
                       
                       <div className="flex items-center justify-between text-sm">
                         <span>Location</span>
-                        <span className="text-muted-foreground">Floor {Math.floor(Math.random() * 3) + 1}</span>
+                        <span className="text-muted-foreground">{dept.location || 'Not set'}</span>
                       </div>
                     </div>
 
@@ -821,12 +990,85 @@ const Teams = () => {
               </div>
 
               <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setIsEditMemberOpen(false)}>
+                <Button variant="outline" onClick={() => {
+                  setIsEditMemberOpen(false);
+                  setSelectedMember(null);
+                }}>
                   Cancel
                 </Button>
                 <Button onClick={handleUpdateMember}>
                   Update Member
                 </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit Department Dialog */}
+        <Dialog open={isEditDepartmentOpen} onOpenChange={setIsEditDepartmentOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Edit Department</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="edit-dept-name">Department Name</Label>
+                <Input 
+                  id="edit-dept-name" 
+                  placeholder="Enter department name"
+                  value={departmentFormData.name}
+                  onChange={(e) => setDepartmentFormData({...departmentFormData, name: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-dept-description">Description</Label>
+                <Textarea 
+                  id="edit-dept-description" 
+                  placeholder="Enter description"
+                  value={departmentFormData.description}
+                  onChange={(e) => setDepartmentFormData({...departmentFormData, description: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-dept-manager">Manager</Label>
+                <Select value={departmentFormData.managerId} onValueChange={(value) => setDepartmentFormData({...departmentFormData, managerId: value})}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select manager" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {teamMembers.filter(m => m.systemRole === "admin" || m.systemRole === "manager").map((member) => (
+                      <SelectItem key={member.id} value={member.id}>
+                        {member.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="edit-dept-budget">Budget</Label>
+                <Input 
+                  id="edit-dept-budget" 
+                  type="number" 
+                  placeholder="Enter budget"
+                  value={departmentFormData.budget}
+                  onChange={(e) => setDepartmentFormData({...departmentFormData, budget: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-dept-location">Location</Label>
+                <Input 
+                  id="edit-dept-location" 
+                  placeholder="Enter location"
+                  value={departmentFormData.location}
+                  onChange={(e) => setDepartmentFormData({...departmentFormData, location: e.target.value})}
+                />
+              </div>
+              <div className="flex gap-2 justify-end pt-4">
+                <Button variant="outline" onClick={() => {
+                  setIsEditDepartmentOpen(false);
+                  setSelectedDepartment(null);
+                }}>Cancel</Button>
+                <Button onClick={handleUpdateDepartment}>Update Department</Button>
               </div>
             </div>
           </DialogContent>
