@@ -486,7 +486,7 @@ const MyTasks = () => {
                                         {task.title}
                                       </div>
                                     </HoverCardTrigger>
-                                    <HoverCardContent className="w-80">
+                                    <HoverCardContent className="w-80 bg-background border shadow-lg z-50">
                                       <div className="space-y-3">
                                         <div>
                                           <h4 className="font-semibold">{task.title}</h4>
@@ -605,7 +605,7 @@ const MyTasks = () => {
                                          </div>
                                        </div>
                                      </HoverCardTrigger>
-                                     <HoverCardContent className="w-80">
+                                     <HoverCardContent className="w-80 bg-background border shadow-lg z-50">
                                        <div className="space-y-3">
                                          <div>
                                            <h4 className="font-semibold">{task.title}</h4>
