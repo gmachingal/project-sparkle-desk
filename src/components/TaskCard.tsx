@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Calendar, Flag, MoreHorizontal, User, Edit, Tag, CalendarDays, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -29,57 +30,158 @@ interface TaskCardProps {
 const TaskCard = ({ task, className }: TaskCardProps) => {
   const navigate = useNavigate();
   const priorityColors = {
-    low: 'bg-muted text-muted-foreground',
-    medium: 'bg-warning text-warning-foreground',
-    high: 'bg-destructive text-destructive-foreground'
+    low: 'bg-green-100 text-green-800 border-green-200',
+    medium: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+    high: 'bg-red-100 text-red-800 border-red-200'
   };
 
   const statusColors = {
-    'todo': 'border-l-muted',
-    'in-progress': 'border-l-primary',
-    'completed': 'border-l-success'
+    'todo': 'border-l-gray-400',
+    'in-progress': 'border-l-blue-500',
+    'completed': 'border-l-green-500'
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return '✓';
+      case 'in-progress':
+        return '⟳';
+      default:
+        return '○';
+    }
   };
 
   return (
-    <Card 
-      className={cn(
-        "group hover:shadow-lg transition-all duration-300 border-l-4 cursor-pointer",
-        statusColors[task.status],
-        className
-      )}
-      onClick={() => navigate(`/edit-task/${task.id}`)}
-    >
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex-1 space-y-3">
-            <div className="flex items-start justify-between">
-              <h3 className={cn(
-                "font-medium text-sm leading-relaxed",
-                task.status === 'completed' && "line-through text-muted-foreground"
-              )}>
-                {task.title}
-              </h3>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate(`/edit-task/${task.id}`);
-                }}
-              >
-                <Edit className="w-4 h-4" />
-              </Button>
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <Card 
+          className={cn(
+            "group hover:shadow-md transition-all duration-200 border-l-4 cursor-pointer h-24",
+            statusColors[task.status],
+            className
+          )}
+          onClick={() => navigate(`/edit-task/${task.id}`)}
+        >
+          <CardContent className="p-3 h-full flex flex-col justify-between">
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm opacity-60">{getStatusIcon(task.status)}</span>
+                  <h3 className={cn(
+                    "font-medium text-sm truncate",
+                    task.status === 'completed' && "line-through text-muted-foreground"
+                  )}>
+                    {task.title}
+                  </h3>
+                </div>
+                <div className="flex items-center gap-2 mt-1">
+                  <Badge variant="secondary" className="text-xs px-1 py-0">
+                    {task.project}
+                  </Badge>
+                  <Badge 
+                    variant="outline" 
+                    className={cn("text-xs px-1 py-0", priorityColors[task.priority])}
+                  >
+                    {task.priority}
+                  </Badge>
+                </div>
+              </div>
+              {task.assignee && (
+                <Avatar className="w-6 h-6 flex-shrink-0">
+                  <AvatarImage src={task.assignee.avatar} />
+                  <AvatarFallback className="text-xs bg-primary text-primary-foreground">
+                    {task.assignee.name.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+              )}
             </div>
             
-            {task.description && (
-              <p className="text-xs text-muted-foreground line-clamp-2">
-                {task.description}
-              </p>
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              {task.dueDate && (
+                <div className="flex items-center gap-1">
+                  <Calendar className="w-3 h-3" />
+                  <span className="truncate">{task.dueDate}</span>
+                </div>
+              )}
+              <div className="flex gap-1">
+                {task.tags && task.tags.length > 0 && (
+                  <span className="text-xs opacity-60">+{task.tags.length}</span>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </HoverCardTrigger>
+      <HoverCardContent className="w-80 p-4" side="top">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h4 className="font-semibold text-lg">{task.title}</h4>
+            <Badge 
+              variant="outline" 
+              className={cn("text-xs", priorityColors[task.priority])}
+            >
+              <Flag className="w-3 h-3 mr-1" />
+              {task.priority}
+            </Badge>
+          </div>
+          
+          {task.description && (
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {task.description}
+            </p>
+          )}
+          
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium">Status</span>
+              <Badge variant="secondary">{task.status.replace('-', ' ')}</Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium">Project</span>
+              <span className="text-sm">{task.project}</span>
+            </div>
+            {task.sprint && (
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Sprint</span>
+                <span className="text-sm">{task.sprint}</span>
+              </div>
             )}
-            
-            {/* Tags */}
-            {task.tags && task.tags.length > 0 && (
+            {task.assignee && (
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Assignee</span>
+                <div className="flex items-center gap-2">
+                  <Avatar className="w-5 h-5">
+                    <AvatarImage src={task.assignee.avatar} />
+                    <AvatarFallback className="text-xs">
+                      {task.assignee.name.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm">{task.assignee.name}</span>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {(task.startDate || task.dueDate) && (
+            <div className="space-y-2 pt-2 border-t">
+              {task.startDate && (
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm">Start: {task.startDate}</span>
+                </div>
+              )}
+              {task.dueDate && (
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm">Due: {task.dueDate}</span>
+                </div>
+              )}
+            </div>
+          )}
+          
+          {task.tags && task.tags.length > 0 && (
+            <div className="pt-2 border-t">
               <div className="flex flex-wrap gap-1">
                 {task.tags.map((tag, index) => (
                   <Badge 
@@ -92,68 +194,22 @@ const TaskCard = ({ task, className }: TaskCardProps) => {
                   </Badge>
                 ))}
               </div>
-            )}
-            
-            
-            {/* Date Information */}
-            <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-              {task.startDate && (
-                <div className="flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  <span>Start: {task.startDate}</span>
-                </div>
-              )}
-              {task.dueDate && (
-                <div className="flex items-center gap-1">
-                  <Calendar className="w-3 h-3" />
-                  <span>Due: {task.dueDate}</span>
-                </div>
-              )}
             </div>
-            
-            {/* Sprint Information */}
-            {task.sprint && (
-              <div className="flex items-center gap-1">
-                <Badge variant="outline" className="text-xs bg-accent/20 text-accent-foreground border-accent/30">
-                  <CalendarDays className="w-2 h-2 mr-1" />
-                  {task.sprint}
-                </Badge>
-              </div>
-            )}
-            
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="text-xs">
-                  {task.project}
-                </Badge>
-                <Badge 
-                  variant="outline" 
-                  className={cn("text-xs", priorityColors[task.priority])}
-                >
-                  <Flag className="w-3 h-3 mr-1" />
-                  {task.priority}
-                </Badge>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                {/* Assigned to */}
-                {task.assignee && (
-                  <div className="flex items-center gap-1">
-                    <Avatar className="w-6 h-6">
-                      <AvatarImage src={task.assignee.avatar} />
-                      <AvatarFallback className="text-xs bg-primary text-primary-foreground">
-                        {task.assignee.name.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="text-xs text-muted-foreground">{task.assignee.name}</span>
-                  </div>
-                )}
-              </div>
-            </div>
+          )}
+          
+          <div className="pt-2 border-t">
+            <Button 
+              size="sm" 
+              className="w-full"
+              onClick={() => navigate(`/edit-task/${task.id}`)}
+            >
+              <Edit className="w-4 h-4 mr-2" />
+              Edit Task
+            </Button>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </HoverCardContent>
+    </HoverCard>
   );
 };
 
