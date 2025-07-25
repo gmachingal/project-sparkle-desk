@@ -23,7 +23,7 @@ const CreateTask = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    project: searchParams.get('project') || "",
+    project: searchParams.get('project') || "1",
     sprint: searchParams.get('sprint') || "",
     priority: "",
     assignee: "",
