@@ -73,7 +73,6 @@ function EnhancedCalendar({
           </Select>
         </div>
       </div>
-      <div className="border-t border-border"></div>
       <DayPicker
         showOutsideDays={showOutsideDays}
         month={new Date(currentCalendarYear, currentMonth)}
@@ -122,7 +121,7 @@ function EnhancedCalendar({
         }}
         {...props}
       />
-      <div className="flex justify-center pt-4 border-t border-border">
+      <div className="flex justify-center pt-4 pb-4 border-t border-border">
         <Button
           variant="outline"
           size="sm"
