@@ -45,7 +45,7 @@ function EnhancedCalendar({
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center px-4 py-3 bg-muted/30 rounded-lg border-b">
+      <div className="flex justify-between items-center px-6 py-3 bg-muted/30 rounded-lg border-b">
         <Button
           variant="outline"
           size="sm"
