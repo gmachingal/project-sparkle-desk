@@ -9,7 +9,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft, Calendar as CalendarIcon, List, Users, Filter } from 'lucide-react';
-import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
+import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, eachHourOfInterval, startOfDay, endOfDay } from 'date-fns';
 
 const ProjectCalendar = () => {
   const { id } = useParams();
@@ -18,6 +18,7 @@ const ProjectCalendar = () => {
   const [selectedMember, setSelectedMember] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
+  const [calendarView, setCalendarView] = useState<'month' | 'week' | 'day'>('month');
 
   // Mock project data
   const project = {
@@ -212,6 +213,39 @@ const ProjectCalendar = () => {
               </Button>
             </div>
           </div>
+
+          {/* Calendar View Options */}
+          {viewMode === 'calendar' && (
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-sm font-medium">View:</span>
+              <div className="flex bg-muted rounded-md p-1">
+                <Button
+                  variant={calendarView === 'day' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setCalendarView('day')}
+                  className="h-8"
+                >
+                  Day
+                </Button>
+                <Button
+                  variant={calendarView === 'week' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setCalendarView('week')}
+                  className="h-8"
+                >
+                  Week
+                </Button>
+                <Button
+                  variant={calendarView === 'month' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setCalendarView('month')}
+                  className="h-8"
+                >
+                  Month
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
 
         <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'calendar' | 'list')}>
@@ -222,39 +256,166 @@ const ProjectCalendar = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CalendarIcon className="h-5 w-5" />
-                    Project Calendar
+                    Project Calendar - {calendarView.charAt(0).toUpperCase() + calendarView.slice(1)} View
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={(date) => date && setSelectedDate(date)}
-                    className="rounded-md border"
-                    components={{
-                      Day: ({ date, ...props }: any) => {
-                        const tasksForDay = getTasksForDate(date);
-                        const hasStartingTasks = tasksForDay.some(task => task.startDate && isSameDay(task.startDate, date));
-                        const hasDueTasks = tasksForDay.some(task => task.dueDate && isSameDay(task.dueDate, date));
-                        
-                        return (
-                          <div className="relative">
-                            <button {...props}>
-                              {format(date, 'd')}
-                              {(hasStartingTasks || hasDueTasks) && (
-                                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
-                                  <div className="flex gap-0.5">
-                                    {hasStartingTasks && <div className="w-1 h-1 rounded-full bg-green-500"></div>}
-                                    {hasDueTasks && <div className="w-1 h-1 rounded-full bg-red-500"></div>}
+                  {calendarView === 'month' && (
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={(date) => date && setSelectedDate(date)}
+                      className="rounded-md border"
+                      components={{
+                        Day: ({ date, ...props }: any) => {
+                          const tasksForDay = getTasksForDate(date);
+                          const hasStartingTasks = tasksForDay.some(task => task.startDate && isSameDay(task.startDate, date));
+                          const hasDueTasks = tasksForDay.some(task => task.dueDate && isSameDay(task.dueDate, date));
+                          
+                          return (
+                            <div className="relative">
+                              <button {...props}>
+                                {format(date, 'd')}
+                                {(hasStartingTasks || hasDueTasks) && (
+                                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+                                    <div className="flex gap-0.5">
+                                      {hasStartingTasks && <div className="w-1 h-1 rounded-full bg-green-500"></div>}
+                                      {hasDueTasks && <div className="w-1 h-1 rounded-full bg-red-500"></div>}
+                                    </div>
+                                  </div>
+                                )}
+                              </button>
+                            </div>
+                          );
+                        }
+                      }}
+                    />
+                  )}
+
+                  {calendarView === 'week' && (
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-medium">
+                          Week of {format(startOfWeek(selectedDate), 'MMM dd')} - {format(endOfWeek(selectedDate), 'MMM dd, yyyy')}
+                        </h3>
+                        <div className="flex gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 7 * 24 * 60 * 60 * 1000))}
+                          >
+                            Previous
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 7 * 24 * 60 * 60 * 1000))}
+                          >
+                            Next
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-7 gap-2">
+                        {eachDayOfInterval({ start: startOfWeek(selectedDate), end: endOfWeek(selectedDate) }).map(day => {
+                          const tasksForDay = getTasksForDate(day);
+                          return (
+                            <div 
+                              key={day.toISOString()} 
+                              className={`p-3 border rounded-lg cursor-pointer hover:bg-muted ${isSameDay(day, selectedDate) ? 'bg-primary/10 border-primary' : ''}`}
+                              onClick={() => setSelectedDate(day)}
+                            >
+                              <div className="text-center mb-2">
+                                <div className="text-xs text-muted-foreground">{format(day, 'EEE')}</div>
+                                <div className="font-medium">{format(day, 'd')}</div>
+                              </div>
+                              <div className="space-y-1">
+                                {tasksForDay.slice(0, 3).map(task => (
+                                  <div key={task.id} className={`text-xs p-1 rounded ${getStatusColor(task.status)} text-white truncate`}>
+                                    {task.title}
+                                  </div>
+                                ))}
+                                {tasksForDay.length > 3 && (
+                                  <div className="text-xs text-muted-foreground">+{tasksForDay.length - 3} more</div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {calendarView === 'day' && (
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-medium">
+                          {format(selectedDate, 'EEEE, MMMM dd, yyyy')}
+                        </h3>
+                        <div className="flex gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 24 * 60 * 60 * 1000))}
+                          >
+                            Previous Day
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000))}
+                          >
+                            Next Day
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="border rounded-lg">
+                        <div className="grid grid-cols-12 gap-0 min-h-[600px]">
+                          {/* Time column */}
+                          <div className="col-span-2 border-r">
+                            {Array.from({ length: 24 }, (_, i) => (
+                              <div key={i} className="h-12 border-b p-2 text-xs text-muted-foreground">
+                                {format(new Date().setHours(i, 0, 0, 0), 'HH:mm')}
+                              </div>
+                            ))}
+                          </div>
+                          {/* Tasks column */}
+                          <div className="col-span-10 relative">
+                            {getTasksForDate(selectedDate).map((task, index) => {
+                              const assignee = getAssignee(task.assigneeId);
+                              return (
+                                <div 
+                                  key={task.id}
+                                  className={`absolute left-2 right-2 p-2 rounded border-l-4 ${getPriorityColor(task.priority)} bg-card hover:bg-muted/50 cursor-pointer z-10`}
+                                  style={{ 
+                                    top: `${(index * 60) + 48}px`,
+                                    height: '48px'
+                                  }}
+                                  onClick={() => navigate(`/edit-task/${task.id}`)}
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <div>
+                                      <div className="font-medium text-sm truncate">{task.title}</div>
+                                      <div className="text-xs text-muted-foreground">{assignee?.name}</div>
+                                    </div>
+                                    <Badge
+                                      variant="secondary"
+                                      className={`${getStatusColor(task.status)} text-white text-xs`}
+                                    >
+                                      {task.status}
+                                    </Badge>
                                   </div>
                                 </div>
-                              )}
-                            </button>
+                              );
+                            })}
+                            {/* Hour lines */}
+                            {Array.from({ length: 24 }, (_, i) => (
+                              <div key={i} className="h-12 border-b"></div>
+                            ))}
                           </div>
-                        );
-                      }
-                    }}
-                  />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
