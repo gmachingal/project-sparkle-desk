@@ -45,15 +45,7 @@ function EnhancedCalendar({
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center px-6 py-3 bg-muted/30 rounded-lg border-b">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleTodayClick}
-          className="h-8 px-4 text-xs bg-primary text-primary-foreground hover:bg-primary/90 border-primary"
-        >
-          Today
-        </Button>
+      <div className="flex justify-end items-center px-4 py-3 bg-muted/30 rounded-lg border-b">
         <div className="flex items-center gap-3">
           <Select value={currentMonth.toString()} onValueChange={handleMonthChange}>
             <SelectTrigger className="h-8 w-auto min-w-[90px] border bg-secondary text-secondary-foreground hover:bg-secondary/80 text-xs font-medium px-3">
@@ -130,6 +122,16 @@ function EnhancedCalendar({
         }}
         {...props}
       />
+      <div className="flex justify-center pt-4 border-t border-border">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleTodayClick}
+          className="h-8 px-4 text-xs bg-primary text-primary-foreground hover:bg-primary/90 border-primary"
+        >
+          Today
+        </Button>
+      </div>
     </div>
   );
 }
