@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CalendarIcon, User, ArrowLeft, Save, Plus } from "lucide-react";
+import Header from "@/components/Header";
+import { CalendarIcon, User, ArrowLeft, Save, Plus, Target } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -40,9 +41,33 @@ const CreateTask = () => {
   ];
 
   const sprints = [
-    { id: "1", name: "Sprint 1 - Foundation", projectId: "1", status: "active" },
-    { id: "2", name: "Sprint 2 - Core Features", projectId: "1", status: "planning" },
-    { id: "3", name: "Sprint 1 - MVP", projectId: "2", status: "active" }
+    { 
+      id: "1", 
+      name: "Sprint 1 - Foundation", 
+      projectId: "1", 
+      status: "active" as const,
+      startDate: new Date('2024-01-15'),
+      endDate: new Date('2024-01-29'),
+      progress: 65
+    },
+    { 
+      id: "2", 
+      name: "Sprint 2 - Core Features", 
+      projectId: "1", 
+      status: "planned" as const,
+      startDate: new Date('2024-01-30'),
+      endDate: new Date('2024-02-13'),
+      progress: 0
+    },
+    { 
+      id: "3", 
+      name: "Sprint 1 - MVP", 
+      projectId: "2", 
+      status: "active" as const,
+      startDate: new Date('2024-01-20'),
+      endDate: new Date('2024-02-10'),
+      progress: 45
+    }
   ];
 
   const teamMembers = [
@@ -80,261 +105,346 @@ const CreateTask = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b bg-card/50 backdrop-blur-sm">
-        <div className="flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </Button>
-            <h1 className="text-2xl font-bold">Create New Task</h1>
-          </div>
-          <Button variant="hero" onClick={handleSubmit} className="gap-2">
-            <Save className="w-4 h-4" />
+      <Header />
+      
+      <div className="container mx-auto px-4 py-8">
+        {/* Back Button - Separate Section */}
+        <div className="pb-4 mb-6 border-b border-border">
+          <Button variant="ghost" onClick={() => navigate('/my-tasks')}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to My Tasks
+          </Button>
+        </div>
+
+        {/* Header Section */}
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-2xl font-bold">Create New Task</h1>
+          <Button onClick={handleSubmit} className="gap-2">
+            <Plus className="w-4 h-4" />
             Create Task
           </Button>
         </div>
-      </div>
 
-      <div className="p-6">
-        <div className="max-w-4xl mx-auto">
-          <Card>
-            <CardHeader>
-              <CardTitle>Task Details</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Left Column */}
-                  <div className="space-y-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="title">Task Title *</Label>
-                      <Input
-                        id="title"
-                        placeholder="Enter task title..."
-                        value={formData.title}
-                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        required
-                      />
-                    </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Task Details */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Task Details</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label htmlFor="title">Task Title *</Label>
+                  <Input
+                    id="title"
+                    placeholder="Enter task title..."
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    required
+                  />
+                </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="description">Description</Label>
-                      <Textarea
-                        id="description"
-                        placeholder="Describe the task..."
-                        rows={4}
-                        value={formData.description}
-                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      />
-                    </div>
+                <div>
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    placeholder="Describe the task..."
+                    rows={4}
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  />
+                </div>
 
-                    <div className="space-y-2">
-                      <Label>Project *</Label>
-                      <Select value={formData.project} onValueChange={(value) => setFormData({ ...formData, project: value })}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a project" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {projects.map((project) => (
-                            <SelectItem key={project.id} value={project.id}>
-                              <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: project.color }} />
-                                {project.name}
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    {/* Sprint Selection */}
-                    <div className="space-y-2">
-                      <Label>Sprint (Optional)</Label>
-                      <Select value={formData.sprint} onValueChange={(value) => setFormData({ ...formData, sprint: value })}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a sprint" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="none">No Sprint</SelectItem>
-                          {sprints
-                            .filter(sprint => !formData.project || sprint.projectId === formData.project)
-                            .map((sprint) => (
-                            <SelectItem key={sprint.id} value={sprint.id}>
-                              <div className="flex items-center gap-2">
-                                <Badge variant={sprint.status === 'active' ? 'default' : 'secondary'} className="text-xs">
-                                  {sprint.status}
-                                </Badge>
-                                {sprint.name}
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Status</Label>
+                    <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="todo">To Do</SelectItem>
+                        <SelectItem value="in-progress">In Progress</SelectItem>
+                        <SelectItem value="completed">Completed</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
 
-                  {/* Right Column */}
-                  <div className="space-y-6">
-                    <div className="space-y-2">
-                      <Label>Priority</Label>
-                      <Select value={formData.priority} onValueChange={(value) => setFormData({ ...formData, priority: value })}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select priority" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="low">
-                            <Badge variant="outline" className="bg-muted text-muted-foreground">Low</Badge>
-                          </SelectItem>
-                          <SelectItem value="medium">
-                            <Badge variant="outline" className="bg-warning text-warning-foreground">Medium</Badge>
-                          </SelectItem>
-                          <SelectItem value="high">
-                            <Badge variant="outline" className="bg-destructive text-destructive-foreground">High</Badge>
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Start Date</Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-full justify-start text-left font-normal",
-                              !startDate && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {startDate ? format(startDate, "PPP") : "Pick start date"}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <Calendar
-                            mode="single"
-                            selected={startDate}
-                            onSelect={setStartDate}
-                            initialFocus
-                            className={cn("p-3 pointer-events-auto")}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Due Date</Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-full justify-start text-left font-normal",
-                              !dueDate && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {dueDate ? format(dueDate, "PPP") : "Pick due date"}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <Calendar
-                            mode="single"
-                            selected={dueDate}
-                            onSelect={setDueDate}
-                            initialFocus
-                            disabled={(date) => startDate ? date < startDate : false}
-                            className={cn("p-3 pointer-events-auto")}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Story Points</Label>
-                      <Select value={formData.storyPoints} onValueChange={(value) => setFormData({ ...formData, storyPoints: value })}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select story points" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1">1 Point</SelectItem>
-                          <SelectItem value="2">2 Points</SelectItem>
-                          <SelectItem value="3">3 Points</SelectItem>
-                          <SelectItem value="5">5 Points</SelectItem>
-                          <SelectItem value="8">8 Points</SelectItem>
-                          <SelectItem value="13">13 Points</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Estimated Hours</Label>
-                      <Input
-                        type="number"
-                        placeholder="Enter estimated hours"
-                        value={formData.estimatedHours}
-                        onChange={(e) => setFormData({ ...formData, estimatedHours: e.target.value })}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Assignee</Label>
-                      <Select value={formData.assignee} onValueChange={(value) => setFormData({ ...formData, assignee: value })}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Assign to team member" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {teamMembers.map((member) => (
-                            <SelectItem key={member.id} value={member.id}>
-                              <div className="flex items-center gap-2">
-                                <Avatar className="w-6 h-6">
-                                  <AvatarImage src="" />
-                                  <AvatarFallback className="text-xs bg-primary text-primary-foreground">
-                                    {member.name.charAt(0)}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <div>
-                                  <div className="font-medium">{member.name}</div>
-                                  <div className="text-xs text-muted-foreground">{member.email}</div>
-                                </div>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Status</Label>
-                      <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="todo">To Do</SelectItem>
-                          <SelectItem value="in-progress">In Progress</SelectItem>
-                          <SelectItem value="completed">Completed</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  <div>
+                    <Label>Priority</Label>
+                    <Select value={formData.priority} onValueChange={(value) => setFormData({ ...formData, priority: value })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select priority" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="low">Low</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
-                <div className="flex justify-end gap-3 pt-6 border-t">
-                  <Button variant="outline" type="button" onClick={() => navigate("/")}>
-                    Cancel
-                  </Button>
-                  <Button variant="hero" type="submit" className="gap-2">
-                    <Plus className="w-4 h-4" />
-                    Create Task
-                  </Button>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Start Date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !startDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {startDate ? format(startDate, "PPP") : "Pick start date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={startDate}
+                          onSelect={setStartDate}
+                          initialFocus
+                          className={cn("p-3 pointer-events-auto")}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  <div>
+                    <Label>Due Date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !dueDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {dueDate ? format(dueDate, "PPP") : "Pick due date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={dueDate}
+                          onSelect={setDueDate}
+                          initialFocus
+                          disabled={(date) => startDate ? date < startDate : false}
+                          className={cn("p-3 pointer-events-auto")}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  <div>
+                    <Label>Estimated Hours</Label>
+                    <Input
+                      type="number"
+                      placeholder="Enter estimated hours"
+                      value={formData.estimatedHours}
+                      onChange={(e) => setFormData({ ...formData, estimatedHours: e.target.value })}
+                    />
+                  </div>
                 </div>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
+              </CardContent>
+            </Card>
+
+            {/* Assignment & Project */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Assignment & Project</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label>Assignee</Label>
+                  <Select value={formData.assignee} onValueChange={(value) => setFormData({ ...formData, assignee: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Assign to team member" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {teamMembers.map((member) => (
+                        <SelectItem key={member.id} value={member.id}>
+                          <div className="flex items-center gap-2">
+                            <Avatar className="w-6 h-6">
+                              <AvatarImage src="" />
+                              <AvatarFallback className="text-xs bg-primary text-primary-foreground">
+                                {member.name.charAt(0)}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <div className="font-medium">{member.name}</div>
+                              <div className="text-xs text-muted-foreground">{member.email}</div>
+                            </div>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Project *</Label>
+                  <Select value={formData.project} onValueChange={(value) => setFormData({ ...formData, project: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a project" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {projects.map((project) => (
+                        <SelectItem key={project.id} value={project.id}>
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: project.color }} />
+                            {project.name}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Sprint (Optional)</Label>
+                  <Select value={formData.sprint} onValueChange={(value) => setFormData({ ...formData, sprint: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a sprint" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">No Sprint</SelectItem>
+                      {sprints
+                        .filter(sprint => !formData.project || sprint.projectId === formData.project)
+                        .map((sprint) => (
+                        <SelectItem key={sprint.id} value={sprint.id}>
+                          <div className="flex items-center gap-2">
+                            <Badge variant={sprint.status === 'active' ? 'default' : 'secondary'} className="text-xs">
+                              {sprint.status}
+                            </Badge>
+                            {sprint.name}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Story Points</Label>
+                  <Select value={formData.storyPoints} onValueChange={(value) => setFormData({ ...formData, storyPoints: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select story points" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">1 Point</SelectItem>
+                      <SelectItem value="2">2 Points</SelectItem>
+                      <SelectItem value="3">3 Points</SelectItem>
+                      <SelectItem value="5">5 Points</SelectItem>
+                      <SelectItem value="8">8 Points</SelectItem>
+                      <SelectItem value="13">13 Points</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Sprint Details */}
+            {formData.sprint && formData.sprint !== 'none' && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="h-5 w-5" />
+                    Sprint Details
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {(() => {
+                    const selectedSprint = sprints.find(s => s.id === formData.sprint);
+                    if (!selectedSprint) return null;
+                    
+                    return (
+                      <>
+                        <div>
+                          <div className="text-sm text-muted-foreground">Sprint Name</div>
+                          <div className="font-medium">{selectedSprint.name}</div>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div className="text-sm text-muted-foreground">Status</div>
+                          <Badge 
+                            variant={selectedSprint.status === 'active' ? 'default' : 'outline'}
+                          >
+                            {selectedSprint.status.charAt(0).toUpperCase() + selectedSprint.status.slice(1)}
+                          </Badge>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">Sprint Progress</span>
+                            <span className="font-medium">{selectedSprint.progress}%</span>
+                          </div>
+                          <div className="w-full bg-muted rounded-full h-2">
+                            <div 
+                              className={`h-2 rounded-full transition-all duration-300 ${
+                                selectedSprint.status === 'active' ? 'bg-blue-500' : 'bg-gray-400'
+                              }`}
+                              style={{ width: `${selectedSprint.progress}%` }}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 text-sm">
+                          <div>
+                            <div className="text-muted-foreground">Start</div>
+                            <div className="font-medium">{format(selectedSprint.startDate, 'MMM dd')}</div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">End</div>
+                            <div className="font-medium">{format(selectedSprint.endDate, 'MMM dd')}</div>
+                          </div>
+                        </div>
+                      </>
+                    );
+                  })()}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Placeholder card when no sprint selected */}
+            {(!formData.sprint || formData.sprint === 'none') && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="h-5 w-5" />
+                    Sprint Assignment
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-6">
+                    <Target className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
+                    <div className="text-sm text-muted-foreground mb-4">
+                      This task is not assigned to any sprint
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      Select a sprint above to assign this task
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          <div className="flex justify-end gap-3 pt-6 border-t">
+            <Button variant="outline" type="button" onClick={() => navigate("/my-tasks")}>
+              Cancel
+            </Button>
+            <Button type="submit" className="gap-2">
+              <Plus className="w-4 h-4" />
+              Create Task
+            </Button>
+          </div>
+        </form>
       </div>
     </div>
   );
