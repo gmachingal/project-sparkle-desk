@@ -9,9 +9,10 @@ import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import SprintTaskManager from '@/components/SprintTaskManager';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Calendar as CalendarIcon, List, Users, Filter, Plus, Edit, BarChart3, Target, Clock, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Calendar as CalendarIcon, List, Users, Filter, Plus, Edit, BarChart3, Target, Clock, TrendingUp, CheckCircle } from 'lucide-react';
 import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, addDays, differenceInDays } from 'date-fns';
 
 const SprintDashboard = () => {
@@ -266,6 +267,15 @@ const SprintDashboard = () => {
     // In a real app, this would update the task's sprintId in the database
   };
 
+  const handleCloseSprint = () => {
+    toast({
+      title: "Sprint Closed",
+      description: `${sprint.name} has been successfully closed and marked as completed.`,
+    });
+    // In a real app, this would update the sprint status in the database and trigger sprint retrospective workflow
+    // navigate(`/project-calendar/${projectId}`);
+  };
+
   const getFilteredTasks = () => {
     return sprintTasks.filter(task => {
       const memberMatch = selectedMember === 'all' || task.assigneeId === selectedMember;
@@ -359,6 +369,35 @@ const SprintDashboard = () => {
                 onMoveTask={handleMoveTask}
                 onAddTaskToSprint={handleAddTaskToSprint}
               />
+              {sprint.status === 'active' && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="outline" className="text-orange-600 hover:text-orange-700 hover:bg-orange-50">
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Close Sprint
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Close Sprint</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to close "{sprint.name}"? This will mark the sprint as completed and you won't be able to add new tasks to it.
+                        <br /><br />
+                        <strong>Sprint Summary:</strong>
+                        <br />• Completed: {sprint.completedPoints}/{sprint.totalPoints} story points ({Math.round((sprint.completedPoints / sprint.totalPoints) * 100)}%)
+                        <br />• Tasks: {sprintTasks.filter(t => t.status === 'completed').length}/{sprintTasks.length} completed
+                        <br />• Remaining tasks will be moved to backlog
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleCloseSprint} className="bg-orange-600 hover:bg-orange-700">
+                        Close Sprint
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
               <Button variant="outline" onClick={() => navigate(`/edit-sprint/${projectId}/${sprintId}`)}>
                 <Edit className="h-4 w-4 mr-2" />
                 Edit Sprint
