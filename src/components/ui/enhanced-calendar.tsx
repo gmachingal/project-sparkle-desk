@@ -44,19 +44,19 @@ function EnhancedCalendar({
   };
 
   return (
-    <div className="space-y-2">
-      <div className="flex justify-between items-center px-3">
+    <div className="space-y-3">
+      <div className="flex justify-between items-center px-4 py-2 bg-muted/30 rounded-lg">
         <Button
           variant="outline"
           size="sm"
           onClick={handleTodayClick}
-          className="h-7 px-3 text-xs"
+          className="h-8 px-4 text-xs bg-primary text-primary-foreground hover:bg-primary/90 border-primary"
         >
           Today
         </Button>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           <Select value={currentMonth.toString()} onValueChange={handleMonthChange}>
-            <SelectTrigger className="h-7 w-auto min-w-[70px] border-none bg-background text-xs font-medium hover:bg-accent px-2">
+            <SelectTrigger className="h-8 w-auto min-w-[90px] border bg-secondary text-secondary-foreground hover:bg-secondary/80 text-xs font-medium px-3">
               <SelectValue>{months[currentMonth]}</SelectValue>
             </SelectTrigger>
             <SelectContent className="bg-background border z-50">
@@ -68,7 +68,7 @@ function EnhancedCalendar({
             </SelectContent>
           </Select>
           <Select value={currentCalendarYear.toString()} onValueChange={handleYearChange}>
-            <SelectTrigger className="h-7 w-auto min-w-[60px] border-none bg-background text-xs font-medium hover:bg-accent px-2">
+            <SelectTrigger className="h-8 w-auto min-w-[75px] border bg-accent text-accent-foreground hover:bg-accent/80 text-xs font-medium px-3">
               <SelectValue>{currentCalendarYear}</SelectValue>
             </SelectTrigger>
             <SelectContent className="bg-background border z-50">
