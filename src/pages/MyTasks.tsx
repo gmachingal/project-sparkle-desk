@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
+import { EnhancedCalendar } from "@/components/ui/enhanced-calendar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import TaskCard from "@/components/TaskCard";
 import Header from "@/components/Header";
@@ -449,7 +449,7 @@ const MyTasks = () => {
                               </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-0" align="start">
-                              <Calendar
+                              <EnhancedCalendar
                                 mode="single"
                                 selected={selectedDate}
                                 onSelect={(date) => date && setSelectedDate(date)}
@@ -582,7 +582,7 @@ const MyTasks = () => {
                               </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-0" align="start">
-                              <Calendar
+                              <EnhancedCalendar
                                 mode="single"
                                 selected={selectedDate}
                                 onSelect={(date) => date && setSelectedDate(date)}
@@ -707,7 +707,7 @@ const MyTasks = () => {
                               </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-0" align="start">
-                              <Calendar
+                              <EnhancedCalendar
                                 mode="single"
                                 selected={selectedDate}
                                 onSelect={(date) => date && setSelectedDate(date)}
