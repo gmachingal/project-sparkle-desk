@@ -13,7 +13,10 @@ import {
   FolderOpen,
   Clock,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Target,
+  Play,
+  Calendar as CalendarDays
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -33,9 +36,19 @@ const TaskView = () => {
       description: "Create initial wireframes and high-fidelity designs for the new homepage. This includes user research, competitor analysis, and creating multiple design variations for A/B testing.",
       status: "in-progress" as const,
       priority: "high" as const,
+      startDate: new Date(currentYear, currentMonth, 5),
       dueDate: new Date(currentYear, currentMonth, 10),
       assignee: { name: "You", avatar: "" },
       project: "Website Redesign",
+      projectId: "1",
+      sprint: {
+        id: "1",
+        name: "Sprint 1 - Foundation",
+        status: "active" as const,
+        startDate: new Date(currentYear, currentMonth, 1),
+        endDate: new Date(currentYear, currentMonth, 14),
+        progress: 65
+      },
       createdDate: new Date(currentYear, currentMonth, 1),
       estimatedHours: 16,
       actualHours: 8,
@@ -47,9 +60,19 @@ const TaskView = () => {
       description: "Go through the new API docs and provide feedback on clarity and completeness.",
       status: "todo" as const,
       priority: "medium" as const,
+      startDate: new Date(currentYear, currentMonth, 12),
       dueDate: new Date(currentYear, currentMonth, 15),
       assignee: { name: "You", avatar: "" },
       project: "Mobile App",
+      projectId: "2",
+      sprint: {
+        id: "2",
+        name: "Sprint 2 - Core Features",
+        status: "planned" as const,
+        startDate: new Date(currentYear, currentMonth, 15),
+        endDate: new Date(currentYear, currentMonth, 28),
+        progress: 0
+      },
       createdDate: new Date(currentYear, currentMonth, 2),
       estimatedHours: 4,
       actualHours: 0,
@@ -61,9 +84,19 @@ const TaskView = () => {
       description: "Revise the product page copy based on user feedback from the latest survey.",
       status: "completed" as const,
       priority: "low" as const,
+      startDate: new Date(currentYear, currentMonth, 6),
       dueDate: new Date(currentYear, currentMonth, 8),
       assignee: { name: "You", avatar: "" },
       project: "Marketing Campaign",
+      projectId: "3",
+      sprint: {
+        id: "3",
+        name: "Sprint 1 - Content Strategy",
+        status: "completed" as const,
+        startDate: new Date(currentYear, currentMonth - 1, 20),
+        endDate: new Date(currentYear, currentMonth, 10),
+        progress: 100
+      },
       createdDate: new Date(currentYear, currentMonth - 1, 25),
       estimatedHours: 6,
       actualHours: 5,
@@ -75,9 +108,19 @@ const TaskView = () => {
       description: "Fix authentication issues reported by users, including password reset and social login problems.",
       status: "todo" as const,
       priority: "high" as const,
+      startDate: new Date(currentYear, currentMonth, 18),
       dueDate: new Date(currentYear, currentMonth, 20),
       assignee: { name: "You", avatar: "" },
       project: "Website Redesign",
+      projectId: "1",
+      sprint: {
+        id: "1",
+        name: "Sprint 1 - Foundation",
+        status: "active" as const,
+        startDate: new Date(currentYear, currentMonth, 1),
+        endDate: new Date(currentYear, currentMonth, 14),
+        progress: 65
+      },
       createdDate: new Date(currentYear, currentMonth, 5),
       estimatedHours: 12,
       actualHours: 0,
@@ -89,9 +132,12 @@ const TaskView = () => {
       description: "Create slides for the quarterly review meeting, including project updates and metrics.",
       status: "in-progress" as const,
       priority: "medium" as const,
+      startDate: new Date(currentYear, currentMonth, 22),
       dueDate: new Date(currentYear, currentMonth, 25),
       assignee: { name: "You", avatar: "" },
       project: "Internal",
+      projectId: "4",
+      sprint: null, // No sprint assigned
       createdDate: new Date(currentYear, currentMonth, 15),
       estimatedHours: 8,
       actualHours: 3,
@@ -273,6 +319,14 @@ const TaskView = () => {
                 </div>
 
                 <div className="flex items-center gap-3">
+                  <Play className="w-4 h-4 text-muted-foreground" />
+                  <div>
+                    <div className="text-sm text-muted-foreground">Start Date</div>
+                    <div className="font-medium">{format(task.startDate, 'MMM dd, yyyy')}</div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
                   <Calendar className="w-4 h-4 text-muted-foreground" />
                   <div>
                     <div className="text-sm text-muted-foreground">Due Date</div>
@@ -289,6 +343,94 @@ const TaskView = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Sprint Details */}
+            {task.sprint && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Target className="w-4 h-4" />
+                    Sprint Details
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <div className="text-sm text-muted-foreground">Sprint Name</div>
+                    <div className="font-medium">{task.sprint.name}</div>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1">
+                      <div className="text-sm text-muted-foreground">Status</div>
+                      <Badge 
+                        variant={task.sprint.status === 'active' ? 'default' : task.sprint.status === 'completed' ? 'secondary' : 'outline'}
+                        className="mt-1"
+                      >
+                        {task.sprint.status.charAt(0).toUpperCase() + task.sprint.status.slice(1)}
+                      </Badge>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Sprint Progress</span>
+                      <span className="font-medium">{task.sprint.progress}%</span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-2">
+                      <div 
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                          task.sprint.status === 'active' ? 'bg-blue-500' : 
+                          task.sprint.status === 'completed' ? 'bg-green-500' : 'bg-gray-400'
+                        }`}
+                        style={{ width: `${task.sprint.progress}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <div className="text-muted-foreground">Start Date</div>
+                      <div className="font-medium">{format(task.sprint.startDate, 'MMM dd')}</div>
+                    </div>
+                    <div>
+                      <div className="text-muted-foreground">End Date</div>
+                      <div className="font-medium">{format(task.sprint.endDate, 'MMM dd')}</div>
+                    </div>
+                  </div>
+
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full"
+                    onClick={() => navigate(`/sprint-dashboard/${task.projectId}/${task.sprint.id}`)}
+                  >
+                    <Target className="w-3 h-3 mr-2" />
+                    View Sprint Dashboard
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {!task.sprint && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Target className="w-4 h-4" />
+                    Sprint Assignment
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-4">
+                    <div className="text-sm text-muted-foreground mb-3">
+                      This task is not assigned to any sprint
+                    </div>
+                    <Button variant="outline" size="sm">
+                      Assign to Sprint
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Time Tracking */}
             <Card>
