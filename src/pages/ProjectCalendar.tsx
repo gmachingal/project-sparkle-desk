@@ -345,18 +345,57 @@ const ProjectCalendar = () => {
               </CardHeader>
               <CardContent>
                 {calendarView === 'month' && (
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={(date) => date && setSelectedDate(date)}
-                    className="rounded-md border w-full"
-                    components={{
-                      Day: ({ date, ...props }: any) => {
-                        const tasksForDay = getTasksForDate(date);
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-medium">
+                        {format(selectedDate, 'MMMM yyyy')}
+                      </h3>
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1))}
+                        >
+                          Previous
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1))}
+                        >
+                          Next
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    {/* Calendar Grid */}
+                    <div className="grid grid-cols-7 gap-1">
+                      {/* Header */}
+                      {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                        <div key={day} className="p-2 text-center text-sm font-medium text-muted-foreground">
+                          {day}
+                        </div>
+                      ))}
+                      
+                      {/* Calendar Days */}
+                      {eachDayOfInterval({ 
+                        start: startOfMonth(selectedDate), 
+                        end: endOfMonth(selectedDate) 
+                      }).map(day => {
+                        const tasksForDay = getTasksForDate(day);
+                        const isToday = isSameDay(day, new Date());
+                        const isSelected = isSameDay(day, selectedDate);
                         
                         return (
-                          <div className="relative w-full h-24 p-1 border rounded cursor-pointer hover:bg-muted" onClick={() => setSelectedDate(date)}>
-                            <div className="font-medium text-sm mb-1">{format(date, 'd')}</div>
+                          <div 
+                            key={day.toISOString()} 
+                            className={`p-2 border rounded-lg cursor-pointer hover:bg-muted min-h-24 ${
+                              isSelected ? 'bg-primary/10 border-primary' : 
+                              isToday ? 'bg-accent border-accent-foreground' : ''
+                            }`}
+                            onClick={() => setSelectedDate(day)}
+                          >
+                            <div className="font-medium text-sm mb-1">{format(day, 'd')}</div>
                             <div className="space-y-1 overflow-hidden">
                               {tasksForDay.slice(0, 2).map(task => {
                                 const assignee = getAssignee(task.assigneeId);
@@ -380,9 +419,9 @@ const ProjectCalendar = () => {
                             </div>
                           </div>
                         );
-                      }
-                    }}
-                  />
+                      })}
+                    </div>
+                  </div>
                 )}
 
                   {calendarView === 'week' && (
