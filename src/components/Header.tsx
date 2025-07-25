@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Search, Bell, Plus, Settings, User, Clock, Users, Briefcase, FileText, Calendar, Home } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
+import reposeIcon from "@/assets/repose-icon.png";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -11,9 +12,11 @@ const Header = () => {
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">R</span>
-            </div>
+            <img 
+              src={reposeIcon} 
+              alt="Repose" 
+              className="w-8 h-8 rounded-lg object-cover"
+            />
             <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
               Repose
             </h1>
