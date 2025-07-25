@@ -308,6 +308,479 @@ const Attendance = () => {
       status: 'present',
       hours: 5.0,
       overtime: 0
+    },
+    // June 2025 data
+    {
+      id: '26',
+      date: '2025-06-30',
+      checkIn: '09:15 AM',
+      checkOut: '06:00 PM',
+      location: 'office',
+      status: 'present',
+      hours: 8.75,
+      overtime: 0.75
+    },
+    {
+      id: '27',
+      date: '2025-06-29',
+      checkIn: null,
+      checkOut: null,
+      location: null,
+      status: 'leave',
+      hours: 0,
+      overtime: 0,
+      leaveType: 'Annual Leave'
+    },
+    {
+      id: '28',
+      date: '2025-06-28',
+      checkIn: null,
+      checkOut: null,
+      location: null,
+      status: 'leave',
+      hours: 0,
+      overtime: 0,
+      leaveType: 'Annual Leave'
+    },
+    {
+      id: '29',
+      date: '2025-06-27',
+      checkIn: '08:45 AM',
+      checkOut: '05:30 PM',
+      location: 'wfh',
+      status: 'present',
+      hours: 8.75,
+      overtime: 0.75
+    },
+    {
+      id: '30',
+      date: '2025-06-26',
+      checkIn: '09:30 AM',
+      checkOut: '06:15 PM',
+      location: 'office',
+      status: 'late',
+      hours: 8.75,
+      overtime: 0.75
+    },
+    {
+      id: '31',
+      date: '2025-06-25',
+      checkIn: '09:00 AM',
+      checkOut: '05:45 PM',
+      location: 'office',
+      status: 'present',
+      hours: 8.75,
+      overtime: 0.75
+    },
+    {
+      id: '32',
+      date: '2025-06-24',
+      checkIn: '08:30 AM',
+      checkOut: '05:00 PM',
+      location: 'wfh',
+      status: 'present',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '33',
+      date: '2025-06-23',
+      checkIn: '09:15 AM',
+      checkOut: '06:30 PM',
+      location: 'office',
+      status: 'present',
+      hours: 9.25,
+      overtime: 1.25
+    },
+    {
+      id: '34',
+      date: '2025-06-20',
+      checkIn: '10:00 AM',
+      checkOut: '06:00 PM',
+      location: 'office',
+      status: 'late',
+      hours: 8.0,
+      overtime: 0
+    },
+    {
+      id: '35',
+      date: '2025-06-19',
+      checkIn: '09:00 AM',
+      checkOut: '05:30 PM',
+      location: 'wfh',
+      status: 'present',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '36',
+      date: '2025-06-18',
+      checkIn: null,
+      checkOut: null,
+      location: null,
+      status: 'absent',
+      hours: 0,
+      overtime: 0,
+      reason: 'Doctor appointment'
+    },
+    {
+      id: '37',
+      date: '2025-06-17',
+      checkIn: '08:45 AM',
+      checkOut: '05:15 PM',
+      location: 'office',
+      status: 'present',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '38',
+      date: '2025-06-16',
+      checkIn: '09:20 AM',
+      checkOut: '06:00 PM',
+      location: 'wfh',
+      status: 'late',
+      hours: 8.67,
+      overtime: 0.67
+    },
+    {
+      id: '39',
+      date: '2025-06-13',
+      checkIn: '09:00 AM',
+      checkOut: '05:45 PM',
+      location: 'office',
+      status: 'present',
+      hours: 8.75,
+      overtime: 0.75
+    },
+    {
+      id: '40',
+      date: '2025-06-12',
+      checkIn: null,
+      checkOut: null,
+      location: null,
+      status: 'leave',
+      hours: 0,
+      overtime: 0,
+      leaveType: 'Personal Leave'
+    },
+    {
+      id: '41',
+      date: '2025-06-11',
+      checkIn: '08:30 AM',
+      checkOut: '05:00 PM',
+      location: 'wfh',
+      status: 'present',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '42',
+      date: '2025-06-10',
+      checkIn: '09:10 AM',
+      checkOut: '06:20 PM',
+      location: 'office',
+      status: 'present',
+      hours: 9.17,
+      overtime: 1.17
+    },
+    {
+      id: '43',
+      date: '2025-06-09',
+      checkIn: '09:45 AM',
+      checkOut: '05:30 PM',
+      location: 'office',
+      status: 'late',
+      hours: 7.75,
+      overtime: 0
+    },
+    {
+      id: '44',
+      date: '2025-06-06',
+      checkIn: '09:00 AM',
+      checkOut: '05:30 PM',
+      location: 'wfh',
+      status: 'present',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '45',
+      date: '2025-06-05',
+      checkIn: '08:45 AM',
+      checkOut: '05:15 PM',
+      location: 'office',
+      status: 'present',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '46',
+      date: '2025-06-04',
+      checkIn: null,
+      checkOut: null,
+      location: null,
+      status: 'absent',
+      hours: 0,
+      overtime: 0,
+      reason: 'Sick leave'
+    },
+    {
+      id: '47',
+      date: '2025-06-03',
+      checkIn: '09:15 AM',
+      checkOut: '06:00 PM',
+      location: 'wfh',
+      status: 'present',
+      hours: 8.75,
+      overtime: 0.75
+    },
+    {
+      id: '48',
+      date: '2025-06-02',
+      checkIn: '09:00 AM',
+      checkOut: '05:45 PM',
+      location: 'office',
+      status: 'present',
+      hours: 8.75,
+      overtime: 0.75
+    },
+    // July 2025 data
+    {
+      id: '49',
+      date: '2025-07-31',
+      checkIn: '09:15 AM',
+      checkOut: '06:30 PM',
+      location: 'office',
+      status: 'present',
+      hours: 9.25,
+      overtime: 1.25
+    },
+    {
+      id: '50',
+      date: '2025-07-30',
+      checkIn: '08:45 AM',
+      checkOut: '05:15 PM',
+      location: 'wfh',
+      status: 'present',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '51',
+      date: '2025-07-29',
+      checkIn: '09:30 AM',
+      checkOut: '06:00 PM',
+      location: 'office',
+      status: 'late',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '52',
+      date: '2025-07-28',
+      checkIn: '09:00 AM',
+      checkOut: '05:30 PM',
+      location: 'office',
+      status: 'present',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '53',
+      date: '2025-07-25',
+      checkIn: '08:30 AM',
+      checkOut: '05:00 PM',
+      location: 'wfh',
+      status: 'present',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '54',
+      date: '2025-07-24',
+      checkIn: null,
+      checkOut: null,
+      location: null,
+      status: 'leave',
+      hours: 0,
+      overtime: 0,
+      leaveType: 'Annual Leave'
+    },
+    {
+      id: '55',
+      date: '2025-07-23',
+      checkIn: null,
+      checkOut: null,
+      location: null,
+      status: 'leave',
+      hours: 0,
+      overtime: 0,
+      leaveType: 'Annual Leave'
+    },
+    {
+      id: '56',
+      date: '2025-07-22',
+      checkIn: '09:10 AM',
+      checkOut: '06:15 PM',
+      location: 'office',
+      status: 'present',
+      hours: 9.08,
+      overtime: 1.08
+    },
+    {
+      id: '57',
+      date: '2025-07-21',
+      checkIn: '09:45 AM',
+      checkOut: '05:45 PM',
+      location: 'wfh',
+      status: 'late',
+      hours: 8.0,
+      overtime: 0
+    },
+    {
+      id: '58',
+      date: '2025-07-18',
+      checkIn: '09:00 AM',
+      checkOut: '05:30 PM',
+      location: 'office',
+      status: 'present',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '59',
+      date: '2025-07-17',
+      checkIn: null,
+      checkOut: null,
+      location: null,
+      status: 'absent',
+      hours: 0,
+      overtime: 0,
+      reason: 'Family emergency'
+    },
+    {
+      id: '60',
+      date: '2025-07-16',
+      checkIn: '08:45 AM',
+      checkOut: '05:15 PM',
+      location: 'wfh',
+      status: 'present',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '61',
+      date: '2025-07-15',
+      checkIn: '09:20 AM',
+      checkOut: '06:00 PM',
+      location: 'office',
+      status: 'late',
+      hours: 8.67,
+      overtime: 0.67
+    },
+    {
+      id: '62',
+      date: '2025-07-14',
+      checkIn: '09:00 AM',
+      checkOut: '05:45 PM',
+      location: 'office',
+      status: 'present',
+      hours: 8.75,
+      overtime: 0.75
+    },
+    {
+      id: '63',
+      date: '2025-07-11',
+      checkIn: '08:30 AM',
+      checkOut: '05:00 PM',
+      location: 'wfh',
+      status: 'present',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '64',
+      date: '2025-07-10',
+      checkIn: null,
+      checkOut: null,
+      location: null,
+      status: 'leave',
+      hours: 0,
+      overtime: 0,
+      leaveType: 'Personal Leave'
+    },
+    {
+      id: '65',
+      date: '2025-07-09',
+      checkIn: '09:15 AM',
+      checkOut: '06:30 PM',
+      location: 'office',
+      status: 'present',
+      hours: 9.25,
+      overtime: 1.25
+    },
+    {
+      id: '66',
+      date: '2025-07-08',
+      checkIn: '10:00 AM',
+      checkOut: '06:00 PM',
+      location: 'office',
+      status: 'late',
+      hours: 8.0,
+      overtime: 0
+    },
+    {
+      id: '67',
+      date: '2025-07-07',
+      checkIn: '09:00 AM',
+      checkOut: '05:30 PM',
+      location: 'wfh',
+      status: 'present',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '68',
+      date: '2025-07-04',
+      checkIn: null,
+      checkOut: null,
+      location: null,
+      status: 'leave',
+      hours: 0,
+      overtime: 0,
+      leaveType: 'Independence Day'
+    },
+    {
+      id: '69',
+      date: '2025-07-03',
+      checkIn: '08:45 AM',
+      checkOut: '05:15 PM',
+      location: 'office',
+      status: 'present',
+      hours: 8.5,
+      overtime: 0.5
+    },
+    {
+      id: '70',
+      date: '2025-07-02',
+      checkIn: null,
+      checkOut: null,
+      location: null,
+      status: 'absent',
+      hours: 0,
+      overtime: 0,
+      reason: 'Medical appointment'
+    },
+    {
+      id: '71',
+      date: '2025-07-01',
+      checkIn: '09:10 AM',
+      checkOut: '06:00 PM',
+      location: 'wfh',
+      status: 'present',
+      hours: 8.83,
+      overtime: 0.83
     }
   ];
 
