@@ -266,24 +266,28 @@ const TimeLogging = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Back Button Above Header */}
+      <div className="border-b border-border">
+        <div className="container mx-auto px-4 py-3">
+          <Button variant="back" onClick={() => navigate(-1)}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back
+          </Button>
+        </div>
+      </div>
+      
       <Header />
       
       <div className="container mx-auto px-4 py-8">
         {/* Header Section */}
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <Button variant="back" onClick={() => navigate(-1)}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
-            </Button>
-            <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-                Time Logging
-              </h1>
-              <p className="text-muted-foreground mt-1">
-                Log time spent on tasks for {format(selectedDate, 'EEEE, MMMM dd, yyyy')}
-              </p>
-            </div>
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+              Time Logging
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Log time spent on tasks for {format(selectedDate, 'EEEE, MMMM dd, yyyy')}
+            </p>
           </div>
           
           <div className="flex items-center gap-4">

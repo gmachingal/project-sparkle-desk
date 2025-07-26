@@ -6,15 +6,15 @@ import StatsCard from "./StatsCard";
 import AttendanceCard from "./AttendanceCard";
 import LeaveCard from "./LeaveCard";
 import TaskCard from "./TaskCard";
+import QuickActionsDropdown from "./QuickActionsDropdown";
+import SprintOverview from "./SprintOverview";
 import { 
   CheckSquare, 
   Clock, 
   Target, 
   TrendingUp,
   Plus,
-  Timer,
-  Calendar,
-  FileText
+  Timer
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -117,6 +117,7 @@ const UserDashboard = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <QuickActionsDropdown />
           <Button variant="outline" className="gap-2" onClick={() => navigate("/time-logging")}>
             <Timer className="w-4 h-4" />
             Log Time
@@ -135,60 +136,20 @@ const UserDashboard = () => {
         ))}
       </div>
 
+      {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Attendance & Leave */}
-        <div className="space-y-6">
+        {/* Attendance Card */}
+        <div>
           <AttendanceCard {...attendanceData} />
+        </div>
+
+        {/* Leave Balance Card */}
+        <div>
           <LeaveCard {...leaveData} />
         </div>
 
-        {/* Middle Column - Quick Actions */}
-        <div className="lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <Button 
-                  variant="outline" 
-                  className="h-20 flex-col gap-2"
-                  onClick={() => navigate('/attendance')}
-                >
-                  <Clock className="w-6 h-6" />
-                  <span className="text-xs">Attendance</span>
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="h-20 flex-col gap-2"
-                  onClick={() => navigate('/leave-management')}
-                >
-                  <Calendar className="w-6 h-6" />
-                  <span className="text-xs">Leave</span>
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="h-20 flex-col gap-2"
-                  onClick={() => navigate('/time-logging')}
-                >
-                  <Timer className="w-6 h-6" />
-                  <span className="text-xs">Time Log</span>
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="h-20 flex-col gap-2"
-                  onClick={() => navigate('/projects')}
-                >
-                  <FileText className="w-6 h-6" />
-                  <span className="text-xs">Projects</span>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Right Column - Today's Focus (aligned with Leave Balance width) */}
-        <div className="lg:col-span-1">
+        {/* Today's Focus Card */}
+        <div>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-lg">Today's Focus</CardTitle>
@@ -203,6 +164,11 @@ const UserDashboard = () => {
             </CardContent>
           </Card>
         </div>
+      </div>
+
+      {/* Sprint Overview Section */}
+      <div className="mt-6">
+        <SprintOverview />
       </div>
     </div>
   );
