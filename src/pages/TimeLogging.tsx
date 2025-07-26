@@ -374,8 +374,8 @@ const TimeLogging = () => {
                 </Card>
               </div>
 
-              {/* Tasks List with Pagination */}
-              <div className="lg:col-span-3 space-y-4">
+              {/* Tasks List with Pagination - Grid Layout */}
+              <div className="lg:col-span-3">
                 {(() => {
                   const totalPages = Math.ceil(allTasks.length / recordsPerPage);
                   const startIndex = (currentPage - 1) * recordsPerPage;
@@ -384,96 +384,96 @@ const TimeLogging = () => {
                   
                   return (
                     <>
-                      {currentTasks.map((task) => {
-                        const entry = timeEntries[task.id] || { hours: '', notes: '' };
-                        const progressPercentage = task.estimatedHours > 0 ? Math.round((task.loggedHours / task.estimatedHours) * 100) : 0;
-                        
-                        return (
-                          <Card key={task.id} className="compact">
-                            <CardContent className="p-4">
-                              <div className="flex items-start justify-between mb-3">
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <h3 className="font-semibold text-base">{task.title}</h3>
-                                    <Badge className={getStatusColor(task.status)} variant="secondary">
-                                      {task.status.replace('-', ' ')}
-                                    </Badge>
-                                    <Badge className={getPriorityColor(task.priority)} variant="outline">
-                                      <Flag className="w-3 h-3 mr-1" />
-                                      {task.priority}
-                                    </Badge>
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        {currentTasks.map((task) => {
+                          const entry = timeEntries[task.id] || { hours: '', notes: '' };
+                          const progressPercentage = task.estimatedHours > 0 ? Math.round((task.loggedHours / task.estimatedHours) * 100) : 0;
+                          
+                          return (
+                            <Card key={task.id} className="compact h-fit">
+                              <CardContent className="p-3">
+                                <div className="space-y-3">
+                                  {/* Header - Compact */}
+                                  <div>
+                                    <div className="flex items-start gap-2 mb-1">
+                                      <h3 className="font-medium text-sm flex-1 line-clamp-1">{task.title}</h3>
+                                      <Badge className={`${getStatusColor(task.status)} text-xs px-1.5 py-0.5`} variant="secondary">
+                                        {task.status.replace('-', ' ')}
+                                      </Badge>
+                                    </div>
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <Badge className={`${getPriorityColor(task.priority)} text-xs px-1.5 py-0.5`} variant="outline">
+                                        <Flag className="w-2.5 h-2.5 mr-1" />
+                                        {task.priority}
+                                      </Badge>
+                                      <Badge variant="secondary" className="text-xs px-1.5 py-0.5">{task.project}</Badge>
+                                    </div>
+                                    <p className="text-muted-foreground text-xs line-clamp-2 mb-2">{task.description}</p>
                                   </div>
-                                  <p className="text-muted-foreground text-sm mb-2 line-clamp-2">{task.description}</p>
-                                  <Badge variant="secondary" className="text-xs">{task.project}</Badge>
-                                </div>
-                              </div>
 
-                              {/* Compact Time Progress */}
-                              <div className="mb-3">
-                                <div className="flex justify-between text-xs mb-1">
-                                  <span>{task.loggedHours}h / {task.estimatedHours}h</span>
-                                  <span>{progressPercentage}%</span>
-                                </div>
-                                <div className="w-full bg-muted rounded-full h-1.5">
-                                  <div 
-                                    className="bg-primary h-1.5 rounded-full transition-all duration-300" 
-                                    style={{ width: `${Math.min(progressPercentage, 100)}%` }}
-                                  />
-                                </div>
-                              </div>
+                                  {/* Progress Bar - Compact */}
+                                  <div>
+                                    <div className="flex justify-between text-xs mb-1">
+                                      <span className="text-muted-foreground">{task.loggedHours}h / {task.estimatedHours}h</span>
+                                      <span className="font-medium">{progressPercentage}%</span>
+                                    </div>
+                                    <div className="w-full bg-muted rounded-full h-1">
+                                      <div 
+                                        className="bg-primary h-1 rounded-full transition-all duration-300" 
+                                        style={{ width: `${Math.min(progressPercentage, 100)}%` }}
+                                      />
+                                    </div>
+                                  </div>
 
-                              {/* Compact Time Entry Form */}
-                              <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-                                <div className="md:col-span-2">
-                                  <Label htmlFor={`hours-${task.id}`} className="text-xs font-medium">
-                                    Hours
-                                  </Label>
-                                  <div className="relative">
-                                    <Clock className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground w-3 h-3" />
-                                    <Input
-                                      id={`hours-${task.id}`}
-                                      type="number"
-                                      step="0.25"
-                                      min="0"
-                                      max="24"
-                                      placeholder="0.00"
-                                      value={entry.hours}
-                                      onChange={(e) => handleTimeChange(task.id, e.target.value)}
-                                      className="pl-8 h-8 text-sm"
-                                    />
+                                  {/* Time Entry Form - Compact */}
+                                  <div className="space-y-2">
+                                    <div className="grid grid-cols-3 gap-2">
+                                      <div>
+                                        <Label htmlFor={`hours-${task.id}`} className="text-xs">Hours</Label>
+                                        <div className="relative">
+                                          <Clock className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground w-3 h-3" />
+                                          <Input
+                                            id={`hours-${task.id}`}
+                                            type="number"
+                                            step="0.25"
+                                            min="0"
+                                            max="24"
+                                            placeholder="0.00"
+                                            value={entry.hours}
+                                            onChange={(e) => handleTimeChange(task.id, e.target.value)}
+                                            className="pl-8 h-7 text-xs"
+                                          />
+                                        </div>
+                                      </div>
+                                      <div className="col-span-2">
+                                        <Label htmlFor={`notes-${task.id}`} className="text-xs">Notes</Label>
+                                        <Textarea
+                                          id={`notes-${task.id}`}
+                                          placeholder="What did you work on?"
+                                          value={entry.notes}
+                                          onChange={(e) => handleNotesChange(task.id, e.target.value)}
+                                          className="resize-none h-7 text-xs"
+                                          rows={1}
+                                        />
+                                      </div>
+                                    </div>
+                                    
+                                    <Button 
+                                      onClick={() => handleSaveTimeEntry(task.id)}
+                                      disabled={!entry.hours || parseFloat(entry.hours) <= 0}
+                                      className="w-full gap-1 h-7 text-xs"
+                                      size="sm"
+                                    >
+                                      <Timer className="w-3 h-3" />
+                                      Log Time
+                                    </Button>
                                   </div>
                                 </div>
-                                
-                                <div className="md:col-span-8">
-                                  <Label htmlFor={`notes-${task.id}`} className="text-xs font-medium">
-                                    Notes (Optional)
-                                  </Label>
-                                  <Textarea
-                                    id={`notes-${task.id}`}
-                                    placeholder="What did you work on?"
-                                    value={entry.notes}
-                                    onChange={(e) => handleNotesChange(task.id, e.target.value)}
-                                    className="resize-none h-8 text-sm"
-                                    rows={1}
-                                  />
-                                </div>
-                                
-                                <div className="md:col-span-2">
-                                  <Button 
-                                    onClick={() => handleSaveTimeEntry(task.id)}
-                                    disabled={!entry.hours || parseFloat(entry.hours) <= 0}
-                                    className="w-full gap-1 h-8 text-xs"
-                                    size="sm"
-                                  >
-                                    <Timer className="w-3 h-3" />
-                                    Log
-                                  </Button>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        );
-                      })}
+                              </CardContent>
+                            </Card>
+                          );
+                        })}
+                      </div>
                       
                       {/* Pagination for Log Time */}
                       {totalPages > 1 && (
