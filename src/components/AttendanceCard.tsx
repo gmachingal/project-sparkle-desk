@@ -46,7 +46,7 @@ const AttendanceCard = ({
   };
 
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">Today's Attendance</CardTitle>
         {getStatusIcon()}
@@ -78,6 +78,9 @@ const AttendanceCard = ({
             </div>
           )}
 
+          {/* Add extra spacing to match Leave Balance card height */}
+          <div className="py-2"></div>
+
           <div className="border-t pt-3 space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-muted-foreground">This Week:</span>
@@ -89,15 +92,18 @@ const AttendanceCard = ({
             </div>
           </div>
 
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="w-full mt-3"
-            onClick={() => navigate('/attendance')}
-          >
-            <Calendar className="w-4 h-4 mr-2" />
-            View Details
-          </Button>
+          {/* Add extra spacing before button to match Leave Balance */}
+          <div className="pt-3">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="w-full"
+              onClick={() => navigate('/attendance')}
+            >
+              <Calendar className="w-4 h-4 mr-2" />
+              View Details
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

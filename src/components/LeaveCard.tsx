@@ -27,7 +27,7 @@ const LeaveCard = ({
   const leavePercentage = (usedLeave / totalLeave) * 100;
 
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">Leave Balance</CardTitle>
         <Plane className="w-4 h-4 text-muted-foreground" />
