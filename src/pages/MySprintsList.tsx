@@ -180,6 +180,8 @@ const MySprintsList = () => {
   const projects = Array.from(new Set(allSprints.map(sprint => sprint.project)));
 
   return (
+      <Header />
+
     <div className="min-h-screen bg-background">
       {/* Back Button Above Header */}
       <div className="border-b border-border">
@@ -191,7 +193,6 @@ const MySprintsList = () => {
         </div>
       </div>
       
-      <Header />
       
       <div className="container mx-auto px-4 py-8">
         {/* Header Section */}
