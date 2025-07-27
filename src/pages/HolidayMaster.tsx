@@ -122,13 +122,7 @@ const HolidayMaster = () => {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button 
-              variant="outline" 
-              className="bg-red-100 text-red-700 border-red-300 hover:bg-red-200"
-              onClick={() => navigate('/admin-leave-management')}
-            >
-              Admin View
-            </Button>
+
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button className="flex items-center gap-2">
