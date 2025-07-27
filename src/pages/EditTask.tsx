@@ -570,7 +570,6 @@ const EditTask = () => {
                 Cancel
               </Button>
               <Button variant="hero" type="submit" className="gap-2">
-                <Plus className="w-4 h-4" />
                 Update Task
               </Button>
           </div>
