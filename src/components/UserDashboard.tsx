@@ -126,7 +126,7 @@ const UserDashboard = () => {
               window.location.reload();
             }}
           >
-            Switch to Admin View
+            Admin View
           </Button>
           <QuickActionsDropdown />
           <Button variant="outline" className="gap-2" onClick={() => navigate("/time-logging")}>

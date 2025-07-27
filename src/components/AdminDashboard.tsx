@@ -129,7 +129,7 @@ const AdminDashboard = () => {
             }}
           >
             <Users className="w-4 h-4" />
-            Switch to User View
+            Employee View
           </Button>
           <Button variant="outline" className="gap-2" onClick={() => navigate("/admin-attendance")}>
             <BarChart3 className="w-4 h-4" />
