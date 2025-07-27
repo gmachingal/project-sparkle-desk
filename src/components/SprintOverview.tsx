@@ -116,7 +116,7 @@ const SprintOverview = () => {
               <div 
                 key={sprint.id} 
                 className="border rounded-lg p-4 space-y-3 hover:bg-muted/50 transition-colors cursor-pointer"
-                onClick={() => navigate(`/sprint-dashboard?sprint=${sprint.id}`)}
+                onClick={() => navigate(`/sprint-dashboard/1/${sprint.id}`)}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">

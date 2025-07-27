@@ -120,6 +120,17 @@ const AdminDashboard = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Button 
+            variant="outline" 
+            className="gap-2 bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200" 
+            onClick={() => {
+              localStorage.setItem('preferredRole', 'user');
+              window.location.reload();
+            }}
+          >
+            <Users className="w-4 h-4" />
+            Switch to User View
+          </Button>
           <Button variant="outline" className="gap-2" onClick={() => navigate("/admin-attendance")}>
             <BarChart3 className="w-4 h-4" />
             Reports
@@ -140,10 +151,10 @@ const AdminDashboard = () => {
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="attendance">Attendance</TabsTrigger>
-          <TabsTrigger value="projects">Projects</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3 lg:w-[400px] bg-muted">
+          <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Overview</TabsTrigger>
+          <TabsTrigger value="attendance" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Attendance</TabsTrigger>
+          <TabsTrigger value="projects" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Projects</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">

@@ -16,6 +16,7 @@ import { z } from "zod";
 import { toast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useNavigate } from "react-router-dom";
 
 const leaveFormSchema = z.object({
   leaveType: z.string().min(1, "Leave type is required"),
@@ -25,6 +26,7 @@ const leaveFormSchema = z.object({
 });
 
 const LeaveManagement = () => {
+  const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const form = useForm<z.infer<typeof leaveFormSchema>>({
@@ -110,8 +112,18 @@ const LeaveManagement = () => {
             <p className="text-muted-foreground mt-2">Manage your leave applications and track balance</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => window.location.href = '/admin-leave-management'}>
+            <Button 
+              variant="outline" 
+              className="bg-red-100 text-red-700 border-red-300 hover:bg-red-200"
+              onClick={() => navigate('/admin-leave-management')}
+            >
               Admin View
+            </Button>
+            <Button 
+              variant="outline"
+              onClick={() => navigate('/holiday-master')}
+            >
+              Holiday Master
             </Button>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
@@ -211,9 +223,10 @@ const LeaveManagement = () => {
         </div>
 
         <Tabs defaultValue="balance" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="balance">Leave Balance</TabsTrigger>
-            <TabsTrigger value="history">Leave History</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 bg-muted">
+            <TabsTrigger value="balance" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Leave Balance</TabsTrigger>
+            <TabsTrigger value="history" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Leave History</TabsTrigger>
+            <TabsTrigger value="calendar" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Calendar View</TabsTrigger>
           </TabsList>
 
           <TabsContent value="balance" className="space-y-6">
@@ -299,6 +312,32 @@ const LeaveManagement = () => {
                     ))}
                   </TableBody>
                 </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="calendar" className="space-y-6">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="h-5 w-5" />
+                  Leave Calendar
+                </CardTitle>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm">
+                    Filter
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    Export
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-12 text-muted-foreground">
+                  <Calendar className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                  <h3 className="text-lg font-semibold mb-2">Calendar View Coming Soon</h3>
+                  <p>Interactive calendar view for leave management will be available here.</p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

@@ -567,8 +567,8 @@ const EditTask = () => {
           )}
 
           <div className="flex gap-4 mt-6">
-            <Button type="submit" className="flex-1">Update Task</Button>
-            <Button type="button" variant="outline" onClick={() => navigate('/my-tasks')}>
+            <Button type="submit" size="sm" className="flex-1">Update Task</Button>
+            <Button type="button" variant="outline" size="sm" onClick={() => navigate('/my-tasks')}>
               Cancel
             </Button>
           </div>

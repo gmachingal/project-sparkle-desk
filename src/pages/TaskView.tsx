@@ -316,7 +316,12 @@ const TaskView = () => {
                     {Math.max(0, task.estimatedHours - task.actualHours)}h
                   </span>
                 </div>
-                <Button variant="outline" size="sm" className="w-full mt-4">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full mt-4"
+                  onClick={() => navigate('/time-logging')}
+                >
                   <Clock className="w-3 h-3 mr-2" />
                   Log Time
                 </Button>
@@ -450,6 +455,52 @@ const TaskView = () => {
               </CardContent>
             </Card>
           )}
+        </div>
+
+        {/* Log History Section */}
+        <div className="mt-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Clock className="w-4 h-4" />
+                Time Log History
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                    <div>
+                      <p className="font-medium text-sm">Initial wireframe sketches</p>
+                      <p className="text-xs text-muted-foreground">Nov 15, 2024</p>
+                    </div>
+                  </div>
+                  <Badge variant="secondary">3.0 hrs</Badge>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                    <div>
+                      <p className="font-medium text-sm">Hero section design refinement</p>
+                      <p className="text-xs text-muted-foreground">Nov 16, 2024</p>
+                    </div>
+                  </div>
+                  <Badge variant="secondary">2.5 hrs</Badge>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                    <div>
+                      <p className="font-medium text-sm">User testing feedback integration</p>
+                      <p className="text-xs text-muted-foreground">Nov 17, 2024</p>
+                    </div>
+                  </div>
+                  <Badge variant="secondary">2.5 hrs</Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
