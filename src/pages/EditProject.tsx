@@ -233,12 +233,13 @@ const EditProject = () => {
               </CardContent>
             </Card>
           </div>
-
-          <div className="flex gap-4">
-            <Button type="submit" className="flex-1">Update Project</Button>
-            <Button type="button" variant="outline" onClick={() => navigate('/projects')}>
-              Cancel
-            </Button>
+            <div className="flex justify-end gap-3">
+              <Button variant="outline" type="button" onClick={() => navigate("/projects")}>
+                Cancel
+              </Button>
+              <Button variant="hero" type="submit" className="gap-2">
+                Update Project
+              </Button>
           </div>
         </form>
       </div>
