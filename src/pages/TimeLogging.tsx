@@ -266,6 +266,8 @@ const TimeLogging = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Header />
+
       {/* Back Button Above Header */}
       <div className="border-b border-border">
         <div className="container mx-auto px-4 py-3">
@@ -276,7 +278,6 @@ const TimeLogging = () => {
         </div>
       </div>
       
-      <Header />
       
       <div className="container mx-auto px-4 py-8">
         {/* Header Section */}
