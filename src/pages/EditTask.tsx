@@ -566,7 +566,7 @@ const EditTask = () => {
             </Card>
           )}
             <div className="flex justify-end gap-3">
-              <Button variant="outline" type="button" onClick={() => navigate("/")}>
+              <Button variant="outline" type="button" onClick={() => navigate("/my-tasks")}>
                 Cancel
               </Button>
               <Button variant="hero" type="submit" className="gap-2">
