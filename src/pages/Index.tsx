@@ -5,7 +5,15 @@ import AdminDashboard from "@/components/AdminDashboard";
 
 const Index = () => {
   // Mock user role - in real app this would come from auth context
-  const [userRole] = useState<'admin' | 'user'>('user'); // Change to 'admin' to see admin view
+  const [userRole] = useState<'admin' | 'user'>(() => {
+    // Check for preferred role in localStorage (for demo purposes)
+    const preferredRole = localStorage.getItem('preferredRole');
+    if (preferredRole === 'admin') {
+      localStorage.removeItem('preferredRole'); // Clear after use
+      return 'admin';
+    }
+    return 'user';
+  });
 
   return (
     <div className="min-h-screen bg-background">

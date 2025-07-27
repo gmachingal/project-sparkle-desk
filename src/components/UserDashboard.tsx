@@ -117,6 +117,14 @@ const UserDashboard = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => {
+            // In real app, this would update the user role in context/state
+            // For now, we'll just use a simple reload with a flag
+            localStorage.setItem('preferredRole', 'admin');
+            window.location.reload();
+          }}>
+            Switch to Admin View
+          </Button>
           <QuickActionsDropdown />
           <Button variant="outline" className="gap-2" onClick={() => navigate("/time-logging")}>
             <Timer className="w-4 h-4" />

@@ -103,81 +103,83 @@ const SprintOverview = () => {
           <Target className="w-5 h-5" />
           Current Sprints
         </CardTitle>
-        <Button variant="ghost" size="sm" onClick={() => navigate('/projects')}>
+        <Button variant="ghost" size="sm" onClick={() => navigate('/sprints')}>
           View All
         </Button>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {currentSprints.map((sprint) => {
-          const daysRemaining = getDaysRemaining(sprint.endDate);
-          
-          return (
-            <div 
-              key={sprint.id} 
-              className="border rounded-lg p-4 space-y-3 hover:bg-muted/50 transition-colors cursor-pointer"
-              onClick={() => navigate(`/sprint/${sprint.id}`)}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-medium text-sm">{sprint.name}</h4>
-                    <Badge 
-                      variant="outline" 
-                      className={`text-xs ${getStatusColor(sprint.status)}`}
-                    >
-                      {sprint.status}
-                    </Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground mb-3">{sprint.goal}</p>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground">Progress</span>
-                  <span className="font-medium">{sprint.progress}%</span>
-                </div>
-                <Progress value={sprint.progress} className="h-2" />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="flex items-center gap-2">
-                  <BarChart3 className="w-3 h-3 text-muted-foreground" />
-                  <span className="text-muted-foreground">Story Points:</span>
-                  <span className="font-medium">{sprint.storyPoints.completed}/{sprint.storyPoints.total}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-3 h-3 text-muted-foreground" />
-                  <span className="text-muted-foreground">
-                    {daysRemaining > 0 ? `${daysRemaining} days left` : 'Overdue'}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Users className="w-3 h-3 text-muted-foreground" />
-                  <div className="flex -space-x-1">
-                    {sprint.teamMembers.slice(0, 3).map((member, index) => (
-                      <Avatar key={member.id} className="w-5 h-5 border border-background">
-                        <AvatarImage src={member.avatar} />
-                        <AvatarFallback className="text-xs bg-primary text-primary-foreground">
-                          {member.name.charAt(0)}
-                        </AvatarFallback>
-                      </Avatar>
-                    ))}
-                    {sprint.teamMembers.length > 3 && (
-                      <div className="w-5 h-5 rounded-full bg-muted border border-background flex items-center justify-center">
-                        <span className="text-xs text-muted-foreground">+{sprint.teamMembers.length - 3}</span>
-                      </div>
-                    )}
+      <CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {currentSprints.map((sprint) => {
+            const daysRemaining = getDaysRemaining(sprint.endDate);
+            
+            return (
+              <div 
+                key={sprint.id} 
+                className="border rounded-lg p-4 space-y-3 hover:bg-muted/50 transition-colors cursor-pointer"
+                onClick={() => navigate(`/sprint-dashboard?sprint=${sprint.id}`)}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-medium text-sm">{sprint.name}</h4>
+                      <Badge 
+                        variant="outline" 
+                        className={`text-xs ${getStatusColor(sprint.status)}`}
+                      >
+                        {sprint.status}
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-3">{sprint.goal}</p>
                   </div>
                 </div>
-                <ArrowRight className="w-3 h-3 text-muted-foreground" />
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">Progress</span>
+                    <span className="font-medium">{sprint.progress}%</span>
+                  </div>
+                  <Progress value={sprint.progress} className="h-2" />
+                </div>
+
+                <div className="grid grid-cols-1 gap-2 text-xs">
+                  <div className="flex items-center gap-2">
+                    <BarChart3 className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-muted-foreground">Story Points:</span>
+                    <span className="font-medium">{sprint.storyPoints.completed}/{sprint.storyPoints.total}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-muted-foreground">
+                      {daysRemaining > 0 ? `${daysRemaining} days left` : 'Overdue'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Users className="w-3 h-3 text-muted-foreground" />
+                    <div className="flex -space-x-1">
+                      {sprint.teamMembers.slice(0, 3).map((member, index) => (
+                        <Avatar key={member.id} className="w-5 h-5 border border-background">
+                          <AvatarImage src={member.avatar} />
+                          <AvatarFallback className="text-xs bg-primary text-primary-foreground">
+                            {member.name.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                      ))}
+                      {sprint.teamMembers.length > 3 && (
+                        <div className="w-5 h-5 rounded-full bg-muted border border-background flex items-center justify-center">
+                          <span className="text-xs text-muted-foreground">+{sprint.teamMembers.length - 3}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <ArrowRight className="w-3 h-3 text-muted-foreground" />
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </CardContent>
     </Card>
   );
