@@ -565,12 +565,14 @@ const EditTask = () => {
               </CardContent>
             </Card>
           )}
-
-          <div className="flex gap-4 mt-6">
-            <Button type="submit" size="sm" className="flex-1">Update Task</Button>
-            <Button type="button" variant="outline" size="sm" onClick={() => navigate('/my-tasks')}>
-              Cancel
-            </Button>
+            <div className="flex justify-end gap-3">
+              <Button variant="outline" type="button" onClick={() => navigate("/")}>
+                Cancel
+              </Button>
+              <Button variant="hero" type="submit" className="gap-2">
+                <Plus className="w-4 h-4" />
+                Update Task
+              </Button>
           </div>
         </form>
       </div>
