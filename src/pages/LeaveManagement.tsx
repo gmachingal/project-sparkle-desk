@@ -99,12 +99,12 @@ const LeaveManagement = () => {
     {
       id: 1,
       type: "CL",
-      startDate: "2024-01-15",
-      endDate: "2024-01-16", 
+      startDate: "2025-07-15",
+      endDate: "2025-07-16", 
       days: 2,
       reason: "Personal work",
       status: "Approved",
-      appliedOn: "2024-01-10",
+      appliedOn: "2025-07-10",
     },
     {
       id: 2,
