@@ -14,7 +14,8 @@ import {
   Target, 
   TrendingUp,
   Plus,
-  Timer
+  Timer,
+  Settings
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -126,6 +127,7 @@ const UserDashboard = () => {
               window.location.reload();
             }}
           >
+            <Settings className="w-4 h-4 mr-2" />
             Admin View
           </Button>
           <QuickActionsDropdown />

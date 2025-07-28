@@ -269,6 +269,14 @@ const AdminAttendance = () => {
             </p>
           </div>
           <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              className="bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200" 
+              onClick={() => window.location.href = '/attendance'}
+            >
+              <Users className="w-4 h-4 mr-2" />
+              Employee View
+            </Button>
             <Button variant="outline" onClick={exportAttendance}>
               <Download className="h-4 w-4 mr-2" />
               Export

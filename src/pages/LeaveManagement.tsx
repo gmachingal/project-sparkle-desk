@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, Plus, FileText, User } from "lucide-react";
+import { Calendar, Clock, Plus, FileText, User, Settings } from "lucide-react";
 // Header component import - using default export
 import Header from "@/components/Header";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -117,6 +117,7 @@ const LeaveManagement = () => {
               className="bg-red-100 text-red-700 border-red-300 hover:bg-red-200"
               onClick={() => navigate('/admin-leave-management')}
             >
+              <Settings className="w-4 h-4 mr-2" />
               Admin View
             </Button>
             <Button 

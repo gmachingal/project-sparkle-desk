@@ -23,6 +23,7 @@ import {
   Calendar as CalendarIcon,
   User,
   ChevronLeft,
+  Settings,
   ChevronRight
 } from 'lucide-react';
 import { format, isSameDay, isSameMonth, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
@@ -873,7 +874,7 @@ const Attendance = () => {
             {currentUser.role === 'admin' && (
               <Button variant="outline" onClick={() => window.location.href = '/admin-attendance'}
                 className="bg-red-100 text-red-700 border-red-300 hover:bg-red-200">
-                <Users className="h-4 w-4 mr-2" />
+                <Settings className="h-4 w-4 mr-2" />
                 Admin View
               </Button>
             )}

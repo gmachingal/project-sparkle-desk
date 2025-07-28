@@ -140,7 +140,12 @@ const AdminLeaveManagement = () => {
             <p className="text-muted-foreground mt-2">Manage employee leave requests and approvals</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => window.location.href = '/leave-management'}>
+            <Button 
+              variant="outline" 
+              className="bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200"
+              onClick={() => window.location.href = '/leave-management'}
+            >
+              <Users className="w-4 h-4 mr-2" />
               Employee View
             </Button>
           </div>
