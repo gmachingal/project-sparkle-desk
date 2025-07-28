@@ -23,6 +23,7 @@ import {
   Briefcase,
   Settings,
   UserPlus,
+  Building,
   MoreHorizontal,
   Shield,
   ShieldCheck,
@@ -594,8 +595,12 @@ const Teams = () => {
         {/* Teams Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-2 bg-muted">
-            <TabsTrigger value="members" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Team Members</TabsTrigger>
-            <TabsTrigger value="departments" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Departments</TabsTrigger>
+            <TabsTrigger value="members" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
+              <Users className="h-4 w-4 mr-2" />
+              Team Members</TabsTrigger>
+            <TabsTrigger value="departments" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
+              <Building className="h-4 w-4 mr-2" />
+              Departments</TabsTrigger>
           </TabsList>
 
           <TabsContent value="members" className="space-y-4">
