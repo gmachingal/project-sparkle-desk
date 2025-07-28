@@ -27,23 +27,23 @@ const Header = () => {
               <Home className="w-4 h-4" />
               Home
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/my-tasks")} className="gap-2">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/my-tasks")} className="gap-2 bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200">
               <FileText className="w-4 h-4" />
               My Tasks
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/projects")} className="gap-2">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/projects")} className="gap-2 bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200">
               <Briefcase className="w-4 h-4" />
               Projects
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/teams")} className="gap-2">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/teams")} className="gap-2 bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200">
               <Users className="w-4 h-4" />
               Teams
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/attendance")} className="gap-2">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/attendance")} className="gap-2 bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200">
               <Clock className="w-4 h-4" />
               Attendance
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/leave-management")} className="gap-2">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/leave-management")} className="gap-2 bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200">
               <Calendar className="w-4 h-4" />
               Leave
             </Button>
