@@ -153,7 +153,7 @@ const AdminDashboard = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-3 lg:w-[400px] bg-muted">
           <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">             
-            <Users className="w-4 h-4" />
+            <square-kanban className="w-4 h-4" />
           Overview</TabsTrigger>
           <TabsTrigger value="attendance" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Attendance</TabsTrigger>
           <TabsTrigger value="projects" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Projects</TabsTrigger>
