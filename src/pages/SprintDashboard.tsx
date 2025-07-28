@@ -1017,7 +1017,8 @@ const SprintDashboard = () => {
                   {/* To Do Column */}
                   <div className="space-y-4">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-semibold"> <CalendarDays className="h-4 w-4 mr-2" /> To Do</h3>
+                      <CalendarDays className="h-4 w-4 mr-2" />
+                      <h3 className="font-semibold">To Do</h3>
                       <Badge variant="secondary">{sprintTasks.filter(t => t.status === 'todo').length}</Badge>
                     </div>
                     <div className="space-y-3">
