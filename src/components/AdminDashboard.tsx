@@ -17,7 +17,7 @@ import {
   Settings,
   BarChart3,
   UserCheck,
-  Square-Kanban
+  Briefcase
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -154,10 +154,14 @@ const AdminDashboard = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-3 lg:w-[400px] bg-muted">
           <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">             
-            <Square-Kanban className="w-4 h-4" />
+            <BarChart3 className="w-4 h-4" />
           Overview</TabsTrigger>
-          <TabsTrigger value="attendance" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Attendance</TabsTrigger>
-          <TabsTrigger value="projects" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Projects</TabsTrigger>
+          <TabsTrigger value="attendance" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
+            <Calendar className="w-4 h-4" />
+            Attendance</TabsTrigger>
+          <TabsTrigger value="projects" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
+            <Briefcase className="w-4 h-4" />
+            Projects</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
