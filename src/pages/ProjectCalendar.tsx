@@ -419,7 +419,7 @@ const ProjectCalendar = () => {
                   onClick={() => setCalendarView('month')}
                   className="h-8 gap-2"
                 >
-                  <CalendarIcon className="h-4 w-4 mr-2" />
+                  <CalendarDays className="h-4 w-4 mr-2" />
                   Month
                 </Button>
               </div>
