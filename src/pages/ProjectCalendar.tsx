@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Calendar as CalendarIcon, List, Users, Filter, Plus, Target, BarChart3, User, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Calendar as CalendarIcon,CalendarRange, List, Users, Filter, Plus, Target,Calendar1, BarChart3, User, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
 import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, eachHourOfInterval, startOfDay, endOfDay } from 'date-fns';
 
 const ProjectCalendar = () => {
@@ -399,24 +399,27 @@ const ProjectCalendar = () => {
                   variant={calendarView === 'day' ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => setCalendarView('day')}
-                  className="h-8"
+                  className="h-8 gap-2"
                 >
+                  <Calendar1 className="h-4 w-4 mr-2" />
                   Day
                 </Button>
                 <Button
                   variant={calendarView === 'week' ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => setCalendarView('week')}
-                  className="h-8"
+                  className="h-8 gap-2"
                 >
+                  <CalendarRange className="h-4 w-4 mr-2" />
                   Week
                 </Button>
                 <Button
                   variant={calendarView === 'month' ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => setCalendarView('month')}
-                  className="h-8"
+                  className="h-8 gap-2"
                 >
+                  <CalendarIcon className="h-4 w-4 mr-2" />
                   Month
                 </Button>
               </div>
