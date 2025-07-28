@@ -16,7 +16,8 @@ import {
   Calendar,
   Settings,
   BarChart3,
-  UserCheck,Square-Kanban
+  UserCheck,
+  Square-Kanban
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
