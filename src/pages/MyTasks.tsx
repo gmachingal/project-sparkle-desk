@@ -404,12 +404,12 @@ const MyTasks = () => {
 
         {/* Tasks Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="all">All ({taskStats.total})</TabsTrigger>
-            <TabsTrigger value="todo">To Do ({taskStats.todo})</TabsTrigger>
-            <TabsTrigger value="in-progress">In Progress ({taskStats.inProgress})</TabsTrigger>
-            <TabsTrigger value="completed">Completed ({taskStats.completed})</TabsTrigger>
-            <TabsTrigger value="overdue">Overdue ({taskStats.overdue})</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-5 bg-muted">
+            <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">All ({taskStats.total})</TabsTrigger>
+            <TabsTrigger value="todo" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">To Do ({taskStats.todo})</TabsTrigger>
+            <TabsTrigger value="in-progress" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">In Progress ({taskStats.inProgress})</TabsTrigger>
+            <TabsTrigger value="completed" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Completed ({taskStats.completed})</TabsTrigger>
+            <TabsTrigger value="overdue" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Overdue ({taskStats.overdue})</TabsTrigger>
           </TabsList>
 
           <TabsContent value={activeTab} className="space-y-4">

@@ -252,11 +252,11 @@ const Projects = () => {
 
         {/* Projects Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="all">All ({projectStats.total})</TabsTrigger>
-            <TabsTrigger value="active">Active ({projectStats.active})</TabsTrigger>
-            <TabsTrigger value="completed">Completed ({projectStats.completed})</TabsTrigger>
-            <TabsTrigger value="planning">Planning ({projectStats.planning})</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4 bg-muted">
+            <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">All ({projectStats.total})</TabsTrigger>
+            <TabsTrigger value="active" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Active ({projectStats.active})</TabsTrigger>
+            <TabsTrigger value="completed" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Completed ({projectStats.completed})</TabsTrigger>
+            <TabsTrigger value="planning" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Planning ({projectStats.planning})</TabsTrigger>
           </TabsList>
 
           <TabsContent value={activeTab} className="space-y-4">

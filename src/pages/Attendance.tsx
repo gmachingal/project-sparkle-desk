@@ -911,12 +911,12 @@ const Attendance = () => {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="calendar" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="calendar" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-2 bg-muted">
+            <TabsTrigger value="calendar" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium flex items-center gap-2">
               <CalendarIcon className="h-4 w-4" />
               Calendar View
             </TabsTrigger>
-            <TabsTrigger value="details" className="flex items-center gap-2">
+            <TabsTrigger value="details" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium flex items-center gap-2">
               <Clock className="h-4 w-4" />
               Log Details
             </TabsTrigger>

@@ -657,11 +657,11 @@ const AdminAttendance = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">Today's Attendance</TabsTrigger>
-            <TabsTrigger value="requests">Pending Requests ({pendingRequests.length})</TabsTrigger>
-            <TabsTrigger value="locations">Work Locations</TabsTrigger>
-            <TabsTrigger value="reports">Reports & Analytics</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4 bg-muted">
+            <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Today's Attendance</TabsTrigger>
+            <TabsTrigger value="requests" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Pending Requests ({pendingRequests.length})</TabsTrigger>
+            <TabsTrigger value="locations" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Work Locations</TabsTrigger>
+            <TabsTrigger value="reports" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Reports & Analytics</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">

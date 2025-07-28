@@ -211,10 +211,10 @@ const AdminLeaveManagement = () => {
         </div>
 
         <Tabs defaultValue="pending" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="pending">Pending Requests</TabsTrigger>
-            <TabsTrigger value="all">All Requests</TabsTrigger>
-            <TabsTrigger value="balance">Leave Balance Management</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 bg-muted">
+            <TabsTrigger value="pending" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Pending Requests</TabsTrigger>
+            <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">All Requests</TabsTrigger>
+            <TabsTrigger value="balance" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Leave Balance Management</TabsTrigger>
           </TabsList>
 
           <TabsContent value="pending" className="space-y-6">
