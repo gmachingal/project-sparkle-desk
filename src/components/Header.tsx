@@ -35,7 +35,7 @@ const Header = () => {
               <Briefcase className="w-4 h-4" />
               Projects
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/teams")} className="gap-2 bg-red-100 text-red-700 border-red-300 hover:bg-red-200">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/teams")} className="gap-4 bg-red-100 text-red-700 border-red-300 hover:bg-red-200">
               <Users className="w-4 h-4" />
               Teams
             </Button>
