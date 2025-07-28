@@ -25,6 +25,7 @@ import {
   User,
   CalendarDays,
   Calendar1,
+  CalendarRange,
   ChevronLeft,
   ChevronRight,
   FileText
@@ -391,7 +392,7 @@ const MyTasks = () => {
                 onClick={() => setCalendarView('week')}
                 className="h-8 gap-2"
               >
-                <CalendarIcon className="h-4 w-4 mr-2" />
+                <CalendarRange className="h-4 w-4 mr-2" />
                 Week
               </Button>
               <Button
