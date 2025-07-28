@@ -15,7 +15,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/h
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import SprintTaskManager from '@/components/SprintTaskManager';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Calendar as CalendarIcon, List, Users, Filter, Plus, Edit, BarChart3, Target, Clock, TrendingUp, CheckCircle, MoreVertical, Settings, User, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Calendar as CalendarIcon, List, CalendarRange,Calendar1, Users, Filter, Plus, Edit, BarChart3, Target, Clock, TrendingUp, CheckCircle, MoreVertical, Settings, User, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
 import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, addDays, differenceInDays } from 'date-fns';
 
 const SprintDashboard = () => {
@@ -581,24 +581,27 @@ const SprintDashboard = () => {
                   variant={calendarView === 'day' ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => setCalendarView('day')}
-                  className="h-8"
+                  className="h-8 gap-2"
                 >
+                  <Calendar1 className="h-4 w-4 mr-2" />
                   Day
                 </Button>
                 <Button
                   variant={calendarView === 'week' ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => setCalendarView('week')}
-                  className="h-8"
+                  className="h-8 gap-2"
                 >
+                  <CalendarRange className="h-4 w-4 mr-2" />
                   Week
                 </Button>
                 <Button
                   variant={calendarView === 'month' ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => setCalendarView('month')}
-                  className="h-8"
+                  className="h-8 gap-2"
                 >
+                  <CalendarDays className="h-4 w-4 mr-2" />
                   Month
                 </Button>
               </div>
@@ -1014,7 +1017,7 @@ const SprintDashboard = () => {
                   {/* To Do Column */}
                   <div className="space-y-4">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-semibold">To Do</h3>
+                      <h3 className="font-semibold"> <CalendarDays className="h-4 w-4 mr-2" /> To Do</h3>
                       <Badge variant="secondary">{sprintTasks.filter(t => t.status === 'todo').length}</Badge>
                     </div>
                     <div className="space-y-3">
