@@ -14,7 +14,11 @@ import {
   Filter,
   Search,
   Grid3X3,
-  List
+  List,
+  FileText,
+  Clock,
+  CheckSquare,
+  NotebookPen
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -253,10 +257,18 @@ const Projects = () => {
         {/* Projects Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-4 bg-muted">
-            <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">All ({projectStats.total})</TabsTrigger>
-            <TabsTrigger value="active" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Active ({projectStats.active})</TabsTrigger>
-            <TabsTrigger value="completed" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Completed ({projectStats.completed})</TabsTrigger>
-            <TabsTrigger value="planning" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Planning ({projectStats.planning})</TabsTrigger>
+            <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
+              <FileText className="h-4 w-4 mr-2" />
+              All ({projectStats.total})</TabsTrigger>
+            <TabsTrigger value="active" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
+              <Clock className="h-4 w-4 mr-2" />
+              Active ({projectStats.active})</TabsTrigger>
+            <TabsTrigger value="completed" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
+              <CheckSquare className="h-4 w-4 mr-2" />
+              Completed ({projectStats.completed})</TabsTrigger>
+            <TabsTrigger value="planning" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
+              <NotebookPen className="h-4 w-4 mr-2" />
+              Planning ({projectStats.planning})</TabsTrigger>
           </TabsList>
 
           <TabsContent value={activeTab} className="space-y-4">
