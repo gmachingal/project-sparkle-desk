@@ -382,7 +382,7 @@ const MyTasks = () => {
                 onClick={() => setCalendarView('day')}
                 className="h-8 gap-2"
               >
-                <List className="h-4 w-4 mr-2" />
+                <Calendar1 className="h-4 w-4 mr-2" />
                 Day
               </Button>
               <Button
@@ -391,7 +391,7 @@ const MyTasks = () => {
                 onClick={() => setCalendarView('week')}
                 className="h-8 gap-2"
               >
-                <CalendarDays className="h-4 w-4 mr-2" />
+                <CalendarIcon className="h-4 w-4 mr-2" />
                 Week
               </Button>
               <Button
@@ -400,7 +400,7 @@ const MyTasks = () => {
                 onClick={() => setCalendarView('month')}
                 className="h-8 gap-2"
               >
-                <CalendarIcon className="h-4 w-4 mr-2" />
+                <CalendarDays className="h-4 w-4 mr-2" />
                 Month
               </Button>
             </div>
