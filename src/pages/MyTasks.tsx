@@ -25,7 +25,8 @@ import {
   User,
   CalendarDays,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  FileText
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek } from 'date-fns';
