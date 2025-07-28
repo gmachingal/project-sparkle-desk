@@ -23,7 +23,7 @@ const Header = () => {
           </div>
           
           <nav className="hidden md:flex items-center gap-1">
-            <Button variant="ghost" size="sm" onClick={() => navigate("/")} gap-2 bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="gap-2 bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200">
               <Home className="w-4 h-4" />
               Home
             </Button>
