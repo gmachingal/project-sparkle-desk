@@ -599,7 +599,7 @@ const Teams = () => {
               <Users className="h-4 w-4 mr-2" />
               Team Members</TabsTrigger>
             <TabsTrigger value="departments" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
-              <Building className="h-4 w-4 mr-2" />
+              <Briefcase className="h-4 w-4 mr-2" />
               Departments</TabsTrigger>
           </TabsList>
 
