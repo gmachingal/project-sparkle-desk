@@ -1062,6 +1062,7 @@ const SprintDashboard = () => {
                   {/* In Progress Column */}
                   <div className="space-y-4">
                     <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 mr-2" />
                       <h3 className="font-semibold">In Progress</h3>
                       <Badge variant="secondary">{sprintTasks.filter(t => t.status === 'in-progress').length}</Badge>
                     </div>
@@ -1113,6 +1114,7 @@ const SprintDashboard = () => {
                   {/* Done Column */}
                   <div className="space-y-4">
                     <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 mr-2" />
                       <h3 className="font-semibold">Done</h3>
                       <Badge variant="secondary">{sprintTasks.filter(t => t.status === 'completed').length}</Badge>
                     </div>
