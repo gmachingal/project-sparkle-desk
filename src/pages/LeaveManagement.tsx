@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, Plus, FileText, User, Settings, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar, Clock, Plus, FileText, User } from "lucide-react";
 // Header component import - using default export
 import Header from "@/components/Header";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -16,10 +16,6 @@ import { z } from "zod";
 import { toast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, parseISO } from "date-fns";
-import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
-import { EnhancedCalendar } from '@/components/ui/enhanced-calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useNavigate } from "react-router-dom";
 
 const leaveFormSchema = z.object({
@@ -32,7 +28,6 @@ const leaveFormSchema = z.object({
 const LeaveManagement = () => {
   const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const form = useForm<z.infer<typeof leaveFormSchema>>({
     resolver: zodResolver(leaveFormSchema),
@@ -90,52 +85,8 @@ const LeaveManagement = () => {
       days: 6,
       reason: "Family vacation",
       status: "Pending",
-      appliedOn: "2025-07-05",
-    },    
-  ];
-
-  // Extended leave data with calendar information
-  const calendarLeaveData = [
-    {
-      id: 1,
-      type: "CL",
-      startDate: "2024-01-15",
-      endDate: "2024-01-16", 
-      days: 2,
-      reason: "Personal work",
-      status: "Approved",
-      appliedOn: "2024-01-10",
+      appliedOn: "2025-03-05",
     },
-    {
-      id: 2,
-      type: "SL", 
-      startDate: "2024-01-22",
-      endDate: "2024-01-22",
-      days: 1,
-      reason: "Fever",
-      status: "Approved", 
-      appliedOn: "2024-01-20",
-    },
-    {
-      id: 3,
-      type: "PL",
-      startDate: "2024-02-12",
-      endDate: "2024-02-14",
-      days: 3,
-      reason: "Family vacation",
-      status: "Pending",
-      appliedOn: "2024-02-05",
-    },
-    {
-      id: 4,
-      type: "CL", 
-      startDate: "2024-02-26",
-      endDate: "2024-02-26",
-      days: 1,
-      reason: "Medical appointment",
-      status: "Rejected",
-      appliedOn: "2024-02-20",
-    }
   ];
 
   const getStatusColor = (status: string) => {
@@ -149,25 +100,6 @@ const LeaveManagement = () => {
       default:
         return "bg-gray-500/10 text-gray-500 border-gray-500/20";
     }
-  };
-
-  const getLeaveForDate = (date: Date) => {
-    return calendarLeaveData.find(leave => {
-      const startDate = parseISO(leave.startDate);
-      const endDate = parseISO(leave.endDate);
-      return date >= startDate && date <= endDate;
-    });
-  };
-
-  const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      Approved: { variant: 'default' as const, label: 'Approved', color: 'text-green-600' },
-      Pending: { variant: 'secondary' as const, label: 'Pending', color: 'text-yellow-600' },
-      Rejected: { variant: 'destructive' as const, label: 'Rejected', color: 'text-red-600' }
-    };
-    
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.Pending;
-    return <Badge variant={config.variant} className={config.color}>{config.label}</Badge>;
   };
 
   return (
@@ -185,7 +117,6 @@ const LeaveManagement = () => {
               className="bg-red-100 text-red-700 border-red-300 hover:bg-red-200"
               onClick={() => navigate('/admin-leave-management')}
             >
-              <Settings className="w-4 h-4 mr-2" />
               Admin View
             </Button>
             <Button 
@@ -386,229 +317,29 @@ const LeaveManagement = () => {
           </TabsContent>
 
           <TabsContent value="calendar" className="space-y-6">
-            {/* Calendar View */}
             <Card>
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
-                  <Calendar className="h-6 w-6 text-primary" />
+                  <Calendar className="h-5 w-5" />
                   Leave Calendar
                 </CardTitle>
-                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                    <span>Approved</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <span>Pending</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <span>Rejected</span>
-                  </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm">
+                    Filter
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    Export
+                  </Button>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-medium">{format(selectedDate, 'MMMM yyyy')}</h3>
-                    <div className="flex items-center gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1))}
-                      >
-                        <ChevronLeft className="h-4 w-4" />
-                      </Button>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button variant="outline" size="sm">
-                            <Calendar className="h-4 w-4 mr-2" />
-                            {format(selectedDate, 'MMM yyyy')}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <EnhancedCalendar
-                            mode="single"
-                            selected={selectedDate}
-                            onSelect={(date) => date && setSelectedDate(date)}
-                            initialFocus
-                            className="pointer-events-auto"
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => setSelectedDate(new Date())}
-                      >
-                        Today
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1))}
-                      >
-                        <ChevronRight className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  {/* Calendar Grid */}
-                  <div className="grid grid-cols-7 gap-1">
-                    {/* Header */}
-                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                      <div key={day} className="p-2 text-center text-sm font-medium text-muted-foreground">
-                        {day}
-                      </div>
-                    ))}
-                    
-                    {/* Calendar Days */}
-                    {eachDayOfInterval({ 
-                      start: startOfMonth(selectedDate), 
-                      end: endOfMonth(selectedDate) 
-                    }).map(day => {
-                      const leave = getLeaveForDate(day);
-                      const isToday = isSameDay(day, new Date());
-                      const isSelected = isSameDay(day, selectedDate);
-                      
-                      return (
-                        <div 
-                          key={day.toISOString()} 
-                          className={`p-2 border rounded-lg cursor-pointer hover:bg-muted min-h-24 ${
-                            isSelected ? 'bg-primary/10 border-primary' : 
-                            isToday ? 'bg-accent border-accent-foreground' : ''
-                          }`}
-                          onClick={() => setSelectedDate(day)}
-                        >
-                          <div className="font-medium text-sm mb-1">{format(day, 'd')}</div>
-                          <div className="space-y-1 overflow-hidden">
-                            {leave && (
-                              <HoverCard>
-                                <HoverCardTrigger asChild>
-                                  <div 
-                                    className={`text-xs p-1 rounded border-l-4 truncate cursor-pointer ${
-                                      leave.status === 'Approved' ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-950/20 dark:text-green-400' :
-                                      leave.status === 'Pending' ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:bg-yellow-950/20 dark:text-yellow-400' :
-                                      leave.status === 'Rejected' ? 'border-red-500 bg-red-50 text-red-700 dark:bg-red-950/20 dark:text-red-400' :
-                                      'border-gray-500 bg-gray-50 text-gray-700'
-                                    }`}
-                                  >
-                                    {leave.type} - {leave.status}
-                                  </div>
-                                </HoverCardTrigger>
-                                <HoverCardContent className="w-80 bg-background border shadow-lg z-50">
-                                  <div className="space-y-3">
-                                    <div className="flex items-center justify-between">
-                                      <h4 className="font-semibold text-lg">
-                                        {format(day, 'EEEE, MMM dd')}
-                                      </h4>
-                                      {getStatusBadge(leave.status)}
-                                    </div>
-                                    
-                                    <div className="space-y-2">
-                                      <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">Leave Type</span>
-                                        <span className="text-sm">
-                                          {leave.type === 'CL' ? 'Casual Leave' : 
-                                           leave.type === 'SL' ? 'Sick Leave' : 
-                                           leave.type === 'PL' ? 'Paid Leave' : leave.type}
-                                        </span>
-                                      </div>
-                                      
-                                      <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">Duration</span>
-                                        <span className="text-sm">
-                                          {leave.startDate === leave.endDate ? 
-                                            format(parseISO(leave.startDate), 'MMM dd') :
-                                            `${format(parseISO(leave.startDate), 'MMM dd')} - ${format(parseISO(leave.endDate), 'MMM dd')}`
-                                          }
-                                        </span>
-                                      </div>
-                                      
-                                      <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">Days</span>
-                                        <span className="text-sm font-semibold">{leave.days} day{leave.days > 1 ? 's' : ''}</span>
-                                      </div>
-                                      
-                                      <div className="space-y-1">
-                                        <span className="text-sm font-medium">Reason</span>
-                                        <p className="text-sm text-muted-foreground">{leave.reason}</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </HoverCardContent>
-                              </HoverCard>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                <div className="text-center py-12 text-muted-foreground">
+                  <Calendar className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                  <h3 className="text-lg font-semibold mb-2">Calendar View Coming Soon</h3>
+                  <p>Interactive calendar view for leave management will be available here.</p>
                 </div>
               </CardContent>
             </Card>
-
-            {/* Selected Date Summary */}
-            {(() => {
-              const selectedLeave = getLeaveForDate(selectedDate);
-              if (!selectedLeave) return null;
-              
-              return (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                      <span>Selected Date Details</span>
-                      <Badge variant="outline">
-                        {format(selectedDate, 'EEEE, MMM dd, yyyy')}
-                      </Badge>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">Status</span>
-                          {getStatusBadge(selectedLeave.status)}
-                        </div>
-                        
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">Leave Type</span>
-                          <span className="text-sm">
-                            {selectedLeave.type === 'CL' ? 'Casual Leave' : 
-                             selectedLeave.type === 'SL' ? 'Sick Leave' : 
-                             selectedLeave.type === 'PL' ? 'Paid Leave' : selectedLeave.type}
-                          </span>
-                        </div>
-                        
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">Days</span>
-                          <span className="text-sm font-semibold">{selectedLeave.days} day{selectedLeave.days > 1 ? 's' : ''}</span>
-                        </div>
-                        
-                        <div className="space-y-1">
-                          <span className="text-sm font-medium">Reason</span>
-                          <p className="text-sm text-muted-foreground">{selectedLeave.reason}</p>
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-4">
-                        <div className="text-center p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                          <Calendar className="h-6 w-6 mx-auto mb-2 text-blue-600" />
-                          <div className="text-lg font-bold text-blue-700 dark:text-blue-400">
-                            {selectedLeave.startDate === selectedLeave.endDate ? 
-                              format(parseISO(selectedLeave.startDate), 'MMM dd') :
-                              `${format(parseISO(selectedLeave.startDate), 'MMM dd')} - ${format(parseISO(selectedLeave.endDate), 'MMM dd')}`
-                            }
-                          </div>
-                          <div className="text-xs text-blue-600 dark:text-blue-400">Leave Period</div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })()}
           </TabsContent>
         </Tabs>
       </div>
