@@ -187,7 +187,7 @@ const LeaveManagement = () => {
             <h1 className="text-3xl font-bold text-foreground">Leave Management</h1>
             <p className="text-muted-foreground mt-2">Manage your leave applications and track balance for calendar year {selectedYear}</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 bg-red-100 text-red-700 border-red-300 hover:bg-red-200">
             <Select value={selectedYear} onValueChange={setSelectedYear}>
               <SelectTrigger className="w-32">
                 <SelectValue />
