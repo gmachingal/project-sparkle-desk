@@ -3,13 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Plus, FileText,FileStack,CalendarHeart, User, Settings, ChevronLeft, ChevronRight } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 // Header component import - using default export
 import Header from "@/components/Header";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -33,6 +33,7 @@ const LeaveManagement = () => {
   const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
 
   const form = useForm<z.infer<typeof leaveFormSchema>>({
     resolver: zodResolver(leaveFormSchema),
@@ -54,87 +55,94 @@ const LeaveManagement = () => {
     form.reset();
   };
 
-  // Mock data
+  // Generate years (current year and ±3 years)
+  const currentYear = new Date().getFullYear();
+  const availableYears = Array.from({length: 7}, (_, i) => currentYear - 3 + i);
+
+  // Mock data - Calendar year based
   const leaveBalance = {
     CL: { used: 5, total: 12, remaining: 7 },
     SL: { used: 2, total: 12, remaining: 10 },
     PL: { used: 8, total: 21, remaining: 13 },
   };
 
-  const leaveHistory = [
+  // Filter leave history by selected calendar year
+  const allLeaveHistory = [
     {
       id: 1,
       type: "CL",
-      startDate: "2025-06-15",
-      endDate: "2025-06-16",
+      startDate: `${selectedYear}-06-15`,
+      endDate: `${selectedYear}-06-16`,
       days: 2,
       reason: "Personal work",
       status: "Approved",
-      appliedOn: "2025-06-10",
+      appliedOn: `${selectedYear}-06-10`,
     },
     {
       id: 2,
       type: "SL",
-      startDate: "2025-06-20",
-      endDate: "2025-06-20",
+      startDate: `${selectedYear}-06-20`,
+      endDate: `${selectedYear}-06-20`,
       days: 1,
       reason: "Fever",
       status: "Approved",
-      appliedOn: "2025-06-20",
+      appliedOn: `${selectedYear}-06-20`,
     },
     {
       id: 3,
       type: "PL",
-      startDate: "2025-07-10",
-      endDate: "2025-07-15",
+      startDate: `${selectedYear}-07-10`,
+      endDate: `${selectedYear}-07-15`,
       days: 6,
       reason: "Family vacation",
       status: "Pending",
-      appliedOn: "2025-07-05",
+      appliedOn: `${selectedYear}-07-05`,
     },    
   ];
 
-  // Extended leave data with calendar information
+  const leaveHistory = allLeaveHistory;
+
+  // Extended leave data with calendar information - Calendar year based
   const calendarLeaveData = [
     {
       id: 1,
       type: "CL",
-      startDate: "2025-07-15",
-      endDate: "2025-07-16", 
+      startDate: `${selectedYear}-07-15`,
+      endDate: `${selectedYear}-07-16`, 
       days: 2,
       reason: "Personal work",
       status: "Approved",
-      appliedOn: "2025-07-10",
+      appliedOn: `${selectedYear}-07-10`,
     },
     {
       id: 2,
       type: "SL", 
-      startDate: "2025-06-22",
-      endDate: "2025-06-22",
+      startDate: `${selectedYear}-06-22`,
+      endDate: `${selectedYear}-06-22`,
       days: 1,
       reason: "Fever",
       status: "Approved", 
-      appliedOn: "2025-06-20",
+      appliedOn: `${selectedYear}-06-20`,
     },
     {
       id: 3,
       type: "PL",
-      startDate: "2025-06-12",
-      endDate: "2025-06-14",
+      startDate: `${selectedYear}-06-12`,
+      endDate: `${selectedYear}-06-14`,
       days: 3,
       reason: "Family vacation",
       status: "Pending",
-      appliedOn: "2025-06-05",
+      appliedOn: `${selectedYear}-06-05`,
     },
     {
       id: 4,
       type: "CL", 
-      startDate: "2025-07-26",
-      endDate: "2025-07-26",
+      startDate: `${selectedYear}-07-26`,
+      endDate: `${selectedYear}-07-26`,
       days: 1,
       reason: "Medical appointment",
       status: "Rejected",
-      appliedOn: "2025-07-20",
+      appliedOn: `${selectedYear}-07-20`,
     }
   ];
 
@@ -177,9 +185,21 @@ const LeaveManagement = () => {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-foreground">Leave Management</h1>
-            <p className="text-muted-foreground mt-2">Manage your leave applications and track balance</p>
+            <p className="text-muted-foreground mt-2">Manage your leave applications and track balance for calendar year {selectedYear}</p>
           </div>
           <div className="flex gap-2">
+            <Select value={selectedYear} onValueChange={setSelectedYear}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {availableYears.map((year) => (
+                  <SelectItem key={year} value={year.toString()}>
+                    {year}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Button 
               variant="outline" 
               className="bg-red-100 text-red-700 border-red-300 hover:bg-red-200"

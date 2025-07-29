@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Plus, ArrowLeft, Edit, Trash2 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Header from "@/components/Header";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -25,6 +26,7 @@ const holidayFormSchema = z.object({
 const HolidayMaster = () => {
   const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
 
   const form = useForm<z.infer<typeof holidayFormSchema>>({
     resolver: zodResolver(holidayFormSchema),
@@ -46,40 +48,44 @@ const HolidayMaster = () => {
     form.reset();
   };
 
-  // Mock holiday data
+  // Generate years (current year and ±3 years)
+  const currentYear = new Date().getFullYear();
+  const availableYears = Array.from({length: 7}, (_, i) => currentYear - 3 + i);
+
+  // Mock holiday data - Calendar year based
   const holidays = [
     {
       id: 1,
       name: "New Year's Day",
-      date: "2024-01-01",
+      date: `${selectedYear}-01-01`,
       type: "national",
       description: "National holiday for the new year celebration"
     },
     {
       id: 2,
       name: "Republic Day",
-      date: "2024-01-26",
+      date: `${selectedYear}-01-26`,
       type: "national",
       description: "National holiday celebrating the constitution"
     },
     {
       id: 3,
       name: "Independence Day",
-      date: "2024-08-15",
+      date: `${selectedYear}-08-15`,
       type: "national",
       description: "National holiday celebrating independence"
     },
     {
       id: 4,
       name: "Company Foundation Day",
-      date: "2024-03-15",
+      date: `${selectedYear}-03-15`,
       type: "company",
       description: "Celebrating company's foundation anniversary"
     },
     {
       id: 5,
       name: "Diwali",
-      date: "2024-11-01",
+      date: `${selectedYear}-11-01`,
       type: "regional",
       description: "Festival of lights celebration"
     }
@@ -118,11 +124,22 @@ const HolidayMaster = () => {
            
             <div>
               <h1 className="text-3xl font-bold text-foreground">Holiday Master</h1>
-              <p className="text-muted-foreground mt-2">Manage organization holidays and observances</p>
+              <p className="text-muted-foreground mt-2">Manage organization holidays and observances for calendar year {selectedYear}</p>
             </div>
           </div>
           <div className="flex gap-2">
-
+            <Select value={selectedYear} onValueChange={setSelectedYear}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {availableYears.map((year) => (
+                  <SelectItem key={year} value={year.toString()}>
+                    {year}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button className="flex items-center gap-2">
@@ -219,7 +236,7 @@ const HolidayMaster = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calendar className="h-5 w-5" />
-              Organization Holidays - 2024
+              Organization Holidays - {selectedYear}
             </CardTitle>
           </CardHeader>
           <CardContent>
