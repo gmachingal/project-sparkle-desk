@@ -189,7 +189,7 @@ const LeaveManagement = () => {
           </div>
           <div className="flex gap-2">
             <Select value={selectedYear} onValueChange={setSelectedYear}>
-              <SelectTrigger className="w-32 bg-red-100 text-red-700 border-red-300 hover:bg-red-200">
+              <SelectTrigger className="w-32 bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
