@@ -30,7 +30,10 @@ import {
   Trash2,
   Bell,
   ChevronDown,
-  Cog
+  Cog,
+  FileText,
+  Calculator,
+  DollarSign
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -78,6 +81,136 @@ const AdminAttendance = () => {
     lateToday: 8,
     averageHours: 8.2
   };
+
+  // Extended employee data for muster roll
+  const musterRollData = [
+    {
+      id: '1',
+      employeeId: 'EMP001',
+      name: 'John Doe',
+      department: 'Engineering',
+      designation: 'Senior Developer',
+      checkIn: '09:15 AM',
+      checkOut: '06:30 PM',
+      location: 'office',
+      status: 'present',
+      regularHours: 8,
+      overtimeHours: 1.25,
+      totalHours: 9.25,
+      breaks: 1,
+      lateBy: 15, // minutes
+      earlyLeaving: 0,
+      basicSalary: 75000,
+      hourlyRate: 450,
+      overtimeRate: 675,
+      avatar: ''
+    },
+    {
+      id: '2',
+      employeeId: 'EMP002',
+      name: 'Jane Smith',
+      department: 'Design',
+      designation: 'UI/UX Designer',
+      checkIn: '09:00 AM',
+      checkOut: '05:30 PM',
+      location: 'wfh',
+      status: 'present',
+      regularHours: 8,
+      overtimeHours: 0.5,
+      totalHours: 8.5,
+      breaks: 0.5,
+      lateBy: 0,
+      earlyLeaving: 0,
+      basicSalary: 65000,
+      hourlyRate: 390,
+      overtimeRate: 585,
+      avatar: ''
+    },
+    {
+      id: '3',
+      employeeId: 'EMP003',
+      name: 'Mike Johnson',
+      department: 'Engineering',
+      designation: 'Full Stack Developer',
+      checkIn: '10:30 AM',
+      checkOut: '06:15 PM',
+      location: 'office',
+      status: 'late',
+      regularHours: 7.75,
+      overtimeHours: 0,
+      totalHours: 7.75,
+      breaks: 0.5,
+      lateBy: 90, // minutes
+      earlyLeaving: 0,
+      basicSalary: 70000,
+      hourlyRate: 420,
+      overtimeRate: 630,
+      avatar: ''
+    },
+    {
+      id: '4',
+      employeeId: 'EMP004',
+      name: 'Sarah Wilson',
+      department: 'Marketing',
+      designation: 'Marketing Manager',
+      checkIn: '--',
+      checkOut: '--',
+      location: '--',
+      status: 'absent',
+      regularHours: 0,
+      overtimeHours: 0,
+      totalHours: 0,
+      breaks: 0,
+      lateBy: 0,
+      earlyLeaving: 0,
+      basicSalary: 80000,
+      hourlyRate: 480,
+      overtimeRate: 720,
+      avatar: ''
+    },
+    {
+      id: '5',
+      employeeId: 'EMP005',
+      name: 'David Brown',
+      department: 'Sales',
+      designation: 'Sales Executive',
+      checkIn: '08:45 AM',
+      checkOut: '05:45 PM',
+      location: 'office',
+      status: 'present',
+      regularHours: 8,
+      overtimeHours: 1,
+      totalHours: 9,
+      breaks: 1,
+      lateBy: 0,
+      earlyLeaving: 0,
+      basicSalary: 60000,
+      hourlyRate: 360,
+      overtimeRate: 540,
+      avatar: ''
+    },
+    {
+      id: '6',
+      employeeId: 'EMP006',
+      name: 'Lisa Chen',
+      department: 'HR',
+      designation: 'HR Specialist',
+      checkIn: '09:30 AM',
+      checkOut: '04:30 PM',
+      location: 'office',
+      status: 'early_leave',
+      regularHours: 7,
+      overtimeHours: 0,
+      totalHours: 7,
+      breaks: 0.5,
+      lateBy: 30,
+      earlyLeaving: 60, // minutes
+      basicSalary: 55000,
+      hourlyRate: 330,
+      overtimeRate: 495,
+      avatar: ''
+    }
+  ];
 
   const employeeAttendance = [
     {
@@ -180,7 +313,8 @@ const AdminAttendance = () => {
     const statusConfig = {
       present: { variant: 'default' as const, label: 'Present' },
       late: { variant: 'secondary' as const, label: 'Late' },
-      absent: { variant: 'destructive' as const, label: 'Absent' }
+      absent: { variant: 'destructive' as const, label: 'Absent' },
+      early_leave: { variant: 'outline' as const, label: 'Early Leave' }
     };
     
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.present;
@@ -208,6 +342,28 @@ const AdminAttendance = () => {
       title: "Export Started",
       description: "Attendance report is being generated and will be downloaded shortly",
     });
+  };
+
+  const calculateDayWages = (employee: any) => {
+    const regularWages = employee.regularHours * employee.hourlyRate;
+    const overtimeWages = employee.overtimeHours * employee.overtimeRate;
+    return regularWages + overtimeWages;
+  };
+
+  const getMusterRollSummary = () => {
+    const totalPresent = musterRollData.filter(emp => emp.status === 'present' || emp.status === 'late' || emp.status === 'early_leave').length;
+    const totalAbsent = musterRollData.filter(emp => emp.status === 'absent').length;
+    const totalRegularHours = musterRollData.reduce((sum, emp) => sum + emp.regularHours, 0);
+    const totalOvertimeHours = musterRollData.reduce((sum, emp) => sum + emp.overtimeHours, 0);
+    const totalWages = musterRollData.reduce((sum, emp) => sum + calculateDayWages(emp), 0);
+    
+    return {
+      totalPresent,
+      totalAbsent,
+      totalRegularHours,
+      totalOvertimeHours,
+      totalWages
+    };
   };
 
   const handleAddLocation = () => {
@@ -657,8 +813,9 @@ const AdminAttendance = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4 bg-muted">
+          <TabsList className="grid w-full grid-cols-5 bg-muted">
             <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Today's Attendance</TabsTrigger>
+            <TabsTrigger value="muster" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Muster Roll</TabsTrigger>
             <TabsTrigger value="requests" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Pending Requests ({pendingRequests.length})</TabsTrigger>
             <TabsTrigger value="locations" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Work Locations</TabsTrigger>
             <TabsTrigger value="reports" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Reports & Analytics</TabsTrigger>
@@ -746,6 +903,219 @@ const AdminAttendance = () => {
                       </div>
                     </div>
                   ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="muster" className="space-y-4">
+            {/* Muster Roll Summary */}
+            {(() => {
+              const summary = getMusterRollSummary();
+              return (
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <Users className="h-6 w-6 mx-auto mb-2 text-green-500" />
+                      <div className="text-2xl font-bold">{summary.totalPresent}</div>
+                      <div className="text-sm text-muted-foreground">Present</div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <XCircle className="h-6 w-6 mx-auto mb-2 text-red-500" />
+                      <div className="text-2xl font-bold">{summary.totalAbsent}</div>
+                      <div className="text-sm text-muted-foreground">Absent</div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <Clock className="h-6 w-6 mx-auto mb-2 text-blue-500" />
+                      <div className="text-2xl font-bold">{summary.totalRegularHours.toFixed(1)}h</div>
+                      <div className="text-sm text-muted-foreground">Regular Hours</div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <AlertTriangle className="h-6 w-6 mx-auto mb-2 text-orange-500" />
+                      <div className="text-2xl font-bold">{summary.totalOvertimeHours.toFixed(1)}h</div>
+                      <div className="text-sm text-muted-foreground">Overtime</div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <DollarSign className="h-6 w-6 mx-auto mb-2 text-purple-500" />
+                      <div className="text-2xl font-bold">₹{summary.totalWages.toLocaleString()}</div>
+                      <div className="text-sm text-muted-foreground">Total Wages</div>
+                    </CardContent>
+                  </Card>
+                </div>
+              );
+            })()}
+
+            {/* Filters for Muster Roll */}
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <Input
+                      placeholder="Search employees..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
+                    <SelectTrigger className="w-full sm:w-[200px]">
+                      <SelectValue placeholder="Department" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border shadow-lg z-50">
+                      <SelectItem value="all">All Departments</SelectItem>
+                      {departments.map(dept => (
+                        <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    className="w-full sm:w-[160px]"
+                  />
+                  <Button onClick={exportAttendance} variant="outline">
+                    <Download className="h-4 w-4 mr-2" />
+                    Export
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Muster Roll Table */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Daily Muster Roll - {format(new Date(selectedDate), 'MMM dd, yyyy')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-3 font-medium">Emp ID</th>
+                        <th className="text-left p-3 font-medium">Name</th>
+                        <th className="text-left p-3 font-medium">Department</th>
+                        <th className="text-left p-3 font-medium">Designation</th>
+                        <th className="text-center p-3 font-medium">Check In</th>
+                        <th className="text-center p-3 font-medium">Check Out</th>
+                        <th className="text-center p-3 font-medium">Regular Hrs</th>
+                        <th className="text-center p-3 font-medium">OT Hrs</th>
+                        <th className="text-center p-3 font-medium">Total Hrs</th>
+                        <th className="text-center p-3 font-medium">Late By</th>
+                        <th className="text-center p-3 font-medium">Location</th>
+                        <th className="text-center p-3 font-medium">Status</th>
+                        <th className="text-right p-3 font-medium">Day Wages</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {musterRollData.map((employee) => {
+                        const dayWages = calculateDayWages(employee);
+                        return (
+                          <tr key={employee.id} className="border-b hover:bg-muted/50">
+                            <td className="p-3 font-mono text-sm">{employee.employeeId}</td>
+                            <td className="p-3">
+                              <div className="flex items-center gap-2">
+                                <Avatar className="h-8 w-8">
+                                  <AvatarImage src={employee.avatar} />
+                                  <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                                    {employee.name.split(' ').map(n => n[0]).join('')}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span className="font-medium">{employee.name}</span>
+                              </div>
+                            </td>
+                            <td className="p-3 text-sm">{employee.department}</td>
+                            <td className="p-3 text-sm">{employee.designation}</td>
+                            <td className="p-3 text-center text-sm font-mono">
+                              {employee.checkIn}
+                            </td>
+                            <td className="p-3 text-center text-sm font-mono">
+                              {employee.checkOut}
+                            </td>
+                            <td className="p-3 text-center font-mono">
+                              {employee.regularHours > 0 ? employee.regularHours.toFixed(1) : '--'}
+                            </td>
+                            <td className="p-3 text-center font-mono">
+                              {employee.overtimeHours > 0 ? (
+                                <span className="text-orange-600 font-medium">
+                                  {employee.overtimeHours.toFixed(1)}
+                                </span>
+                              ) : '--'}
+                            </td>
+                            <td className="p-3 text-center font-mono font-medium">
+                              {employee.totalHours > 0 ? employee.totalHours.toFixed(1) : '--'}
+                            </td>
+                            <td className="p-3 text-center">
+                              {employee.lateBy > 0 ? (
+                                <span className="text-red-600 font-medium text-sm">
+                                  {employee.lateBy}m
+                                </span>
+                              ) : (
+                                <span className="text-green-600 text-sm">On Time</span>
+                              )}
+                            </td>
+                            <td className="p-3 text-center">
+                              <div className="flex items-center justify-center gap-1">
+                                {employee.location === 'wfh' ? (
+                                  <>
+                                    <Home className="h-4 w-4 text-blue-500" />
+                                    <span className="text-sm">WFH</span>
+                                  </>
+                                ) : employee.location === 'office' ? (
+                                  <>
+                                    <Building className="h-4 w-4 text-gray-500" />
+                                    <span className="text-sm">Office</span>
+                                  </>
+                                ) : (
+                                  <span className="text-sm">--</span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="p-3 text-center">
+                              {getStatusBadge(employee.status)}
+                            </td>
+                            <td className="p-3 text-right font-mono font-medium">
+                              {employee.status !== 'absent' ? (
+                                <span className="text-green-600">₹{dayWages.toLocaleString()}</span>
+                              ) : (
+                                <span className="text-red-600">₹0</span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                    <tfoot>
+                      <tr className="border-t-2 bg-muted/30">
+                        <td colSpan={6} className="p-3 font-bold">TOTAL</td>
+                        <td className="p-3 text-center font-bold">
+                          {musterRollData.reduce((sum, emp) => sum + emp.regularHours, 0).toFixed(1)}
+                        </td>
+                        <td className="p-3 text-center font-bold text-orange-600">
+                          {musterRollData.reduce((sum, emp) => sum + emp.overtimeHours, 0).toFixed(1)}
+                        </td>
+                        <td className="p-3 text-center font-bold">
+                          {musterRollData.reduce((sum, emp) => sum + emp.totalHours, 0).toFixed(1)}
+                        </td>
+                        <td colSpan={3} className="p-3"></td>
+                        <td className="p-3 text-right font-bold text-green-600">
+                          ₹{musterRollData.reduce((sum, emp) => sum + calculateDayWages(emp), 0).toLocaleString()}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
                 </div>
               </CardContent>
             </Card>
