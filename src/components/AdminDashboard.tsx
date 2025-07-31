@@ -37,6 +37,7 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [selectedDepartment, setSelectedDepartment] = useState('all');
+  const [selectedEmployee, setSelectedEmployee] = useState('all');
 
   // Attendance statistics
   const attendanceStats = {
@@ -187,6 +188,9 @@ const AdminDashboard = () => {
     let filtered = employeeAttendance;
     if (selectedDepartment !== 'all') {
       filtered = filtered.filter(emp => emp.department === selectedDepartment);
+    }
+    if (selectedEmployee !== 'all') {
+      filtered = filtered.filter(emp => emp.id === selectedEmployee);
     }
     return filtered;
   };
@@ -364,6 +368,19 @@ const AdminDashboard = () => {
                   ))}
                 </SelectContent>
               </Select>
+              <Select value={selectedEmployee} onValueChange={setSelectedEmployee}>
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue placeholder="Select Employee" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Employees</SelectItem>
+                  {employeeAttendance
+                    .filter(emp => selectedDepartment === 'all' || emp.department === selectedDepartment)
+                    .map(emp => (
+                    <SelectItem key={emp.id} value={emp.id}>{emp.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <Button variant="hero" onClick={() => navigate('/admin-attendance')}>
                 <Eye className="w-4 h-4 mr-2" />
                 View Details
@@ -478,7 +495,11 @@ const AdminDashboard = () => {
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">
-                Employee Attendance ({selectedDepartment === 'all' ? 'All Departments' : selectedDepartment})
+                Employee Attendance 
+                {selectedEmployee !== 'all' ? 
+                  ` - ${employeeAttendance.find(emp => emp.id === selectedEmployee)?.name}` :
+                  selectedDepartment !== 'all' ? ` - ${selectedDepartment}` : ' - All Employees'
+                }
               </CardTitle>
             </CardHeader>
             <CardContent>
