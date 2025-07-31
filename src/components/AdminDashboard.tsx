@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import StatsCard from "./StatsCard";
 import ProjectCard from "./ProjectCard";
-import DailyTaskSummary from "./DailyTaskSummary";
 import { 
   Users, 
   Clock, 
@@ -544,11 +543,6 @@ const AdminDashboard = () => {
           </div>
         </TabsContent>
       </Tabs>
-
-      {/* Daily Task Summary Section */}
-      <div className="mt-8">
-        <DailyTaskSummary isAdmin={true} />
-      </div>
     </div>
   );
 };
