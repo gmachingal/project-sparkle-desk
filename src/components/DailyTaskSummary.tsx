@@ -232,38 +232,38 @@ const DailyTaskSummary = ({ isAdmin = false }: DailyTaskSummaryProps) => {
 
       <CardContent className="space-y-6">
         {Object.entries(groupedTasks).map(([project, tasks]) => (
-          <div key={project} className="space-y-3">
+          <div key={project} className="space-y-2">
             <div className="flex items-center gap-2">
               <Briefcase className="w-4 h-4 text-muted-foreground" />
-              <h3 className="font-medium text-lg">{project}</h3>
-              <Badge variant="outline" className="ml-auto">
-                {tasks.length} tasks
+              <h3 className="font-medium">{project}</h3>
+              <Badge variant="outline" className="ml-auto text-xs">
+                {tasks.length}
               </Badge>
             </div>
             
-            <div className="grid gap-3">
+            <div className="grid gap-2">
               {tasks.map((task) => (
                 <Card 
                   key={task.id} 
-                  className="cursor-pointer hover:shadow-md transition-shadow duration-200 border-l-4 border-l-primary/20 hover:border-l-primary"
+                  className="cursor-pointer hover:shadow-sm transition-shadow duration-200 border-l-2 border-l-primary/20 hover:border-l-primary"
                   onClick={() => handleTaskClick(task.id)}
                 >
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1 space-y-2">
+                  <CardContent className="p-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 space-y-1">
                         <div className="flex items-center gap-2">
                           {getStatusIcon(task.status)}
                           <h4 className="font-medium text-sm line-clamp-1">{task.title}</h4>
                         </div>
                         
-                        <p className="text-xs text-muted-foreground line-clamp-2">
+                        <p className="text-xs text-muted-foreground line-clamp-1">
                           {task.description}
                         </p>
                         
                         {isAdmin && (
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1">
                             <User className="w-3 h-3 text-muted-foreground" />
-                            <Avatar className="w-5 h-5">
+                            <Avatar className="w-4 h-4">
                               <AvatarFallback className="text-xs">
                                 {task.assignee.name.split(" ").map(n => n[0]).join("")}
                               </AvatarFallback>
@@ -275,33 +275,35 @@ const DailyTaskSummary = ({ isAdmin = false }: DailyTaskSummaryProps) => {
                         )}
                       </div>
                       
-                      <div className="flex flex-col items-end gap-2 text-xs">
-                        <Badge 
-                          variant="outline" 
-                          className={cn("text-xs", getPriorityColor(task.priority))}
-                        >
-                          {task.priority}
-                        </Badge>
+                      <div className="flex flex-col items-end gap-1 text-xs">
+                        <div className="flex items-center gap-1">
+                          <Badge 
+                            variant="outline" 
+                            className={cn("text-xs px-1 py-0", getPriorityColor(task.priority))}
+                          >
+                            {task.priority}
+                          </Badge>
+                          
+                          <Badge 
+                            variant="outline"
+                            className={cn("text-xs px-1 py-0", getStatusBadgeColor(task.status))}
+                          >
+                            {task.status}
+                          </Badge>
+                        </div>
                         
-                        <Badge 
-                          variant="outline"
-                          className={cn("text-xs", getStatusBadgeColor(task.status))}
-                        >
-                          {task.status}
-                        </Badge>
-                        
-                        {task.dueTime && (
-                          <div className="flex items-center gap-1 text-muted-foreground">
-                            <Clock className="w-3 h-3" />
-                            <span>{task.dueTime}</span>
-                          </div>
-                        )}
-                        
-                        {task.estimatedHours && (
-                          <span className="text-muted-foreground">
-                            {task.estimatedHours}h est.
-                          </span>
-                        )}
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          {task.dueTime && (
+                            <div className="flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              <span>{task.dueTime}</span>
+                            </div>
+                          )}
+                          
+                          {task.estimatedHours && (
+                            <span>{task.estimatedHours}h</span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -312,9 +314,9 @@ const DailyTaskSummary = ({ isAdmin = false }: DailyTaskSummaryProps) => {
         ))}
         
         {totalTasks === 0 && (
-          <div className="text-center py-8 text-muted-foreground">
-            <Briefcase className="w-12 h-12 mx-auto mb-4 opacity-50" />
-            <p>No tasks scheduled for {format(selectedDate, "MMMM d, yyyy")}</p>
+          <div className="text-center py-6 text-muted-foreground">
+            <Briefcase className="w-8 h-8 mx-auto mb-2 opacity-50" />
+            <p className="text-sm">No tasks scheduled for {format(selectedDate, "MMMM d, yyyy")}</p>
           </div>
         )}
       </CardContent>
