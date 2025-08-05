@@ -27,7 +27,8 @@ import {
   CheckCircle,
   TrendingUp,
   TrendingDown,
-  Eye
+  Eye,
+  Timer
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
@@ -350,107 +351,152 @@ const AdminDashboard = () => {
         </TabsContent>
 
         <TabsContent value="attendance" className="space-y-6">
-          {/* Header with filters */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          {/* Header with filters and actions */}
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 p-6 bg-gradient-to-r from-primary/5 to-primary-glow/5 rounded-lg border">
             <div>
-              <h2 className="text-2xl font-semibold">Attendance Overview</h2>
-              <p className="text-muted-foreground">Today - {format(new Date(), 'MMM dd, yyyy')}</p>
+              <h2 className="text-2xl font-bold text-foreground">Attendance Management</h2>
+              <p className="text-muted-foreground mt-1">Monitor and manage team attendance for {format(new Date(), 'MMMM dd, yyyy')}</p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
               <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-[180px] bg-background">
                   <SelectValue placeholder="Department" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-background border shadow-lg z-50">
                   <SelectItem value="all">All Departments</SelectItem>
                   {departments.map(dept => (
                     <SelectItem key={dept} value={dept}>{dept}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <Button variant="hero" onClick={() => navigate('/admin-attendance')}>
-                <Eye className="w-4 h-4 mr-2" />
-                View Details
+              <Button variant="hero" onClick={() => navigate('/admin-attendance')} className="gap-2">
+                <Eye className="w-4 h-4" />
+                Detailed Report
               </Button>
             </div>
           </div>
 
-          {/* Attendance Statistics Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            <Card>
-              <CardContent className="p-4 text-center">
-                <Users className="h-6 w-6 mx-auto mb-2 text-blue-500" />
-                <div className="text-2xl font-bold">{attendanceStats.totalEmployees}</div>
-                <div className="text-sm text-muted-foreground">Total Employees</div>
+          {/* Key Metrics - Redesigned */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <Card className="border-l-4 border-l-blue-500">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-2xl font-bold text-foreground">{attendanceStats.totalEmployees}</p>
+                    <p className="text-sm text-muted-foreground">Total Employees</p>
+                  </div>
+                  <Users className="h-8 w-8 text-blue-500" />
+                </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardContent className="p-4 text-center">
-                <CheckCircle className="h-6 w-6 mx-auto mb-2 text-green-500" />
-                <div className="text-2xl font-bold">{attendanceStats.presentToday}</div>
-                <div className="text-sm text-muted-foreground">Present Today</div>
+            
+            <Card className="border-l-4 border-l-green-500">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-2xl font-bold text-green-600">{attendanceStats.presentToday}</p>
+                    <p className="text-sm text-muted-foreground">Present</p>
+                  </div>
+                  <CheckCircle className="h-8 w-8 text-green-500" />
+                </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardContent className="p-4 text-center">
-                <Home className="h-6 w-6 mx-auto mb-2 text-blue-500" />
-                <div className="text-2xl font-bold">{attendanceStats.wfhToday}</div>
-                <div className="text-sm text-muted-foreground">Work From Home</div>
+            
+            <Card className="border-l-4 border-l-blue-400">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-2xl font-bold text-blue-600">{attendanceStats.wfhToday}</p>
+                    <p className="text-sm text-muted-foreground">Remote</p>
+                  </div>
+                  <Home className="h-8 w-8 text-blue-400" />
+                </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardContent className="p-4 text-center">
-                <XCircle className="h-6 w-6 mx-auto mb-2 text-red-500" />
-                <div className="text-2xl font-bold">{attendanceStats.absentToday}</div>
-                <div className="text-sm text-muted-foreground">Absent Today</div>
+            
+            <Card className="border-l-4 border-l-red-500">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-2xl font-bold text-red-600">{attendanceStats.absentToday}</p>
+                    <p className="text-sm text-muted-foreground">Absent</p>
+                  </div>
+                  <XCircle className="h-8 w-8 text-red-500" />
+                </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardContent className="p-4 text-center">
-                <AlertTriangle className="h-6 w-6 mx-auto mb-2 text-yellow-500" />
-                <div className="text-2xl font-bold">{attendanceStats.lateToday}</div>
-                <div className="text-sm text-muted-foreground">Late Arrivals</div>
+            
+            <Card className="border-l-4 border-l-yellow-500">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-2xl font-bold text-yellow-600">{attendanceStats.lateToday}</p>
+                    <p className="text-sm text-muted-foreground">Late</p>
+                  </div>
+                  <AlertTriangle className="h-8 w-8 text-yellow-500" />
+                </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardContent className="p-4 text-center">
-                <TrendingUp className="h-6 w-6 mx-auto mb-2 text-purple-500" />
-                <div className="text-2xl font-bold">{attendanceStats.attendanceRate}%</div>
-                <div className="text-sm text-muted-foreground">Attendance Rate</div>
+            
+            <Card className="border-l-4 border-l-purple-500">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-2xl font-bold text-purple-600">{attendanceStats.attendanceRate}%</p>
+                    <p className="text-sm text-muted-foreground">Rate</p>
+                  </div>
+                  <TrendingUp className="h-8 w-8 text-purple-500" />
+                </div>
               </CardContent>
             </Card>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Department wise attendance */}
-            <Card className="lg:col-span-2">
-              <CardHeader>
-                <CardTitle className="text-lg">Department Attendance</CardTitle>
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+            {/* Department Performance - Enhanced */}
+            <Card className="xl:col-span-2">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Building className="w-5 h-5" />
+                    Department Performance
+                  </CardTitle>
+                  <Badge variant="outline" className="text-xs">
+                    {departmentAttendance.length} Departments
+                  </Badge>
+                </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3">
                 {departmentAttendance.map((dept, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Building className="w-5 h-5 text-primary" />
+                  <div key={index} className="group p-4 border rounded-lg hover:shadow-md transition-all duration-200 hover:border-primary/30">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/10 to-primary-glow/10 flex items-center justify-center group-hover:from-primary/20 group-hover:to-primary-glow/20 transition-colors">
+                          <Building className="w-6 h-6 text-primary" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-foreground">{dept.department}</p>
+                          <p className="text-sm text-muted-foreground">{dept.present} of {dept.total} present</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-medium">{dept.department}</p>
-                        <p className="text-sm text-muted-foreground">{dept.present}/{dept.total} employees</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-16">
-                        <Progress value={dept.percentage} className="h-2" />
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <span className="text-sm font-medium">{dept.percentage}%</span>
+                      <div className="flex items-center gap-4">
+                        <div className="text-right">
+                          <p className="text-lg font-bold text-foreground">{dept.percentage}%</p>
+                          <div className="w-20 mt-1">
+                            <Progress value={dept.percentage} className="h-2" />
+                          </div>
+                        </div>
                         {dept.percentage >= 90 ? (
-                          <TrendingUp className="w-4 h-4 text-green-500" />
+                          <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                            <TrendingUp className="w-4 h-4 text-green-600" />
+                          </div>
                         ) : dept.percentage >= 80 ? (
-                          <TrendingDown className="w-4 h-4 text-yellow-500" />
+                          <div className="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center">
+                            <TrendingDown className="w-4 h-4 text-yellow-600" />
+                          </div>
                         ) : (
-                          <TrendingDown className="w-4 h-4 text-red-500" />
+                          <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                            <TrendingDown className="w-4 h-4 text-red-600" />
+                          </div>
                         )}
                       </div>
                     </div>
@@ -459,77 +505,141 @@ const AdminDashboard = () => {
               </CardContent>
             </Card>
 
-            {/* Recent Activities */}
+            {/* Today's Summary Card */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Recent Activities</CardTitle>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5" />
+                  Today's Summary
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                {recentActivities.map((activity, index) => (
-                  <div key={index} className="flex items-start gap-3 p-2 border rounded-lg">
-                    {getActivityIcon(activity.type)}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{activity.action}</p>
-                      <p className="text-xs text-muted-foreground">{activity.time}</p>
-                    </div>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                    <span className="text-sm font-medium">On Time</span>
+                    <span className="font-bold text-green-600">{attendanceStats.presentToday - attendanceStats.lateToday}</span>
                   </div>
-                ))}
+                  <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                    <span className="text-sm font-medium">Remote</span>
+                    <span className="font-bold text-blue-600">{attendanceStats.wfhToday}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-yellow-50 rounded-lg">
+                    <span className="text-sm font-medium">Late Arrivals</span>
+                    <span className="font-bold text-yellow-600">{attendanceStats.lateToday}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-red-50 rounded-lg">
+                    <span className="text-sm font-medium">Absent</span>
+                    <span className="font-bold text-red-600">{attendanceStats.absentToday}</span>
+                  </div>
+                </div>
+                <div className="pt-3 border-t">
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground">Average Hours</p>
+                    <p className="text-2xl font-bold text-primary">{attendanceStats.averageHours}h</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Live Activity Feed */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Clock className="w-5 h-5" />
+                  Live Activity
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3 max-h-80 overflow-y-auto">
+                  {recentActivities.map((activity, index) => (
+                    <div key={index} className="flex items-start gap-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                        {getActivityIcon(activity.type)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground">{activity.action}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{activity.time}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Employee Attendance List */}
+          {/* Employee Attendance Grid - Redesigned */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">
-                Employee Attendance ({selectedDepartment === 'all' ? 'All Departments' : selectedDepartment})
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  Employee Attendance Details
+                  <Badge variant="outline" className="ml-2">
+                    {selectedDepartment === 'all' ? 'All Departments' : selectedDepartment}
+                  </Badge>
+                </CardTitle>
+                <Button variant="outline" size="sm" onClick={() => navigate('/admin-attendance')}>
+                  <Eye className="w-4 h-4 mr-2" />
+                  Full Report
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {getFilteredEmployees().map((employee) => (
-                  <div key={employee.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50">
-                    <div className="flex items-center gap-4">
-                      <Avatar className="h-10 w-10">
-                        <AvatarFallback className="bg-primary text-primary-foreground">
-                          {employee.avatar}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <div className="font-medium">{employee.name}</div>
-                        <div className="text-sm text-muted-foreground">{employee.department}</div>
+                  <Card key={employee.id} className="hover:shadow-md transition-shadow duration-200">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3 mb-3">
+                        <Avatar className="h-12 w-12">
+                          <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+                            {employee.avatar}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-foreground">{employee.name}</h4>
+                          <p className="text-sm text-muted-foreground">{employee.department}</p>
+                        </div>
+                        {getStatusBadge(employee.status)}
                       </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-6">
-                      <div className="text-center">
-                        <div className="text-sm font-medium">{employee.checkIn}</div>
-                        <div className="text-xs text-muted-foreground">Check In</div>
+                      
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-4 h-4 text-muted-foreground" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">Check In</p>
+                            <p className="font-medium">{employee.checkIn}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Timer className="w-4 h-4 text-muted-foreground" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">Hours</p>
+                            <p className="font-medium">{employee.hours}h</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 col-span-2">
+                          {employee.location === 'wfh' ? (
+                            <Home className="w-4 h-4 text-blue-500" />
+                          ) : employee.location === 'office' ? (
+                            <Building className="w-4 h-4 text-gray-500" />
+                          ) : null}
+                          <span className="text-sm font-medium">
+                            {employee.location === 'wfh' ? 'Working from Home' : 
+                             employee.location === 'office' ? 'In Office' : 'Unknown Location'}
+                          </span>
+                        </div>
                       </div>
-                      <div className="text-center">
-                        <div className="text-sm font-medium">{employee.checkOut}</div>
-                        <div className="text-xs text-muted-foreground">Check Out</div>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        {employee.location === 'wfh' ? (
-                          <Home className="h-4 w-4 text-blue-500" />
-                        ) : employee.location === 'office' ? (
-                          <Building className="h-4 w-4 text-gray-500" />
-                        ) : null}
-                        <span className="text-sm">{
-                          employee.location === 'wfh' ? 'WFH' : 
-                          employee.location === 'office' ? 'Office' : '--'
-                        }</span>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-sm font-medium">{employee.hours}h</div>
-                        <div className="text-xs text-muted-foreground">Hours</div>
-                      </div>
-                      {getStatusBadge(employee.status)}
-                    </div>
-                  </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
+              {getFilteredEmployees().length === 0 && (
+                <div className="text-center py-12">
+                  <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">No employees found</h3>
+                  <p className="text-muted-foreground">Try selecting a different department filter.</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
