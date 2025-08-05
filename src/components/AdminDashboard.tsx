@@ -235,13 +235,16 @@ const AdminDashboard = () => {
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3 lg:w-[400px] bg-muted">
+        <TabsList className="grid w-full grid-cols-4 lg:w-[500px] bg-muted">
           <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">             
             <BarChart3 className="w-4 h-4" />
-          Overview</TabsTrigger>
+            Overview</TabsTrigger>
           <TabsTrigger value="attendance" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
             <Calendar className="w-4 h-4" />
             Attendance</TabsTrigger>
+          <TabsTrigger value="task-reports" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
+            <CheckSquare className="w-4 h-4" />
+            Task Reports</TabsTrigger>
           <TabsTrigger value="projects" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
             <Briefcase className="w-4 h-4" />
             Projects</TabsTrigger>
@@ -301,13 +304,6 @@ const AdminDashboard = () => {
               </CardContent>
             </Card>
           </div>
-
-          {/* Daily Task Report for Admin */}
-          <DailyTaskReport 
-            isAdmin={true} 
-            selectedUser={selectedUser} 
-            onUserChange={setSelectedUser} 
-          />
 
           {/* Quick Admin Actions */}
           <Card>
@@ -536,6 +532,14 @@ const AdminDashboard = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="task-reports" className="space-y-6">
+          <DailyTaskReport 
+            isAdmin={true} 
+            selectedUser={selectedUser} 
+            onUserChange={setSelectedUser} 
+          />
         </TabsContent>
 
         <TabsContent value="projects" className="space-y-6">
