@@ -8,6 +8,7 @@ import LeaveCard from "./LeaveCard";
 import TaskCard from "./TaskCard";
 import QuickActionsDropdown from "./QuickActionsDropdown";
 import SprintOverview from "./SprintOverview";
+import DailyTaskReport from "./DailyTaskReport";
 import { 
   CheckSquare, 
   Clock, 
@@ -177,6 +178,11 @@ const UserDashboard = () => {
             </CardContent>
           </Card>
         </div>
+      </div>
+
+      {/* Daily Task Report Section */}
+      <div className="mt-6">
+        <DailyTaskReport />
       </div>
 
       {/* Sprint Overview Section */}

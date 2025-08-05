@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import StatsCard from "./StatsCard";
 import ProjectCard from "./ProjectCard";
+import DailyTaskReport from "./DailyTaskReport";
 import { 
   Users, 
   Clock, 
@@ -36,6 +37,7 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [selectedDepartment, setSelectedDepartment] = useState('all');
+  const [selectedUser, setSelectedUser] = useState('user-1');
 
   // Attendance statistics
   const attendanceStats = {
@@ -299,6 +301,13 @@ const AdminDashboard = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Daily Task Report for Admin */}
+          <DailyTaskReport 
+            isAdmin={true} 
+            selectedUser={selectedUser} 
+            onUserChange={setSelectedUser} 
+          />
 
           {/* Quick Admin Actions */}
           <Card>
