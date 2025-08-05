@@ -180,13 +180,9 @@ const UserDashboard = () => {
         </div>
       </div>
 
-      {/* Daily Task Report Section */}
-      <div className="mt-6">
+      {/* Daily Task Report and Sprint Overview Row */}
+      <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
         <DailyTaskReport />
-      </div>
-
-      {/* Sprint Overview Section */}
-      <div className="mt-6">
         <SprintOverview />
       </div>
     </div>
