@@ -4,7 +4,7 @@ import { Search, Bell, Plus, Settings, User, Clock, Users, Briefcase, FileText, 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
-// import reposeLogo from "@/assets/repose-logo-new.png";
+import reposeLogo from "@/assets/repose-logo-improved.png";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ const Header = () => {
         <div className="flex items-center gap-6">
           <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
             <img 
-              src="/lovable-uploads/bcd5b261-bb13-4402-b871-1b7987205719.png" 
+              src={reposeLogo} 
               alt="Repose" 
               className="w-12 h-12 object-contain shadow-lg border border-white/20 rounded-lg"
             />
