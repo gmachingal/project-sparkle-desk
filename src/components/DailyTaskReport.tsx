@@ -248,6 +248,21 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
                       <Clock className="w-3 h-3" />
                       {projectTasks.reduce((acc, task) => acc + parseFloat(task.timeSpent.replace('h', '')), 0).toFixed(1)}h
                     </Badge>
+                    {/* Project Report Button for each project */}
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="gap-1 h-6 px-2 text-xs"
+                      onClick={() => {
+                        const projectId = projects.find(p => p.name === projectName)?.id;
+                        if (projectId) {
+                          navigate(`/project-status-report/${projectId}`);
+                        }
+                      }}
+                    >
+                      <BarChart3 className="w-3 h-3" />
+                      Report
+                    </Button>
                   </div>
                 </div>
                 
