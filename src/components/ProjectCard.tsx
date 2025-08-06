@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-import { MoreHorizontal, Users, Calendar, Eye, Target, TrendingUp } from "lucide-react";
+import { MoreHorizontal, Users, Calendar, Eye, Target, TrendingUp, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -161,15 +161,26 @@ const ProjectCard = ({ project, className }: ProjectCardProps) => {
                 Calendar
               </Button>
             </div>
-            <Button
-              variant="default"
-              size="sm"
-              onClick={() => navigate(`/project-calendar/${project.id}?view=sprints`)}
-              className="w-full"
-            >
-              <Target className="h-3 w-3 mr-1" />
-              Sprint View
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate(`/project-status-report/${project.id}`)}
+                className="flex-1"
+              >
+                <BarChart3 className="h-3 w-3 mr-1" />
+                Status Report
+              </Button>
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => navigate(`/project-calendar/${project.id}?view=sprints`)}
+                className="flex-1"
+              >
+                <Target className="h-3 w-3 mr-1" />
+                Sprint View
+              </Button>
+            </div>
           </div>
         </div>
       </HoverCardContent>

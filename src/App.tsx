@@ -25,6 +25,7 @@ import LeaveManagement from "./pages/LeaveManagement";
 import AdminLeaveManagement from "./pages/AdminLeaveManagement";
 import MySprintsList from "./pages/MySprintsList";
 import HolidayMaster from "./pages/HolidayMaster";
+import ProjectStatusReport from "./pages/ProjectStatusReport";
 import Login from "./pages/Login";
 
 const queryClient = new QueryClient();
@@ -58,6 +59,7 @@ const App = () => (
           <Route path="/admin-leave-management" element={<AdminLeaveManagement />} />
           <Route path="/sprints" element={<MySprintsList />} />
           <Route path="/holiday-master" element={<HolidayMaster />} />
+          <Route path="/project-status-report/:id" element={<ProjectStatusReport />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
