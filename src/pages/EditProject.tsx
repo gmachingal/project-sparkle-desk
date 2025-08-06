@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -11,8 +12,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { CalendarIcon, ArrowLeft, Trash2 } from 'lucide-react';
+import { CalendarIcon, ArrowLeft, Trash2, X, Plus, Target } from 'lucide-react';
 import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 const EditProject = () => {
   const { id } = useParams();
@@ -32,6 +34,10 @@ const EditProject = () => {
   });
 
   const [selectedMembers, setSelectedMembers] = useState(['1', '2', '3']);
+  const [milestones, setMilestones] = useState([
+    { name: 'Design Phase Complete', description: 'Complete all UI/UX designs and prototypes', dueDate: new Date('2024-02-15') },
+    { name: 'Backend Development', description: 'Complete API development and database setup', dueDate: new Date('2024-03-01') }
+  ]);
 
   const teamMembers = [
     { id: '1', name: 'John Doe', avatar: '', role: 'Project Manager' },
@@ -87,7 +93,7 @@ const EditProject = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="back" onClick={() => navigate('/projects')}>
+            <Button variant="outline" onClick={() => navigate('/projects')}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Projects
             </Button>
@@ -233,13 +239,109 @@ const EditProject = () => {
               </CardContent>
             </Card>
           </div>
-            <div className="flex justify-end gap-3">
-              <Button variant="outline" type="button" onClick={() => navigate("/projects")}>
-                Cancel
+
+          {/* Milestones */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="w-5 h-5" />
+                Project Milestones
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {milestones.map((milestone, index) => (
+                <div key={index} className="p-4 border rounded-lg space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-base font-medium">Milestone {index + 1}</Label>
+                    {milestones.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setMilestones(milestones.filter((_, i) => i !== index))}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor={`milestone-name-${index}`}>Milestone Name</Label>
+                      <Input
+                        id={`milestone-name-${index}`}
+                        placeholder="e.g., Design Phase Complete"
+                        value={milestone.name}
+                        onChange={(e) => {
+                          const newMilestones = [...milestones];
+                          newMilestones[index].name = e.target.value;
+                          setMilestones(newMilestones);
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor={`milestone-date-${index}`}>Due Date</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              !milestone.dueDate && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {milestone.dueDate ? format(milestone.dueDate, "PPP") : "Pick a date"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={milestone.dueDate}
+                            onSelect={(date) => {
+                              const newMilestones = [...milestones];
+                              newMilestones[index].dueDate = date;
+                              setMilestones(newMilestones);
+                            }}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor={`milestone-desc-${index}`}>Description</Label>
+                    <Textarea
+                      id={`milestone-desc-${index}`}
+                      placeholder="Describe what needs to be accomplished..."
+                      value={milestone.description}
+                      onChange={(e) => {
+                        const newMilestones = [...milestones];
+                        newMilestones[index].description = e.target.value;
+                        setMilestones(newMilestones);
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setMilestones([...milestones, { name: '', description: '', dueDate: undefined }])}
+                className="w-full"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Milestone
               </Button>
-              <Button variant="hero" type="submit" className="gap-2">
-                Update Project
-              </Button>
+            </CardContent>
+          </Card>
+
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" type="button" onClick={() => navigate("/projects")}>
+              Cancel
+            </Button>
+            <Button variant="hero" type="submit" className="gap-2">
+              Update Project
+            </Button>
           </div>
         </form>
       </div>

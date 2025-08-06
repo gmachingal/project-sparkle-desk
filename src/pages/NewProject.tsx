@@ -9,7 +9,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, ArrowLeft, Save, Plus, Users, Target, Palette } from "lucide-react";
+import { CalendarIcon, ArrowLeft, Save, Plus, Users, Target, Palette, X } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +27,9 @@ const NewProject = () => {
     color: "#8B5CF6"
   });
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+  const [milestones, setMilestones] = useState([
+    { name: '', description: '', dueDate: undefined as Date | undefined }
+  ]);
 
   const projectTemplates = [
     { id: "blank", name: "Blank Project", description: "Start from scratch" },
@@ -267,6 +270,101 @@ const NewProject = () => {
                     {selectedMembers.length} member{selectedMembers.length !== 1 ? 's' : ''} selected
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Milestones */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="w-5 h-5" />
+                  Project Milestones
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {milestones.map((milestone, index) => (
+                  <div key={index} className="p-4 border rounded-lg space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-base font-medium">Milestone {index + 1}</Label>
+                      {milestones.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setMilestones(milestones.filter((_, i) => i !== index))}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor={`milestone-name-${index}`}>Milestone Name</Label>
+                        <Input
+                          id={`milestone-name-${index}`}
+                          placeholder="e.g., Design Phase Complete"
+                          value={milestone.name}
+                          onChange={(e) => {
+                            const newMilestones = [...milestones];
+                            newMilestones[index].name = e.target.value;
+                            setMilestones(newMilestones);
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor={`milestone-date-${index}`}>Due Date</Label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                "w-full justify-start text-left font-normal",
+                                !milestone.dueDate && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {milestone.dueDate ? format(milestone.dueDate, "PPP") : "Pick a date"}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={milestone.dueDate}
+                              onSelect={(date) => {
+                                const newMilestones = [...milestones];
+                                newMilestones[index].dueDate = date;
+                                setMilestones(newMilestones);
+                              }}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor={`milestone-desc-${index}`}>Description</Label>
+                      <Textarea
+                        id={`milestone-desc-${index}`}
+                        placeholder="Describe what needs to be accomplished..."
+                        value={milestone.description}
+                        onChange={(e) => {
+                          const newMilestones = [...milestones];
+                          newMilestones[index].description = e.target.value;
+                          setMilestones(newMilestones);
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setMilestones([...milestones, { name: '', description: '', dueDate: undefined }])}
+                  className="w-full"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Milestone
+                </Button>
               </CardContent>
             </Card>
 

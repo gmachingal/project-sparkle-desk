@@ -40,8 +40,6 @@ const ProjectStatusReport = () => {
     completedTasks: 35,
     teamSize: 8,
     dueDate: '2024-03-15',
-    budget: 150000,
-    spent: 117000,
     status: 'On Track',
     health: 'Good'
   };
@@ -102,8 +100,8 @@ const ProjectStatusReport = () => {
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" onClick={() => navigate(-1)}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
+            <Button variant="outline" onClick={() => navigate(-1)}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
               Back
             </Button>
             <div>
@@ -135,20 +133,13 @@ const ProjectStatusReport = () => {
         </div>
 
         {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           <StatsCard
             title="Overall Progress"
             value={`${project.progress}%`}
             description="Project completion"
             icon={Target}
             trend={{ value: 5.2, positive: true }}
-          />
-          <StatsCard
-            title="Budget Used"
-            value={`$${(project.spent / 1000).toFixed(0)}k`}
-            description={`of $${(project.budget / 1000)}k total`}
-            icon={TrendingUp}
-            trend={{ value: 2.1, positive: false }}
           />
           <StatsCard
             title="Team Efficiency"
@@ -171,6 +162,7 @@ const ProjectStatusReport = () => {
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="progress">Progress Tracking</TabsTrigger>
             <TabsTrigger value="team">Team Performance</TabsTrigger>
+            <TabsTrigger value="sprints">Sprint Analytics</TabsTrigger>
             <TabsTrigger value="milestones">Milestones</TabsTrigger>
             <TabsTrigger value="insights">Insights</TabsTrigger>
           </TabsList>
@@ -201,10 +193,6 @@ const ProjectStatusReport = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Tasks Completion Rate</span>
                     <span className="text-sm font-semibold">{Math.round((project.completedTasks / project.totalTasks) * 100)}%</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Budget Utilization</span>
-                    <span className="text-sm font-semibold">{Math.round((project.spent / project.budget) * 100)}%</span>
                   </div>
                 </CardContent>
               </Card>
@@ -245,31 +233,100 @@ const ProjectStatusReport = () => {
           </TabsContent>
 
           <TabsContent value="progress" className="space-y-6">
+            {/* Velocity Chart */}
             <Card>
               <CardHeader>
-                <CardTitle>Detailed Progress Analysis</CardTitle>
+                <CardTitle>Sprint Velocity & Burndown</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-6">
-                  {/* Progress metrics would go here */}
-                  <div className="text-center py-8">
-                    <BarChart3 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">Detailed Progress Tracking</h3>
-                    <p className="text-muted-foreground">
-                      Sprint-wise progress analysis and velocity charts will be displayed here.
-                    </p>
-                  </div>
-                </div>
+                <SimpleAreaChart 
+                  data={[
+                    { sprint: 'Sprint 1', planned: 45, completed: 42, remaining: 320 },
+                    { sprint: 'Sprint 2', planned: 50, completed: 48, remaining: 272 },
+                    { sprint: 'Sprint 3', planned: 48, completed: 45, remaining: 227 },
+                    { sprint: 'Sprint 4', planned: 52, completed: 55, remaining: 172 },
+                    { sprint: 'Sprint 5', planned: 46, completed: 46, remaining: 126 }
+                  ]}
+                  dataKeys={[
+                    { key: 'planned', color: '#94a3b8' },
+                    { key: 'completed', color: '#10b981' }
+                  ]}
+                  height={300}
+                />
               </CardContent>
             </Card>
+
+            {/* Task Completion Trends */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Daily Task Completion</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <SimpleBarChart 
+                    data={[
+                      { day: 'Mon', completed: 8, created: 6 },
+                      { day: 'Tue', completed: 12, created: 8 },
+                      { day: 'Wed', completed: 6, created: 10 },
+                      { day: 'Thu', completed: 14, created: 7 },
+                      { day: 'Fri', completed: 10, created: 5 },
+                      { day: 'Sat', completed: 4, created: 2 },
+                      { day: 'Sun', completed: 2, created: 1 }
+                    ]}
+                    dataKeys={[
+                      { key: 'completed', color: '#10b981', name: 'Completed' },
+                      { key: 'created', color: '#3b82f6', name: 'Created' }
+                    ]}
+                  />
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Progress Health Score</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">On Schedule</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 bg-muted rounded-full h-2">
+                          <div className="bg-green-500 h-2 rounded-full" style={{ width: '92%' }}></div>
+                        </div>
+                        <span className="text-sm font-semibold">92%</span>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Quality Score</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 bg-muted rounded-full h-2">
+                          <div className="bg-blue-500 h-2 rounded-full" style={{ width: '88%' }}></div>
+                        </div>
+                        <span className="text-sm font-semibold">88%</span>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Team Satisfaction</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 bg-muted rounded-full h-2">
+                          <div className="bg-purple-500 h-2 rounded-full" style={{ width: '94%' }}></div>
+                        </div>
+                        <span className="text-sm font-semibold">94%</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           <TabsContent value="team" className="space-y-6">
+            {/* Team Performance Chart */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="h-5 w-5" />
-                  Team Performance
+                  Team Performance Overview
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -280,6 +337,163 @@ const ProjectStatusReport = () => {
                     { key: 'efficiency', color: '#3b82f6', name: 'Efficiency %' }
                   ]}
                 />
+              </CardContent>
+            </Card>
+
+            {/* Individual Performance Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {teamPerformanceData.map((member, index) => (
+                <Card key={index}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                        <span className="text-sm font-semibold text-primary">
+                          {member.member.split(' ').map(n => n[0]).join('')}
+                        </span>
+                      </div>
+                      <div>
+                        <h4 className="font-medium">{member.member}</h4>
+                        <p className="text-sm text-muted-foreground">Team Member</p>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm">Tasks Completed</span>
+                        <span className="text-sm font-semibold">{member.tasksCompleted}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm">Efficiency</span>
+                        <span className="text-sm font-semibold">{member.efficiency}%</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-2">
+                        <div 
+                          className="bg-primary h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${member.efficiency}%` }}
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="sprints" className="space-y-6">
+            {/* Sprint Performance Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <StatsCard
+                title="Active Sprints"
+                value="2"
+                description="Currently running"
+                icon={Target}
+              />
+              <StatsCard
+                title="Average Velocity"
+                value="47"
+                description="Story points per sprint"
+                icon={TrendingUp}
+                trend={{ value: 8.3, positive: true }}
+              />
+              <StatsCard
+                title="Sprint Success Rate"
+                value="94%"
+                description="Goals achieved"
+                icon={CheckCircle}
+                trend={{ value: 2.1, positive: true }}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Sprint Velocity */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Sprint Velocity Trend</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <SimpleAreaChart 
+                    data={[
+                      { sprint: 'Sprint 1', velocity: 42, planned: 45 },
+                      { sprint: 'Sprint 2', velocity: 48, planned: 50 },
+                      { sprint: 'Sprint 3', velocity: 45, planned: 48 },
+                      { sprint: 'Sprint 4', velocity: 55, planned: 52 },
+                      { sprint: 'Sprint 5', velocity: 46, planned: 46 }
+                    ]}
+                    dataKeys={[
+                      { key: 'planned', color: '#94a3b8' },
+                      { key: 'velocity', color: '#8b5cf6' }
+                    ]}
+                  />
+                </CardContent>
+              </Card>
+
+              {/* Sprint Burndown */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Current Sprint Burndown</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <SimpleAreaChart 
+                    data={[
+                      { day: 'Day 1', remaining: 50, ideal: 50 },
+                      { day: 'Day 3', remaining: 42, ideal: 43 },
+                      { day: 'Day 5', remaining: 35, ideal: 36 },
+                      { day: 'Day 7', remaining: 28, ideal: 29 },
+                      { day: 'Day 9', remaining: 18, ideal: 21 },
+                      { day: 'Day 11', remaining: 12, ideal: 14 },
+                      { day: 'Day 13', remaining: 5, ideal: 7 },
+                      { day: 'Day 14', remaining: 0, ideal: 0 }
+                    ]}
+                    dataKeys={[
+                      { key: 'ideal', color: '#94a3b8' },
+                      { key: 'remaining', color: '#ef4444' }
+                    ]}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Sprint Details */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Sprint Performance Details</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {[
+                    { name: 'Sprint 5 - UI Components', status: 'Active', progress: 85, velocity: 46, planned: 46 },
+                    { name: 'Sprint 4 - Backend API', status: 'Completed', progress: 100, velocity: 55, planned: 52 },
+                    { name: 'Sprint 3 - Database Design', status: 'Completed', progress: 100, velocity: 45, planned: 48 }
+                  ].map((sprint, index) => (
+                    <div key={index} className="border rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-medium">{sprint.name}</h4>
+                        <Badge variant={sprint.status === 'Active' ? 'default' : 'secondary'}>
+                          {sprint.status}
+                        </Badge>
+                      </div>
+                      <div className="grid grid-cols-3 gap-4 mb-3 text-sm">
+                        <div>
+                          <span className="text-muted-foreground">Progress:</span>
+                          <span className="ml-2 font-medium">{sprint.progress}%</span>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Velocity:</span>
+                          <span className="ml-2 font-medium">{sprint.velocity}</span>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Planned:</span>
+                          <span className="ml-2 font-medium">{sprint.planned}</span>
+                        </div>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-2">
+                        <div 
+                          className="bg-primary h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${sprint.progress}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -352,18 +566,6 @@ const ProjectStatusReport = () => {
                       </div>
                     </div>
                   </div>
-                  
-                  <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                    <div className="flex items-start gap-3">
-                      <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5" />
-                      <div>
-                        <h4 className="font-medium text-amber-800">Budget Attention Needed</h4>
-                        <p className="text-sm text-amber-700 mt-1">
-                          78% of budget used with 22% project remaining. Monitor spending closely.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
                 </CardContent>
               </Card>
 
@@ -388,10 +590,10 @@ const ProjectStatusReport = () => {
                         Current pace suggests potential for 1-week early delivery.
                       </p>
                     </div>
-                    <div className="border-l-4 border-amber-500 pl-4">
-                      <h4 className="font-medium">Budget Control</h4>
+                    <div className="border-l-4 border-purple-500 pl-4">
+                      <h4 className="font-medium">Sprint Performance</h4>
                       <p className="text-sm text-muted-foreground">
-                        Implement stricter budget monitoring for remaining phases.
+                        Sprint velocity is consistently above planned capacity. Consider increasing scope.
                       </p>
                     </div>
                   </div>
