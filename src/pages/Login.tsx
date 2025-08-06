@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import reposeLogo from "@/assets/repose-logo-brain-symbol.png";
+import reposeLogo from "@/assets/repose-logo-brain-big-text.png";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -36,9 +36,6 @@ const Login = () => {
               className="w-24 h-24 object-contain shadow-xl border border-white/30 rounded-lg"
             />
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            REPOSE
-          </h1>
           <p className="text-muted-foreground text-sm mt-2">
             Project Management & HR Application
           </p>
