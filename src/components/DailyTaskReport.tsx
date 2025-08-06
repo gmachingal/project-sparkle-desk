@@ -98,6 +98,22 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
     return acc + hours;
   }, 0);
 
+  // Group tasks by project
+  const getTasksByProject = () => {
+    const tasksByProject: { [projectName: string]: typeof filteredTasks } = {};
+    
+    filteredTasks.forEach(task => {
+      if (!tasksByProject[task.project]) {
+        tasksByProject[task.project] = [];
+      }
+      tasksByProject[task.project].push(task);
+    });
+    
+    return tasksByProject;
+  };
+
+  const tasksByProject = getTasksByProject();
+
   return (
     <Card>
       <CardHeader>
@@ -201,35 +217,53 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
           </div>
         )}
 
-        {/* Task List */}
-        <div className="space-y-3">
+        {/* Tasks Grouped by Project */}
+        <div className="space-y-4">
           <h4 className="font-medium text-sm text-muted-foreground">Tasks Worked On</h4>
           {filteredTasks.length > 0 ? (
-            filteredTasks.map((task) => (
-              <div key={task.id} className="border rounded-lg p-3 space-y-2">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <h5 className="font-medium text-sm">{task.title}</h5>
-                    <p className="text-xs text-muted-foreground mt-1">{task.description}</p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <Badge variant={task.status === 'completed' ? 'default' : 'secondary'} className="text-xs">
-                        {task.status === 'completed' ? 'Completed' : 'In Progress'}
-                      </Badge>
-                      <Badge variant="outline" className="text-xs gap-1">
-                        <Clock className="w-3 h-3" />
-                        {task.timeSpent}
-                      </Badge>
-                      <span className="text-xs text-muted-foreground">{task.project}</span>
+            Object.entries(tasksByProject).map(([projectName, projectTasks]) => (
+              <div key={projectName} className="space-y-3">
+                <div className="flex items-center justify-between border-b pb-2">
+                  <h5 className="font-semibold text-sm text-foreground">{projectName}</h5>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-xs">
+                      {projectTasks.filter(t => t.status === 'completed').length}/{projectTasks.length} completed
+                    </Badge>
+                    <Badge variant="secondary" className="text-xs gap-1">
+                      <Clock className="w-3 h-3" />
+                      {projectTasks.reduce((acc, task) => acc + parseFloat(task.timeSpent.replace('h', '')), 0).toFixed(1)}h
+                    </Badge>
+                  </div>
+                </div>
+                
+                <div className="space-y-2 pl-4">
+                  {projectTasks.map((task) => (
+                    <div key={task.id} className="border rounded-lg p-3 space-y-2 bg-muted/20">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h6 className="font-medium text-sm">{task.title}</h6>
+                          <p className="text-xs text-muted-foreground mt-1">{task.description}</p>
+                          <div className="flex items-center gap-2 mt-2">
+                            <Badge variant={task.status === 'completed' ? 'default' : 'secondary'} className="text-xs">
+                              {task.status === 'completed' ? 'Completed' : 'In Progress'}
+                            </Badge>
+                            <Badge variant="outline" className="text-xs gap-1">
+                              <Clock className="w-3 h-3" />
+                              {task.timeSpent}
+                            </Badge>
+                          </div>
+                        </div>
+                        <div className="text-xs text-muted-foreground text-right">
+                          {task.status === 'completed' && task.completedAt && (
+                            <p>Completed at {task.completedAt}</p>
+                          )}
+                          {task.status === 'in-progress' && task.startedAt && (
+                            <p>Started at {task.startedAt}</p>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-xs text-muted-foreground text-right">
-                    {task.status === 'completed' && task.completedAt && (
-                      <p>Completed at {task.completedAt}</p>
-                    )}
-                    {task.status === 'in-progress' && task.startedAt && (
-                      <p>Started at {task.startedAt}</p>
-                    )}
-                  </div>
+                  ))}
                 </div>
               </div>
             ))
