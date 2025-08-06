@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Calendar, ChevronLeft, ChevronRight, Send, Eye, CheckSquare, Clock, Target, Flag, User, CalendarDays, Tag } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Send, Eye, CheckSquare, Clock, Target, Flag, User, CalendarDays, Tag, BarChart3 } from "lucide-react";
 import { format, addDays, subDays, parseISO } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -179,6 +179,19 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
             {!isAdmin && (
               <Button variant="outline" size="sm" className="gap-2">
                 <Send className="w-4 h-4" />
+              </Button>
+            )}
+            
+            {/* Project Status Report Button */}
+            {selectedProject !== 'all' && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="gap-2"
+                onClick={() => navigate(`/project-status-report/${selectedProject}`)}
+              >
+                <BarChart3 className="w-4 h-4" />
+                Project Report
               </Button>
             )}
           </div>
