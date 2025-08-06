@@ -40,7 +40,7 @@ const ProjectCard = ({ project, className }: ProjectCardProps) => {
     <HoverCard>
       <HoverCardTrigger asChild>
         <Card className={cn(
-          "group hover:shadow-md transition-all duration-200 cursor-pointer h-28",
+          "group hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer h-28",
           className
         )}>
           <CardContent className="p-4 h-full flex flex-col justify-between">

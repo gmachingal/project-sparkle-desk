@@ -63,7 +63,7 @@ const TaskCard = ({ task, className, size = 'default' }: TaskCardProps) => {
       <HoverCardTrigger asChild>
         <Card 
           className={cn(
-            "group hover:shadow-md transition-all duration-200 border-l-4 cursor-pointer",
+            "group hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-l-4 cursor-pointer",
             size === 'compact' ? 'h-16' : 'h-24',
             statusColors[task.status],
             className
