@@ -122,31 +122,45 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
             <CheckSquare className="w-5 h-5" />
             Daily Task Report
           </CardTitle>
-          {!isAdmin && (
-            <Button variant="outline" size="sm" className="gap-2">
-              <Send className="w-4 h-4" />
-              Send Report
-            </Button>
-          )}
+          <div className="flex items-center gap-3">
+            {/* Date Navigation */}
+            <div className="flex items-center gap-2 border rounded-lg p-1">
+              <Button variant="ghost" size="sm" onClick={() => navigateDate('prev')}>
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <div className="px-3 py-1 text-sm font-medium min-w-[120px] text-center">
+                {format(parseISO(selectedDate), 'MMM dd, yyyy')}
+              </div>
+              <Button variant="ghost" size="sm" onClick={() => navigateDate('next')}>
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+
+            {/* Project Filter */}
+            <Select value={selectedProject} onValueChange={setSelectedProject}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="All Projects" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Projects</SelectItem>
+                {projects.map(project => (
+                  <SelectItem key={project.id} value={project.id}>{project.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {!isAdmin && (
+              <Button variant="outline" size="sm" className="gap-2">
+                <Send className="w-4 h-4" />
+                Send Report
+              </Button>
+            )}
+          </div>
         </div>
         
-        {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-3 pt-2">
-          {/* Date Navigation */}
-          <div className="flex items-center gap-2 border rounded-lg p-1">
-            <Button variant="ghost" size="sm" onClick={() => navigateDate('prev')}>
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            <div className="px-3 py-1 text-sm font-medium min-w-[120px] text-center">
-              {format(parseISO(selectedDate), 'MMM dd, yyyy')}
-            </div>
-            <Button variant="ghost" size="sm" onClick={() => navigateDate('next')}>
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-
-          {/* User Selection (Admin only) */}
-          {isAdmin && (
+        {/* User Selection (Admin only) */}
+        {isAdmin && (
+          <div className="pt-3">
             <Select value={selectedUser} onValueChange={onUserChange}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select User" />
@@ -157,21 +171,8 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
                 ))}
               </SelectContent>
             </Select>
-          )}
-
-          {/* Project Filter */}
-          <Select value={selectedProject} onValueChange={setSelectedProject}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="All Projects" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Projects</SelectItem>
-              {projects.map(project => (
-                <SelectItem key={project.id} value={project.id}>{project.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+          </div>
+        )}
       </CardHeader>
 
       <CardContent className="space-y-4">
