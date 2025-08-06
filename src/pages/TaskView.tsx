@@ -49,6 +49,11 @@ const TaskView = () => {
         endDate: new Date(currentYear, currentMonth, 14),
         progress: 65
       },
+      milestone: {
+        id: "1",
+        name: "UI Design",
+        status: "completed" as const
+      },
       createdDate: new Date(currentYear, currentMonth, 1),
       estimatedHours: 16,
       actualHours: 8,
@@ -72,6 +77,11 @@ const TaskView = () => {
         startDate: new Date(currentYear, currentMonth, 15),
         endDate: new Date(currentYear, currentMonth, 28),
         progress: 0
+      },
+      milestone: {
+        id: "4",
+        name: "MVP Release",
+        status: "planned" as const
       },
       createdDate: new Date(currentYear, currentMonth, 2),
       estimatedHours: 4,
@@ -120,6 +130,11 @@ const TaskView = () => {
         startDate: new Date(currentYear, currentMonth, 1),
         endDate: new Date(currentYear, currentMonth, 14),
         progress: 65
+      },
+      milestone: {
+        id: "2",
+        name: "Backend API",
+        status: "in-progress" as const
       },
       createdDate: new Date(currentYear, currentMonth, 5),
       estimatedHours: 12,
@@ -232,9 +247,23 @@ const TaskView = () => {
                     <Flag className="w-3 h-3 mr-1" />
                     {task.priority} priority
                   </Badge>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <FolderOpen className="w-4 h-4" />
-                    {task.project}
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <FolderOpen className="w-4 h-4" />
+                      {task.project}
+                    </div>
+                    {task.milestone && (
+                      <div className="flex items-center gap-2">
+                        <Target className="w-4 h-4" />
+                        <span>{task.milestone.name}</span>
+                        <Badge 
+                          variant={task.milestone.status === 'completed' ? 'default' : task.milestone.status === 'in-progress' ? 'secondary' : 'outline'}
+                          className="text-xs"
+                        >
+                          {task.milestone.status.replace('-', ' ')}
+                        </Badge>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -369,6 +398,33 @@ const TaskView = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Milestone Details */}
+          {task.milestone && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Target className="w-4 h-4" />
+                  Milestone Details
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <div className="text-sm text-muted-foreground">Milestone Name</div>
+                  <div className="font-medium">{task.milestone.name}</div>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-muted-foreground">Status</div>
+                  <Badge 
+                    variant={task.milestone.status === 'completed' ? 'default' : task.milestone.status === 'in-progress' ? 'secondary' : 'outline'}
+                  >
+                    {task.milestone.status.charAt(0).toUpperCase() + task.milestone.status.slice(1).replace('-', ' ')}
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Sprint Details */}
           {task.sprint && (

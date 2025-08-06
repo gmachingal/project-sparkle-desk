@@ -97,7 +97,8 @@ const Dashboard = () => {
       priority: "high" as const,
       dueDate: "Nov 25",
       assignee: { name: "Sarah Chen", avatar: "" },
-      project: "Website Redesign"
+      project: "Website Redesign",
+      milestone: { id: "1", name: "UI Design", status: "completed" as const }
     },
     {
       id: "2",
@@ -107,7 +108,8 @@ const Dashboard = () => {
       priority: "medium" as const,
       dueDate: "Nov 27",
       assignee: { name: "Mike Johnson", avatar: "" },
-      project: "Mobile App"
+      project: "Mobile App",
+      milestone: { id: "4", name: "MVP Release", status: "planned" as const }
     },
     {
       id: "3",
@@ -127,7 +129,8 @@ const Dashboard = () => {
       priority: "high" as const,
       dueDate: "Dec 1",
       assignee: { name: "Alex Kim", avatar: "" },
-      project: "Website Redesign"
+      project: "Website Redesign",
+      milestone: { id: "3", name: "Frontend Development", status: "in-progress" as const }
     }
   ];
 

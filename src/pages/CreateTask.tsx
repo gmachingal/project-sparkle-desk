@@ -29,6 +29,7 @@ const CreateTask = () => {
     description: "",
     project: searchParams.get('project') || "1",
     sprint: searchParams.get('sprint') || "",
+    milestone: "",
     priority: "",
     assignee: "",
     status: "todo",
@@ -69,6 +70,41 @@ const CreateTask = () => {
       startDate: new Date('2024-01-20'),
       endDate: new Date('2024-02-10'),
       progress: 45
+    }
+  ];
+
+  const milestones = [
+    { 
+      id: "1", 
+      name: "UI Design", 
+      projectId: "1", 
+      status: "completed" as const, 
+      dueDate: new Date('2024-01-15'),
+      description: "Complete all UI/UX design components"
+    },
+    { 
+      id: "2", 
+      name: "Backend API", 
+      projectId: "1", 
+      status: "in-progress" as const, 
+      dueDate: new Date('2024-02-28'),
+      description: "Develop core backend API endpoints"
+    },
+    { 
+      id: "3", 
+      name: "Frontend Development", 
+      projectId: "1", 
+      status: "planned" as const, 
+      dueDate: new Date('2024-03-15'),
+      description: "Build frontend components and pages"
+    },
+    { 
+      id: "4", 
+      name: "MVP Release", 
+      projectId: "2", 
+      status: "planned" as const, 
+      dueDate: new Date('2024-04-01'),
+      description: "Release minimum viable product"
     }
   ];
 
@@ -388,6 +424,34 @@ const CreateTask = () => {
                               {sprint.status}
                             </Badge>
                             {sprint.name}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Milestone (Optional)</Label>
+                  <Select value={formData.milestone} onValueChange={(value) => setFormData({ ...formData, milestone: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a milestone" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">No Milestone</SelectItem>
+                      {milestones
+                        .filter(milestone => !formData.project || milestone.projectId === formData.project)
+                        .map((milestone) => (
+                        <SelectItem key={milestone.id} value={milestone.id}>
+                          <div className="flex items-center gap-2">
+                            <Target className="w-3 h-3" />
+                            <Badge 
+                              variant={milestone.status === 'completed' ? 'default' : milestone.status === 'in-progress' ? 'secondary' : 'outline'} 
+                              className="text-xs"
+                            >
+                              {milestone.status.replace('-', ' ')}
+                            </Badge>
+                            {milestone.name}
                           </div>
                         </SelectItem>
                       ))}

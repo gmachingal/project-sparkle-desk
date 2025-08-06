@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-import { Calendar, Flag, MoreHorizontal, User, Edit, Tag, CalendarDays, Clock } from "lucide-react";
+import { Calendar, Flag, MoreHorizontal, User, Edit, Tag, CalendarDays, Clock, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
@@ -22,6 +22,11 @@ interface TaskCardProps {
     };
     project: string;
     sprint?: string;
+    milestone?: {
+      id: string;
+      name: string;
+      status: 'planned' | 'in-progress' | 'completed';
+    };
     tags?: string[];
   };
   className?: string;
@@ -87,7 +92,7 @@ const TaskCard = ({ task, className, size = 'default' }: TaskCardProps) => {
                   </h3>
                 </div>
                 {size === 'default' && (
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="flex items-center gap-2 mt-1 flex-wrap">
                     <Badge variant="secondary" className="text-xs px-1 py-0">
                       {task.project}
                     </Badge>
@@ -97,6 +102,15 @@ const TaskCard = ({ task, className, size = 'default' }: TaskCardProps) => {
                     >
                       {task.priority}
                     </Badge>
+                    {task.milestone && (
+                      <Badge 
+                        variant="outline" 
+                        className="text-xs px-1 py-0 bg-blue-50 text-blue-700 border-blue-200"
+                      >
+                        <Target className="w-2 h-2 mr-1" />
+                        {task.milestone.name}
+                      </Badge>
+                    )}
                   </div>
                 )}
               </div>
@@ -187,6 +201,21 @@ const TaskCard = ({ task, className, size = 'default' }: TaskCardProps) => {
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Sprint</span>
                 <span className="text-sm">{task.sprint}</span>
+              </div>
+            )}
+            {task.milestone && (
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Milestone</span>
+                <div className="flex items-center gap-2">
+                  <Target className="w-3 h-3 text-muted-foreground" />
+                  <span className="text-sm">{task.milestone.name}</span>
+                  <Badge 
+                    variant={task.milestone.status === 'completed' ? 'default' : task.milestone.status === 'in-progress' ? 'secondary' : 'outline'}
+                    className="text-xs"
+                  >
+                    {task.milestone.status.replace('-', ' ')}
+                  </Badge>
+                </div>
               </div>
             )}
             {task.assignee && (

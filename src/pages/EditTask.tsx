@@ -30,6 +30,7 @@ const EditTask = () => {
     assigneeId: '2',
     projectId: '1',
     sprintId: '1',
+    milestoneId: '2',
     estimatedHours: 16,
     tags: ['design', 'homepage'],
     loggedHours: [
@@ -69,6 +70,41 @@ const EditTask = () => {
     { id: '1', name: 'Website Redesign' },
     { id: '2', name: 'Mobile App Development' },
     { id: '3', name: 'Marketing Campaign' },
+  ];
+
+  const milestones = [
+    { 
+      id: '1', 
+      name: 'UI Design', 
+      projectId: '1', 
+      status: 'completed' as const, 
+      dueDate: new Date('2024-01-15'),
+      description: 'Complete all UI/UX design components'
+    },
+    { 
+      id: '2', 
+      name: 'Backend API', 
+      projectId: '1', 
+      status: 'in-progress' as const, 
+      dueDate: new Date('2024-02-28'),
+      description: 'Develop core backend API endpoints'
+    },
+    { 
+      id: '3', 
+      name: 'Frontend Development', 
+      projectId: '1', 
+      status: 'planned' as const, 
+      dueDate: new Date('2024-03-15'),
+      description: 'Build frontend components and pages'
+    },
+    { 
+      id: '4', 
+      name: 'MVP Release', 
+      projectId: '2', 
+      status: 'planned' as const, 
+      dueDate: new Date('2024-04-01'),
+      description: 'Release minimum viable product'
+    }
   ];
 
   const sprints = [
@@ -377,6 +413,34 @@ const EditTask = () => {
                                 {sprint.status}
                               </Badge>
                               {sprint.name}
+                            </div>
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium">Milestone</label>
+                  <Select value={taskData.milestoneId || ''} onValueChange={(value) => setTaskData({...taskData, milestoneId: value === 'none' ? null : value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select milestone" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">No Milestone</SelectItem>
+                      {milestones
+                        .filter(milestone => milestone.projectId === taskData.projectId)
+                        .map(milestone => (
+                          <SelectItem key={milestone.id} value={milestone.id}>
+                            <div className="flex items-center gap-2">
+                              <Target className="w-3 h-3" />
+                              <Badge 
+                                variant={milestone.status === 'completed' ? 'default' : milestone.status === 'in-progress' ? 'secondary' : 'outline'}
+                                className="text-xs"
+                              >
+                                {milestone.status.replace('-', ' ')}
+                              </Badge>
+                              {milestone.name}
                             </div>
                           </SelectItem>
                         ))}

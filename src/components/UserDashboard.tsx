@@ -63,7 +63,8 @@ const UserDashboard = () => {
       priority: "high" as const,
       dueDate: "Today",
       assignee: { name: "You", avatar: "" },
-      project: "Website Redesign"
+      project: "Website Redesign",
+      milestone: { id: "2", name: "Backend API", status: "in-progress" as const }
     },
     {
       id: "2",

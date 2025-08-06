@@ -59,6 +59,7 @@ const MyTasks = () => {
       startDate: new Date(currentYear, currentMonth, 5),
       dueDate: new Date(currentYear, currentMonth, 10),
       assignee: { name: "You", avatar: "" },
+      milestone: { id: "1", name: "UI Design", status: "completed" as const },
       project: "Website Redesign",
       sprint: "Sprint 3",
       tags: ["design", "ui/ux", "homepage"]
@@ -72,6 +73,7 @@ const MyTasks = () => {
       startDate: new Date(currentYear, currentMonth, 12),
       dueDate: new Date(currentYear, currentMonth, 15),
       assignee: { name: "You", avatar: "" },
+      milestone: { id: "4", name: "MVP Release", status: "planned" as const },
       project: "Mobile App",
       sprint: "Sprint 4",
       tags: ["api", "documentation", "review"]
@@ -98,6 +100,7 @@ const MyTasks = () => {
       startDate: new Date(currentYear, currentMonth, 18),
       dueDate: new Date(currentYear, currentMonth, 20),
       assignee: { name: "You", avatar: "" },
+      milestone: { id: "2", name: "Backend API", status: "in-progress" as const },
       project: "Website Redesign",
       sprint: "Sprint 3",
       tags: ["bug-fix", "authentication", "urgent"]
