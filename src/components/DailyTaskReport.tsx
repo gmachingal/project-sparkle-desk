@@ -191,31 +191,6 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
           </div>
         </div>
 
-        {/* Project Breakdown */}
-        {selectedProject === 'all' && (
-          <div className="space-y-2">
-            <h4 className="font-medium text-sm text-muted-foreground">Project Breakdown</h4>
-            {projects.map(project => {
-              const stats = getProjectStats(project.name);
-              if (stats.total === 0) return null;
-              
-              return (
-                <div key={project.id} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div>
-                    <p className="font-medium text-sm">{project.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {stats.completed}/{stats.total} tasks • {stats.totalTime.toFixed(1)}h
-                    </p>
-                  </div>
-                  <Badge variant="outline" className="gap-1">
-                    <Target className="w-3 h-3" />
-                    {Math.round((stats.completed / stats.total) * 100)}%
-                  </Badge>
-                </div>
-              );
-            })}
-          </div>
-        )}
 
         {/* Tasks Grouped by Project */}
         <div className="space-y-4">
