@@ -152,7 +152,6 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
             {!isAdmin && (
               <Button variant="outline" size="sm" className="gap-2">
                 <Send className="w-4 h-4" />
-                Send Report
               </Button>
             )}
           </div>
