@@ -3,9 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, ChevronLeft, ChevronRight, Send, Eye, CheckSquare, Clock, Target } from "lucide-react";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Calendar, ChevronLeft, ChevronRight, Send, Eye, CheckSquare, Clock, Target, Flag, User, CalendarDays, Tag } from "lucide-react";
 import { format, addDays, subDays, parseISO } from "date-fns";
-import TaskCard from "./TaskCard";
+import { useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 interface DailyTaskReportProps {
   isAdmin?: boolean;
@@ -14,6 +17,7 @@ interface DailyTaskReportProps {
 }
 
 const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyTaskReportProps) => {
+  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [selectedProject, setSelectedProject] = useState('all');
 
@@ -39,8 +43,10 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
       priority: "high" as const,
       timeSpent: "3.5h",
       project: "Website Redesign",
+      sprint: "Sprint 3",
       assignee: { name: "Alex Johnson", avatar: "AJ" },
-      completedAt: "10:30 AM"
+      completedAt: "10:30 AM",
+      tags: ["security", "authentication", "backend"]
     },
     {
       id: "2", 
@@ -50,8 +56,10 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
       priority: "medium" as const,
       timeSpent: "2h",
       project: "Website Redesign",
+      sprint: "Sprint 3",
       assignee: { name: "Alex Johnson", avatar: "AJ" },
-      startedAt: "2:00 PM"
+      startedAt: "2:00 PM",
+      tags: ["documentation", "api", "endpoints"]
     },
     {
       id: "3",
@@ -61,8 +69,10 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
       priority: "high" as const,
       timeSpent: "4h",
       project: "Mobile App",
+      sprint: "Sprint 2",
       assignee: { name: "Alex Johnson", avatar: "AJ" },
-      completedAt: "4:45 PM"
+      completedAt: "4:45 PM",
+      tags: ["design", "ui/ux", "wireframes"]
     }
   ];
 
@@ -113,6 +123,23 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
   };
 
   const tasksByProject = getTasksByProject();
+
+  const priorityColors = {
+    low: 'bg-green-100 text-green-800 border-green-200',
+    medium: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+    high: 'bg-red-100 text-red-800 border-red-200'
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return '✓';
+      case 'in-progress':
+        return '⟳';
+      default:
+        return '○';
+    }
+  };
 
   return (
     <Card>
@@ -213,31 +240,132 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   {projectTasks.map((task) => (
-                    <div key={task.id} className="border rounded-lg p-3 space-y-2 bg-muted/20">
-                      <div className="space-y-2">
-                        <div>
-                          <h6 className="font-medium text-sm leading-tight">{task.title}</h6>
-                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{task.description}</p>
+                    <HoverCard key={task.id}>
+                      <HoverCardTrigger asChild>
+                        <div 
+                          className="border rounded-lg p-3 space-y-2 bg-muted/20 cursor-pointer hover:shadow-md transition-all duration-200"
+                          onClick={() => navigate(`/task/${task.id}`)}
+                        >
+                          <div className="space-y-2">
+                            <div>
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="text-sm opacity-60">
+                                  {getStatusIcon(task.status)}
+                                </span>
+                                <h6 className="font-medium text-sm leading-tight">{task.title}</h6>
+                              </div>
+                              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{task.description}</p>
+                            </div>
+                            <div className="flex flex-wrap items-center gap-1">
+                              <Badge variant={task.status === 'completed' ? 'default' : 'secondary'} className="text-xs px-2 py-0">
+                                {task.status === 'completed' ? 'Done' : 'Progress'}
+                              </Badge>
+                              <Badge variant="outline" className="text-xs gap-1 px-2 py-0">
+                                <Clock className="w-3 h-3" />
+                                {task.timeSpent}
+                              </Badge>
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {task.status === 'completed' && task.completedAt && (
+                                <p>✓ {task.completedAt}</p>
+                              )}
+                              {task.status === 'in-progress' && task.startedAt && (
+                                <p>→ {task.startedAt}</p>
+                              )}
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex flex-wrap items-center gap-1">
-                          <Badge variant={task.status === 'completed' ? 'default' : 'secondary'} className="text-xs px-2 py-0">
-                            {task.status === 'completed' ? 'Done' : 'Progress'}
-                          </Badge>
-                          <Badge variant="outline" className="text-xs gap-1 px-2 py-0">
-                            <Clock className="w-3 h-3" />
-                            {task.timeSpent}
-                          </Badge>
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {task.status === 'completed' && task.completedAt && (
-                            <p>✓ {task.completedAt}</p>
+                      </HoverCardTrigger>
+                      <HoverCardContent className="w-80 p-4" side="top">
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <h4 className="font-semibold text-lg">{task.title}</h4>
+                            <Badge 
+                              variant="outline" 
+                              className={cn("text-xs", priorityColors[task.priority])}
+                            >
+                              <Flag className="w-3 h-3 mr-1" />
+                              {task.priority}
+                            </Badge>
+                          </div>
+                          
+                          {task.description && (
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                              {task.description}
+                            </p>
                           )}
-                          {task.status === 'in-progress' && task.startedAt && (
-                            <p>→ {task.startedAt}</p>
+                          
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm font-medium">Status</span>
+                              <Badge variant="secondary">{task.status.replace('-', ' ')}</Badge>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm font-medium">Project</span>
+                              <span className="text-sm">{task.project}</span>
+                            </div>
+                            {task.sprint && (
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium">Sprint</span>
+                                <span className="text-sm">{task.sprint}</span>
+                              </div>
+                            )}
+                            {task.assignee && (
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium">Assignee</span>
+                                <div className="flex items-center gap-2">
+                                  <Avatar className="w-5 h-5">
+                                    <AvatarImage src={task.assignee.avatar} />
+                                    <AvatarFallback className="text-xs">
+                                      {task.assignee.name.charAt(0)}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <span className="text-sm">{task.assignee.name}</span>
+                                </div>
+                              </div>
+                            )}
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm font-medium">Time Spent</span>
+                              <div className="flex items-center gap-1">
+                                <Clock className="w-4 h-4 text-muted-foreground" />
+                                <span className="text-sm">{task.timeSpent}</span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {task.tags && task.tags.length > 0 && (
+                            <div className="pt-2 border-t">
+                              <div className="flex flex-wrap gap-1">
+                                {task.tags.map((tag, index) => (
+                                  <Badge 
+                                    key={index} 
+                                    variant="outline" 
+                                    className="text-xs px-2 py-1 bg-primary/10 text-primary border-primary/20"
+                                  >
+                                    <Tag className="w-2 h-2 mr-1" />
+                                    {tag}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
                           )}
+                          
+                          <div className="pt-2 border-t">
+                            <Button 
+                              size="sm" 
+                              className="w-full"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/task/${task.id}`);
+                              }}
+                            >
+                              <Eye className="w-4 h-4 mr-2" />
+                              View Task
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    </div>
+                      </HoverCardContent>
+                    </HoverCard>
                   ))}
                 </div>
               </div>
