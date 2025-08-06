@@ -18,7 +18,7 @@ const Login = () => {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: Implement actual login logic
-    navigate("/");
+    navigate("/dashboard");
   };
 
   return (

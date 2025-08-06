@@ -11,14 +11,14 @@ const Header = () => {
   
   const handleLogout = () => {
     // TODO: Implement actual logout logic
-    navigate("/login");
+    navigate("/");
   };
 
   return (
     <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-6">
-          <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
+          <div className="flex items-center cursor-pointer" onClick={() => navigate("/dashboard")}>
             <img 
               src={reposeLogo} 
               alt="Repose" 
@@ -27,7 +27,7 @@ const Header = () => {
           </div>
           
           <nav className="hidden md:flex items-center gap-1">
-            <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="gap-2 bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")} className="gap-2 bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200">
               <Home className="w-4 h-4" />
               Home
             </Button>
