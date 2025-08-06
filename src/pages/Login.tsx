@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import reposeLogo from "@/assets/repose-logo.png";
+// import reposeLogo from "@/assets/repose-logo-new.png";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -31,7 +31,7 @@ const Login = () => {
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <img 
-              src={reposeLogo} 
+              src="/lovable-uploads/bcd5b261-bb13-4402-b871-1b7987205719.png" 
               alt="Repose Logo" 
               className="w-16 h-16 object-contain"
             />
