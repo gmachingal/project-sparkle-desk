@@ -147,6 +147,15 @@ const ProjectCard = ({ project, className }: ProjectCardProps) => {
                   <span className="text-muted-foreground">Completed</span>
                   <span className="font-medium text-green-600">{project.completedTasks}</span>
                 </div>
+                {project.milestones && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Milestones</span>
+                    <div className="flex items-center gap-1">
+                      <Target className="w-3 h-3 text-muted-foreground" />
+                      <span className="font-medium">{project.milestones.completed}/{project.milestones.total}</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

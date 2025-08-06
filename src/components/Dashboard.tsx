@@ -74,7 +74,8 @@ const Dashboard = () => {
       completedTasks: 14,
       teamSize: 8,
       dueDate: "Jan 30",
-      color: "#06B6D4"
+      color: "#06B6D4",
+      milestones: { total: 5, completed: 1 }
     },
     {
       id: "3",
@@ -85,7 +86,8 @@ const Dashboard = () => {
       completedTasks: 14,
       teamSize: 3,
       dueDate: "Nov 28",
-      color: "#10B981"
+      color: "#10B981",
+      milestones: { total: 3, completed: 3 }
     }
   ];
 

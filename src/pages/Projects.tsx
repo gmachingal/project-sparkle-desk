@@ -56,7 +56,8 @@ const Projects = () => {
       dueDate: "Jan 30",
       color: "#06B6D4",
       status: "active",
-      priority: "high"
+      priority: "high",
+      milestones: { total: 5, completed: 1 }
     },
     {
       id: "3",
@@ -69,7 +70,8 @@ const Projects = () => {
       dueDate: "Nov 28",
       color: "#10B981",
       status: "active",
-      priority: "medium"
+      priority: "medium",
+      milestones: { total: 3, completed: 3 }
     },
     {
       id: "4",
@@ -82,7 +84,8 @@ const Projects = () => {
       dueDate: "Mar 15",
       color: "#F59E0B",
       status: "active",
-      priority: "medium"
+      priority: "medium",
+      milestones: { total: 6, completed: 0 }
     },
     {
       id: "5",
