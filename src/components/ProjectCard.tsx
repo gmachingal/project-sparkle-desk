@@ -18,6 +18,10 @@ interface ProjectCardProps {
     teamSize: number;
     dueDate: string;
     color: string;
+    milestones?: {
+      total: number;
+      completed: number;
+    };
   };
   className?: string;
 }
