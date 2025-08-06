@@ -4,7 +4,7 @@ import { Search, Bell, Plus, Settings, User, Clock, Users, Briefcase, FileText, 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
-import reposeLogo from "@/assets/repose-logo-premium.png";
+import reposeLogo from "@/assets/repose-logo-neural.png";
 
 const Header = () => {
   const navigate = useNavigate();

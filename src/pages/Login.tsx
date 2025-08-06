@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import reposeLogo from "@/assets/repose-logo-premium.png";
+import reposeLogo from "@/assets/repose-logo-neural.png";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
