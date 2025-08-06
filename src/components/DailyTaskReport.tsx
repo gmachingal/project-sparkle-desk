@@ -3,9 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Calendar } from "@/components/ui/calendar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Calendar, ChevronLeft, ChevronRight, Send, Eye, CheckSquare, Clock, Target, Flag, User, CalendarDays, Tag, BarChart3 } from "lucide-react";
+import { CalendarIcon, ChevronLeft, ChevronRight, Send, Eye, CheckSquare, Clock, Target, Flag, User, CalendarDays, Tag, BarChart3 } from "lucide-react";
 import { format, addDays, subDays, parseISO } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -18,7 +20,7 @@ interface DailyTaskReportProps {
 
 const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyTaskReportProps) => {
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedProject, setSelectedProject] = useState('all');
 
   // Mock data
@@ -96,9 +98,14 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
   };
 
   const navigateDate = (direction: 'prev' | 'next') => {
-    const currentDate = parseISO(selectedDate);
-    const newDate = direction === 'prev' ? subDays(currentDate, 1) : addDays(currentDate, 1);
-    setSelectedDate(format(newDate, 'yyyy-MM-dd'));
+    const newDate = direction === 'prev' ? subDays(selectedDate, 1) : addDays(selectedDate, 1);
+    setSelectedDate(newDate);
+  };
+
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      setSelectedDate(date);
+    }
   };
 
   const filteredTasks = getFilteredTasks();
@@ -150,18 +157,24 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
             Daily Task Report
           </CardTitle>
           <div className="flex items-center gap-3">
-            {/* Date Navigation */}
-            <div className="flex items-center gap-2 border rounded-lg p-1">
-              <Button variant="ghost" size="sm" onClick={() => navigateDate('prev')}>
-                <ChevronLeft className="w-4 h-4" />
-              </Button>
-              <div className="px-3 py-1 text-sm font-medium min-w-[120px] text-center">
-                {format(parseISO(selectedDate), 'MMM dd, yyyy')}
-              </div>
-              <Button variant="ghost" size="sm" onClick={() => navigateDate('next')}>
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-            </div>
+            {/* Date Picker */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="gap-2 min-w-[140px] justify-start">
+                  <CalendarIcon className="w-4 h-4" />
+                  {format(selectedDate, 'MMM dd, yyyy')}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={handleDateSelect}
+                  initialFocus
+                  className="p-3 pointer-events-auto"
+                />
+              </PopoverContent>
+            </Popover>
 
             {/* Project Filter */}
             <Select value={selectedProject} onValueChange={setSelectedProject}>
