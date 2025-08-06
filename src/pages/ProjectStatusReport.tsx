@@ -28,6 +28,7 @@ import { SimpleBarChart, SimpleAreaChart, SimplePieChart } from '@/components/Si
 const ProjectStatusReport = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('overview');
   const [timeRange, setTimeRange] = useState('month');
 
   // Mock project data - in a real app, this would be fetched based on project id
@@ -97,38 +98,42 @@ const ProjectStatusReport = () => {
       <Header />
       
       <div className="container mx-auto px-4 py-8">
+        {/* Back Button */}
+        <div className="pb-4 mb-6 border-b border-border">
+          <Button variant="back" onClick={() => navigate(-1)}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Projects
+          </Button>
+        </div>
+        
         {/* Header */}
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="outline" onClick={() => navigate(-1)}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
-            </Button>
+        <div className="mb-8">
+          <div className="mb-6 flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold">
                 Project Status Report
               </h1>
               <p className="text-muted-foreground mt-1">
                 {project.name} - Comprehensive Performance Analysis
               </p>
             </div>
-          </div>
-          <div className="flex gap-2">
-            <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger className="w-40">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="week">Last Week</SelectItem>
-                <SelectItem value="month">Last Month</SelectItem>
-                <SelectItem value="quarter">Last Quarter</SelectItem>
-                <SelectItem value="year">Last Year</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline" onClick={exportReport}>
-              <Download className="w-4 h-4 mr-2" />
-              Export
-            </Button>
+            <div className="flex gap-2">
+              <Select value={timeRange} onValueChange={setTimeRange}>
+                <SelectTrigger className="w-40">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="week">Last Week</SelectItem>
+                  <SelectItem value="month">Last Month</SelectItem>
+                  <SelectItem value="quarter">Last Quarter</SelectItem>
+                  <SelectItem value="year">Last Year</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button variant="outline" onClick={exportReport}>
+                <Download className="w-4 h-4 mr-2" />
+                Export
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -157,17 +162,61 @@ const ProjectStatusReport = () => {
           />
         </div>
 
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="progress">Progress Tracking</TabsTrigger>
-            <TabsTrigger value="team">Team Performance</TabsTrigger>
-            <TabsTrigger value="sprints">Sprint Analytics</TabsTrigger>
-            <TabsTrigger value="milestones">Milestones</TabsTrigger>
-            <TabsTrigger value="insights">Insights</TabsTrigger>
-          </TabsList>
+        {/* Tab Navigation */}
+        <div className="flex items-center gap-2 mb-6">
+          <Button
+            variant={activeTab === 'overview' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setActiveTab('overview')}
+          >
+            <Activity className="h-4 w-4 mr-2" />
+            Overview
+          </Button>
+          <Button
+            variant={activeTab === 'progress' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setActiveTab('progress')}
+          >
+            <BarChart3 className="h-4 w-4 mr-2" />
+            Progress Tracking
+          </Button>
+          <Button
+            variant={activeTab === 'team' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setActiveTab('team')}
+          >
+            <Users className="h-4 w-4 mr-2" />
+            Team Performance
+          </Button>
+          <Button
+            variant={activeTab === 'sprints' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setActiveTab('sprints')}
+          >
+            <Target className="h-4 w-4 mr-2" />
+            Sprint Analytics
+          </Button>
+          <Button
+            variant={activeTab === 'milestones' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setActiveTab('milestones')}
+          >
+            <CheckCircle className="h-4 w-4 mr-2" />
+            Milestones
+          </Button>
+          <Button
+            variant={activeTab === 'insights' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setActiveTab('insights')}
+          >
+            <TrendingUp className="h-4 w-4 mr-2" />
+            Insights
+          </Button>
+        </div>
 
-          <TabsContent value="overview" className="space-y-6">
+        {/* Tab Content */}
+        {activeTab === 'overview' && (
+          <div className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Project Health */}
               <Card>
@@ -230,9 +279,11 @@ const ProjectStatusReport = () => {
                 />
               </CardContent>
             </Card>
-          </TabsContent>
+          </div>
+        )}
 
-          <TabsContent value="progress" className="space-y-6">
+        {activeTab === 'progress' && (
+          <div className="space-y-6">
             {/* Velocity Chart */}
             <Card>
               <CardHeader>
@@ -318,9 +369,11 @@ const ProjectStatusReport = () => {
                 </CardContent>
               </Card>
             </div>
-          </TabsContent>
+          </div>
+        )}
 
-          <TabsContent value="team" className="space-y-6">
+        {activeTab === 'team' && (
+          <div className="space-y-6">
             {/* Team Performance Chart */}
             <Card>
               <CardHeader>
@@ -376,9 +429,11 @@ const ProjectStatusReport = () => {
                 </Card>
               ))}
             </div>
-          </TabsContent>
+          </div>
+        )}
 
-          <TabsContent value="sprints" className="space-y-6">
+        {activeTab === 'sprints' && (
+          <div className="space-y-6">
             {/* Sprint Performance Overview */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <StatsCard
@@ -496,112 +551,112 @@ const ProjectStatusReport = () => {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
+          </div>
+        )}
 
-          <TabsContent value="milestones" className="space-y-6">
+        {activeTab === 'milestones' && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-5 w-5" />
+                Project Milestones
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {milestoneData.map((milestone, index) => (
+                  <div key={index} className="border rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium">{milestone.milestone}</h4>
+                      {getStatusBadge(milestone.status)}
+                    </div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-muted-foreground">
+                        Due: {milestone.dueDate}
+                      </span>
+                      <span className="text-sm font-medium">{milestone.progress}%</span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-2">
+                      <div 
+                        className="bg-primary h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${milestone.progress}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {activeTab === 'insights' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Target className="h-5 w-5" />
-                  Project Milestones
+                  <TrendingUp className="h-5 w-5" />
+                  Key Insights
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {milestoneData.map((milestone, index) => (
-                    <div key={index} className="border rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium">{milestone.milestone}</h4>
-                        {getStatusBadge(milestone.status)}
-                      </div>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-muted-foreground">
-                          Due: {milestone.dueDate}
-                        </span>
-                        <span className="text-sm font-medium">{milestone.progress}%</span>
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div 
-                          className="bg-primary h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${milestone.progress}%` }}
-                        />
-                      </div>
+              <CardContent className="space-y-4">
+                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
+                    <div>
+                      <h4 className="font-medium text-green-800">On Track Performance</h4>
+                      <p className="text-sm text-green-700 mt-1">
+                        Project is progressing well with 78% completion rate ahead of schedule.
+                      </p>
                     </div>
-                  ))}
+                  </div>
+                </div>
+                
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <Users className="h-5 w-5 text-blue-600 mt-0.5" />
+                    <div>
+                      <h4 className="font-medium text-blue-800">High Team Efficiency</h4>
+                      <p className="text-sm text-blue-700 mt-1">
+                        Team members are performing at 91% efficiency with consistent output.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
 
-          <TabsContent value="insights" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5" />
-                    Key Insights
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                      <div>
-                        <h4 className="font-medium text-green-800">On Track Performance</h4>
-                        <p className="text-sm text-green-700 mt-1">
-                          Project is progressing well with 78% completion rate ahead of schedule.
-                        </p>
-                      </div>
-                    </div>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Recommendations
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="border-l-4 border-blue-500 pl-4">
+                    <h4 className="font-medium">Resource Optimization</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Consider reallocating team members to accelerate testing phase.
+                    </p>
                   </div>
-                  
-                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <div className="flex items-start gap-3">
-                      <Users className="h-5 w-5 text-blue-600 mt-0.5" />
-                      <div>
-                        <h4 className="font-medium text-blue-800">High Team Efficiency</h4>
-                        <p className="text-sm text-blue-700 mt-1">
-                          Team members are performing at 91% efficiency with consistent output.
-                        </p>
-                      </div>
-                    </div>
+                  <div className="border-l-4 border-green-500 pl-4">
+                    <h4 className="font-medium">Early Delivery Opportunity</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Current pace suggests potential for 1-week early delivery.
+                    </p>
                   </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <FileText className="h-5 w-5" />
-                    Recommendations
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-3">
-                    <div className="border-l-4 border-blue-500 pl-4">
-                      <h4 className="font-medium">Resource Optimization</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Consider reallocating team members to accelerate testing phase.
-                      </p>
-                    </div>
-                    <div className="border-l-4 border-green-500 pl-4">
-                      <h4 className="font-medium">Early Delivery Opportunity</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Current pace suggests potential for 1-week early delivery.
-                      </p>
-                    </div>
-                    <div className="border-l-4 border-purple-500 pl-4">
-                      <h4 className="font-medium">Sprint Performance</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Sprint velocity is consistently above planned capacity. Consider increasing scope.
-                      </p>
-                    </div>
+                  <div className="border-l-4 border-purple-500 pl-4">
+                    <h4 className="font-medium">Sprint Performance</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Sprint velocity is consistently above planned capacity. Consider increasing scope.
+                    </p>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-        </Tabs>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );
