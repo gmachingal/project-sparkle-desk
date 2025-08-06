@@ -18,15 +18,12 @@ const Header = () => {
     <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
+          <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
             <img 
               src="/lovable-uploads/bcd5b261-bb13-4402-b871-1b7987205719.png" 
               alt="Repose" 
-              className="w-8 h-8 rounded-lg object-contain"
+              className="w-12 h-12 object-contain"
             />
-            <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Repose
-            </h1>
           </div>
           
           <nav className="hidden md:flex items-center gap-1">
