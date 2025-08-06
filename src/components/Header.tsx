@@ -3,12 +3,17 @@ import { Input } from "@/components/ui/input";
 import { Search, Bell, Plus, Settings, User, Clock, Users, Briefcase, FileText, Calendar, Home, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import reposeLogo from "@/assets/repose-logo-bigger-font.png";
 
 const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   
+  const isActivePage = (path: string) => {
+    return location.pathname === path || (path === "/dashboard" && location.pathname === "/");
+  };
+
   const handleLogout = () => {
     // TODO: Implement actual logout logic
     navigate("/");
@@ -27,27 +32,57 @@ const Header = () => {
           </div>
           
           <nav className="hidden md:flex items-center gap-1">
-            <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")} className="gap-2 bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate("/dashboard")} 
+              className={`gap-2 ${isActivePage("/dashboard") ? "bg-primary text-primary-foreground" : "hover:bg-muted"}`}
+            >
               <Home className="w-4 h-4" />
               Home
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/my-tasks")} className="gap-2 bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate("/my-tasks")} 
+              className={`gap-2 ${isActivePage("/my-tasks") ? "bg-primary text-primary-foreground" : "hover:bg-muted"}`}
+            >
               <FileText className="w-4 h-4" />
               My Tasks
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/projects")} className="gap-2 bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate("/projects")} 
+              className={`gap-2 ${isActivePage("/projects") ? "bg-primary text-primary-foreground" : "hover:bg-muted"}`}
+            >
               <Briefcase className="w-4 h-4" />
               Projects
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/teams")} className="gap-2 bg-red-100 text-red-700 border-red-300 hover:bg-red-200">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate("/teams")} 
+              className={`gap-2 ${isActivePage("/teams") ? "bg-primary text-primary-foreground" : "hover:bg-muted"}`}
+            >
               <Users className="w-4 h-4" />
               Teams
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/attendance")} className="gap-2 bg-red-100 text-red-700 border-red-300 hover:bg-red-200">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate("/attendance")} 
+              className={`gap-2 ${isActivePage("/attendance") ? "bg-primary text-primary-foreground" : "hover:bg-muted"}`}
+            >
               <Clock className="w-4 h-4" />
               Attendance
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/leave-management")} className="gap-2 bg-red-100 text-red-700 border-red-300 hover:bg-red-200">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate("/leave-management")} 
+              className={`gap-2 ${isActivePage("/leave-management") ? "bg-primary text-primary-foreground" : "hover:bg-muted"}`}
+            >
               <Calendar className="w-4 h-4" />
               Leave
             </Button>
