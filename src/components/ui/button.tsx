@@ -5,22 +5,22 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:shadow-lg hover:-translate-y-0.5",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:shadow-2xl hover:-translate-y-1",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-2xl shadow-primary/30",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:shadow-2xl shadow-destructive/30",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground shadow-sm",
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:shadow-xl hover:border-primary/50",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-sm",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:shadow-xl",
+        ghost: "hover:bg-accent hover:text-accent-foreground hover:shadow-lg",
+        link: "text-primary underline-offset-4 hover:underline hover:shadow-none",
         hero: "bg-gradient-to-r from-primary to-primary-glow text-primary-foreground hover:shadow-lg hover:scale-[1.02] transition-all duration-200 shadow-md",
-        success: "bg-success text-success-foreground hover:bg-success/90 shadow-sm",
-        back: "bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 hover:shadow-md transition-all duration-200 font-medium",
+        success: "bg-success text-success-foreground hover:bg-success/90 hover:shadow-xl shadow-success/30",
+        back: "bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 hover:shadow-xl hover:border-primary/40 transition-all duration-200 font-medium",
       },
       size: {
         default: "h-10 px-4 py-2",
