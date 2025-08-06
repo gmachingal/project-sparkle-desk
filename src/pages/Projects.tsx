@@ -42,7 +42,8 @@ const Projects = () => {
       dueDate: "Dec 15",
       color: "#8B5CF6",
       status: "active",
-      priority: "high"
+      priority: "high",
+      milestones: { total: 4, completed: 2 }
     },
     {
       id: "2",

@@ -77,10 +77,17 @@ const ProjectCard = ({ project, className }: ProjectCardProps) => {
                 <Badge variant="secondary" className="text-xs px-2 py-0">
                   {project.completedTasks}/{project.totalTasks} tasks
                 </Badge>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <TrendingUp className="w-3 h-3" />
-                  <span>Active</span>
-                </div>
+                {project.milestones ? (
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Target className="w-3 h-3" />
+                    <span>{project.milestones.completed}/{project.milestones.total}</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <TrendingUp className="w-3 h-3" />
+                    <span>Active</span>
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>
