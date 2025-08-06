@@ -211,29 +211,29 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
                   </div>
                 </div>
                 
-                <div className="space-y-2 pl-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   {projectTasks.map((task) => (
                     <div key={task.id} className="border rounded-lg p-3 space-y-2 bg-muted/20">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h6 className="font-medium text-sm">{task.title}</h6>
-                          <p className="text-xs text-muted-foreground mt-1">{task.description}</p>
-                          <div className="flex items-center gap-2 mt-2">
-                            <Badge variant={task.status === 'completed' ? 'default' : 'secondary'} className="text-xs">
-                              {task.status === 'completed' ? 'Completed' : 'In Progress'}
-                            </Badge>
-                            <Badge variant="outline" className="text-xs gap-1">
-                              <Clock className="w-3 h-3" />
-                              {task.timeSpent}
-                            </Badge>
-                          </div>
+                      <div className="space-y-2">
+                        <div>
+                          <h6 className="font-medium text-sm leading-tight">{task.title}</h6>
+                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{task.description}</p>
                         </div>
-                        <div className="text-xs text-muted-foreground text-right">
+                        <div className="flex flex-wrap items-center gap-1">
+                          <Badge variant={task.status === 'completed' ? 'default' : 'secondary'} className="text-xs px-2 py-0">
+                            {task.status === 'completed' ? 'Done' : 'Progress'}
+                          </Badge>
+                          <Badge variant="outline" className="text-xs gap-1 px-2 py-0">
+                            <Clock className="w-3 h-3" />
+                            {task.timeSpent}
+                          </Badge>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
                           {task.status === 'completed' && task.completedAt && (
-                            <p>Completed at {task.completedAt}</p>
+                            <p>✓ {task.completedAt}</p>
                           )}
                           {task.status === 'in-progress' && task.startedAt && (
-                            <p>Started at {task.startedAt}</p>
+                            <p>→ {task.startedAt}</p>
                           )}
                         </div>
                       </div>
