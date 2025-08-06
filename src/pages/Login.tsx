@@ -33,7 +33,7 @@ const Login = () => {
             <img 
               src="/lovable-uploads/bcd5b261-bb13-4402-b871-1b7987205719.png" 
               alt="Repose Logo" 
-              className="w-16 h-16 object-contain"
+              className="w-16 h-16 object-contain shadow-xl border border-white/30 rounded-lg"
             />
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">

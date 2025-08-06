@@ -22,7 +22,7 @@ const Header = () => {
             <img 
               src="/lovable-uploads/bcd5b261-bb13-4402-b871-1b7987205719.png" 
               alt="Repose" 
-              className="w-12 h-12 object-contain"
+              className="w-12 h-12 object-contain shadow-lg border border-white/20 rounded-lg"
             />
           </div>
           
