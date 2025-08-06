@@ -1,23 +1,30 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Bell, Plus, Settings, User, Clock, Users, Briefcase, FileText, Calendar, Home } from "lucide-react";
+import { Search, Bell, Plus, Settings, User, Clock, Users, Briefcase, FileText, Calendar, Home, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
-import reposeIcon from "@/assets/repose-icon.png";
+import reposeLogo from "@/assets/repose-logo.png";
 
 const Header = () => {
   const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    // TODO: Implement actual logout logic
+    navigate("/login");
+  };
+
   return (
     <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
             <img 
-              src={reposeIcon} 
+              src={reposeLogo} 
               alt="Repose" 
-              className="w-8 h-8 rounded-lg object-cover"
+              className="w-8 h-8 rounded-lg object-contain"
             />
-            <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+            <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               Repose
             </h1>
           </div>
@@ -72,12 +79,27 @@ const Header = () => {
             <Settings className="w-4 h-4" />
           </Button>
           
-          <Avatar className="w-8 h-8">
-            <AvatarImage src="" />
-            <AvatarFallback className="bg-primary text-primary-foreground">
-              <User className="w-4 h-4" />
-            </AvatarFallback>
-          </Avatar>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar className="w-8 h-8 cursor-pointer">
+                <AvatarImage src="" />
+                <AvatarFallback className="bg-primary text-primary-foreground">
+                  <User className="w-4 h-4" />
+                </AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem onClick={() => navigate("/settings")} className="gap-2">
+                <Settings className="w-4 h-4" />
+                Settings
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleLogout} className="gap-2 text-red-600">
+                <LogOut className="w-4 h-4" />
+                Sign Out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>
