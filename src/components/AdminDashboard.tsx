@@ -138,7 +138,8 @@ const AdminDashboard = () => {
       completedTasks: 18,
       teamSize: 5,
       dueDate: "Dec 15",
-      color: "#8B5CF6"
+      color: "#8B5CF6",
+      milestones: { total: 4, completed: 2 }
     },
     {
       id: "2",
@@ -149,7 +150,8 @@ const AdminDashboard = () => {
       completedTasks: 14,
       teamSize: 8,
       dueDate: "Jan 30",
-      color: "#06B6D4"
+      color: "#06B6D4",
+      milestones: { total: 5, completed: 1 }
     }
   ];
 
