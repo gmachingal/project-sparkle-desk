@@ -308,7 +308,7 @@ const MyTasks = () => {
         </div>
 
         {/* Filters and View Toggle */}
-        <Card>
+        <Card className="hover:shadow-sm hover:translate-y-0">
           <CardContent className="p-4">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative flex-1">
