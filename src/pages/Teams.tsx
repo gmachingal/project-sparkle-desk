@@ -578,7 +578,7 @@ const Teams = () => {
         </div>
 
         {/* Search */}
-        <Card>
+        <Card className="hover:shadow-sm hover:translate-y-0">
           <CardContent className="p-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />

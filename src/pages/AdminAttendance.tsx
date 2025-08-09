@@ -881,7 +881,7 @@ const AdminAttendance = () => {
 
           <TabsContent value="overview" className="space-y-4">
             {/* Filters */}
-            <Card>
+            <Card className="hover:shadow-sm hover:translate-y-0">
               <CardContent className="p-4">
                 <div className="flex flex-col sm:flex-row gap-4">
                   <div className="relative flex-1">
@@ -1030,7 +1030,7 @@ const AdminAttendance = () => {
             })()}
 
             {/* Filters for Muster Roll */}
-            <Card>
+            <Card className="hover:shadow-sm hover:translate-y-0">
               <CardContent className="p-4">
                 <div className="flex flex-col sm:flex-row gap-4">
                   <div className="relative flex-1">
