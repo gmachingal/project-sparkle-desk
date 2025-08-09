@@ -20,7 +20,7 @@ const Header = () => {
   };
 
   return (
-    <header className="border-b bg-gradient-to-r from-primary/5 via-primary/3 to-primary/5 backdrop-blur-sm sticky top-0 z-50 border-border/50">
+    <header className="border-b bg-gradient-to-r from-primary/10 via-primary/7 to-primary/10 backdrop-blur-sm sticky top-0 z-50 border-border/50">
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-6">
           <div className="flex items-center cursor-pointer" onClick={() => navigate("/dashboard")}>
