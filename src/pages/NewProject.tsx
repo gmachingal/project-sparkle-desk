@@ -85,21 +85,11 @@ const NewProject = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-      
-      <div className="container mx-auto px-4 py-8">
-        {/* Back Button - Separate Section */}
-        <div className="pb-4 mb-6 border-b border-border">
-          <Button variant="back" onClick={() => navigate('/my-tasks')}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to My Tasks
-          </Button>
-        </div>
       {/* Header */}
       <div className="border-b bg-card/50 backdrop-blur-sm">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="gap-2">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/projects")} className="gap-2">
               <ArrowLeft className="w-4 h-4" />
               Back
             </Button>
