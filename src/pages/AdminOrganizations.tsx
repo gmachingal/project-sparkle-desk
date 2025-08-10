@@ -88,6 +88,23 @@ const AdminOrganizations = () => {
 
   return (
     <div className="min-h-screen bg-background p-6">
+      {/* Header */}
+      <div className="border-b bg-card/50 backdrop-blur-sm">
+        <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")} className="gap-2">
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+            <h1 className="text-2xl font-bold">Settings</h1>
+          </div>
+          <Button variant="hero" onClick={handleSave} className="gap-2">
+            <Save className="w-4 h-4" />
+            Save Changes
+          </Button>
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
