@@ -122,7 +122,7 @@ const Header = () => {
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Avatar className="w-8 h-8 cursor-pointer">
+              <Avatar className="w-8 h-8 cursor-pointer transition-all duration-200 hover:shadow-lg hover:shadow-primary/25 hover:scale-105">
                 <AvatarImage src="" />
                 <AvatarFallback className="bg-primary text-primary-foreground">
                   <User className="w-4 h-4" />
