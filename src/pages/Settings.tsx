@@ -69,7 +69,7 @@ const Settings = () => {
       <div className="border-b bg-card/50 backdrop-blur-sm">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={() => navigate("/home")} className="gap-2">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="gap-2">
               <ArrowLeft className="w-4 h-4" />
               Back
             </Button>
