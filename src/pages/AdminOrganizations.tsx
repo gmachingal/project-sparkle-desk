@@ -98,20 +98,16 @@ const AdminOrganizations = () => {
               <ArrowLeft className="w-4 h-4" />
               Back
             </Button>
-            <h1 className="text-2xl font-bold">Settings</h1>
+            <Building2 className="h-8 w-8 text-primary" />
+            <div>
+              <h1 className="text-3xl font-bold">Organization Management</h1>
+              <p className="text-muted-foreground">Manage organizations, licenses, and features</p>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Building2 className="h-8 w-8 text-primary" />
-            <div>
-              <h1 className="text-3xl font-bold">Organization Management</h1>
-              <p className="text-muted-foreground">Manage organizations, licenses, and features</p>
-            </div>
-          </div>
           <Dialog>
             <DialogTrigger asChild>
               <Button className="flex items-center gap-2">
