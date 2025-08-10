@@ -27,6 +27,8 @@ import MySprintsList from "./pages/MySprintsList";
 import HolidayMaster from "./pages/HolidayMaster";
 import ProjectStatusReport from "./pages/ProjectStatusReport";
 import Login from "./pages/Login";
+import Organization from "./pages/Organization";
+import AdminOrganizations from "./pages/AdminOrganizations";
 
 const queryClient = new QueryClient();
 
@@ -60,6 +62,8 @@ const App = () => (
           <Route path="/sprints" element={<MySprintsList />} />
           <Route path="/holiday-master" element={<HolidayMaster />} />
           <Route path="/project-status-report/:id" element={<ProjectStatusReport />} />
+          <Route path="/organization" element={<Organization />} />
+          <Route path="/admin/organizations" element={<AdminOrganizations />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

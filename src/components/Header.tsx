@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Bell, Plus, Settings, User, Clock, Users, Briefcase, FileText, Calendar, Home, LogOut } from "lucide-react";
+import { Search, Bell, Plus, Settings, User, Clock, Users, Briefcase, FileText, Calendar, Home, LogOut, Building2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -86,6 +86,15 @@ const Header = () => {
               <Calendar className="w-4 h-4" />
               Leave
             </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate("/organization")} 
+              className={`gap-2 ${isActivePage("/organization") ? "bg-primary text-primary-foreground" : "hover:bg-primary/20 hover:text-primary"}`}
+            >
+              <Building2 className="w-4 h-4" />
+              Organization
+            </Button>
           </nav>
         </div>
 
@@ -124,6 +133,10 @@ const Header = () => {
               <DropdownMenuItem onClick={() => navigate("/settings")} className="gap-2">
                 <Settings className="w-4 h-4" />
                 Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/admin/organizations")} className="gap-2">
+                <Building2 className="w-4 h-4" />
+                Admin Organizations
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout} className="gap-2 text-red-600">
