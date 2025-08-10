@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Building2, Users, CreditCard, Settings, Plus, Edit, Trash2 } from "lucide-react";
+import { Building2, Users, CreditCard, Settings, Plus, Edit, Trash2,ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const AdminOrganizations = () => {
@@ -100,10 +100,6 @@ const AdminOrganizations = () => {
             </Button>
             <h1 className="text-2xl font-bold">Settings</h1>
           </div>
-          <Button variant="hero" onClick={handleSave} className="gap-2">
-            <Save className="w-4 h-4" />
-            Save Changes
-          </Button>
         </div>
       </div>
 
