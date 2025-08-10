@@ -1,3 +1,4 @@
+import Header from "@/components/Header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -26,7 +27,9 @@ const Organization = () => {
   const licenseUsagePercentage = (organization.usedLicenses / organization.totalLicenses) * 100;
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-background">
+      <Header />
+      <div className="p-6">
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center gap-3">
           <Building2 className="h-8 w-8 text-primary" />
@@ -139,6 +142,7 @@ const Organization = () => {
           </CardContent>
         </Card>
       </div>
+    </div>
     </div>
   );
 };
