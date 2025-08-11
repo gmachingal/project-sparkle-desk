@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -126,7 +127,7 @@ const AdminOrganizations = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b bg-card/50 backdrop-blur-sm">
         <div className="flex items-center justify-between px-6 py-4">
@@ -135,15 +136,8 @@ const AdminOrganizations = () => {
               <ArrowLeft className="w-4 h-4" />
               Back
             </Button>
-            <h1 className="text-2xl font-bold">Organization Management</h1>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
             <div>
+              <h1 className="text-2xl font-bold">Organization Management</h1>
               <p className="text-muted-foreground">Manage organizations, licenses, and features</p>
             </div>
           </div>
@@ -166,51 +160,53 @@ const AdminOrganizations = () => {
                 </SelectContent>
               </Select>
             </div>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button className="flex items-center gap-2">
+                  <Plus className="h-4 w-4" />
+                  New Organization
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Create New Organization</DialogTitle>
+                  <DialogDescription>Add a new organization to the system</DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="orgName">Organization Name</Label>
+                    <Input id="orgName" placeholder="Enter organization name" />
+                  </div>
+                  <div>
+                    <Label htmlFor="plan">Plan</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a plan" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="basic">Basic - $25/user/month</SelectItem>
+                        <SelectItem value="professional">Professional - $50/user/month</SelectItem>
+                        <SelectItem value="enterprise">Enterprise - $75/user/month</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="licenses">Number of Licenses</Label>
+                    <Input id="licenses" type="number" placeholder="Enter license count" />
+                  </div>
+                  <div>
+                    <Label htmlFor="domain">Domain Name</Label>
+                    <Input id="domain" placeholder="Enter domain (e.g., company.com)" />
+                  </div>
+                  <Button className="w-full">Create Organization</Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button className="flex items-center gap-2">
-                <Plus className="h-4 w-4" />
-                New Organization
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Create New Organization</DialogTitle>
-                <DialogDescription>Add a new organization to the system</DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="orgName">Organization Name</Label>
-                  <Input id="orgName" placeholder="Enter organization name" />
-                </div>
-                <div>
-                  <Label htmlFor="plan">Plan</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a plan" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="basic">Basic - $50/user/month</SelectItem>
-                      <SelectItem value="professional">Professional - $50/user/month</SelectItem>
-                      <SelectItem value="enterprise">Enterprise - $50/user/month</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="licenses">Number of Licenses</Label>
-                  <Input id="licenses" type="number" placeholder="Enter license count" />
-                </div>
-                <div>
-                  <Label htmlFor="domain">Domain Name</Label>
-                  <Input id="domain" placeholder="Enter domain (e.g., company.com)" />
-                </div>
-                <Button className="w-full">Create Organization</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
         </div>
+      </div>
 
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -221,7 +217,7 @@ const AdminOrganizations = () => {
           </TabsList>
 
           <TabsContent value="overview">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center space-x-2">
@@ -229,6 +225,7 @@ const AdminOrganizations = () => {
                     <span className="text-sm font-medium">Total Organizations</span>
                   </div>
                   <p className="text-2xl font-bold">{organizations.length}</p>
+                  <p className="text-xs text-muted-foreground">+12% from last month</p>
                 </CardContent>
               </Card>
               <Card>
@@ -238,6 +235,7 @@ const AdminOrganizations = () => {
                     <span className="text-sm font-medium">Total Licenses</span>
                   </div>
                   <p className="text-2xl font-bold">{organizations.reduce((sum, org) => sum + org.licenses, 0)}</p>
+                  <p className="text-xs text-muted-foreground">+8% from last month</p>
                 </CardContent>
               </Card>
               <Card>
@@ -247,6 +245,7 @@ const AdminOrganizations = () => {
                     <span className="text-sm font-medium">Active Users</span>
                   </div>
                   <p className="text-2xl font-bold">{organizations.reduce((sum, org) => sum + org.usedLicenses, 0)}</p>
+                  <p className="text-xs text-muted-foreground">+15% from last month</p>
                 </CardContent>
               </Card>
               <Card>
@@ -256,6 +255,153 @@ const AdminOrganizations = () => {
                     <span className="text-sm font-medium">Monthly Revenue</span>
                   </div>
                   <p className="text-2xl font-bold">${organizations.reduce((sum, org) => sum + org.monthlyFee, 0).toLocaleString()}</p>
+                  <p className="text-xs text-muted-foreground">+22% from last month</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Organization Growth Chart */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Organization Growth</CardTitle>
+                  <CardDescription>Monthly organization registrations</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">January</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-20 h-2 bg-muted rounded-full">
+                          <div className="w-12 h-2 bg-primary rounded-full"></div>
+                        </div>
+                        <span className="text-sm font-medium">3</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">February</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-20 h-2 bg-muted rounded-full">
+                          <div className="w-16 h-2 bg-primary rounded-full"></div>
+                        </div>
+                        <span className="text-sm font-medium">4</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">March</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-20 h-2 bg-muted rounded-full">
+                          <div className="w-10 h-2 bg-primary rounded-full"></div>
+                        </div>
+                        <span className="text-sm font-medium">2</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">April</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-20 h-2 bg-muted rounded-full">
+                          <div className="w-20 h-2 bg-primary rounded-full"></div>
+                        </div>
+                        <span className="text-sm font-medium">5</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* License Utilization */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>License Utilization</CardTitle>
+                  <CardDescription>Usage across all organizations</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {organizations.map((org) => {
+                      const utilizationPercent = (org.usedLicenses / org.licenses) * 100;
+                      return (
+                        <div key={org.id} className="space-y-2">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="font-medium">{org.name}</span>
+                            <span className="text-muted-foreground">
+                              {org.usedLicenses}/{org.licenses} ({utilizationPercent.toFixed(0)}%)
+                            </span>
+                          </div>
+                          <Progress value={utilizationPercent} className="h-2" />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Revenue Breakdown */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Revenue by Plan</CardTitle>
+                  <CardDescription>Monthly revenue distribution</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {["Enterprise", "Professional", "Basic"].map((plan, index) => {
+                      const orgsInPlan = organizations.filter(org => org.plan === plan);
+                      const revenue = orgsInPlan.reduce((sum, org) => sum + org.monthlyFee, 0);
+                      const totalRevenue = organizations.reduce((sum, org) => sum + org.monthlyFee, 0);
+                      const percentage = totalRevenue > 0 ? (revenue / totalRevenue) * 100 : 0;
+                      
+                      return (
+                        <div key={plan} className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className={`w-3 h-3 rounded-full ${
+                              index === 0 ? 'bg-yellow-500' : 
+                              index === 1 ? 'bg-blue-500' : 'bg-green-500'
+                            }`} />
+                            <span className="text-sm font-medium">{plan}</span>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm font-medium">${revenue.toLocaleString()}</p>
+                            <p className="text-xs text-muted-foreground">{percentage.toFixed(1)}%</p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Recent Activities */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recent Activities</CardTitle>
+                  <CardDescription>Latest system activities</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3 p-2 border rounded-lg">
+                      <div className="w-2 h-2 bg-green-500 rounded-full" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">New organization created</p>
+                        <p className="text-xs text-muted-foreground">TechCorp Solutions joined</p>
+                      </div>
+                      <span className="text-xs text-muted-foreground">2h ago</span>
+                    </div>
+                    <div className="flex items-center gap-3 p-2 border rounded-lg">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">License upgrade</p>
+                        <p className="text-xs text-muted-foreground">StartupXYZ upgraded to Professional</p>
+                      </div>
+                      <span className="text-xs text-muted-foreground">4h ago</span>
+                    </div>
+                    <div className="flex items-center gap-3 p-2 border rounded-lg">
+                      <div className="w-2 h-2 bg-orange-500 rounded-full" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">Feature enabled</p>
+                        <p className="text-xs text-muted-foreground">API Access activated for Enterprise Corp</p>
+                      </div>
+                      <span className="text-xs text-muted-foreground">6h ago</span>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
