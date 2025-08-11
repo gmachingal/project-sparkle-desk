@@ -9,11 +9,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Building2, Users, CreditCard, Settings, Plus, Edit, Trash2,ArrowLeft } from "lucide-react";
+import { Building2, Users, CreditCard, Settings, Plus, Edit, Trash2, ArrowLeft, Globe, Crown, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
 
 const AdminOrganizations = () => {
   const navigate = useNavigate();
+  const [selectedOrganization, setSelectedOrganization] = useState("ORG-001");
   const [organizations, setOrganizations] = useState([
     {
       id: "ORG-001",
@@ -23,6 +25,7 @@ const AdminOrganizations = () => {
       usedLicenses: 37,
       monthlyFee: 2500,
       status: "Active",
+      domain: "techcorp.com",
       features: {
         projectManagement: true,
         timeTracking: true,
@@ -40,6 +43,7 @@ const AdminOrganizations = () => {
       usedLicenses: 18,
       monthlyFee: 1250,
       status: "Active",
+      domain: "startupxyz.com",
       features: {
         projectManagement: true,
         timeTracking: true,
@@ -57,6 +61,7 @@ const AdminOrganizations = () => {
       usedLicenses: 8,
       monthlyFee: 500,
       status: "Suspended",
+      domain: "enterprise-corp.com",
       features: {
         projectManagement: true,
         timeTracking: false,
@@ -88,6 +93,38 @@ const AdminOrganizations = () => {
     );
   };
 
+  const updateOrganizationPlan = (orgId: string, newPlan: string) => {
+    const planPricing = {
+      "Basic": 25,
+      "Professional": 50,
+      "Enterprise": 75
+    };
+    
+    setOrganizations(orgs =>
+      orgs.map(org =>
+        org.id === orgId 
+          ? { 
+              ...org, 
+              plan: newPlan, 
+              monthlyFee: org.licenses * (planPricing[newPlan as keyof typeof planPricing] || 50)
+            }
+          : org
+      )
+    );
+    toast({
+      title: "Plan Updated",
+      description: `Organization plan changed to ${newPlan}`,
+    });
+  };
+
+  const switchToOrganization = (orgId: string) => {
+    setSelectedOrganization(orgId);
+    toast({
+      title: "Organization Switched",
+      description: `Now managing ${organizations.find(org => org.id === orgId)?.name}`,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background p-6">
       {/* Header */}
@@ -108,6 +145,26 @@ const AdminOrganizations = () => {
           <div className="flex items-center gap-3">
             <div>
               <p className="text-muted-foreground">Manage organizations, licenses, and features</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Label htmlFor="org-switcher" className="text-sm font-medium">Current Organization:</Label>
+              <Select value={selectedOrganization} onValueChange={switchToOrganization}>
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {organizations.map((org) => (
+                    <SelectItem key={org.id} value={org.id}>
+                      <div className="flex items-center gap-2">
+                        <Building2 className="h-4 w-4" />
+                        {org.name}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <Dialog>
@@ -144,6 +201,10 @@ const AdminOrganizations = () => {
                   <Label htmlFor="licenses">Number of Licenses</Label>
                   <Input id="licenses" type="number" placeholder="Enter license count" />
                 </div>
+                <div>
+                  <Label htmlFor="domain">Domain Name</Label>
+                  <Input id="domain" placeholder="Enter domain (e.g., company.com)" />
+                </div>
                 <Button className="w-full">Create Organization</Button>
               </div>
             </DialogContent>
@@ -155,7 +216,8 @@ const AdminOrganizations = () => {
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="organizations">Organizations</TabsTrigger>
             <TabsTrigger value="features">Feature Management</TabsTrigger>
-            <TabsTrigger value="billing">Billing</TabsTrigger>
+            <TabsTrigger value="billing">Plans & Billing</TabsTrigger>
+            <TabsTrigger value="users">User Management</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
@@ -211,6 +273,7 @@ const AdminOrganizations = () => {
                     <TableRow>
                       <TableHead>Organization</TableHead>
                       <TableHead>Plan</TableHead>
+                      <TableHead>Domain</TableHead>
                       <TableHead>Licenses</TableHead>
                       <TableHead>Usage</TableHead>
                       <TableHead>Status</TableHead>
@@ -229,6 +292,12 @@ const AdminOrganizations = () => {
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline">{org.plan}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <Globe className="h-3 w-3" />
+                            {org.domain || "Not set"}
+                          </div>
                         </TableCell>
                         <TableCell>{org.licenses}</TableCell>
                         <TableCell>{org.usedLicenses}/{org.licenses}</TableCell>
@@ -332,8 +401,8 @@ const AdminOrganizations = () => {
           <TabsContent value="billing">
             <Card>
               <CardHeader>
-                <CardTitle>License Management</CardTitle>
-                <CardDescription>Manage licenses and billing for organizations</CardDescription>
+                <CardTitle>Plans & Billing Management</CardTitle>
+                <CardDescription>Manage subscription plans, licenses, and billing for organizations</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
@@ -341,12 +410,34 @@ const AdminOrganizations = () => {
                     <Card key={org.id}>
                       <CardHeader>
                         <CardTitle className="text-lg flex items-center justify-between">
-                          {org.name}
+                          <div className="flex items-center gap-3">
+                            {org.name}
+                            <Badge variant="outline" className="flex items-center gap-1">
+                              <Crown className="h-3 w-3" />
+                              {org.plan}
+                            </Badge>
+                          </div>
                           <Badge variant="outline">${org.monthlyFee}/month</Badge>
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                          <div>
+                            <Label htmlFor={`${org.id}-plan`}>Subscription Plan</Label>
+                            <Select 
+                              value={org.plan} 
+                              onValueChange={(value) => updateOrganizationPlan(org.id, value)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Basic">Basic - $25/user/month</SelectItem>
+                                <SelectItem value="Professional">Professional - $50/user/month</SelectItem>
+                                <SelectItem value="Enterprise">Enterprise - $75/user/month</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
                           <div>
                             <Label htmlFor={`${org.id}-licenses`}>License Count</Label>
                             <Input
@@ -367,6 +458,171 @@ const AdminOrganizations = () => {
                       </CardContent>
                     </Card>
                   ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="users">
+            <Card>
+              <CardHeader>
+                <CardTitle>User Management</CardTitle>
+                <CardDescription>Create and edit users with organization assignments</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-semibold">Organization Users</h3>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button className="flex items-center gap-2">
+                          <Plus className="h-4 w-4" />
+                          Add User
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Create New User</DialogTitle>
+                          <DialogDescription>Add a new user and assign them to an organization</DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="userName">Full Name</Label>
+                              <Input id="userName" placeholder="Enter full name" />
+                            </div>
+                            <div>
+                              <Label htmlFor="userEmail">Email</Label>
+                              <Input id="userEmail" type="email" placeholder="Enter email" />
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="userOrg">Organization</Label>
+                              <Select>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select organization" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {organizations.map((org) => (
+                                    <SelectItem key={org.id} value={org.id}>
+                                      {org.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div>
+                              <Label htmlFor="userRole">Role</Label>
+                              <Select>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select role" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="admin">Admin</SelectItem>
+                                  <SelectItem value="manager">Manager</SelectItem>
+                                  <SelectItem value="user">User</SelectItem>
+                                  <SelectItem value="viewer">Viewer</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                          <Button className="w-full">Create User</Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>User</TableHead>
+                        <TableHead>Organization</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Last Active</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>
+                          <div>
+                            <p className="font-medium">John Doe</p>
+                            <p className="text-sm text-muted-foreground">john@techcorp.com</p>
+                          </div>
+                        </TableCell>
+                        <TableCell>TechCorp Solutions</TableCell>
+                        <TableCell><Badge variant="outline">Admin</Badge></TableCell>
+                        <TableCell><Badge variant="default">Active</Badge></TableCell>
+                        <TableCell>2 hours ago</TableCell>
+                        <TableCell>
+                          <div className="flex gap-2">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" size="sm">
+                                  <Edit className="h-3 w-3" />
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>Edit User</DialogTitle>
+                                  <DialogDescription>Update user information and organization assignment</DialogDescription>
+                                </DialogHeader>
+                                <div className="space-y-4">
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                      <Label htmlFor="editUserName">Full Name</Label>
+                                      <Input id="editUserName" defaultValue="John Doe" />
+                                    </div>
+                                    <div>
+                                      <Label htmlFor="editUserEmail">Email</Label>
+                                      <Input id="editUserEmail" type="email" defaultValue="john@techcorp.com" />
+                                    </div>
+                                  </div>
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                      <Label htmlFor="editUserOrg">Organization</Label>
+                                      <Select defaultValue="ORG-001">
+                                        <SelectTrigger>
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          {organizations.map((org) => (
+                                            <SelectItem key={org.id} value={org.id}>
+                                              {org.name}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                    </div>
+                                    <div>
+                                      <Label htmlFor="editUserRole">Role</Label>
+                                      <Select defaultValue="admin">
+                                        <SelectTrigger>
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          <SelectItem value="admin">Admin</SelectItem>
+                                          <SelectItem value="manager">Manager</SelectItem>
+                                          <SelectItem value="user">User</SelectItem>
+                                          <SelectItem value="viewer">Viewer</SelectItem>
+                                        </SelectContent>
+                                      </Select>
+                                    </div>
+                                  </div>
+                                  <Button className="w-full">Update User</Button>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+                            <Button variant="outline" size="sm">
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
                 </div>
               </CardContent>
             </Card>
