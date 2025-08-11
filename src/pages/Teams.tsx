@@ -23,7 +23,7 @@ import {
   Briefcase,
   Settings,
   UserPlus,
-  Building,
+  Building2,
   MoreHorizontal,
   Shield,
   ShieldCheck,
@@ -51,9 +51,17 @@ const Teams = () => {
     email: "",
     role: "",
     department: "",
+    organization: "",
     permissions: [] as string[],
     skills: ""
   });
+
+  // Mock organizations data
+  const organizations = [
+    { id: "ORG-001", name: "TechCorp Solutions" },
+    { id: "ORG-002", name: "StartupXYZ" },
+    { id: "ORG-003", name: "Enterprise Corp" }
+  ];
 
   // Department form state
   const [departmentFormData, setDepartmentFormData] = useState({
@@ -232,7 +240,7 @@ const Teams = () => {
   ];
 
   const handleAddMember = () => {
-    if (!formData.name || !formData.email || !formData.role || !formData.department) {
+    if (!formData.name || !formData.email || !formData.role || !formData.department || !formData.organization) {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
@@ -262,6 +270,7 @@ const Teams = () => {
       email: "",
       role: "",
       department: "",
+      organization: "",
       permissions: [],
       skills: ""
     });
@@ -279,8 +288,9 @@ const Teams = () => {
       email: member.email,
       role: member.systemRole,
       department: member.department,
-      permissions: member.permissions,
-      skills: member.skills.join(', ')
+      organization: member.organization || "ORG-001", // Default to first org if not set
+      permissions: member.permissions || [],
+      skills: member.skills.join(", ")
     });
     setIsEditMemberOpen(true);
   };
@@ -508,6 +518,25 @@ const Teams = () => {
                         </SelectContent>
                       </Select>
                     </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="organization">Organization *</Label>
+                    <Select value={formData.organization} onValueChange={(value) => setFormData({...formData, organization: value})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select organization" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {organizations.map((org) => (
+                          <SelectItem key={org.id} value={org.id}>
+                            <div className="flex items-center gap-2">
+                              <Building2 className="w-4 h-4" />
+                              {org.name}
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <div>
@@ -971,6 +1000,25 @@ const Teams = () => {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+
+              <div>
+                <Label htmlFor="edit-organization">Organization *</Label>
+                <Select value={formData.organization} onValueChange={(value) => setFormData({...formData, organization: value})}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select organization" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {organizations.map((org) => (
+                      <SelectItem key={org.id} value={org.id}>
+                        <div className="flex items-center gap-2">
+                          <Building2 className="w-4 h-4" />
+                          {org.name}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>
