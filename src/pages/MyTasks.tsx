@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { EnhancedCalendar } from "@/components/ui/enhanced-calendar";
+import { Calendar } from "@/components/ui/calendar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import TaskCard from "@/components/TaskCard";
 import Header from "@/components/Header";
@@ -32,6 +33,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek } from 'date-fns';
+import { cn } from "@/lib/utils";
 
 const MyTasks = () => {
   const navigate = useNavigate();
@@ -40,6 +42,7 @@ const MyTasks = () => {
   const [sortBy, setSortBy] = useState("dueDate");
   const [filterPriority, setFilterPriority] = useState("all");
   const [filterTag, setFilterTag] = useState("all");
+  const [filterDate, setFilterDate] = useState<Date | null>(null);
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
   const [calendarView, setCalendarView] = useState<'month' | 'week' | 'day'>('month');
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -193,6 +196,13 @@ const MyTasks = () => {
       filtered = filtered.filter(task => task.tags && task.tags.includes(filterTag));
     }
 
+    // Filter by date
+    if (filterDate) {
+      filtered = filtered.filter(task => {
+        return task.dueDate && isSameDay(task.dueDate, filterDate);
+      });
+    }
+
     return filtered;
   };
 
@@ -342,6 +352,39 @@ const MyTasks = () => {
                   ))}
                 </SelectContent>
               </Select>
+              
+              {/* Date Filter */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className={cn(
+                    "w-full sm:w-[180px] justify-start text-left font-normal",
+                    !filterDate && "text-muted-foreground"
+                  )}>
+                    <CalendarIcon className="w-4 h-4 mr-2" />
+                    {filterDate ? format(filterDate, 'MMM dd, yyyy') : "Filter by date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={filterDate}
+                    onSelect={setFilterDate}
+                    initialFocus
+                    className="p-3 pointer-events-auto"
+                  />
+                  <div className="p-3 border-t">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={() => setFilterDate(null)}
+                    >
+                      Clear Date Filter
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+              
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Sort by" />
