@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -21,7 +22,9 @@ import {
   Flag,
   ArrowRight,
   Star,
-  TrendingUp
+  TrendingUp,
+  Edit,
+  Save
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -123,8 +126,8 @@ export const MilestoneManager: React.FC<MilestoneManagerProps> = ({
   presetMilestones: customPresets
 }) => {
   const [selectedPresets, setSelectedPresets] = useState<string[]>([]);
-  const [showCustomForm, setShowCustomForm] = useState(false);
   const [editingMilestone, setEditingMilestone] = useState<string | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const availablePresets = customPresets || presetMilestones;
 
@@ -138,6 +141,16 @@ export const MilestoneManager: React.FC<MilestoneManagerProps> = ({
     }
   };
 
+  const openEditModal = (milestoneId: string) => {
+    setEditingMilestone(milestoneId);
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setEditingMilestone(null);
+    setIsEditModalOpen(false);
+  };
+
   const addCustomMilestone = () => {
     const newMilestone: Milestone = {
       id: `custom-${Date.now()}`,
@@ -149,8 +162,7 @@ export const MilestoneManager: React.FC<MilestoneManagerProps> = ({
       estimatedDuration: '1 week'
     };
     onMilestonesChange([...milestones, newMilestone]);
-    setEditingMilestone(newMilestone.id);
-    setShowCustomForm(true);
+    openEditModal(newMilestone.id);
   };
 
   const updateMilestone = (id: string, updates: Partial<Milestone>) => {
@@ -159,7 +171,7 @@ export const MilestoneManager: React.FC<MilestoneManagerProps> = ({
 
   const deleteMilestone = (id: string) => {
     onMilestonesChange(milestones.filter(m => m.id !== id));
-    setEditingMilestone(null);
+    closeEditModal();
   };
 
   const calculateOverallProgress = () => {
@@ -239,8 +251,10 @@ export const MilestoneManager: React.FC<MilestoneManagerProps> = ({
                               <Button
                                 size="sm"
                                 variant="ghost"
-                                onClick={() => setEditingMilestone(milestone.id)}
+                                onClick={() => openEditModal(milestone.id)}
+                                className="gap-1"
                               >
+                                <Edit className="w-3 h-3" />
                                 Edit
                               </Button>
                               <Button
@@ -335,34 +349,31 @@ export const MilestoneManager: React.FC<MilestoneManagerProps> = ({
             </Button>
           </div>
 
-          {/* Milestone editing form */}
+          {/* Edit Milestone Modal */}
           {editingMilestone && (
-            <Card className="border-2 border-primary/20 bg-primary/5">
-              <CardContent className="p-4 space-y-4">
+            <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2">
+                    <Target className="w-5 h-5" />
+                    Edit Milestone
+                  </DialogTitle>
+                </DialogHeader>
+                
                 {(() => {
                   const milestone = milestones.find(m => m.id === editingMilestone);
                   if (!milestone) return null;
                   
                   return (
-                    <>
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-medium">Edit Milestone</h4>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => setEditingMilestone(null)}
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      </div>
-                      
+                    <div className="space-y-6 py-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label>Milestone Name</Label>
+                        <div className="md:col-span-2">
+                          <Label>Milestone Name *</Label>
                           <Input
                             placeholder="Enter milestone name"
                             value={milestone.name}
                             onChange={(e) => updateMilestone(milestone.id, { name: e.target.value })}
+                            className="bg-background/50"
                           />
                         </div>
                         
@@ -372,14 +383,34 @@ export const MilestoneManager: React.FC<MilestoneManagerProps> = ({
                             value={milestone.status}
                             onValueChange={(value: any) => updateMilestone(milestone.id, { status: value })}
                           >
-                            <SelectTrigger>
+                            <SelectTrigger className="bg-background/50">
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="planned">Planned</SelectItem>
-                              <SelectItem value="in-progress">In Progress</SelectItem>
-                              <SelectItem value="completed">Completed</SelectItem>
-                              <SelectItem value="delayed">Delayed</SelectItem>
+                            <SelectContent className="bg-background border shadow-lg z-50">
+                              <SelectItem value="planned">
+                                <div className="flex items-center gap-2">
+                                  <Circle className="w-4 h-4 text-muted-foreground" />
+                                  Planned
+                                </div>
+                              </SelectItem>
+                              <SelectItem value="in-progress">
+                                <div className="flex items-center gap-2">
+                                  <Clock className="w-4 h-4 text-blue-600" />
+                                  In Progress
+                                </div>
+                              </SelectItem>
+                              <SelectItem value="completed">
+                                <div className="flex items-center gap-2">
+                                  <CheckCircle className="w-4 h-4 text-green-600" />
+                                  Completed
+                                </div>
+                              </SelectItem>
+                              <SelectItem value="delayed">
+                                <div className="flex items-center gap-2">
+                                  <AlertCircle className="w-4 h-4 text-red-600" />
+                                  Delayed
+                                </div>
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -390,53 +421,158 @@ export const MilestoneManager: React.FC<MilestoneManagerProps> = ({
                             value={milestone.priority}
                             onValueChange={(value: any) => updateMilestone(milestone.id, { priority: value })}
                           >
-                            <SelectTrigger>
+                            <SelectTrigger className="bg-background/50">
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="low">Low</SelectItem>
-                              <SelectItem value="medium">Medium</SelectItem>
-                              <SelectItem value="high">High</SelectItem>
-                              <SelectItem value="critical">Critical</SelectItem>
+                            <SelectContent className="bg-background border shadow-lg z-50">
+                              <SelectItem value="low">
+                                <div className="flex items-center gap-2">
+                                  <Flag className="w-4 h-4 text-gray-600" />
+                                  Low
+                                </div>
+                              </SelectItem>
+                              <SelectItem value="medium">
+                                <div className="flex items-center gap-2">
+                                  <Flag className="w-4 h-4 text-blue-600" />
+                                  Medium
+                                </div>
+                              </SelectItem>
+                              <SelectItem value="high">
+                                <div className="flex items-center gap-2">
+                                  <Flag className="w-4 h-4 text-orange-600" />
+                                  High
+                                </div>
+                              </SelectItem>
+                              <SelectItem value="critical">
+                                <div className="flex items-center gap-2">
+                                  <Flag className="w-4 h-4 text-red-600" />
+                                  Critical
+                                </div>
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
                         
                         <div>
                           <Label>Progress (%)</Label>
+                          <div className="space-y-2">
+                            <Input
+                              type="number"
+                              min="0"
+                              max="100"
+                              value={milestone.progress}
+                              onChange={(e) => updateMilestone(milestone.id, { progress: parseInt(e.target.value) || 0 })}
+                              className="bg-background/50"
+                            />
+                            <Progress value={milestone.progress} className="h-2" />
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <Label>Estimated Duration</Label>
                           <Input
-                            type="number"
-                            min="0"
-                            max="100"
-                            value={milestone.progress}
-                            onChange={(e) => updateMilestone(milestone.id, { progress: parseInt(e.target.value) || 0 })}
+                            placeholder="e.g., 2-3 weeks"
+                            value={milestone.estimatedDuration}
+                            onChange={(e) => updateMilestone(milestone.id, { estimatedDuration: e.target.value })}
+                            className="bg-background/50"
                           />
+                        </div>
+                        
+                        <div>
+                          <Label>Start Date</Label>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "w-full justify-start text-left font-normal bg-background/50",
+                                  !milestone.startDate && "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {milestone.startDate ? format(milestone.startDate, "PPP") : "Select start date"}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0 bg-background border shadow-lg z-50" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={milestone.startDate}
+                                onSelect={(date) => updateMilestone(milestone.id, { startDate: date })}
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                        
+                        <div>
+                          <Label>End Date</Label>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "w-full justify-start text-left font-normal bg-background/50",
+                                  !milestone.endDate && "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {milestone.endDate ? format(milestone.endDate, "PPP") : "Select end date"}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0 bg-background border shadow-lg z-50" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={milestone.endDate}
+                                onSelect={(date) => updateMilestone(milestone.id, { endDate: date })}
+                                initialFocus
+                                disabled={(date) => {
+                                  if (milestone.startDate) {
+                                    return date < milestone.startDate;
+                                  }
+                                  return false;
+                                }}
+                              />
+                            </PopoverContent>
+                          </Popover>
                         </div>
                       </div>
                       
                       <div>
                         <Label>Description</Label>
                         <Textarea
-                          placeholder="Describe this milestone..."
+                          placeholder="Describe this milestone in detail..."
                           value={milestone.description}
                           onChange={(e) => updateMilestone(milestone.id, { description: e.target.value })}
-                          rows={3}
+                          rows={4}
+                          className="bg-background/50"
                         />
                       </div>
                       
-                      <div>
-                        <Label>Estimated Duration</Label>
-                        <Input
-                          placeholder="e.g., 2-3 weeks"
-                          value={milestone.estimatedDuration}
-                          onChange={(e) => updateMilestone(milestone.id, { estimatedDuration: e.target.value })}
-                        />
+                      <div className="flex items-center justify-between pt-4 border-t">
+                        <Button
+                          variant="outline"
+                          onClick={() => deleteMilestone(milestone.id)}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <X className="w-4 h-4 mr-2" />
+                          Delete Milestone
+                        </Button>
+                        
+                        <div className="flex gap-2">
+                          <Button variant="outline" onClick={closeEditModal}>
+                            Cancel
+                          </Button>
+                          <Button onClick={closeEditModal} className="gap-2">
+                            <Save className="w-4 h-4" />
+                            Save Changes
+                          </Button>
+                        </div>
                       </div>
-                    </>
+                    </div>
                   );
                 })()}
-              </CardContent>
-            </Card>
+              </DialogContent>
+            </Dialog>
           )}
         </div>
       </CardContent>

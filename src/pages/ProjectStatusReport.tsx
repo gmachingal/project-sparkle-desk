@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import StatsCard from '@/components/StatsCard';
 import { SimpleBarChart, SimpleAreaChart, SimplePieChart, generateMockData } from '@/components/SimpleCharts';
+import MilestoneTimeline from '@/components/MilestoneTimeline';
 
 const ProjectStatusReport = () => {
   const { id } = useParams();
@@ -344,6 +345,11 @@ const ProjectStatusReport = () => {
             </div>
           </TabsContent>
 
+          <TabsContent value="milestones" className="space-y-6">
+            {/* Milestone Timeline */}
+            <MilestoneTimeline />
+          </TabsContent>
+
           <TabsContent value="team" className="space-y-6">
             
             <Card>
@@ -518,40 +524,6 @@ const ProjectStatusReport = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="milestones" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="h-5 w-5" />
-                  Project Milestones
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {milestoneData.map((milestone, index) => (
-                    <div key={index} className="border rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium">{milestone.milestone}</h4>
-                        {getStatusBadge(milestone.status)}
-                      </div>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-muted-foreground">
-                          Due: {milestone.dueDate}
-                        </span>
-                        <span className="text-sm font-medium">{milestone.progress}%</span>
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div 
-                          className="bg-primary h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${milestone.progress}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
           <TabsContent value="insights" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
