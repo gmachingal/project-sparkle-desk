@@ -806,7 +806,7 @@ const AdminOrganizations = () => {
                               <SelectTrigger>
                                 <SelectValue />
                               </SelectTrigger>
-                              <SelectContent>
+                              <SelectContent className="bg-background z-50">
                                 <SelectItem value="Basic">Basic - $25/user/month</SelectItem>
                                 <SelectItem value="Professional">Professional - $50/user/month</SelectItem>
                                 <SelectItem value="Enterprise">Enterprise - $75/user/month</SelectItem>
@@ -829,7 +829,6 @@ const AdminOrganizations = () => {
                             </p>
                           </div>
                           <Button 
-                            variant="outline" 
                             onClick={() => openBillingDialog(org)}
                             className="gap-2"
                           >
