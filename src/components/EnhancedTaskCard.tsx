@@ -72,6 +72,7 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
   enableQuickActions = true
 }) => {
   const navigate = useNavigate();
+  const [selectedTaskForActions, setSelectedTaskForActions] = useState<Task | null>(null);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -290,107 +291,51 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
           <TaskCardContent />
         </div>
       </HoverCardTrigger>
-      <HoverCardContent className="w-80 p-4" side="top">
-        <div className="space-y-3">
+      <HoverCardContent className="w-72 p-3" side="top">
+        <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <h4 className="font-semibold text-lg">{taskTitle}</h4>
+            <h4 className="font-semibold text-sm">{taskTitle}</h4>
             <Badge 
               variant="outline" 
               className={cn("text-xs", getPriorityColor(task.priority))}
             >
-              <Flag className="w-3 h-3 mr-1" />
               {task.priority}
             </Badge>
           </div>
           
           {task.description && (
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <p className="text-xs text-muted-foreground line-clamp-2">
               {task.description}
             </p>
           )}
           
-          <div className="space-y-2">
+          <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Status</span>
-              <Badge variant="secondary">{task.status.replace('-', ' ')}</Badge>
+              <span className="text-muted-foreground">Status</span>
+              <Badge variant="secondary" className="text-xs">{task.status.replace('-', ' ')}</Badge>
             </div>
-            {task.project && (
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Project</span>
-                <span className="text-sm">{task.project}</span>
-              </div>
-            )}
-            {task.sprint && (
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Sprint</span>
-                <span className="text-sm">{task.sprint}</span>
-              </div>
-            )}
-            {getMilestoneName() && (
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Milestone</span>
-                <div className="flex items-center gap-2">
-                  <Target className="w-3 h-3 text-muted-foreground" />
-                  <span className="text-sm">{getMilestoneName()}</span>
-                </div>
-              </div>
-            )}
             {task.assignee && (
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Assignee</span>
-                <div className="flex items-center gap-2">
-                  <Avatar className="w-5 h-5">
+                <span className="text-muted-foreground">Assignee</span>
+                <div className="flex items-center gap-1">
+                  <Avatar className="w-4 h-4">
                     <AvatarImage src={getAssigneeAvatar()} />
                     <AvatarFallback className="text-xs">
                       {getAssigneeName().charAt(0)}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-sm">{getAssigneeName()}</span>
+                  <span className="text-xs">{getAssigneeName()}</span>
                 </div>
               </div>
             )}
           </div>
           
-          {(task.startDate || task.dueDate) && (
-            <div className="space-y-2 pt-2 border-t">
-              {task.startDate && (
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm">Start: {new Date(task.startDate).toLocaleDateString()}</span>
-                </div>
-              )}
-              {task.dueDate && (
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm">Due: {new Date(task.dueDate).toLocaleDateString()}</span>
-                </div>
-              )}
-            </div>
-          )}
-          
-          {task.tags && task.tags.length > 0 && (
-            <div className="pt-2 border-t">
-              <div className="flex flex-wrap gap-1">
-                {task.tags.map((tag, index) => (
-                  <Badge 
-                    key={index} 
-                    variant="outline" 
-                    className="text-xs px-2 py-1 bg-primary/10 text-primary border-primary/20"
-                  >
-                    <Tag className="w-2 h-2 mr-1" />
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          )}
-          
           {/* Quick Actions Section */}
           {enableQuickActions && (
-            <div className="pt-2 border-t space-y-3">
+            <div className="pt-2 border-t space-y-2">
               {/* Status Change */}
               <div>
-                <h4 className="text-sm font-medium mb-2">Change Status</h4>
+                <h4 className="text-xs font-medium mb-1">Change Status</h4>
                 <div className="grid grid-cols-2 gap-1">
                   {[
                     { status: 'todo', label: 'To Do', color: 'bg-gray-100 text-gray-700 hover:bg-gray-200' },
@@ -402,8 +347,8 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
                       key={statusOption.status}
                       variant="outline"
                       size="sm"
-                      className={`text-xs h-7 ${statusOption.color} border-0 ${
-                        task.status === statusOption.status ? 'ring-2 ring-primary' : ''
+                      className={`text-xs h-6 ${statusOption.color} border-0 ${
+                        task.status === statusOption.status ? 'ring-1 ring-primary' : ''
                       }`}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -418,17 +363,17 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
 
               {/* Quick Assign */}
               <div>
-                <h4 className="text-sm font-medium mb-2">Assign To</h4>
-                <div className="space-y-1 max-h-32 overflow-y-auto">
-                  {teamMembers.slice(0, 3).map((teamMember) => (
+                <h4 className="text-xs font-medium mb-1">Quick Assign</h4>
+                <div className="space-y-1 max-h-20 overflow-y-auto">
+                  {teamMembers.slice(0, 2).map((teamMember) => (
                     <Button
                       key={teamMember.id}
                       variant="outline"
                       size="sm"
-                      className={`w-full justify-start h-8 text-xs ${
+                      className={`w-full justify-start h-6 text-xs ${
                         !teamMember.active ? 'opacity-50' : ''
                       } ${
-                        getAssigneeName() === teamMember.name ? 'ring-2 ring-primary bg-primary/5' : ''
+                        getAssigneeName() === teamMember.name ? 'ring-1 ring-primary bg-primary/5' : ''
                       }`}
                       disabled={!teamMember.active}
                       onClick={(e) => {
@@ -436,8 +381,8 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
                         handleAssigneeChange(teamMember.name);
                       }}
                     >
-                      <div className="flex items-center gap-2">
-                        <div className={`w-5 h-5 rounded-full flex items-center justify-center text-white font-semibold text-xs ${
+                      <div className="flex items-center gap-1">
+                        <div className={`w-4 h-4 rounded-full flex items-center justify-center text-white font-semibold text-xs ${
                           teamMember.active ? 'bg-primary' : 'bg-gray-400'
                         }`}>
                           {teamMember.name.split(' ').map(n => n[0]).join('')}
@@ -454,10 +399,13 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
           <div className="pt-2 border-t">
             <Button 
               size="sm" 
-              className="w-full"
-              onClick={() => navigate(`/task/${task.id}`)}
+              className="w-full h-6 text-xs"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/task/${task.id}`);
+              }}
             >
-              <Edit className="w-4 h-4 mr-2" />
+              <Edit className="w-3 h-3 mr-1" />
               View Task
             </Button>
           </div>
