@@ -27,6 +27,7 @@ import MySprintsList from "./pages/MySprintsList";
 import HolidayMaster from "./pages/HolidayMaster";
 import ProjectStatusReport from "./pages/ProjectStatusReport";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Organization from "./pages/Organization";
 import AdminOrganizations from "./pages/AdminOrganizations";
 
@@ -40,6 +41,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Index />} />
           <Route path="/my-tasks" element={<MyTasks />} />
           <Route path="/projects" element={<Projects />} />

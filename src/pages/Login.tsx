@@ -158,7 +158,11 @@ const Login = () => {
             <div className="text-center mt-6">
               <p className="text-sm text-muted-foreground">
                 Don't have an account?{" "}
-                <Button variant="link" className="px-0 text-primary">
+                <Button 
+                  variant="link" 
+                  className="px-0 text-primary"
+                  onClick={() => navigate("/register")}
+                >
                   Sign up here
                 </Button>
               </p>
