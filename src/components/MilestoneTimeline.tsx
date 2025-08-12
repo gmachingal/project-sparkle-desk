@@ -552,17 +552,6 @@ export const MilestoneTimeline: React.FC<MilestoneTimelineProps> = ({
                                                        </CardContent>
                                                      </Card>
 
-                                                     {/* Action Buttons */}
-                                                     <div className="flex gap-2">
-                                                       <Button className="flex-1">
-                                                         <Edit className="w-4 h-4 mr-2" />
-                                                         Edit Task
-                                                       </Button>
-                                                       <Button variant="outline" className="flex-1">
-                                                         <Clock className="w-4 h-4 mr-2" />
-                                                         Log Time
-                                                       </Button>
-                                                     </div>
                                                    </div>
                                                  </SheetContent>
                                                </Sheet>
