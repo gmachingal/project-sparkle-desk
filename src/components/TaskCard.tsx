@@ -68,7 +68,7 @@ const TaskCard = ({ task, className, size = 'default' }: TaskCardProps) => {
             statusColors[task.status],
             className
           )}
-          onClick={() => navigate(`/edit-task/${task.id}`)}
+          onClick={() => navigate(`/task/${task.id}`)}
         >
           <CardContent className={cn(
             "h-full flex flex-col justify-between",
@@ -272,10 +272,10 @@ const TaskCard = ({ task, className, size = 'default' }: TaskCardProps) => {
             <Button 
               size="sm" 
               className="w-full"
-              onClick={() => navigate(`/edit-task/${task.id}`)}
+              onClick={() => navigate(`/task/${task.id}`)}
             >
               <Edit className="w-4 h-4 mr-2" />
-              Edit Task
+              View Task
             </Button>
           </div>
         </div>

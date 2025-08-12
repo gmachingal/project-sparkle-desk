@@ -16,7 +16,10 @@ import {
   AlertCircle,
   Target,
   Play,
-  Calendar as CalendarDays
+  Calendar as CalendarDays,
+  Users,
+  ArrowRight,
+  History
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -57,7 +60,33 @@ const TaskView = () => {
       createdDate: new Date(currentYear, currentMonth, 1),
       estimatedHours: 16,
       actualHours: 8,
-      tags: ["design", "ui/ux", "wireframes"]
+      tags: ["design", "ui/ux", "wireframes"],
+      assigneeHistory: [
+        {
+          id: "1",
+          assignee: { name: "John Smith", avatar: "" },
+          status: "todo",
+          assignedDate: new Date(currentYear, currentMonth, 1),
+          completedDate: new Date(currentYear, currentMonth, 3),
+          notes: "Initial requirements gathering and research"
+        },
+        {
+          id: "2", 
+          assignee: { name: "Sarah Johnson", avatar: "" },
+          status: "in-progress",
+          assignedDate: new Date(currentYear, currentMonth, 3),
+          completedDate: new Date(currentYear, currentMonth, 6),
+          notes: "Created wireframes and low-fidelity prototypes"
+        },
+        {
+          id: "3",
+          assignee: { name: "You", avatar: "" },
+          status: "in-progress",
+          assignedDate: new Date(currentYear, currentMonth, 6),
+          completedDate: null,
+          notes: "Working on high-fidelity designs and A/B test variations"
+        }
+      ]
     },
     {
       id: "2",
@@ -86,7 +115,17 @@ const TaskView = () => {
       createdDate: new Date(currentYear, currentMonth, 2),
       estimatedHours: 4,
       actualHours: 0,
-      tags: ["api", "documentation", "review"]
+      tags: ["api", "documentation", "review"],
+      assigneeHistory: [
+        {
+          id: "1",
+          assignee: { name: "You", avatar: "" },
+          status: "todo",
+          assignedDate: new Date(currentYear, currentMonth, 2),
+          completedDate: null,
+          notes: "Assigned for API documentation review"
+        }
+      ]
     },
     {
       id: "3",
@@ -110,7 +149,33 @@ const TaskView = () => {
       createdDate: new Date(currentYear, currentMonth - 1, 25),
       estimatedHours: 6,
       actualHours: 5,
-      tags: ["copywriting", "marketing", "user feedback"]
+      tags: ["copywriting", "marketing", "user feedback"],
+      assigneeHistory: [
+        {
+          id: "1",
+          assignee: { name: "Marketing Lead", avatar: "" },
+          status: "todo",
+          assignedDate: new Date(currentYear, currentMonth - 1, 25),
+          completedDate: new Date(currentYear, currentMonth, 2),
+          notes: "Initial copy draft and user feedback analysis"
+        },
+        {
+          id: "2",
+          assignee: { name: "Content Writer", avatar: "" },
+          status: "in-progress", 
+          assignedDate: new Date(currentYear, currentMonth, 2),
+          completedDate: new Date(currentYear, currentMonth, 6),
+          notes: "Revised copy based on feedback and A/B testing"
+        },
+        {
+          id: "3",
+          assignee: { name: "You", avatar: "" },
+          status: "completed",
+          assignedDate: new Date(currentYear, currentMonth, 6),
+          completedDate: new Date(currentYear, currentMonth, 8),
+          notes: "Final review and approval of marketing copy"
+        }
+      ]
     },
     {
       id: "4",
@@ -303,6 +368,100 @@ const TaskView = () => {
             )}
           </CardContent>
         </Card>
+
+        {/* Assignee History Section */}
+        {task.assigneeHistory && task.assigneeHistory.length > 0 && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <History className="w-4 h-4" />
+                Task Progress & Assignee History
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {task.assigneeHistory.map((entry, index) => (
+                  <div key={entry.id} className="relative">
+                    {/* Timeline connector */}
+                    {index < task.assigneeHistory.length - 1 && (
+                      <div className="absolute left-6 top-12 bottom-0 w-px bg-border"></div>
+                    )}
+                    
+                    <div className="flex items-start gap-4">
+                      {/* Status indicator */}
+                      <div className={`relative flex-shrink-0 w-12 h-12 rounded-full border-2 flex items-center justify-center ${
+                        entry.status === 'completed' ? 'bg-green-100 border-green-300' :
+                        entry.status === 'in-progress' ? 'bg-blue-100 border-blue-300' :
+                        'bg-gray-100 border-gray-300'
+                      }`}>
+                        {entry.status === 'completed' ? (
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                        ) : entry.status === 'in-progress' ? (
+                          <Clock className="w-5 h-5 text-blue-600" />
+                        ) : (
+                          <AlertCircle className="w-5 h-5 text-gray-600" />
+                        )}
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="bg-muted/30 rounded-lg p-4 border">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <Avatar className="w-8 h-8">
+                                <AvatarImage src={entry.assignee.avatar} />
+                                <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                                  {entry.assignee.name.split(' ').map(n => n[0]).join('')}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <h4 className="font-semibold text-sm">{entry.assignee.name}</h4>
+                                <div className="flex items-center gap-2">
+                                  <Badge variant={
+                                    entry.status === 'completed' ? 'default' :
+                                    entry.status === 'in-progress' ? 'secondary' : 'outline'
+                                  } className="text-xs">
+                                    {entry.status === 'in-progress' ? 'In Progress' : 
+                                     entry.status === 'completed' ? 'Completed' : 'To Do'}
+                                  </Badge>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="text-right text-sm text-muted-foreground">
+                              <div>Assigned: {format(entry.assignedDate, 'MMM dd, yyyy')}</div>
+                              {entry.completedDate && (
+                                <div>Completed: {format(entry.completedDate, 'MMM dd, yyyy')}</div>
+                              )}
+                              {entry.completedDate && (
+                                <div className="text-xs text-primary font-medium">
+                                  Duration: {Math.ceil((entry.completedDate.getTime() - entry.assignedDate.getTime()) / (1000 * 60 * 60 * 24))} days
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          
+                          {entry.notes && (
+                            <div className="text-sm text-muted-foreground bg-background rounded p-3 border-l-2 border-primary">
+                              <div className="font-medium text-foreground mb-1">Work Summary:</div>
+                              {entry.notes}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Arrow between stages */}
+                        {index < task.assigneeHistory.length - 1 && (
+                          <div className="flex justify-center py-2">
+                            <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {/* Progress & Time Tracking */}
