@@ -29,7 +29,8 @@ import {
   CalendarRange,
   ChevronLeft,
   ChevronRight,
-  FileText
+  FileText,
+  Ban
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek } from 'date-fns';
@@ -98,7 +99,7 @@ const MyTasks = () => {
       id: "4",
       title: "Bug fixes for login flow",
       description: "Fix authentication issues reported by users",
-      status: "todo" as const,
+      status: "blocked" as const,
       priority: "high" as const,
       startDate: new Date(currentYear, currentMonth, 18),
       dueDate: new Date(currentYear, currentMonth, 20),
@@ -151,7 +152,7 @@ const MyTasks = () => {
       id: "8",
       title: "Update documentation",
       description: "Update project documentation with latest changes",
-      status: "todo" as const,
+      status: "blocked" as const,
       priority: "low" as const,
       startDate: new Date(currentYear, currentMonth, 26),
       dueDate: new Date(currentYear, currentMonth, 28),
@@ -173,6 +174,8 @@ const MyTasks = () => {
       filtered = filtered.filter(task => task.status === "in-progress");
     } else if (activeTab === "completed") {
       filtered = filtered.filter(task => task.status === "completed");
+    } else if (activeTab === "blocked") {
+      filtered = filtered.filter(task => task.status === "blocked");
     } else if (activeTab === "overdue") {
       filtered = filtered.filter(task => task.dueDate < new Date() && task.status !== "completed");
     }
@@ -250,6 +253,7 @@ const MyTasks = () => {
     todo: tasks.filter(t => t.status === "todo").length,
     inProgress: tasks.filter(t => t.status === "in-progress").length,
     completed: tasks.filter(t => t.status === "completed").length,
+    blocked: tasks.filter(t => t.status === "blocked").length,
     overdue: tasks.filter(t => t.dueDate < new Date() && t.status !== "completed").length
   };
 
@@ -279,7 +283,7 @@ const MyTasks = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
           <Card>
             <CardContent className="p-4 text-center">
               <CheckSquare className="w-5 h-5 mx-auto text-muted-foreground mb-2" />
@@ -306,6 +310,13 @@ const MyTasks = () => {
               <div className="w-5 h-5 mx-auto bg-green-500 rounded-full mb-2" />
               <div className="text-2xl font-bold">{taskStats.completed}</div>
               <div className="text-sm text-muted-foreground">Completed</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4 text-center">
+              <Ban className="w-5 h-5 mx-auto text-red-500 mb-2" />
+              <div className="text-2xl font-bold">{taskStats.blocked}</div>
+              <div className="text-sm text-muted-foreground">Blocked</div>
             </CardContent>
           </Card>
           <Card>
@@ -456,7 +467,7 @@ const MyTasks = () => {
 
         {/* Tasks Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-5 bg-muted">
+          <TabsList className="grid w-full grid-cols-6 bg-muted">
             <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
               <FileText className="h-4 w-4 mr-2" />
               All ({taskStats.total})</TabsTrigger>
@@ -469,6 +480,9 @@ const MyTasks = () => {
             <TabsTrigger value="completed" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
               <CheckSquare className="h-4 w-4 mr-2" />
               Completed ({taskStats.completed})</TabsTrigger>
+            <TabsTrigger value="blocked" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
+              <Ban className="h-4 w-4 mr-2" />
+              Blocked ({taskStats.blocked})</TabsTrigger>
             <TabsTrigger value="overdue" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
               <AlertTriangle className="h-4 w-4 mr-2" />
               Overdue ({taskStats.overdue})</TabsTrigger>

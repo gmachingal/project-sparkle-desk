@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-import { Calendar, Flag, MoreHorizontal, User, Edit, Tag, CalendarDays, Clock, Target } from "lucide-react";
+import { Calendar, Flag, MoreHorizontal, User, Edit, Tag, CalendarDays, Clock, Target, Ban } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
@@ -12,7 +12,7 @@ interface TaskCardProps {
     id: string;
     title: string;
     description?: string;
-    status: 'todo' | 'in-progress' | 'completed';
+    status: 'todo' | 'in-progress' | 'completed' | 'blocked';
     priority: 'low' | 'medium' | 'high';
     startDate?: string;
     dueDate?: string;
@@ -44,7 +44,8 @@ const TaskCard = ({ task, className, size = 'default' }: TaskCardProps) => {
   const statusColors = {
     'todo': 'border-l-gray-400',
     'in-progress': 'border-l-blue-500',
-    'completed': 'border-l-green-500'
+    'completed': 'border-l-green-500',
+    'blocked': 'border-l-red-500'
   };
 
   const getStatusIcon = (status: string) => {
@@ -53,6 +54,8 @@ const TaskCard = ({ task, className, size = 'default' }: TaskCardProps) => {
         return '✓';
       case 'in-progress':
         return '⟳';
+      case 'blocked':
+        return '⚠';
       default:
         return '○';
     }

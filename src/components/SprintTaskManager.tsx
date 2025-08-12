@@ -18,14 +18,15 @@ import {
   AlertCircle,
   CheckCircle2,
   Clock,
-  Filter
+  Filter,
+  Ban
 } from 'lucide-react';
 
 interface Task {
   id: string;
   title: string;
   description: string;
-  status: 'todo' | 'in-progress' | 'completed';
+  status: 'todo' | 'in-progress' | 'completed' | 'blocked';
   priority: 'low' | 'medium' | 'high';
   assigneeId?: string;
   storyPoints?: number;
@@ -152,6 +153,7 @@ const SprintTaskManager: React.FC<SprintTaskManagerProps> = ({
     switch (status) {
       case 'completed': return <CheckCircle2 className="h-4 w-4 text-green-600" />;
       case 'in-progress': return <Clock className="h-4 w-4 text-blue-600" />;
+      case 'blocked': return <Ban className="h-4 w-4 text-red-600" />;
       case 'todo': return <AlertCircle className="h-4 w-4 text-gray-600" />;
       default: return null;
     }
@@ -260,6 +262,7 @@ const SprintTaskManager: React.FC<SprintTaskManagerProps> = ({
                       <SelectItem value="todo">To Do</SelectItem>
                       <SelectItem value="in-progress">In Progress</SelectItem>
                       <SelectItem value="completed">Completed</SelectItem>
+                      <SelectItem value="blocked">Blocked</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
