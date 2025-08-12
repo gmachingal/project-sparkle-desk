@@ -4,15 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Calendar } from "@/components/ui/calendar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Textarea } from "@/components/ui/textarea";
-import { CalendarIcon, ChevronLeft, ChevronRight, Send, Eye, CheckSquare, Clock, Target, Flag, User, CalendarDays, Tag, BarChart3, ChevronDown, Edit, MessageSquare, Activity, Users, CheckCircle, X } from "lucide-react";
+import { CalendarIcon, Send, CheckSquare, Clock, BarChart3, Edit } from "lucide-react";
 import { format, addDays, subDays, parseISO } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import QuickActionsPanel from "./QuickActionsPanel";
 
 interface DailyTaskReportProps {
   isAdmin?: boolean;
@@ -26,11 +25,6 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
   const [selectedProject, setSelectedProject] = useState('all');
   const [showQuickActions, setShowQuickActions] = useState(false);
   const [selectedTaskForActions, setSelectedTaskForActions] = useState<any>(null);
-  const [pendingStatusChange, setPendingStatusChange] = useState<string | null>(null);
-  const [pendingAssigneeChange, setPendingAssigneeChange] = useState<string | null>(null);
-  const [showStatusConfirm, setShowStatusConfirm] = useState(false);
-  const [showAssigneeConfirm, setShowAssigneeConfirm] = useState(false);
-  const [comment, setComment] = useState('');
 
   // Mock data
   const projects = [
@@ -185,51 +179,6 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
     }
   };
 
-  // Team members - mock data
-  const teamMembers = [
-    { id: '1', name: 'John Doe', role: 'Frontend Developer', active: true },
-    { id: '2', name: 'Jane Smith', role: 'Backend Developer', active: true },
-    { id: '3', name: 'Mike Johnson', role: 'UI/UX Designer', active: false },
-    { id: '4', name: 'Sarah Wilson', role: 'QA Engineer', active: true },
-    { id: '5', name: 'David Brown', role: 'DevOps Engineer', active: true }
-  ];
-
-  // Confirmation handlers
-  const handleStatusChangeRequest = (newStatus: string) => {
-    setPendingStatusChange(newStatus);
-    setShowStatusConfirm(true);
-  };
-
-  const confirmStatusChange = () => {
-    // Handle status change logic here
-    console.log(`Changing task ${selectedTaskForActions?.id} status to ${pendingStatusChange}`);
-    setPendingStatusChange(null);
-    setShowStatusConfirm(false);
-    setShowQuickActions(false);
-  };
-
-  const cancelStatusChange = () => {
-    setPendingStatusChange(null);
-    setShowStatusConfirm(false);
-  };
-
-  const handleAssigneeChangeRequest = (newAssignee: string) => {
-    setPendingAssigneeChange(newAssignee);
-    setShowAssigneeConfirm(true);
-  };
-
-  const confirmAssigneeChange = () => {
-    // Handle assignment logic here
-    console.log(`Assigning task ${selectedTaskForActions?.id} to ${pendingAssigneeChange}`);
-    setPendingAssigneeChange(null);
-    setShowAssigneeConfirm(false);
-    setShowQuickActions(false);
-  };
-
-  const cancelAssigneeChange = () => {
-    setPendingAssigneeChange(null);
-    setShowAssigneeConfirm(false);
-  };
 
   return (
     <Card>
@@ -461,262 +410,22 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
                                   Quick Change
                                 </Button>
                               </SheetTrigger>
-                              <SheetContent className="w-[500px] sm:w-[600px] overflow-y-auto">
-                                <SheetHeader>
-                                  <SheetTitle className="flex items-center gap-2">
-                                    <Edit className="w-5 h-5" />
-                                    Quick Task Actions
-                                  </SheetTitle>
-                                </SheetHeader>
-                                
-                                 <div className="mt-6 space-y-6">
-                                   {/* Task Info Card */}
-                                   <Card className="bg-gradient-to-r from-primary/5 to-primary-glow/5 border-primary/20">
-                                     <CardContent className="p-6">
-                                       <div className="space-y-4">
-                                         <div className="flex items-start justify-between">
-                                           <div className="flex-1">
-                                             <h4 className="font-semibold text-lg text-foreground">{selectedTaskForActions?.title}</h4>
-                                             {selectedTaskForActions?.description && (
-                                               <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{selectedTaskForActions.description}</p>
-                                             )}
-                                           </div>
-                                           <Badge 
-                                             variant="outline" 
-                                             className={cn("text-xs ml-4 flex-shrink-0", priorityColors[selectedTaskForActions?.priority || 'medium'])}
-                                           >
-                                             <Flag className="w-3 h-3 mr-1" />
-                                             {selectedTaskForActions?.priority} Priority
-                                           </Badge>
-                                         </div>
-                                         
-                                         <div className="grid grid-cols-2 gap-4 pt-2 border-t border-primary/10">
-                                           <div className="flex items-center gap-2 text-sm">
-                                             <Clock className="w-4 h-4 text-muted-foreground" />
-                                             <span className="text-muted-foreground">Time Spent:</span>
-                                             <span className="font-medium">{selectedTaskForActions?.timeSpent}</span>
-                                           </div>
-                                           <div className="flex items-center gap-2 text-sm">
-                                             <User className="w-4 h-4 text-muted-foreground" />
-                                             <span className="text-muted-foreground">Assigned:</span>
-                                             <span className="font-medium">{selectedTaskForActions?.assignee?.name}</span>
-                                           </div>
-                                         </div>
-                                       </div>
-                                     </CardContent>
-                                   </Card>
-
-                                  {/* Quick Status Change */}
-                                  <Card>
-                                    <CardContent className="p-4">
-                                      {!showStatusConfirm ? (
-                                        <>
-                                          <h3 className="font-semibold mb-3">Change Status</h3>
-                                          <div className="grid grid-cols-2 gap-2">
-                                             {[
-                                               { status: 'todo', label: 'To Do', color: 'bg-muted text-muted-foreground hover:bg-muted/80' },
-                                               { status: 'in-progress', label: 'In Progress', color: 'bg-primary/10 text-primary hover:bg-primary/20' },
-                                               { status: 'completed', label: 'Completed', color: 'bg-success/10 text-success hover:bg-success/20' },
-                                               { status: 'blocked', label: 'Blocked', color: 'bg-blocked/10 text-blocked hover:bg-blocked/20' }
-                                             ].map((statusOption) => (
-                                              <Button
-                                                key={statusOption.status}
-                                                variant="outline"
-                                                className={`${statusOption.color} border-0 ${
-                                                  selectedTaskForActions?.status === statusOption.status ? 'ring-2 ring-primary' : ''
-                                                }`}
-                                                onClick={() => handleStatusChangeRequest(statusOption.status)}
-                                              >
-                                                {statusOption.label}
-                                              </Button>
-                                            ))}
-                                          </div>
-                                        </>
-                                      ) : (
-                                        <div className="space-y-3">
-                                          <h3 className="font-semibold">Confirm Status Change</h3>
-                                          <p className="text-sm text-muted-foreground">
-                                            Change task status from "{selectedTaskForActions?.status.replace('-', ' ')}" to "{pendingStatusChange?.replace('-', ' ')}"?
-                                          </p>
-                                          <div className="flex gap-2">
-                                            <Button onClick={confirmStatusChange} className="flex-1">
-                                              Confirm
-                                            </Button>
-                                            <Button variant="outline" onClick={cancelStatusChange} className="flex-1">
-                                              Cancel
-                                            </Button>
-                                          </div>
-                                        </div>
-                                      )}
-                                    </CardContent>
-                                  </Card>
-
-                                  {/* Quick Assign */}
-                                  <Card>
-                                    <CardContent className="p-4">
-                                      {!showAssigneeConfirm ? (
-                                        <>
-                                          <h3 className="font-semibold mb-3">Assign To</h3>
-                                          <div className="space-y-2">
-                                            {teamMembers.map((teamMember) => (
-                                              <Button
-                                                key={teamMember.id}
-                                                variant="outline"
-                                                className={`w-full justify-start h-auto p-3 ${
-                                                  !teamMember.active ? 'opacity-50' : ''
-                                                } ${
-                                                  selectedTaskForActions?.assignee?.name === teamMember.name ? 'ring-2 ring-primary bg-primary/5' : ''
-                                                }`}
-                                                disabled={!teamMember.active}
-                                                onClick={() => handleAssigneeChangeRequest(teamMember.name)}
-                                              >
-                                                <div className="flex items-center gap-3">
-                                                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold ${
-                                                    teamMember.active ? 'bg-primary' : 'bg-gray-400'
-                                                  }`}>
-                                                    {teamMember.name.split(' ').map(n => n[0]).join('')}
-                                                  </div>
-                                                  <div className="text-left">
-                                                    <div className="font-medium">{teamMember.name}</div>
-                                                    <div className="text-xs text-muted-foreground">{teamMember.role}</div>
-                                                  </div>
-                                                </div>
-                                              </Button>
-                                            ))}
-                                          </div>
-                                        </>
-                                      ) : (
-                                        <div className="space-y-3">
-                                          <h3 className="font-semibold">Confirm Assignment</h3>
-                                          <p className="text-sm text-muted-foreground">
-                                            Assign task to {pendingAssigneeChange}?
-                                          </p>
-                                          <div className="flex gap-2">
-                                            <Button onClick={confirmAssigneeChange} className="flex-1">
-                                              Confirm
-                                            </Button>
-                                            <Button variant="outline" onClick={cancelAssigneeChange} className="flex-1">
-                                              Cancel
-                                            </Button>
-                                          </div>
-                                        </div>
-                                      )}
-                                    </CardContent>
-                                  </Card>
-
-                                  {/* Add Comment */}
-                                  <Card>
-                                    <CardContent className="p-4">
-                                      <h3 className="font-semibold mb-3 flex items-center gap-2">
-                                        <MessageSquare className="w-4 h-4" />
-                                        Add Comment
-                                      </h3>
-                                      <div className="space-y-3">
-                                        <Textarea
-                                          placeholder="Add a comment about this task..."
-                                          value={comment}
-                                          onChange={(e) => setComment(e.target.value)}
-                                          rows={3}
-                                          className="resize-none"
-                                        />
-                                        <div className="flex gap-2">
-                                          <Button 
-                                            size="sm" 
-                                            className="flex-1"
-                                            disabled={!comment.trim()}
-                                            onClick={() => {
-                                              // Handle comment submission here
-                                              console.log('Comment added:', comment);
-                                              setComment('');
-                                            }}
-                                          >
-                                            Add Comment
-                                          </Button>
-                                          <Button 
-                                            variant="outline" 
-                                            size="sm"
-                                            onClick={() => setComment('')}
-                                          >
-                                            Clear
-                                          </Button>
-                                        </div>
-                                      </div>
-                                 </CardContent>
-                               </Card>
-
-                               {/* Sprint Assignment Section - Full Width */}
-                               <Card>
-                                 <CardHeader className="pb-3">
-                                   <CardTitle className="text-base flex items-center gap-2">
-                                     <Target className="w-4 h-4" />
-                                     Assign to Sprint
-                                   </CardTitle>
-                                 </CardHeader>
-                                 <CardContent className="pt-0">
-                                   <div className="space-y-3">
-                                     <div className="grid grid-cols-1 gap-2">
-                                       <Button
-                                         variant="outline"
-                                         className="h-12 justify-start text-left border-0 bg-muted/30 hover:bg-muted/60"
-                                         onClick={() => {
-                                           // Handle move to backlog
-                                           console.log('Move to backlog');
-                                         }}
-                                       >
-                                         <div className="flex items-center gap-3 w-full">
-                                           <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-400 text-white font-semibold text-sm">
-                                             📝
-                                           </div>
-                                           <div className="text-left flex-1">
-                                             <div className="font-medium">Backlog</div>
-                                             <div className="text-xs text-muted-foreground">No sprint assigned</div>
-                                           </div>
-                                         </div>
-                                       </Button>
-                                       <Button
-                                         variant="outline"
-                                         className="h-12 justify-start text-left border-0 bg-muted/30 hover:bg-muted/60"
-                                         onClick={() => {
-                                           // Handle current sprint assignment
-                                           console.log('Assign to current sprint');
-                                         }}
-                                       >
-                                         <div className="flex items-center gap-3 w-full">
-                                           <div className="w-10 h-10 rounded-full flex items-center justify-center bg-primary text-white font-semibold text-sm">
-                                             🎯
-                                           </div>
-                                           <div className="text-left flex-1">
-                                             <div className="font-medium">Sprint 1 - Foundation</div>
-                                             <div className="text-xs text-muted-foreground">Active sprint</div>
-                                           </div>
-                                           <Badge variant="default" className="text-xs">Current</Badge>
-                                         </div>
-                                       </Button>
-                                       <Button
-                                         variant="outline"
-                                         className="h-12 justify-start text-left border-0 bg-muted/30 hover:bg-muted/60"
-                                         onClick={() => {
-                                           // Handle next sprint assignment
-                                           console.log('Assign to next sprint');
-                                         }}
-                                       >
-                                         <div className="flex items-center gap-3 w-full">
-                                           <div className="w-10 h-10 rounded-full flex items-center justify-center bg-blue-500 text-white font-semibold text-sm">
-                                             ⏭️
-                                           </div>
-                                           <div className="text-left flex-1">
-                                             <div className="font-medium">Sprint 2 - Core Features</div>
-                                             <div className="text-xs text-muted-foreground">Planned sprint</div>
-                                           </div>
-                                         </div>
-                                       </Button>
-                                     </div>
-                                   </div>
-                                 </CardContent>
-                               </Card>
-                             </div>
-                              </SheetContent>
                             </Sheet>
+                            
+                            <QuickActionsPanel
+                              isOpen={showQuickActions}
+                              onOpenChange={setShowQuickActions}
+                              task={selectedTaskForActions}
+                              onStatusChange={(taskId, newStatus) => {
+                                console.log(`Changing task ${taskId} status to ${newStatus}`);
+                              }}
+                              onAssigneeChange={(taskId, newAssignee) => {
+                                console.log(`Assigning task ${taskId} to ${newAssignee}`);
+                              }}
+                              onSprintChange={(taskId, newSprint) => {
+                                console.log(`Moving task ${taskId} to ${newSprint}`);
+                              }}
+                            />
                           </div>
 
                           <div className="pt-2 border-t">
@@ -728,7 +437,7 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
                                 navigate(`/task/${task.id}`);
                               }}
                             >
-                              <Eye className="w-3 h-3 mr-1" />
+                              <Edit className="w-3 h-3 mr-1" />
                               View Task
                             </Button>
                           </div>
