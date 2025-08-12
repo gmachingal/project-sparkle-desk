@@ -29,7 +29,8 @@ import {
   Eye,
   Play,
   AlertCircle as AlertCircleIcon,
-  Circle
+  Circle,
+  Edit
 } from 'lucide-react';
 import StatsCard from '@/components/StatsCard';
 import { SimpleBarChart, SimpleAreaChart, SimplePieChart, generateMockData } from '@/components/SimpleCharts';
@@ -42,6 +43,7 @@ const ProjectStatusReport = () => {
   const [timeRange, setTimeRange] = useState('month');
   const [selectedMemberForTasks, setSelectedMemberForTasks] = useState<any>(null);
   const [selectedMilestoneForTasks, setSelectedMilestoneForTasks] = useState<any>(null);
+  const [selectedTaskDetails, setSelectedTaskDetails] = useState<any>(null);
 
   // Mock project data - in a real app, this would be fetched based on project id
   const project = {
@@ -526,6 +528,7 @@ const ProjectStatusReport = () => {
             {/* Enhanced Team Member Cards */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {[
+                // Extended team member data with complete task history
                 {
                   id: '1',
                   name: 'Sarah Johnson',
@@ -534,14 +537,25 @@ const ProjectStatusReport = () => {
                   totalHours: 32,
                   weeklyHours: 12,
                   efficiency: 92,
-                  tasksAssigned: 6,
-                  tasksCompleted: 4,
+                  tasksAssigned: 8,
+                  tasksCompleted: 5,
                   tasksInProgress: 2,
+                  tasksPlanned: 1,
                   currentTasks: [
-                    { id: '1', name: 'Homepage UI Components', status: 'in-progress', hours: 8.5, priority: 'high' },
-                    { id: '2', name: 'Responsive Design', status: 'in-progress', hours: 3.5, priority: 'medium' },
-                    { id: '3', name: 'Component Testing', status: 'completed', hours: 6, priority: 'low' },
-                    { id: '4', name: 'Design System Setup', status: 'completed', hours: 14, priority: 'high' }
+                    { id: '1', name: 'Homepage UI Components', status: 'in-progress', hours: 8.5, priority: 'high', estimatedHours: 12, project: 'Website Redesign', dueDate: '2024-12-01', milestone: 'Frontend Development' },
+                    { id: '2', name: 'Responsive Design', status: 'in-progress', hours: 3.5, priority: 'medium', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-12-05', milestone: 'Frontend Development' },
+                    { id: '3', name: 'Component Testing', status: 'completed', hours: 6, priority: 'low', estimatedHours: 6, project: 'Website Redesign', dueDate: '2024-11-28', milestone: 'Testing & QA' },
+                    { id: '4', name: 'Design System Setup', status: 'completed', hours: 14, priority: 'high', estimatedHours: 16, project: 'Website Redesign', dueDate: '2024-11-25', milestone: 'Design Phase' }
+                  ],
+                  allTasks: [
+                    { id: '1', name: 'Homepage UI Components', status: 'in-progress', hours: 8.5, priority: 'high', estimatedHours: 12, project: 'Website Redesign', dueDate: '2024-12-01', milestone: 'Frontend Development' },
+                    { id: '2', name: 'Responsive Design', status: 'in-progress', hours: 3.5, priority: 'medium', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-12-05', milestone: 'Frontend Development' },
+                    { id: '3', name: 'Component Testing', status: 'completed', hours: 6, priority: 'low', estimatedHours: 6, project: 'Website Redesign', dueDate: '2024-11-28', milestone: 'Testing & QA' },
+                    { id: '4', name: 'Design System Setup', status: 'completed', hours: 14, priority: 'high', estimatedHours: 16, project: 'Website Redesign', dueDate: '2024-11-25', milestone: 'Design Phase' },
+                    { id: '5', name: 'User Interface Wireframes', status: 'completed', hours: 12, priority: 'high', estimatedHours: 10, project: 'Website Redesign', dueDate: '2024-11-20', milestone: 'Design Phase' },
+                    { id: '6', name: 'Navigation Menu Implementation', status: 'completed', hours: 8, priority: 'medium', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-11-22', milestone: 'Frontend Development' },
+                    { id: '7', name: 'Form Validation System', status: 'completed', hours: 10, priority: 'medium', estimatedHours: 12, project: 'Website Redesign', dueDate: '2024-11-26', milestone: 'Frontend Development' },
+                    { id: '8', name: 'Performance Optimization', status: 'planned', hours: 0, priority: 'low', estimatedHours: 6, project: 'Website Redesign', dueDate: '2024-12-10', milestone: 'Testing & QA' }
                   ]
                 },
                 {
@@ -552,13 +566,22 @@ const ProjectStatusReport = () => {
                   totalHours: 28,
                   weeklyHours: 10,
                   efficiency: 87,
-                  tasksAssigned: 5,
-                  tasksCompleted: 3,
-                  tasksInProgress: 2,
+                  tasksAssigned: 6,
+                  tasksCompleted: 4,
+                  tasksInProgress: 1,
+                  tasksPlanned: 1,
                   currentTasks: [
-                    { id: '5', name: 'API Development', status: 'in-progress', hours: 12, priority: 'high' },
-                    { id: '6', name: 'Database Schema', status: 'in-progress', hours: 8, priority: 'high' },
-                    { id: '7', name: 'Authentication System', status: 'completed', hours: 8, priority: 'critical' }
+                    { id: '5', name: 'API Development', status: 'in-progress', hours: 12, priority: 'high', estimatedHours: 16, project: 'Website Redesign', dueDate: '2024-12-03', milestone: 'Backend Development' },
+                    { id: '6', name: 'Database Schema', status: 'in-progress', hours: 8, priority: 'high', estimatedHours: 10, project: 'Website Redesign', dueDate: '2024-11-30', milestone: 'Backend Development' },
+                    { id: '7', name: 'Authentication System', status: 'completed', hours: 8, priority: 'critical', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-11-25', milestone: 'Backend Development' }
+                  ],
+                  allTasks: [
+                    { id: '5', name: 'API Development', status: 'in-progress', hours: 12, priority: 'high', estimatedHours: 16, project: 'Website Redesign', dueDate: '2024-12-03', milestone: 'Backend Development' },
+                    { id: '6', name: 'Database Schema', status: 'in-progress', hours: 8, priority: 'high', estimatedHours: 10, project: 'Website Redesign', dueDate: '2024-11-30', milestone: 'Backend Development' },
+                    { id: '7', name: 'Authentication System', status: 'completed', hours: 8, priority: 'critical', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-11-25', milestone: 'Backend Development' },
+                    { id: '8', name: 'User Management API', status: 'completed', hours: 14, priority: 'high', estimatedHours: 12, project: 'Website Redesign', dueDate: '2024-11-20', milestone: 'Backend Development' },
+                    { id: '9', name: 'Data Migration Scripts', status: 'completed', hours: 6, priority: 'medium', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-11-18', milestone: 'Backend Development' },
+                    { id: '10', name: 'Security Implementation', status: 'planned', hours: 0, priority: 'critical', estimatedHours: 12, project: 'Website Redesign', dueDate: '2024-12-05', milestone: 'Backend Development' }
                   ]
                 },
                 {
@@ -569,13 +592,21 @@ const ProjectStatusReport = () => {
                   totalHours: 24,
                   weeklyHours: 8,
                   efficiency: 95,
-                  tasksAssigned: 4,
-                  tasksCompleted: 3,
+                  tasksAssigned: 5,
+                  tasksCompleted: 4,
                   tasksInProgress: 1,
+                  tasksPlanned: 0,
                   currentTasks: [
-                    { id: '8', name: 'User Journey Mapping', status: 'in-progress', hours: 6, priority: 'medium' },
-                    { id: '9', name: 'Wireframe Creation', status: 'completed', hours: 10, priority: 'high' },
-                    { id: '10', name: 'Usability Testing', status: 'completed', hours: 8, priority: 'medium' }
+                    { id: '8', name: 'User Journey Mapping', status: 'in-progress', hours: 6, priority: 'medium', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-12-01', milestone: 'Design Phase' },
+                    { id: '9', name: 'Wireframe Creation', status: 'completed', hours: 10, priority: 'high', estimatedHours: 10, project: 'Website Redesign', dueDate: '2024-11-22', milestone: 'Design Phase' },
+                    { id: '10', name: 'Usability Testing', status: 'completed', hours: 8, priority: 'medium', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-11-20', milestone: 'Design Phase' }
+                  ],
+                  allTasks: [
+                    { id: '8', name: 'User Journey Mapping', status: 'in-progress', hours: 6, priority: 'medium', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-12-01', milestone: 'Design Phase' },
+                    { id: '9', name: 'Wireframe Creation', status: 'completed', hours: 10, priority: 'high', estimatedHours: 10, project: 'Website Redesign', dueDate: '2024-11-22', milestone: 'Design Phase' },
+                    { id: '10', name: 'Usability Testing', status: 'completed', hours: 8, priority: 'medium', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-11-20', milestone: 'Design Phase' },
+                    { id: '11', name: 'User Research Analysis', status: 'completed', hours: 12, priority: 'high', estimatedHours: 14, project: 'Website Redesign', dueDate: '2024-11-15', milestone: 'Project Kickoff' },
+                    { id: '12', name: 'Persona Development', status: 'completed', hours: 8, priority: 'medium', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-11-18', milestone: 'Design Phase' }
                   ]
                 },
                 {
@@ -589,10 +620,20 @@ const ProjectStatusReport = () => {
                   tasksAssigned: 7,
                   tasksCompleted: 5,
                   tasksInProgress: 2,
+                  tasksPlanned: 0,
                   currentTasks: [
-                    { id: '11', name: 'Integration Testing', status: 'in-progress', hours: 4, priority: 'high' },
-                    { id: '12', name: 'Bug Verification', status: 'in-progress', hours: 3, priority: 'medium' },
-                    { id: '13', name: 'Test Case Creation', status: 'completed', hours: 13, priority: 'medium' }
+                    { id: '11', name: 'Integration Testing', status: 'in-progress', hours: 4, priority: 'high', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-12-02', milestone: 'Testing & QA' },
+                    { id: '12', name: 'Bug Verification', status: 'in-progress', hours: 3, priority: 'medium', estimatedHours: 6, project: 'Website Redesign', dueDate: '2024-11-29', milestone: 'Testing & QA' },
+                    { id: '13', name: 'Test Case Creation', status: 'completed', hours: 13, priority: 'medium', estimatedHours: 12, project: 'Website Redesign', dueDate: '2024-11-25', milestone: 'Testing & QA' }
+                  ],
+                  allTasks: [
+                    { id: '11', name: 'Integration Testing', status: 'in-progress', hours: 4, priority: 'high', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-12-02', milestone: 'Testing & QA' },
+                    { id: '12', name: 'Bug Verification', status: 'in-progress', hours: 3, priority: 'medium', estimatedHours: 6, project: 'Website Redesign', dueDate: '2024-11-29', milestone: 'Testing & QA' },
+                    { id: '13', name: 'Test Case Creation', status: 'completed', hours: 13, priority: 'medium', estimatedHours: 12, project: 'Website Redesign', dueDate: '2024-11-25', milestone: 'Testing & QA' },
+                    { id: '14', name: 'Automated Test Setup', status: 'completed', hours: 16, priority: 'high', estimatedHours: 16, project: 'Website Redesign', dueDate: '2024-11-20', milestone: 'Testing & QA' },
+                    { id: '15', name: 'Performance Testing', status: 'completed', hours: 10, priority: 'medium', estimatedHours: 10, project: 'Website Redesign', dueDate: '2024-11-22', milestone: 'Testing & QA' },
+                    { id: '16', name: 'Security Testing', status: 'completed', hours: 8, priority: 'high', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-11-24', milestone: 'Testing & QA' },
+                    { id: '17', name: 'User Acceptance Testing', status: 'completed', hours: 12, priority: 'critical', estimatedHours: 12, project: 'Website Redesign', dueDate: '2024-11-26', milestone: 'Testing & QA' }
                   ]
                 }
               ].map((member) => (
@@ -638,7 +679,7 @@ const ProjectStatusReport = () => {
                             
                             <div className="mt-6 space-y-6">
                               {/* Task Stats */}
-                              <div className="grid grid-cols-3 gap-4">
+                              <div className="grid grid-cols-4 gap-4">
                                 <div className="text-center p-3 bg-muted/30 rounded-lg">
                                   <div className="text-2xl font-bold text-green-600">{member.tasksCompleted}</div>
                                   <div className="text-xs text-muted-foreground">Completed</div>
@@ -648,21 +689,25 @@ const ProjectStatusReport = () => {
                                   <div className="text-xs text-muted-foreground">In Progress</div>
                                 </div>
                                 <div className="text-center p-3 bg-muted/30 rounded-lg">
+                                  <div className="text-2xl font-bold text-gray-600">{member.tasksPlanned || 0}</div>
+                                  <div className="text-xs text-muted-foreground">Planned</div>
+                                </div>
+                                <div className="text-center p-3 bg-muted/30 rounded-lg">
                                   <div className="text-2xl font-bold text-orange-600">{member.totalHours}h</div>
                                   <div className="text-xs text-muted-foreground">Total Hours</div>
                                 </div>
                               </div>
                               
-                              {/* Detailed Task List */}
+                              {/* All Tasks List */}
                               <div className="space-y-3">
                                 <h4 className="font-medium flex items-center gap-2">
                                   <Target className="w-4 h-4" />
-                                  Current Tasks ({member.currentTasks.length})
+                                  All Tasks ({member.allTasks?.length || member.currentTasks.length})
                                 </h4>
                                 
                                 <div className="space-y-2 max-h-96 overflow-y-auto">
-                                  {member.currentTasks.map((task) => (
-                                    <Card key={task.id} className="p-3 hover:shadow-sm transition-shadow">
+                                  {(member.allTasks || member.currentTasks).map((task) => (
+                                    <Card key={task.id} className="p-3 hover:shadow-sm transition-shadow cursor-pointer">
                                       <div className="flex items-start gap-3">
                                         <div className="flex-shrink-0 mt-0.5">
                                           {getTaskStatusIcon(task.status)}
@@ -680,22 +725,155 @@ const ProjectStatusReport = () => {
                                           <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
                                             <span className="flex items-center gap-1">
                                               <Clock className="w-3 h-3" />
-                                              {task.hours}h logged
+                                              {task.hours}h / {task.estimatedHours}h
                                             </span>
                                             <span className="capitalize">{task.status.replace('-', ' ')}</span>
+                                            {task.milestone && (
+                                              <Badge variant="outline" className="text-xs">{task.milestone}</Badge>
+                                            )}
                                           </div>
-                                          <div className="w-full bg-muted rounded-full h-1.5">
-                                            <div 
-                                              className={cn(
-                                                "h-1.5 rounded-full transition-all duration-300",
-                                                task.status === 'completed' ? 'bg-green-500' :
-                                                task.status === 'in-progress' ? 'bg-blue-500' :
-                                                task.status === 'blocked' ? 'bg-red-500' : 'bg-gray-300'
-                                              )}
-                                              style={{ 
-                                                width: task.status === 'completed' ? '100%' : '60%'
-                                              }}
-                                            />
+                                          <div className="flex items-center gap-2 mb-2">
+                                            <div className="w-full bg-muted rounded-full h-1.5">
+                                              <div 
+                                                className={cn(
+                                                  "h-1.5 rounded-full transition-all duration-300",
+                                                  task.status === 'completed' ? 'bg-green-500' :
+                                                  task.status === 'in-progress' ? 'bg-blue-500' :
+                                                  task.status === 'blocked' ? 'bg-red-500' : 'bg-gray-300'
+                                                )}
+                                                style={{ 
+                                                  width: task.estimatedHours > 0 
+                                                    ? `${Math.min((task.hours / task.estimatedHours) * 100, 100)}%`
+                                                    : '0%'
+                                                }}
+                                              />
+                                            </div>
+                                            <Sheet>
+                                              <SheetTrigger asChild>
+                                                <Button 
+                                                  variant="ghost" 
+                                                  size="sm" 
+                                                  className="h-6 px-2 text-xs"
+                                                  onClick={() => setSelectedTaskDetails(task)}
+                                                >
+                                                  <Eye className="w-3 h-3 mr-1" />
+                                                  Details
+                                                </Button>
+                                              </SheetTrigger>
+                                              <SheetContent className="w-[400px] sm:w-[540px]">
+                                                <SheetHeader>
+                                                  <SheetTitle className="flex items-center gap-2">
+                                                    {getTaskStatusIcon(task.status)}
+                                                    Task Details
+                                                  </SheetTitle>
+                                                </SheetHeader>
+                                                
+                                                <div className="mt-6 space-y-6">
+                                                  <Card>
+                                                    <CardContent className="p-4">
+                                                      <div className="space-y-3">
+                                                        <div>
+                                                          <label className="text-sm font-medium text-muted-foreground">Task Name</label>
+                                                          <div className="font-semibold text-lg">{task.name}</div>
+                                                        </div>
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                          <div>
+                                                            <label className="text-sm font-medium text-muted-foreground">Status</label>
+                                                            <div className="flex items-center gap-2">
+                                                              {getTaskStatusIcon(task.status)}
+                                                              <span className="capitalize">{task.status.replace('-', ' ')}</span>
+                                                            </div>
+                                                          </div>
+                                                          <div>
+                                                            <label className="text-sm font-medium text-muted-foreground">Priority</label>
+                                                            <div>
+                                                              <Badge 
+                                                                variant="outline" 
+                                                                className={cn("text-xs", getTaskPriorityColor(task.priority))}
+                                                              >
+                                                                {task.priority}
+                                                              </Badge>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                          <div>
+                                                            <label className="text-sm font-medium text-muted-foreground">Project</label>
+                                                            <div className="font-medium">{task.project}</div>
+                                                          </div>
+                                                          <div>
+                                                            <label className="text-sm font-medium text-muted-foreground">Due Date</label>
+                                                            <div className="font-medium">{task.dueDate}</div>
+                                                          </div>
+                                                        </div>
+                                                        {task.milestone && (
+                                                          <div>
+                                                            <label className="text-sm font-medium text-muted-foreground">Milestone</label>
+                                                            <div className="font-medium">{task.milestone}</div>
+                                                          </div>
+                                                        )}
+                                                      </div>
+                                                    </CardContent>
+                                                  </Card>
+
+                                                  {/* Time Tracking */}
+                                                  <Card>
+                                                    <CardHeader>
+                                                      <CardTitle className="text-sm">Time Tracking</CardTitle>
+                                                    </CardHeader>
+                                                    <CardContent>
+                                                      <div className="space-y-4">
+                                                        <div className="grid grid-cols-2 gap-4 text-center">
+                                                          <div className="p-3 bg-muted/30 rounded-lg">
+                                                            <div className="text-lg font-bold text-primary">{task.hours}h</div>
+                                                            <div className="text-xs text-muted-foreground">Logged</div>
+                                                          </div>
+                                                          <div className="p-3 bg-muted/30 rounded-lg">
+                                                            <div className="text-lg font-bold text-blue-600">{task.estimatedHours}h</div>
+                                                            <div className="text-xs text-muted-foreground">Estimated</div>
+                                                          </div>
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                          <div className="flex items-center justify-between text-sm">
+                                                            <span className="text-muted-foreground">Progress</span>
+                                                            <span className="font-medium">
+                                                              {task.estimatedHours > 0 ? Math.round((task.hours / task.estimatedHours) * 100) : 0}%
+                                                            </span>
+                                                          </div>
+                                                          <div className="w-full bg-muted rounded-full h-2">
+                                                            <div 
+                                                              className={cn(
+                                                                "h-2 rounded-full transition-all duration-300",
+                                                                task.status === 'completed' ? 'bg-green-500' :
+                                                                task.status === 'in-progress' ? 'bg-blue-500' :
+                                                                'bg-gray-300'
+                                                              )}
+                                                              style={{ 
+                                                                width: task.estimatedHours > 0 
+                                                                  ? `${Math.min((task.hours / task.estimatedHours) * 100, 100)}%`
+                                                                  : '0%'
+                                                              }}
+                                                            />
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </CardContent>
+                                                  </Card>
+
+                                                  {/* Action Buttons */}
+                                                  <div className="flex gap-2">
+                                                    <Button className="flex-1">
+                                                      <Edit className="w-4 h-4 mr-2" />
+                                                      Edit Task
+                                                    </Button>
+                                                    <Button variant="outline" className="flex-1">
+                                                      <Clock className="w-4 h-4 mr-2" />
+                                                      Log Time
+                                                    </Button>
+                                                  </div>
+                                                </div>
+                                              </SheetContent>
+                                            </Sheet>
                                           </div>
                                         </div>
                                       </div>
