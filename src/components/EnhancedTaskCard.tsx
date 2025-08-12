@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
@@ -73,6 +74,8 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
 }) => {
   const navigate = useNavigate();
   const [selectedTaskForActions, setSelectedTaskForActions] = useState<Task | null>(null);
+  const [pendingAssignee, setPendingAssignee] = useState<string | null>(null);
+  const [showConfirmAssignment, setShowConfirmAssignment] = useState(false);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -138,6 +141,24 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
     if (onAssigneeChange) {
       onAssigneeChange(task.id, newAssignee);
     }
+  };
+
+  const confirmAssigneeChange = (newAssignee: string) => {
+    setPendingAssignee(newAssignee);
+    setShowConfirmAssignment(true);
+  };
+
+  const handleConfirmAssignment = () => {
+    if (pendingAssignee && onAssigneeChange) {
+      onAssigneeChange(task.id, pendingAssignee);
+    }
+    setPendingAssignee(null);
+    setShowConfirmAssignment(false);
+  };
+
+  const handleCancelAssignment = () => {
+    setPendingAssignee(null);
+    setShowConfirmAssignment(false);
   };
 
   // Mock team members - in a real app, this would come from props or context
@@ -361,34 +382,81 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
                 {/* Quick Assign */}
                 <div>
                   <h4 className="text-xs font-medium mb-1">Quick Assign</h4>
-                  <div className="space-y-1 max-h-20 overflow-y-auto">
-                    {teamMembers.slice(0, 2).map((teamMember) => (
-                      <Button
-                        key={teamMember.id}
-                        variant="outline"
-                        size="sm"
-                        className={`w-full justify-start h-6 text-xs ${
-                          !teamMember.active ? 'opacity-50' : ''
-                        } ${
-                          getAssigneeName() === teamMember.name ? 'ring-1 ring-primary bg-primary/5' : ''
-                        }`}
-                        disabled={!teamMember.active}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleAssigneeChange(teamMember.name);
-                        }}
-                      >
-                        <div className="flex items-center gap-1">
-                          <div className={`w-4 h-4 rounded-full flex items-center justify-center text-white font-semibold text-xs ${
-                            teamMember.active ? 'bg-primary' : 'bg-gray-400'
-                          }`}>
-                            {teamMember.name.split(' ').map(n => n[0]).join('')}
-                          </div>
-                          <span className="truncate">{teamMember.name}</span>
-                        </div>
-                      </Button>
-                    ))}
-                  </div>
+                  {!showConfirmAssignment ? (
+                    teamMembers.length > 2 ? (
+                      <Select value={getAssigneeName()} onValueChange={confirmAssigneeChange}>
+                        <SelectTrigger className="h-6 text-xs bg-background border z-50">
+                          <SelectValue placeholder="Select assignee" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-background border shadow-lg z-50">
+                          {teamMembers.filter(m => m.active).map((teamMember) => (
+                            <SelectItem key={teamMember.id} value={teamMember.name} className="text-xs">
+                              <div className="flex items-center gap-2">
+                                <div className="w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center text-xs font-semibold">
+                                  {teamMember.name.split(' ').map(n => n[0]).join('')}
+                                </div>
+                                <span>{teamMember.name}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <div className="space-y-1">
+                        {teamMembers.filter(m => m.active).slice(0, 2).map((teamMember) => (
+                          <Button
+                            key={teamMember.id}
+                            variant="outline"
+                            size="sm"
+                            className={`w-full justify-start h-6 text-xs ${
+                              getAssigneeName() === teamMember.name ? 'ring-1 ring-primary bg-primary/5' : ''
+                            }`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              confirmAssigneeChange(teamMember.name);
+                            }}
+                          >
+                            <div className="flex items-center gap-1">
+                              <div className="w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center text-xs font-semibold">
+                                {teamMember.name.split(' ').map(n => n[0]).join('')}
+                              </div>
+                              <span className="truncate">{teamMember.name}</span>
+                            </div>
+                          </Button>
+                        ))}
+                      </div>
+                    )
+                  ) : (
+                    <div className="space-y-1">
+                      <p className="text-xs text-muted-foreground">
+                        Assign to {pendingAssignee}?
+                      </p>
+                      <div className="flex gap-1">
+                        <Button
+                          variant="default"
+                          size="sm"
+                          className="h-6 text-xs flex-1"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleConfirmAssignment();
+                          }}
+                        >
+                          Confirm
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-6 text-xs flex-1"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCancelAssignment();
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -492,34 +560,81 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
               {/* Quick Assign */}
               <div>
                 <h4 className="text-xs font-medium mb-1">Quick Assign</h4>
-                <div className="space-y-1 max-h-20 overflow-y-auto">
-                  {teamMembers.slice(0, 2).map((teamMember) => (
-                    <Button
-                      key={teamMember.id}
-                      variant="outline"
-                      size="sm"
-                      className={`w-full justify-start h-6 text-xs ${
-                        !teamMember.active ? 'opacity-50' : ''
-                      } ${
-                        getAssigneeName() === teamMember.name ? 'ring-1 ring-primary bg-primary/5' : ''
-                      }`}
-                      disabled={!teamMember.active}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleAssigneeChange(teamMember.name);
-                      }}
-                    >
-                      <div className="flex items-center gap-1">
-                        <div className={`w-4 h-4 rounded-full flex items-center justify-center text-white font-semibold text-xs ${
-                          teamMember.active ? 'bg-primary' : 'bg-gray-400'
-                        }`}>
-                          {teamMember.name.split(' ').map(n => n[0]).join('')}
-                        </div>
-                        <span className="truncate">{teamMember.name}</span>
-                      </div>
-                    </Button>
-                  ))}
-                </div>
+                {!showConfirmAssignment ? (
+                  teamMembers.length > 2 ? (
+                    <Select value={getAssigneeName()} onValueChange={confirmAssigneeChange}>
+                      <SelectTrigger className="h-6 text-xs bg-background border z-50">
+                        <SelectValue placeholder="Select assignee" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border shadow-lg z-50">
+                        {teamMembers.filter(m => m.active).map((teamMember) => (
+                          <SelectItem key={teamMember.id} value={teamMember.name} className="text-xs">
+                            <div className="flex items-center gap-2">
+                              <div className="w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center text-xs font-semibold">
+                                {teamMember.name.split(' ').map(n => n[0]).join('')}
+                              </div>
+                              <span>{teamMember.name}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <div className="space-y-1">
+                      {teamMembers.filter(m => m.active).slice(0, 2).map((teamMember) => (
+                        <Button
+                          key={teamMember.id}
+                          variant="outline"
+                          size="sm"
+                          className={`w-full justify-start h-6 text-xs ${
+                            getAssigneeName() === teamMember.name ? 'ring-1 ring-primary bg-primary/5' : ''
+                          }`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            confirmAssigneeChange(teamMember.name);
+                          }}
+                        >
+                          <div className="flex items-center gap-1">
+                            <div className="w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center text-xs font-semibold">
+                              {teamMember.name.split(' ').map(n => n[0]).join('')}
+                            </div>
+                            <span className="truncate">{teamMember.name}</span>
+                          </div>
+                        </Button>
+                      ))}
+                    </div>
+                  )
+                ) : (
+                  <div className="space-y-1">
+                    <p className="text-xs text-muted-foreground">
+                      Assign to {pendingAssignee}?
+                    </p>
+                    <div className="flex gap-1">
+                      <Button
+                        variant="default"
+                        size="sm"
+                        className="h-6 text-xs flex-1"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleConfirmAssignment();
+                        }}
+                      >
+                        Confirm
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-6 text-xs flex-1"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCancelAssignment();
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
