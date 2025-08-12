@@ -36,16 +36,16 @@ interface TaskCardProps {
 const TaskCard = ({ task, className, size = 'default' }: TaskCardProps) => {
   const navigate = useNavigate();
   const priorityColors = {
-    low: 'bg-green-100 text-green-800 border-green-200',
-    medium: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    high: 'bg-red-100 text-red-800 border-red-200'
+    low: 'bg-success/10 text-success border-success/20',
+    medium: 'bg-warning/10 text-warning border-warning/20',
+    high: 'bg-destructive/10 text-destructive border-destructive/20'
   };
 
   const statusColors = {
-    'todo': 'border-l-gray-400',
-    'in-progress': 'border-l-blue-500',
-    'completed': 'border-l-green-500',
-    'blocked': 'border-l-red-500 bg-red-50/50'
+    'todo': 'border-l-muted-foreground',
+    'in-progress': 'border-l-primary',
+    'completed': 'border-l-success',
+    'blocked': 'border-l-blocked bg-blocked-bg/30 shadow-lg shadow-blocked/10'
   };
 
   const getStatusIcon = (status: string) => {
@@ -108,7 +108,7 @@ const TaskCard = ({ task, className, size = 'default' }: TaskCardProps) => {
                     {task.milestone && (
                       <Badge 
                         variant="outline" 
-                        className="text-xs px-1 py-0 bg-blue-50 text-blue-700 border-blue-200"
+                        className="text-xs px-1 py-0 bg-primary/10 text-primary border-primary/20"
                       >
                         <Target className="w-2 h-2 mr-1" />
                         {task.milestone.name}

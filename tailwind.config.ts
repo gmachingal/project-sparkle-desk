@@ -61,6 +61,12 @@ export default {
 					DEFAULT: 'hsl(var(--warning))',
 					foreground: 'hsl(var(--warning-foreground))'
 				},
+				blocked: {
+					DEFAULT: 'hsl(var(--blocked))',
+					foreground: 'hsl(var(--blocked-foreground))',
+					bg: 'hsl(var(--blocked-bg))',
+					border: 'hsl(var(--blocked-border))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',

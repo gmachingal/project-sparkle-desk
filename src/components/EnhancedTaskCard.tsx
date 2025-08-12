@@ -92,7 +92,7 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
       case 'in-progress':
         return <Clock className="w-3 h-3 text-blue-500" />;
       case 'blocked':
-        return <AlertCircle className="w-3 h-3 text-red-500" />;
+        return <AlertCircle className="w-3 h-3 text-blocked" />;
       default:
         return <Circle className="w-3 h-3 text-gray-400" />;
     }
@@ -101,21 +101,21 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'critical':
-        return 'text-red-600 bg-red-50 border-red-200';
+        return 'bg-destructive/10 text-destructive border-destructive/20';
       case 'high':
-        return 'text-orange-600 bg-orange-50 border-orange-200';
+        return 'bg-destructive/10 text-destructive border-destructive/20';
       case 'medium':
-        return 'text-blue-600 bg-blue-50 border-blue-200';
+        return 'bg-warning/10 text-warning border-warning/20';
       default:
-        return 'text-gray-600 bg-gray-50 border-gray-200';
+        return 'bg-success/10 text-success border-success/20';
     }
   };
 
   const statusColors = {
-    'todo': 'border-l-gray-400',
-    'in-progress': 'border-l-blue-500',
-    'completed': 'border-l-green-500',
-    'blocked': 'border-l-red-500 bg-red-50/50'
+    'todo': 'border-l-muted-foreground',
+    'in-progress': 'border-l-primary',
+    'completed': 'border-l-success',
+    'blocked': 'border-l-blocked bg-blocked-bg/30 shadow-lg shadow-blocked/10 animate-pulse'
   };
 
   const getProgressPercentage = () => {
@@ -422,13 +422,13 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
                           {!showStatusConfirm ? (
                             <>
                               <h3 className="font-semibold mb-3">Change Status</h3>
-                              <div className="grid grid-cols-2 gap-2">
-                                {[
-                                  { status: 'todo', label: 'To Do', color: 'bg-gray-100 text-gray-700 hover:bg-gray-200' },
-                                  { status: 'in-progress', label: 'In Progress', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200' },
-                                  { status: 'completed', label: 'Completed', color: 'bg-green-100 text-green-700 hover:bg-green-200' },
-                                  { status: 'blocked', label: 'Blocked', color: 'bg-red-100 text-red-700 hover:bg-red-200' }
-                                ].map((statusOption) => (
+                               <div className="grid grid-cols-2 gap-2">
+                                 {[
+                                   { status: 'todo', label: 'To Do', color: 'bg-muted text-muted-foreground hover:bg-muted/80' },
+                                   { status: 'in-progress', label: 'In Progress', color: 'bg-primary/10 text-primary hover:bg-primary/20' },
+                                   { status: 'completed', label: 'Completed', color: 'bg-success/10 text-success hover:bg-success/20' },
+                                   { status: 'blocked', label: 'Blocked', color: 'bg-blocked/10 text-blocked hover:bg-blocked/20' }
+                                 ].map((statusOption) => (
                                   <Button
                                     key={statusOption.status}
                                     variant="outline"
@@ -682,13 +682,13 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
                         {!showStatusConfirm ? (
                           <>
                             <h3 className="font-semibold mb-3">Change Status</h3>
-                            <div className="grid grid-cols-2 gap-2">
-                              {[
-                                { status: 'todo', label: 'To Do', color: 'bg-gray-100 text-gray-700 hover:bg-gray-200' },
-                                { status: 'in-progress', label: 'In Progress', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200' },
-                                { status: 'completed', label: 'Completed', color: 'bg-green-100 text-green-700 hover:bg-green-200' },
-                                { status: 'blocked', label: 'Blocked', color: 'bg-red-100 text-red-700 hover:bg-red-200' }
-                              ].map((statusOption) => (
+                             <div className="grid grid-cols-2 gap-2">
+                               {[
+                                 { status: 'todo', label: 'To Do', color: 'bg-muted text-muted-foreground hover:bg-muted/80' },
+                                 { status: 'in-progress', label: 'In Progress', color: 'bg-primary/10 text-primary hover:bg-primary/20' },
+                                 { status: 'completed', label: 'Completed', color: 'bg-success/10 text-success hover:bg-success/20' },
+                                 { status: 'blocked', label: 'Blocked', color: 'bg-blocked/10 text-blocked hover:bg-blocked/20' }
+                               ].map((statusOption) => (
                                 <Button
                                   key={statusOption.status}
                                   variant="outline"
