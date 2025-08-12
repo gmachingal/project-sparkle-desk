@@ -74,6 +74,38 @@ const AdminAttendance = () => {
     averageHours: 8.2
   };
 
+  // Attendance-specific mock data for charts
+  const attendanceChartData = {
+    monthlyTrends: [
+      { month: 'Jan', present: 142, absent: 14, late: 8, wfh: 28 },
+      { month: 'Feb', present: 138, absent: 18, late: 12, wfh: 32 },
+      { month: 'Mar', present: 145, absent: 11, late: 6, wfh: 25 },
+      { month: 'Apr', present: 140, absent: 16, late: 9, wfh: 30 },
+      { month: 'May', present: 144, absent: 12, late: 7, wfh: 26 },
+      { month: 'Jun', present: 147, absent: 9, late: 5, wfh: 24 }
+    ],
+    dailyDistribution: [
+      { name: 'Present', value: 142, color: '#10b981' },
+      { name: 'Work From Home', value: 28, color: '#3b82f6' },
+      { name: 'Absent', value: 14, color: '#ef4444' },
+      { name: 'Late', value: 8, color: '#f59e0b' }
+    ],
+    departmentAttendance: [
+      { department: 'Engineering', present: 42, absent: 3, late: 2, total: 47 },
+      { department: 'Design', present: 18, absent: 2, late: 1, total: 21 },
+      { department: 'Marketing', present: 22, absent: 3, late: 2, total: 27 },
+      { department: 'Sales', present: 25, absent: 2, late: 1, total: 28 },
+      { department: 'HR', present: 15, absent: 1, late: 1, total: 17 },
+      { department: 'Finance', present: 20, absent: 3, late: 1, total: 24 }
+    ],
+    weeklyHours: [
+      { week: 'Week 1', avgHours: 8.2, overtime: 1.5, attendance: 92 },
+      { week: 'Week 2', avgHours: 8.1, overtime: 1.2, attendance: 89 },
+      { week: 'Week 3', avgHours: 8.3, overtime: 1.8, attendance: 94 },
+      { week: 'Week 4', avgHours: 8.0, overtime: 1.1, attendance: 87 }
+    ]
+  };
+
   // Date navigation functions
   const navigatePrevious = () => {
     if (musterView === 'day') {
@@ -409,7 +441,7 @@ const AdminAttendance = () => {
             </div>
 
             {/* Enhanced Filters */}
-            <Card className="border-0 shadow-sm bg-gradient-to-r from-card to-card/80">
+            <Card className="border-0 shadow-sm">
               <CardContent className="p-6">
                 <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
                   <div className="relative flex-1 min-w-0">
@@ -618,67 +650,138 @@ const AdminAttendance = () => {
                     Monthly Attendance Trends
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <SimpleAreaChart 
-                    data={generateMockData.attendanceTrend}
-                    dataKeys={[
-                      { key: 'present', color: '#10b981' },
-                      { key: 'wfh', color: '#3b82f6' },
-                      { key: 'absent', color: '#ef4444' }
-                    ]}
-                    height={350}
-                    xAxisKey="month"
-                  />
-                </CardContent>
-              </Card>
+                 <CardContent>
+                   <SimpleAreaChart 
+                     data={attendanceChartData.monthlyTrends}
+                     dataKeys={[
+                       { key: 'present', color: '#10b981' },
+                       { key: 'wfh', color: '#3b82f6' },
+                       { key: 'late', color: '#f59e0b' },
+                       { key: 'absent', color: '#ef4444' }
+                     ]}
+                     height={350}
+                     xAxisKey="month"
+                   />
+                 </CardContent>
+               </Card>
 
-              <Card className="border-0 shadow-sm bg-gradient-to-br from-card to-card/80">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <PieChart className="h-5 w-5" />
-                    Today's Attendance Distribution
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <SimplePieChart data={generateMockData.taskStatus} height={280} />
-                </CardContent>
-              </Card>
+               <Card className="border-0 shadow-sm bg-gradient-to-br from-card to-card/80">
+                 <CardHeader>
+                   <CardTitle className="flex items-center gap-2">
+                     <PieChart className="h-5 w-5" />
+                     Today's Attendance Distribution
+                   </CardTitle>
+                 </CardHeader>
+                 <CardContent>
+                   <SimplePieChart data={attendanceChartData.dailyDistribution} height={280} />
+                 </CardContent>
+               </Card>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="border-0 shadow-sm bg-gradient-to-br from-card to-card/80">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Building className="h-5 w-5" />
-                    Department-wise Performance
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <SimpleBarChart 
-                    data={generateMockData.departmentPerformance}
-                    dataKeys={[
-                      { key: 'completed', color: '#10b981', name: 'Completed' },
-                      { key: 'pending', color: '#3b82f6', name: 'Pending' },
-                      { key: 'blocked', color: '#ef4444', name: 'Blocked' }
-                    ]}
-                    height={350}
-                  />
-                </CardContent>
-              </Card>
+             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+               <Card className="border-0 shadow-sm bg-gradient-to-br from-card to-card/80">
+                 <CardHeader>
+                   <CardTitle className="flex items-center gap-2">
+                     <Building className="h-5 w-5" />
+                     Department-wise Attendance
+                   </CardTitle>
+                 </CardHeader>
+                 <CardContent>
+                   <SimpleBarChart 
+                     data={attendanceChartData.departmentAttendance}
+                     dataKeys={[
+                       { key: 'present', color: '#10b981', name: 'Present' },
+                       { key: 'late', color: '#f59e0b', name: 'Late' },
+                       { key: 'absent', color: '#ef4444', name: 'Absent' }
+                     ]}
+                     height={350}
+                   />
+                 </CardContent>
+               </Card>
 
-              <Card className="border-0 shadow-sm bg-gradient-to-br from-card to-card/80">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Activity className="h-5 w-5" />
-                    Weekly Hours & Productivity
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <SimpleComposedChart data={generateMockData.weeklyProductivity} height={350} />
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
+               <Card className="border-0 shadow-sm bg-gradient-to-br from-card to-card/80">
+                 <CardHeader>
+                   <CardTitle className="flex items-center gap-2">
+                     <Activity className="h-5 w-5" />
+                     Weekly Hours & Attendance Rate
+                   </CardTitle>
+                 </CardHeader>
+                 <CardContent>
+                   <SimpleComposedChart 
+                     data={attendanceChartData.weeklyHours}
+                     height={350}
+                   />
+                 </CardContent>
+               </Card>
+
+               {/* Additional Attendance Metrics */}
+               <Card className="border-0 shadow-sm bg-gradient-to-br from-card to-card/80 lg:col-span-2">
+                 <CardHeader>
+                   <CardTitle className="flex items-center gap-2">
+                     <Clock className="h-5 w-5" />
+                     Attendance Summary & Insights
+                   </CardTitle>
+                 </CardHeader>
+                 <CardContent>
+                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                     <div className="space-y-4">
+                       <h4 className="font-semibold text-sm">Overall Statistics</h4>
+                       <div className="space-y-2">
+                         <div className="flex justify-between">
+                           <span className="text-sm text-muted-foreground">Average Attendance Rate</span>
+                           <span className="font-medium">91.2%</span>
+                         </div>
+                         <div className="flex justify-between">
+                           <span className="text-sm text-muted-foreground">Peak Attendance Day</span>
+                           <span className="font-medium">Wednesday</span>
+                         </div>
+                         <div className="flex justify-between">
+                           <span className="text-sm text-muted-foreground">Most Common Late Time</span>
+                           <span className="font-medium">9:15 AM</span>
+                         </div>
+                       </div>
+                     </div>
+                     
+                     <div className="space-y-4">
+                       <h4 className="font-semibold text-sm">Department Leaders</h4>
+                       <div className="space-y-2">
+                         <div className="flex justify-between">
+                           <span className="text-sm text-muted-foreground">Best Attendance</span>
+                           <span className="font-medium">Engineering (97%)</span>
+                         </div>
+                         <div className="flex justify-between">
+                           <span className="text-sm text-muted-foreground">Most Punctual</span>
+                           <span className="font-medium">HR (2.1% late)</span>
+                         </div>
+                         <div className="flex justify-between">
+                           <span className="text-sm text-muted-foreground">Highest WFH Usage</span>
+                           <span className="font-medium">Design (35%)</span>
+                         </div>
+                       </div>
+                     </div>
+                     
+                     <div className="space-y-4">
+                       <h4 className="font-semibold text-sm">Trends</h4>
+                       <div className="space-y-2">
+                         <div className="flex justify-between">
+                           <span className="text-sm text-muted-foreground">This Month vs Last</span>
+                           <span className="font-medium text-green-600">+2.3%</span>
+                         </div>
+                         <div className="flex justify-between">
+                           <span className="text-sm text-muted-foreground">WFH Trend</span>
+                           <span className="font-medium text-blue-600">Stable</span>
+                         </div>
+                         <div className="flex justify-between">
+                           <span className="text-sm text-muted-foreground">Late Arrivals</span>
+                           <span className="font-medium text-yellow-600">-12%</span>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </CardContent>
+               </Card>
+             </div>
+           </TabsContent>
 
           <TabsContent value="requests" className="space-y-6">
             {/* Enhanced Filters and Actions Bar */}
