@@ -883,14 +883,14 @@ const AdminAttendance = () => {
               </Card>
             </div>
 
-            {/* Enhanced Request Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Enhanced Request Cards - Compact */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
               {pendingRequests.map((request, index) => (
                 <Card 
                   key={request.id} 
-                  className="border border-border/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-card to-card/50 overflow-hidden h-fit"
+                  className="border border-border/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-card to-card/50 overflow-hidden h-[280px] flex flex-col"
                 >
-                  <CardContent className="p-0">
+                  <CardContent className="p-0 flex flex-col h-full">
                     {/* Priority Strip */}
                     <div className={`h-1 w-full ${
                       index === 0 ? 'bg-red-500' : 
@@ -898,72 +898,61 @@ const AdminAttendance = () => {
                       'bg-green-500'
                     }`}></div>
                     
-                    <div className="p-4">
+                    <div className="p-3 flex flex-col h-full">
                       {/* Header Section */}
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-3">
-                          <Avatar className="w-10 h-10 border-2 border-background shadow-sm">
-                            <AvatarFallback className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground font-semibold text-sm">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <Avatar className="w-8 h-8 border-2 border-background shadow-sm flex-shrink-0">
+                            <AvatarFallback className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground font-semibold text-xs">
                               {request.employeeName.split(' ').map(n => n[0]).join('')}
                             </AvatarFallback>
                           </Avatar>
-                          <div>
-                            <h4 className="font-semibold text-base">{request.employeeName}</h4>
-                            <p className="text-xs text-muted-foreground flex items-center gap-1">
-                              <Building className="w-3 h-3" />
-                              {request.department}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {format(new Date(request.requestDate), 'MMM dd • HH:mm')}
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-semibold text-xs text-foreground group-hover:text-primary transition-colors truncate">{request.employeeName}</h4>
+                            <p className="text-xs text-muted-foreground truncate">{request.department}</p>
+                            <p className="text-xs text-muted-foreground truncate">
+                              {format(new Date(request.requestDate), 'MMM dd')}
                             </p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Badge 
-                            variant="outline" 
-                            className={`
-                              ${index === 0 ? 'bg-red-50 text-red-700 border-red-200 animate-pulse' : 
-                                index === 1 ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 
-                                'bg-blue-50 text-blue-700 border-blue-200'}
-                            `}
-                          >
-                            {index === 0 ? 'Urgent' : index === 1 ? 'Pending' : 'Regular'}
-                          </Badge>
-                          <Badge variant="secondary" className="text-xs">
-                            {request.type || 'Attendance'}
-                          </Badge>
-                        </div>
+                        <Badge 
+                          variant="outline" 
+                          className={`text-xs px-1.5 py-0.5 h-5 flex-shrink-0 ${
+                            index === 0 ? 'bg-red-50 text-red-700 border-red-200' : 
+                            index === 1 ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 
+                            'bg-blue-50 text-blue-700 border-blue-200'
+                          }`}
+                        >
+                          {request.type || 'Attendance'}
+                        </Badge>
                       </div>
                       
-                      {/* Request Details Grid */}
-                      <div className="grid grid-cols-2 gap-3 mb-3 p-3 bg-muted/30 rounded-lg">
-                         <div className="text-center">
-                           <div className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">
-                             <CalendarIcon className="w-3 h-3" />
-                            {format(new Date(request.requestDate), 'MMM dd')}
-                          </div>
-                        </div>
+                      {/* Request Details */}
+                      <div className="mb-2 p-2 bg-muted/30 rounded-lg">
                         <div className="text-center">
                           <div className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">
                             <Clock className="w-3 h-3" />
+                            Time
+                          </div>
+                          <div className="text-xs font-semibold truncate">
                             {request.checkIn} - {request.checkOut}
                           </div>
                         </div>
                       </div>
                       
-                      {/* Reason Section */}
-                      <div className="mb-4 p-3 bg-muted/20 rounded-lg border-l-4 border-primary">
+                      {/* Reason Section - Flexible */}
+                      <div className="mb-3 p-2 bg-muted/20 rounded-lg border-l-2 border-primary flex-1 min-h-0">
                         <div className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
                           <MessageSquare className="w-3 h-3" />
                           Reason
                         </div>
-                        <p className="text-xs leading-relaxed line-clamp-2">{request.reason}</p>
+                        <p className="text-xs leading-relaxed line-clamp-3 overflow-hidden">{request.reason}</p>
                       </div>
                       
                       {/* Action Buttons */}
-                      <div className="flex gap-2">
+                      <div className="flex gap-1.5 mt-auto">
                         <Button 
-                          className="flex-1"
+                          className="flex-1 h-7 text-xs"
                           size="sm"
                         >
                           <CheckCircle className="w-3 h-3 mr-1" />
@@ -971,7 +960,7 @@ const AdminAttendance = () => {
                         </Button>
                         <Button 
                           variant="outline" 
-                          className="flex-1"
+                          className="flex-1 h-7 text-xs"
                           size="sm"
                         >
                           <XCircle className="w-3 h-3 mr-1" />

@@ -323,14 +323,14 @@ const AdminLeaveManagement = () => {
               </Card>
             </div>
 
-            {/* Enhanced Request Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Enhanced Request Cards - Compact */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
               {pendingRequests.map((request, index) => (
                 <Card 
                   key={request.id} 
-                  className="border border-border/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-card to-card/50 overflow-hidden h-fit"
+                  className="border border-border/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-card to-card/50 overflow-hidden h-[280px] flex flex-col"
                 >
-                  <CardContent className="p-0">
+                  <CardContent className="p-0 flex flex-col h-full">
                     {/* Priority Strip */}
                     <div className={`h-1 w-full ${
                       request.type === 'SL' ? 'bg-red-500' : 
@@ -338,75 +338,56 @@ const AdminLeaveManagement = () => {
                       'bg-blue-500'
                     }`}></div>
                     
-                    <div className="p-4">
+                    <div className="p-3 flex flex-col h-full">
                       {/* Header Section */}
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-3">
-                          <Avatar className="w-10 h-10 border-2 border-background shadow-sm">
-                            <AvatarFallback className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground font-semibold text-sm">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <Avatar className="w-8 h-8 border-2 border-background shadow-sm flex-shrink-0">
+                            <AvatarFallback className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground font-semibold text-xs">
                               {request.employee.name.split(' ').map(n => n[0]).join('')}
                             </AvatarFallback>
                           </Avatar>
-                          <div>
-                            <h4 className="font-semibold text-base">{request.employee.name}</h4>
-                            <p className="text-xs text-muted-foreground flex items-center gap-1">
-                              <Users className="w-3 h-3" />
-                              {request.employee.department}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              Applied on {new Date(request.appliedOn).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                            </p>
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-semibold text-xs text-foreground group-hover:text-primary transition-colors truncate">{request.employee.name}</h4>
+                            <p className="text-xs text-muted-foreground truncate">{request.employee.department}</p>
                           </div>
                         </div>
-                        <div className="flex flex-col items-end gap-2">
-                          <Badge 
-                            variant="outline" 
-                            className={`${getLeaveTypeColor(request.type)} text-xs`}
-                          >
-                            {request.type === 'PL' ? 'Paid Leave' : 
-                             request.type === 'SL' ? 'Sick Leave' : 
-                             'Casual Leave'}
-                          </Badge>
-                          <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200 text-xs">
-                            Pending
-                          </Badge>
-                        </div>
+                        <Badge 
+                          variant="outline" 
+                          className={`${getLeaveTypeColor(request.type)} text-xs px-1.5 py-0.5 h-5 flex-shrink-0`}
+                        >
+                          {request.type}
+                        </Badge>
                       </div>
                       
-                      {/* Leave Details Grid */}
-                      <div className="grid grid-cols-2 gap-3 mb-3 p-3 bg-muted/30 rounded-lg">
+                      {/* Leave Details */}
+                      <div className="mb-2 p-2 bg-muted/30 rounded-lg">
                         <div className="text-center">
                           <div className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">
                             <Calendar className="w-3 h-3" />
                             Duration
                           </div>
-                          <div className="text-sm font-semibold">
+                          <div className="text-xs font-semibold truncate">
                             {new Date(request.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - 
                             {new Date(request.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                           </div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            Days
-                          </div>
-                          <div className="text-sm font-semibold text-primary">{request.days} day{request.days > 1 ? 's' : ''}</div>
+                          <div className="text-xs font-semibold text-primary mt-1">{request.days} day{request.days > 1 ? 's' : ''}</div>
                         </div>
                       </div>
                       
-                      {/* Reason Section */}
-                      <div className="mb-4 p-3 bg-muted/20 rounded-lg border-l-4 border-primary">
+                      {/* Reason Section - Flexible */}
+                      <div className="mb-3 p-2 bg-muted/20 rounded-lg border-l-2 border-primary flex-1 min-h-0">
                         <div className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
                           <FileText className="w-3 h-3" />
                           Reason
                         </div>
-                        <p className="text-xs leading-relaxed line-clamp-2">{request.reason}</p>
+                        <p className="text-xs leading-relaxed line-clamp-3 overflow-hidden">{request.reason}</p>
                       </div>
                       
                       {/* Action Buttons */}
-                      <div className="flex gap-2">
+                      <div className="flex gap-1.5 mt-auto">
                         <Button 
-                          className="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                          className="flex-1 h-7 text-xs"
                           size="sm"
                           onClick={() => handleAction(request, 'approve')}
                         >
@@ -415,20 +396,12 @@ const AdminLeaveManagement = () => {
                         </Button>
                         <Button 
                           variant="outline" 
-                          className="flex-1 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 shadow-lg hover:shadow-xl transition-all duration-300"
+                          className="flex-1 h-7 text-xs"
                           size="sm"
                           onClick={() => handleAction(request, 'reject')}
                         >
                           <XCircle className="w-3 h-3 mr-1" />
                           Reject
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => openRequestDetail(request)}
-                          className="hover:bg-muted/50"
-                        >
-                          <Edit className="w-3 h-3" />
                         </Button>
                       </div>
                     </div>
