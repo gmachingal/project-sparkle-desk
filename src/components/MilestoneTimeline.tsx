@@ -183,6 +183,8 @@ export const MilestoneTimeline: React.FC<MilestoneTimelineProps> = ({
 }) => {
   const [selectedMilestoneForTasks, setSelectedMilestoneForTasks] = useState<any>(null);
   const [selectedTaskDetails, setSelectedTaskDetails] = useState<any>(null);
+  const [selectedTaskForActions, setSelectedTaskForActions] = useState<any>(null);
+  
   const calculateOverallProgress = () => {
     if (milestones.length === 0) return 0;
     return Math.round(milestones.reduce((sum, m) => sum + m.progress, 0) / milestones.length);
@@ -417,58 +419,183 @@ export const MilestoneTimeline: React.FC<MilestoneTimelineProps> = ({
                                          All Tasks ({milestone.tasks?.length || 0})
                                        </h4>
                                        
-                                       <div className="space-y-2 max-h-96 overflow-y-auto">
-                                         {milestone.tasks?.map((task) => (
-                                           <Card key={task.id} className="p-3 hover:shadow-sm transition-shadow cursor-pointer">
-                                             <div className="flex items-start gap-3">
-                                               <div className="flex-shrink-0 mt-0.5">
-                                                 {getTaskStatusIcon(task.status)}
-                                               </div>
-                                               <div className="flex-1 min-w-0">
-                                                 <div className="flex items-center gap-2 mb-1">
-                                                   <span className="font-medium text-sm truncate">{task.name}</span>
-                                                   <Badge 
-                                                     variant="outline" 
-                                                     className={cn("text-xs px-1.5 py-0.5", getTaskPriorityColor(task.priority))}
-                                                   >
-                                                     {task.priority}
-                                                   </Badge>
-                                                 </div>
-                                                 <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
-                                                   <span className="flex items-center gap-1">
-                                                     <Users className="w-3 h-3" />
-                                                     {task.assignee}
-                                                   </span>
-                                                   <span className="flex items-center gap-1">
-                                                     <Clock className="w-3 h-3" />
-                                                     {task.loggedHours}h / {task.estimatedHours}h
-                                                   </span>
-                                                 </div>
-                                                 <div className="space-y-1">
-                                                   <div className="flex items-center justify-between text-xs">
-                                                     <span className="text-muted-foreground">Progress</span>
-                                                     <span className="font-medium">
-                                                       {task.estimatedHours > 0 ? Math.round((task.loggedHours / task.estimatedHours) * 100) : 0}%
-                                                     </span>
-                                                   </div>
-                                                   <Progress 
-                                                     value={task.estimatedHours > 0 ? (task.loggedHours / task.estimatedHours) * 100 : 0} 
-                                                     className="h-1.5"
-                                                   />
-                                                 </div>
-                                               </div>
-                                               <Sheet>
-                                                 <SheetTrigger asChild>
-                                                   <Button 
-                                                     variant="ghost" 
-                                                     size="sm" 
-                                                     className="h-6 px-2 text-xs"
-                                                     onClick={() => setSelectedTaskDetails(task)}
-                                                   >
-                                                     <Eye className="w-3 h-3 mr-1" />
-                                                     Details
-                                                   </Button>
-                                                 </SheetTrigger>
+                                        <div className="space-y-2 max-h-96 overflow-y-auto">
+                                          {milestone.tasks?.map((task) => (
+                                            <Card key={task.id} className="group p-3 hover:shadow-sm transition-shadow cursor-pointer">
+                                              <div className="flex items-start gap-3">
+                                                <div className="flex-shrink-0 mt-0.5">
+                                                  {getTaskStatusIcon(task.status)}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                  <div className="flex items-center gap-2 mb-1">
+                                                    <span className="font-medium text-sm truncate">{task.name}</span>
+                                                    <Badge 
+                                                      variant="outline" 
+                                                      className={cn("text-xs px-1.5 py-0.5", getTaskPriorityColor(task.priority))}
+                                                    >
+                                                      {task.priority}
+                                                    </Badge>
+                                                  </div>
+                                                  <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
+                                                    <span className="flex items-center gap-1">
+                                                      <Users className="w-3 h-3" />
+                                                      {task.assignee}
+                                                    </span>
+                                                    <span className="flex items-center gap-1">
+                                                      <Clock className="w-3 h-3" />
+                                                      {task.loggedHours}h / {task.estimatedHours}h
+                                                    </span>
+                                                  </div>
+                                                  <div className="space-y-1">
+                                                    <div className="flex items-center justify-between text-xs">
+                                                      <span className="text-muted-foreground">Progress</span>
+                                                      <span className="font-medium">
+                                                        {task.estimatedHours > 0 ? Math.round((task.loggedHours / task.estimatedHours) * 100) : 0}%
+                                                      </span>
+                                                    </div>
+                                                    <Progress 
+                                                      value={task.estimatedHours > 0 ? (task.loggedHours / task.estimatedHours) * 100 : 0} 
+                                                      className="h-1.5"
+                                                    />
+                                                  </div>
+                                                </div>
+                                                <div className="flex gap-1">
+                                                  <Sheet>
+                                                    <SheetTrigger asChild>
+                                                      <Button 
+                                                        variant="ghost" 
+                                                        size="sm" 
+                                                        className="h-6 px-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                                                        onClick={() => setSelectedTaskForActions(task)}
+                                                      >
+                                                        <Edit className="w-3 h-3 mr-1" />
+                                                        Quick Actions
+                                                      </Button>
+                                                    </SheetTrigger>
+                                                    <SheetContent className="w-[400px] sm:w-[540px]">
+                                                      <SheetHeader>
+                                                        <SheetTitle className="flex items-center gap-2">
+                                                          <Edit className="w-5 h-5" />
+                                                          Quick Task Actions
+                                                        </SheetTitle>
+                                                      </SheetHeader>
+                                                      
+                                                      <div className="mt-6 space-y-6">
+                                                        {/* Task Info */}
+                                                        <Card>
+                                                          <CardContent className="p-4">
+                                                            <div className="space-y-2">
+                                                              <h4 className="font-semibold">{task.name}</h4>
+                                                              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                                                <span className="flex items-center gap-1">
+                                                                  <Clock className="w-3 h-3" />
+                                                                  {task.loggedHours}h / {task.estimatedHours}h
+                                                                </span>
+                                                                <Badge 
+                                                                  variant="outline" 
+                                                                  className={cn("text-xs", getTaskPriorityColor(task.priority))}
+                                                                >
+                                                                  {task.priority} Priority
+                                                                </Badge>
+                                                              </div>
+                                                            </div>
+                                                          </CardContent>
+                                                        </Card>
+
+                                                        {/* Quick Status Change */}
+                                                        <Card>
+                                                          <CardHeader className="pb-3">
+                                                            <CardTitle className="text-lg">Change Status</CardTitle>
+                                                          </CardHeader>
+                                                          <CardContent className="space-y-3">
+                                                            <div className="grid grid-cols-2 gap-2">
+                                                              {[
+                                                                { status: 'todo', label: 'To Do', color: 'bg-gray-100 text-gray-700 hover:bg-gray-200' },
+                                                                { status: 'in-progress', label: 'In Progress', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200' },
+                                                                { status: 'completed', label: 'Completed', color: 'bg-green-100 text-green-700 hover:bg-green-200' },
+                                                                { status: 'blocked', label: 'Blocked', color: 'bg-red-100 text-red-700 hover:bg-red-200' }
+                                                              ].map((statusOption) => (
+                                                                <Button
+                                                                  key={statusOption.status}
+                                                                  variant="outline"
+                                                                  className={`${statusOption.color} border-0 ${
+                                                                    task.status === statusOption.status ? 'ring-2 ring-primary' : ''
+                                                                  }`}
+                                                                  onClick={() => {/* Handle status change */}}
+                                                                >
+                                                                  {statusOption.label}
+                                                                </Button>
+                                                              ))}
+                                                            </div>
+                                                          </CardContent>
+                                                        </Card>
+
+                                                        {/* Quick Assign */}
+                                                        <Card>
+                                                          <CardHeader className="pb-3">
+                                                            <CardTitle className="text-lg">Assign To</CardTitle>
+                                                          </CardHeader>
+                                                          <CardContent className="space-y-3">
+                                                            <div className="space-y-2">
+                                                              {[
+                                                                { id: '1', name: 'John Doe', role: 'Frontend Developer', active: true },
+                                                                { id: '2', name: 'Jane Smith', role: 'Backend Developer', active: true },
+                                                                { id: '3', name: 'Mike Johnson', role: 'UI/UX Designer', active: false },
+                                                                { id: '4', name: 'Sarah Wilson', role: 'QA Engineer', active: true },
+                                                                { id: '5', name: 'David Brown', role: 'DevOps Engineer', active: true }
+                                                              ].map((teamMember) => (
+                                                                <Button
+                                                                  key={teamMember.id}
+                                                                  variant="outline"
+                                                                  className={`w-full justify-start h-auto p-3 ${
+                                                                    !teamMember.active ? 'opacity-50' : ''
+                                                                  } ${
+                                                                    task.assignee === teamMember.name ? 'ring-2 ring-primary bg-primary/5' : ''
+                                                                  }`}
+                                                                  disabled={!teamMember.active}
+                                                                  onClick={() => {/* Handle assign */}}
+                                                                >
+                                                                  <div className="flex items-center gap-3">
+                                                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold ${
+                                                                      teamMember.active ? 'bg-primary' : 'bg-gray-400'
+                                                                    }`}>
+                                                                      {teamMember.name.split(' ').map(n => n[0]).join('')}
+                                                                    </div>
+                                                                    <div className="text-left">
+                                                                      <div className="font-medium">{teamMember.name}</div>
+                                                                      <div className="text-xs text-muted-foreground">{teamMember.role}</div>
+                                                                    </div>
+                                                                  </div>
+                                                                </Button>
+                                                              ))}
+                                                            </div>
+                                                          </CardContent>
+                                                        </Card>
+
+                                                        {/* Action Buttons */}
+                                                        <div className="flex gap-2 pt-4">
+                                                          <Button className="flex-1">
+                                                            Save Changes
+                                                          </Button>
+                                                          <Button variant="outline" className="flex-1">
+                                                            Cancel
+                                                          </Button>
+                                                        </div>
+                                                      </div>
+                                                    </SheetContent>
+                                                  </Sheet>
+                                                  <Sheet>
+                                                    <SheetTrigger asChild>
+                                                      <Button 
+                                                        variant="ghost" 
+                                                        size="sm" 
+                                                        className="h-6 px-2 text-xs"
+                                                        onClick={() => setSelectedTaskDetails(task)}
+                                                      >
+                                                        <Eye className="w-3 h-3 mr-1" />
+                                                        Details
+                                                      </Button>
+                                                    </SheetTrigger>
                                                  <SheetContent className="w-[400px] sm:w-[540px]">
                                                    <SheetHeader>
                                                      <SheetTitle className="flex items-center gap-2">
@@ -554,9 +681,10 @@ export const MilestoneTimeline: React.FC<MilestoneTimelineProps> = ({
 
                                                    </div>
                                                  </SheetContent>
-                                               </Sheet>
-                                             </div>
-                                           </Card>
+                                                </Sheet>
+                                              </div>
+                                            </div>
+                                            </Card>
                                          ))}
                                        </div>
                                      </div>
