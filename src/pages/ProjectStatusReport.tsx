@@ -6,7 +6,9 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useParams, useNavigate } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 import { 
   ArrowLeft, 
   TrendingUp, 
@@ -24,7 +26,10 @@ import {
   FileText,
   Image,
   File,
-  Eye
+  Eye,
+  Play,
+  AlertCircle as AlertCircleIcon,
+  Circle
 } from 'lucide-react';
 import StatsCard from '@/components/StatsCard';
 import { SimpleBarChart, SimpleAreaChart, SimplePieChart, generateMockData } from '@/components/SimpleCharts';
@@ -35,6 +40,8 @@ const ProjectStatusReport = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const [timeRange, setTimeRange] = useState('month');
+  const [selectedMemberForTasks, setSelectedMemberForTasks] = useState<any>(null);
+  const [selectedMilestoneForTasks, setSelectedMilestoneForTasks] = useState<any>(null);
 
   // Mock project data - in a real app, this would be fetched based on project id
   const project = {
@@ -158,6 +165,33 @@ const ProjectStatusReport = () => {
   const exportReport = () => {
     // Mock export functionality
     console.log('Exporting project status report...');
+  };
+
+  // Helper functions for task status and priority
+  const getTaskStatusIcon = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return <CheckCircle className="w-3 h-3 text-green-500" />;
+      case 'in-progress':
+        return <Play className="w-3 h-3 text-blue-500" />;
+      case 'blocked':
+        return <AlertCircleIcon className="w-3 h-3 text-red-500" />;
+      default:
+        return <Circle className="w-3 h-3 text-gray-400" />;
+    }
+  };
+
+  const getTaskPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'critical':
+        return 'text-red-600 bg-red-50 border-red-200';
+      case 'high':
+        return 'text-orange-600 bg-orange-50 border-orange-200';
+      case 'medium':
+        return 'text-blue-600 bg-blue-50 border-blue-200';
+      default:
+        return 'text-gray-600 bg-gray-50 border-gray-200';
+    }
   };
 
   return (
@@ -572,9 +606,129 @@ const ProjectStatusReport = () => {
                         <CardTitle className="text-lg">{member.name}</CardTitle>
                         <p className="text-sm text-muted-foreground">{member.role}</p>
                       </div>
-                      <div className="text-right">
-                        <div className="text-lg font-bold text-primary">{member.totalHours}h</div>
-                        <div className="text-xs text-muted-foreground">Total Logged</div>
+                      <div className="flex items-center gap-2">
+                        <div className="text-right">
+                          <div className="text-lg font-bold text-primary">{member.totalHours}h</div>
+                          <div className="text-xs text-muted-foreground">Total Logged</div>
+                        </div>
+                        
+                        <Sheet>
+                          <SheetTrigger asChild>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => setSelectedMemberForTasks(member)}
+                            >
+                              <Eye className="w-4 h-4 mr-2" />
+                              View Tasks
+                            </Button>
+                          </SheetTrigger>
+                          <SheetContent className="w-[400px] sm:w-[540px]">
+                            <SheetHeader>
+                              <SheetTitle className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center text-primary-foreground font-semibold">
+                                  {member.name.split(' ').map(n => n[0]).join('')}
+                                </div>
+                                <div>
+                                  <div className="font-semibold">{member.name}</div>
+                                  <div className="text-sm text-muted-foreground">{member.role}</div>
+                                </div>
+                              </SheetTitle>
+                            </SheetHeader>
+                            
+                            <div className="mt-6 space-y-6">
+                              {/* Task Stats */}
+                              <div className="grid grid-cols-3 gap-4">
+                                <div className="text-center p-3 bg-muted/30 rounded-lg">
+                                  <div className="text-2xl font-bold text-green-600">{member.tasksCompleted}</div>
+                                  <div className="text-xs text-muted-foreground">Completed</div>
+                                </div>
+                                <div className="text-center p-3 bg-muted/30 rounded-lg">
+                                  <div className="text-2xl font-bold text-blue-600">{member.tasksInProgress}</div>
+                                  <div className="text-xs text-muted-foreground">In Progress</div>
+                                </div>
+                                <div className="text-center p-3 bg-muted/30 rounded-lg">
+                                  <div className="text-2xl font-bold text-orange-600">{member.totalHours}h</div>
+                                  <div className="text-xs text-muted-foreground">Total Hours</div>
+                                </div>
+                              </div>
+                              
+                              {/* Detailed Task List */}
+                              <div className="space-y-3">
+                                <h4 className="font-medium flex items-center gap-2">
+                                  <Target className="w-4 h-4" />
+                                  Current Tasks ({member.currentTasks.length})
+                                </h4>
+                                
+                                <div className="space-y-2 max-h-96 overflow-y-auto">
+                                  {member.currentTasks.map((task) => (
+                                    <Card key={task.id} className="p-3 hover:shadow-sm transition-shadow">
+                                      <div className="flex items-start gap-3">
+                                        <div className="flex-shrink-0 mt-0.5">
+                                          {getTaskStatusIcon(task.status)}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                          <div className="flex items-center gap-2 mb-1">
+                                            <span className="font-medium text-sm truncate">{task.name}</span>
+                                            <Badge 
+                                              variant="outline" 
+                                              className={cn("text-xs px-1.5 py-0.5", getTaskPriorityColor(task.priority))}
+                                            >
+                                              {task.priority}
+                                            </Badge>
+                                          </div>
+                                          <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
+                                            <span className="flex items-center gap-1">
+                                              <Clock className="w-3 h-3" />
+                                              {task.hours}h logged
+                                            </span>
+                                            <span className="capitalize">{task.status.replace('-', ' ')}</span>
+                                          </div>
+                                          <div className="w-full bg-muted rounded-full h-1.5">
+                                            <div 
+                                              className={cn(
+                                                "h-1.5 rounded-full transition-all duration-300",
+                                                task.status === 'completed' ? 'bg-green-500' :
+                                                task.status === 'in-progress' ? 'bg-blue-500' :
+                                                task.status === 'blocked' ? 'bg-red-500' : 'bg-gray-300'
+                                              )}
+                                              style={{ 
+                                                width: task.status === 'completed' ? '100%' : '60%'
+                                              }}
+                                            />
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </Card>
+                                  ))}
+                                </div>
+                              </div>
+                              
+                              {/* Performance Summary */}
+                              <div className="p-4 bg-muted/20 rounded-lg">
+                                <h4 className="font-medium mb-2">Performance Summary</h4>
+                                <div className="grid grid-cols-2 gap-4 text-sm">
+                                  <div>
+                                    <span className="text-muted-foreground">Weekly Hours:</span>
+                                    <span className="ml-2 font-medium">{member.weeklyHours}h</span>
+                                  </div>
+                                  <div>
+                                    <span className="text-muted-foreground">Efficiency:</span>
+                                    <span className="ml-2 font-medium">{member.efficiency}%</span>
+                                  </div>
+                                  <div>
+                                    <span className="text-muted-foreground">Tasks Assigned:</span>
+                                    <span className="ml-2 font-medium">{member.tasksAssigned}</span>
+                                  </div>
+                                  <div>
+                                    <span className="text-muted-foreground">Completion Rate:</span>
+                                    <span className="ml-2 font-medium">{Math.round((member.tasksCompleted / member.tasksAssigned) * 100)}%</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </SheetContent>
+                        </Sheet>
                       </div>
                     </div>
                   </CardHeader>
@@ -596,39 +750,6 @@ const ProjectStatusReport = () => {
                       <div className="text-center">
                         <div className="text-sm font-bold text-purple-600">{member.efficiency}%</div>
                         <div className="text-xs text-muted-foreground">Efficiency</div>
-                      </div>
-                    </div>
-
-                    {/* Tasks Breakdown */}
-                    <div>
-                      <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
-                        <Clock className="w-4 h-4" />
-                        Recent Tasks & Hours
-                      </h4>
-                      <div className="space-y-2">
-                        {member.currentTasks.slice(0, 4).map((task) => (
-                          <div key={task.id} className="flex items-center justify-between p-2 bg-background rounded border">
-                            <div className="flex items-center gap-2 flex-1 min-w-0">
-                              <div className={`w-2 h-2 rounded-full ${
-                                task.status === 'completed' ? 'bg-green-500' :
-                                task.status === 'in-progress' ? 'bg-blue-500' : 'bg-gray-500'
-                              }`}></div>
-                              <span className="text-sm truncate">{task.name}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Badge 
-                                variant={task.priority === 'high' || task.priority === 'critical' ? 'destructive' : 
-                                        task.priority === 'medium' ? 'default' : 'secondary'} 
-                                className="text-xs px-1.5 py-0.5"
-                              >
-                                {task.priority}
-                              </Badge>
-                              <span className="text-xs font-medium text-primary min-w-0">
-                                {task.hours}h
-                              </span>
-                            </div>
-                          </div>
-                        ))}
                       </div>
                     </div>
 
