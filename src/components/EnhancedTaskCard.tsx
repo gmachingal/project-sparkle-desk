@@ -77,6 +77,10 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
   const navigate = useNavigate();
   const [selectedTaskForActions, setSelectedTaskForActions] = useState<Task | null>(null);
   const [showQuickActions, setShowQuickActions] = useState(false);
+  const [pendingStatusChange, setPendingStatusChange] = useState<string | null>(null);
+  const [pendingAssigneeChange, setPendingAssigneeChange] = useState<string | null>(null);
+  const [showStatusConfirm, setShowStatusConfirm] = useState(false);
+  const [showAssigneeConfirm, setShowAssigneeConfirm] = useState(false);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -132,17 +136,42 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
     return task.milestone?.name;
   };
 
-  const handleStatusChange = (newStatus: string) => {
-    if (onStatusChange) {
-      onStatusChange(task.id, newStatus);
-    }
+  const handleStatusChangeRequest = (newStatus: string) => {
+    setPendingStatusChange(newStatus);
+    setShowStatusConfirm(true);
   };
 
-  const handleAssigneeChange = (newAssignee: string) => {
-    if (onAssigneeChange) {
-      onAssigneeChange(task.id, newAssignee);
+  const confirmStatusChange = () => {
+    if (pendingStatusChange && onStatusChange) {
+      onStatusChange(task.id, pendingStatusChange);
     }
-    setShowQuickActions(false); // Close the side panel
+    setPendingStatusChange(null);
+    setShowStatusConfirm(false);
+    setShowQuickActions(false);
+  };
+
+  const cancelStatusChange = () => {
+    setPendingStatusChange(null);
+    setShowStatusConfirm(false);
+  };
+
+  const handleAssigneeChangeRequest = (newAssignee: string) => {
+    setPendingAssigneeChange(newAssignee);
+    setShowAssigneeConfirm(true);
+  };
+
+  const confirmAssigneeChange = () => {
+    if (pendingAssigneeChange && onAssigneeChange) {
+      onAssigneeChange(task.id, pendingAssigneeChange);
+    }
+    setPendingAssigneeChange(null);
+    setShowAssigneeConfirm(false);
+    setShowQuickActions(false);
+  };
+
+  const cancelAssigneeChange = () => {
+    setPendingAssigneeChange(null);
+    setShowAssigneeConfirm(false);
   };
 
   // Mock team members - in a real app, this would come from props or context
@@ -387,63 +416,98 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
                       {/* Quick Status Change */}
                       <Card>
                         <CardContent className="p-4">
-                          <h3 className="font-semibold mb-3">Change Status</h3>
-                          <div className="grid grid-cols-2 gap-2">
-                            {[
-                              { status: 'todo', label: 'To Do', color: 'bg-gray-100 text-gray-700 hover:bg-gray-200' },
-                              { status: 'in-progress', label: 'In Progress', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200' },
-                              { status: 'completed', label: 'Completed', color: 'bg-green-100 text-green-700 hover:bg-green-200' },
-                              { status: 'blocked', label: 'Blocked', color: 'bg-red-100 text-red-700 hover:bg-red-200' }
-                            ].map((statusOption) => (
-                              <Button
-                                key={statusOption.status}
-                                variant="outline"
-                                className={`${statusOption.color} border-0 ${
-                                  task.status === statusOption.status ? 'ring-2 ring-primary' : ''
-                                }`}
-                                onClick={() => {
-                                  handleStatusChange(statusOption.status);
-                                  setShowQuickActions(false);
-                                }}
-                              >
-                                {statusOption.label}
-                              </Button>
-                            ))}
-                          </div>
+                          {!showStatusConfirm ? (
+                            <>
+                              <h3 className="font-semibold mb-3">Change Status</h3>
+                              <div className="grid grid-cols-2 gap-2">
+                                {[
+                                  { status: 'todo', label: 'To Do', color: 'bg-gray-100 text-gray-700 hover:bg-gray-200' },
+                                  { status: 'in-progress', label: 'In Progress', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200' },
+                                  { status: 'completed', label: 'Completed', color: 'bg-green-100 text-green-700 hover:bg-green-200' },
+                                  { status: 'blocked', label: 'Blocked', color: 'bg-red-100 text-red-700 hover:bg-red-200' }
+                                ].map((statusOption) => (
+                                  <Button
+                                    key={statusOption.status}
+                                    variant="outline"
+                                    className={`${statusOption.color} border-0 ${
+                                      task.status === statusOption.status ? 'ring-2 ring-primary' : ''
+                                    }`}
+                                    onClick={() => handleStatusChangeRequest(statusOption.status)}
+                                  >
+                                    {statusOption.label}
+                                  </Button>
+                                ))}
+                              </div>
+                            </>
+                          ) : (
+                            <div className="space-y-3">
+                              <h3 className="font-semibold">Confirm Status Change</h3>
+                              <p className="text-sm text-muted-foreground">
+                                Change task status from "{task.status.replace('-', ' ')}" to "{pendingStatusChange?.replace('-', ' ')}"?
+                              </p>
+                              <div className="flex gap-2">
+                                <Button onClick={confirmStatusChange} className="flex-1">
+                                  Confirm
+                                </Button>
+                                <Button variant="outline" onClick={cancelStatusChange} className="flex-1">
+                                  Cancel
+                                </Button>
+                              </div>
+                            </div>
+                          )}
                         </CardContent>
                       </Card>
 
                       {/* Quick Assign */}
                       <Card>
                         <CardContent className="p-4">
-                          <h3 className="font-semibold mb-3">Assign To</h3>
-                          <div className="space-y-2">
-                            {teamMembers.map((teamMember) => (
-                              <Button
-                                key={teamMember.id}
-                                variant="outline"
-                                className={`w-full justify-start h-auto p-3 ${
-                                  !teamMember.active ? 'opacity-50' : ''
-                                } ${
-                                  getAssigneeName() === teamMember.name ? 'ring-2 ring-primary bg-primary/5' : ''
-                                }`}
-                                disabled={!teamMember.active}
-                                onClick={() => handleAssigneeChange(teamMember.name)}
-                              >
-                                <div className="flex items-center gap-3">
-                                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold ${
-                                    teamMember.active ? 'bg-primary' : 'bg-gray-400'
-                                  }`}>
-                                    {teamMember.name.split(' ').map(n => n[0]).join('')}
-                                  </div>
-                                  <div className="text-left">
-                                    <div className="font-medium">{teamMember.name}</div>
-                                    <div className="text-xs text-muted-foreground">{teamMember.role}</div>
-                                  </div>
-                                </div>
-                              </Button>
-                            ))}
-                          </div>
+                          {!showAssigneeConfirm ? (
+                            <>
+                              <h3 className="font-semibold mb-3">Assign To</h3>
+                              <div className="space-y-2">
+                                {teamMembers.map((teamMember) => (
+                                  <Button
+                                    key={teamMember.id}
+                                    variant="outline"
+                                    className={`w-full justify-start h-auto p-3 ${
+                                      !teamMember.active ? 'opacity-50' : ''
+                                    } ${
+                                      getAssigneeName() === teamMember.name ? 'ring-2 ring-primary bg-primary/5' : ''
+                                    }`}
+                                    disabled={!teamMember.active}
+                                    onClick={() => handleAssigneeChangeRequest(teamMember.name)}
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold ${
+                                        teamMember.active ? 'bg-primary' : 'bg-gray-400'
+                                      }`}>
+                                        {teamMember.name.split(' ').map(n => n[0]).join('')}
+                                      </div>
+                                      <div className="text-left">
+                                        <div className="font-medium">{teamMember.name}</div>
+                                        <div className="text-xs text-muted-foreground">{teamMember.role}</div>
+                                      </div>
+                                    </div>
+                                  </Button>
+                                ))}
+                              </div>
+                            </>
+                          ) : (
+                            <div className="space-y-3">
+                              <h3 className="font-semibold">Confirm Assignment</h3>
+                              <p className="text-sm text-muted-foreground">
+                                Assign task to {pendingAssigneeChange}?
+                              </p>
+                              <div className="flex gap-2">
+                                <Button onClick={confirmAssigneeChange} className="flex-1">
+                                  Confirm
+                                </Button>
+                                <Button variant="outline" onClick={cancelAssigneeChange} className="flex-1">
+                                  Cancel
+                                </Button>
+                              </div>
+                            </div>
+                          )}
                         </CardContent>
                       </Card>
                     </div>
@@ -572,63 +636,98 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
                     {/* Quick Status Change */}
                     <Card>
                       <CardContent className="p-4">
-                        <h3 className="font-semibold mb-3">Change Status</h3>
-                        <div className="grid grid-cols-2 gap-2">
-                          {[
-                            { status: 'todo', label: 'To Do', color: 'bg-gray-100 text-gray-700 hover:bg-gray-200' },
-                            { status: 'in-progress', label: 'In Progress', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200' },
-                            { status: 'completed', label: 'Completed', color: 'bg-green-100 text-green-700 hover:bg-green-200' },
-                            { status: 'blocked', label: 'Blocked', color: 'bg-red-100 text-red-700 hover:bg-red-200' }
-                          ].map((statusOption) => (
-                            <Button
-                              key={statusOption.status}
-                              variant="outline"
-                              className={`${statusOption.color} border-0 ${
-                                task.status === statusOption.status ? 'ring-2 ring-primary' : ''
-                              }`}
-                              onClick={() => {
-                                handleStatusChange(statusOption.status);
-                                setShowQuickActions(false);
-                              }}
-                            >
-                              {statusOption.label}
-                            </Button>
-                          ))}
-                        </div>
+                        {!showStatusConfirm ? (
+                          <>
+                            <h3 className="font-semibold mb-3">Change Status</h3>
+                            <div className="grid grid-cols-2 gap-2">
+                              {[
+                                { status: 'todo', label: 'To Do', color: 'bg-gray-100 text-gray-700 hover:bg-gray-200' },
+                                { status: 'in-progress', label: 'In Progress', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200' },
+                                { status: 'completed', label: 'Completed', color: 'bg-green-100 text-green-700 hover:bg-green-200' },
+                                { status: 'blocked', label: 'Blocked', color: 'bg-red-100 text-red-700 hover:bg-red-200' }
+                              ].map((statusOption) => (
+                                <Button
+                                  key={statusOption.status}
+                                  variant="outline"
+                                  className={`${statusOption.color} border-0 ${
+                                    task.status === statusOption.status ? 'ring-2 ring-primary' : ''
+                                  }`}
+                                  onClick={() => handleStatusChangeRequest(statusOption.status)}
+                                >
+                                  {statusOption.label}
+                                </Button>
+                              ))}
+                            </div>
+                          </>
+                        ) : (
+                          <div className="space-y-3">
+                            <h3 className="font-semibold">Confirm Status Change</h3>
+                            <p className="text-sm text-muted-foreground">
+                              Change task status from "{task.status.replace('-', ' ')}" to "{pendingStatusChange?.replace('-', ' ')}"?
+                            </p>
+                            <div className="flex gap-2">
+                              <Button onClick={confirmStatusChange} className="flex-1">
+                                Confirm
+                              </Button>
+                              <Button variant="outline" onClick={cancelStatusChange} className="flex-1">
+                                Cancel
+                              </Button>
+                            </div>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
 
                     {/* Quick Assign */}
                     <Card>
                       <CardContent className="p-4">
-                        <h3 className="font-semibold mb-3">Assign To</h3>
-                        <div className="space-y-2">
-                          {teamMembers.map((teamMember) => (
-                            <Button
-                              key={teamMember.id}
-                              variant="outline"
-                              className={`w-full justify-start h-auto p-3 ${
-                                !teamMember.active ? 'opacity-50' : ''
-                              } ${
-                                getAssigneeName() === teamMember.name ? 'ring-2 ring-primary bg-primary/5' : ''
-                              }`}
-                              disabled={!teamMember.active}
-                              onClick={() => handleAssigneeChange(teamMember.name)}
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold ${
-                                  teamMember.active ? 'bg-primary' : 'bg-gray-400'
-                                }`}>
-                                  {teamMember.name.split(' ').map(n => n[0]).join('')}
-                                </div>
-                                <div className="text-left">
-                                  <div className="font-medium">{teamMember.name}</div>
-                                  <div className="text-xs text-muted-foreground">{teamMember.role}</div>
-                                </div>
-                              </div>
-                            </Button>
-                          ))}
-                        </div>
+                        {!showAssigneeConfirm ? (
+                          <>
+                            <h3 className="font-semibold mb-3">Assign To</h3>
+                            <div className="space-y-2">
+                              {teamMembers.map((teamMember) => (
+                                <Button
+                                  key={teamMember.id}
+                                  variant="outline"
+                                  className={`w-full justify-start h-auto p-3 ${
+                                    !teamMember.active ? 'opacity-50' : ''
+                                  } ${
+                                    getAssigneeName() === teamMember.name ? 'ring-2 ring-primary bg-primary/5' : ''
+                                  }`}
+                                  disabled={!teamMember.active}
+                                  onClick={() => handleAssigneeChangeRequest(teamMember.name)}
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold ${
+                                      teamMember.active ? 'bg-primary' : 'bg-gray-400'
+                                    }`}>
+                                      {teamMember.name.split(' ').map(n => n[0]).join('')}
+                                    </div>
+                                    <div className="text-left">
+                                      <div className="font-medium">{teamMember.name}</div>
+                                      <div className="text-xs text-muted-foreground">{teamMember.role}</div>
+                                    </div>
+                                  </div>
+                                </Button>
+                              ))}
+                            </div>
+                          </>
+                        ) : (
+                          <div className="space-y-3">
+                            <h3 className="font-semibold">Confirm Assignment</h3>
+                            <p className="text-sm text-muted-foreground">
+                              Assign task to {pendingAssigneeChange}?
+                            </p>
+                            <div className="flex gap-2">
+                              <Button onClick={confirmAssigneeChange} className="flex-1">
+                                Confirm
+                              </Button>
+                              <Button variant="outline" onClick={cancelAssigneeChange} className="flex-1">
+                                Cancel
+                              </Button>
+                            </div>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   </div>
