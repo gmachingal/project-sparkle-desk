@@ -130,15 +130,6 @@ const Header = () => {
               <Calendar className="w-4 h-4" />
               <span className="hidden xl:inline">Leave</span>
             </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => navigate("/organization")} 
-              className={`gap-2 ${isActivePage("/organization") ? "bg-primary text-primary-foreground" : "hover:bg-primary/20 hover:text-primary"}`}
-            >
-              <Building2 className="w-4 h-4" />
-              <span className="hidden xl:inline">Organization</span>
-            </Button>
           </nav>
 
           {/* Mobile Navigation Menu */}
@@ -172,10 +163,6 @@ const Header = () => {
               <DropdownMenuItem onClick={() => navigate("/leave-management")} className="gap-2">
                 <Calendar className="w-4 h-4" />
                 Leave Management
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/organization")} className="gap-2">
-                <Building2 className="w-4 h-4" />
-                Organization
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
