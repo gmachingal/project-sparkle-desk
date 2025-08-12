@@ -115,7 +115,7 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
     'todo': 'border-l-muted-foreground',
     'in-progress': 'border-l-primary',
     'completed': 'border-l-success',
-    'blocked': 'border-l-blocked bg-blocked-bg/30 shadow-lg shadow-blocked/10 animate-pulse'
+    'blocked': 'border-l-blocked bg-blocked-bg/60 shadow-md'
   };
 
   const getProgressPercentage = () => {
