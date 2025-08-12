@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import {
@@ -72,7 +71,6 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
   enableQuickActions = true
 }) => {
   const navigate = useNavigate();
-  const [selectedTaskForActions, setSelectedTaskForActions] = useState<Task | null>(null);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -165,130 +163,6 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
         "h-full flex flex-col justify-between relative",
         size === 'compact' ? 'p-2' : 'p-3'
       )}>
-        {/* Quick Actions Button */}
-        {enableQuickActions && (
-          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="h-6 w-6 p-0"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedTaskForActions(task);
-                  }}
-                >
-                  <Edit className="w-3 h-3" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent className="w-[400px] sm:w-[540px]">
-                <SheetHeader>
-                  <SheetTitle className="flex items-center gap-2">
-                    <Edit className="w-5 h-5" />
-                    Quick Task Actions
-                  </SheetTitle>
-                </SheetHeader>
-                
-                <div className="mt-6 space-y-6">
-                  {/* Task Info */}
-                  <Card>
-                    <CardContent className="p-4">
-                      <div className="space-y-2">
-                        <h4 className="font-semibold">{taskTitle}</h4>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            {task.loggedHours || task.hours || 0}h / {task.estimatedHours || 0}h
-                          </span>
-                          <Badge 
-                            variant="outline" 
-                            className={cn("text-xs", getPriorityColor(task.priority))}
-                          >
-                            {task.priority} Priority
-                          </Badge>
-                        </div>
-                        {task.description && (
-                          <p className="text-sm text-muted-foreground">{task.description}</p>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Quick Status Change */}
-                  <Card>
-                    <CardContent className="p-4">
-                      <h3 className="font-semibold mb-3">Change Status</h3>
-                      <div className="grid grid-cols-2 gap-2">
-                        {[
-                          { status: 'todo', label: 'To Do', color: 'bg-gray-100 text-gray-700 hover:bg-gray-200' },
-                          { status: 'in-progress', label: 'In Progress', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200' },
-                          { status: 'completed', label: 'Completed', color: 'bg-green-100 text-green-700 hover:bg-green-200' },
-                          { status: 'blocked', label: 'Blocked', color: 'bg-red-100 text-red-700 hover:bg-red-200' }
-                        ].map((statusOption) => (
-                          <Button
-                            key={statusOption.status}
-                            variant="outline"
-                            className={`${statusOption.color} border-0 ${
-                              task.status === statusOption.status ? 'ring-2 ring-primary' : ''
-                            }`}
-                            onClick={() => handleStatusChange(statusOption.status)}
-                          >
-                            {statusOption.label}
-                          </Button>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Quick Assign */}
-                  <Card>
-                    <CardContent className="p-4">
-                      <h3 className="font-semibold mb-3">Assign To</h3>
-                      <div className="space-y-2">
-                        {teamMembers.map((teamMember) => (
-                          <Button
-                            key={teamMember.id}
-                            variant="outline"
-                            className={`w-full justify-start h-auto p-3 ${
-                              !teamMember.active ? 'opacity-50' : ''
-                            } ${
-                              getAssigneeName() === teamMember.name ? 'ring-2 ring-primary bg-primary/5' : ''
-                            }`}
-                            disabled={!teamMember.active}
-                            onClick={() => handleAssigneeChange(teamMember.name)}
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold ${
-                                teamMember.active ? 'bg-primary' : 'bg-gray-400'
-                              }`}>
-                                {teamMember.name.split(' ').map(n => n[0]).join('')}
-                              </div>
-                              <div className="text-left">
-                                <div className="font-medium">{teamMember.name}</div>
-                                <div className="text-xs text-muted-foreground">{teamMember.role}</div>
-                              </div>
-                            </div>
-                          </Button>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-2 pt-4">
-                    <Button className="flex-1">
-                      Save Changes
-                    </Button>
-                    <Button variant="outline" className="flex-1">
-                      Cancel
-                    </Button>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-        )}
 
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
@@ -510,6 +384,72 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
             </div>
           )}
           
+          {/* Quick Actions Section */}
+          {enableQuickActions && (
+            <div className="pt-2 border-t space-y-3">
+              {/* Status Change */}
+              <div>
+                <h4 className="text-sm font-medium mb-2">Change Status</h4>
+                <div className="grid grid-cols-2 gap-1">
+                  {[
+                    { status: 'todo', label: 'To Do', color: 'bg-gray-100 text-gray-700 hover:bg-gray-200' },
+                    { status: 'in-progress', label: 'In Progress', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200' },
+                    { status: 'completed', label: 'Completed', color: 'bg-green-100 text-green-700 hover:bg-green-200' },
+                    { status: 'blocked', label: 'Blocked', color: 'bg-red-100 text-red-700 hover:bg-red-200' }
+                  ].map((statusOption) => (
+                    <Button
+                      key={statusOption.status}
+                      variant="outline"
+                      size="sm"
+                      className={`text-xs h-7 ${statusOption.color} border-0 ${
+                        task.status === statusOption.status ? 'ring-2 ring-primary' : ''
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStatusChange(statusOption.status);
+                      }}
+                    >
+                      {statusOption.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quick Assign */}
+              <div>
+                <h4 className="text-sm font-medium mb-2">Assign To</h4>
+                <div className="space-y-1 max-h-32 overflow-y-auto">
+                  {teamMembers.slice(0, 3).map((teamMember) => (
+                    <Button
+                      key={teamMember.id}
+                      variant="outline"
+                      size="sm"
+                      className={`w-full justify-start h-8 text-xs ${
+                        !teamMember.active ? 'opacity-50' : ''
+                      } ${
+                        getAssigneeName() === teamMember.name ? 'ring-2 ring-primary bg-primary/5' : ''
+                      }`}
+                      disabled={!teamMember.active}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAssigneeChange(teamMember.name);
+                      }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className={`w-5 h-5 rounded-full flex items-center justify-center text-white font-semibold text-xs ${
+                          teamMember.active ? 'bg-primary' : 'bg-gray-400'
+                        }`}>
+                          {teamMember.name.split(' ').map(n => n[0]).join('')}
+                        </div>
+                        <span className="truncate">{teamMember.name}</span>
+                      </div>
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="pt-2 border-t">
             <Button 
               size="sm" 
