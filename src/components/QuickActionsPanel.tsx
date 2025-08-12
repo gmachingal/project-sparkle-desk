@@ -247,13 +247,13 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
                         <Button
                           key={status}
                           variant="outline"
-                          className={cn("justify-start gap-2 h-9", color)}
+                          className={cn("justify-start gap-2 h-10 text-sm w-full overflow-hidden", color)}
                           onClick={() => handleStatusChangeRequest(status)}
                           disabled={task.status === status}
                         >
-                          <Icon className="w-4 h-4" />
-                          {label}
-                          {task.status === status && <span className="ml-auto text-xs opacity-60">(Current)</span>}
+                          <Icon className="w-4 h-4 flex-shrink-0" />
+                          <span className="truncate flex-1 text-left">{label}</span>
+                          {task.status === status && <span className="text-xs opacity-60 flex-shrink-0">(Current)</span>}
                         </Button>
                       ))}
                     </div>
@@ -296,22 +296,22 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
                         <Button
                           key={member.id}
                           variant="outline"
-                          className="justify-start gap-2 h-9"
+                          className="justify-start gap-2 h-12 text-sm w-full overflow-hidden p-3"
                           onClick={() => handleAssigneeChangeRequest(member.name)}
                           disabled={getAssigneeName() === member.name}
                         >
-                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary text-xs flex items-center justify-center">
+                          <div className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs flex items-center justify-center flex-shrink-0">
                             {member.name.charAt(0)}
                           </div>
-                          <div className="flex-1 text-left">
-                            <div className="text-sm font-medium">{member.name}</div>
-                            <div className="text-xs text-muted-foreground">{member.role}</div>
+                          <div className="flex-1 text-left min-w-0">
+                            <div className="font-medium text-sm truncate">{member.name}</div>
+                            <div className="text-xs text-muted-foreground truncate">{member.role}</div>
                           </div>
                           {!member.active && (
-                            <Badge variant="outline" className="text-xs">Offline</Badge>
+                            <Badge variant="outline" className="text-xs flex-shrink-0">Offline</Badge>
                           )}
                           {getAssigneeName() === member.name && (
-                            <span className="text-xs text-muted-foreground">(Current)</span>
+                            <span className="text-xs text-muted-foreground flex-shrink-0">(Current)</span>
                           )}
                         </Button>
                       ))}
@@ -355,22 +355,22 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
                         <Button
                           key={sprint.id}
                           variant="outline"
-                          className="justify-start gap-2 h-9"
+                          className="justify-start gap-2 h-12 text-sm w-full overflow-hidden p-3"
                           onClick={() => handleSprintChangeRequest(sprint.name)}
                           disabled={task.sprint === sprint.name}
                         >
-                          <Target className="w-4 h-4" />
-                          <div className="flex-1 text-left">
-                            <div className="text-sm font-medium">{sprint.name}</div>
+                          <Target className="w-4 h-4 flex-shrink-0" />
+                          <div className="flex-1 text-left min-w-0">
+                            <div className="font-medium text-sm truncate">{sprint.name}</div>
                           </div>
                           <Badge 
                             variant={sprint.status === 'active' ? 'default' : 'secondary'} 
-                            className="text-xs"
+                            className="text-xs flex-shrink-0"
                           >
                             {sprint.status}
                           </Badge>
                           {task.sprint === sprint.name && (
-                            <span className="text-xs text-muted-foreground">(Current)</span>
+                            <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">(Current)</span>
                           )}
                         </Button>
                       ))}
@@ -409,9 +409,9 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
               <CardContent className="pt-0 bg-card">
                 <div className="space-y-3">
                   <p className="text-sm text-muted-foreground">Due date management coming soon</p>
-                  <Button variant="outline" className="w-full" disabled>
-                    <Calendar className="w-4 h-4 mr-2" />
-                    Set Due Date
+                  <Button variant="outline" className="w-full h-10 overflow-hidden" disabled>
+                    <Calendar className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span className="truncate">Set Due Date</span>
                   </Button>
                 </div>
               </CardContent>
@@ -432,17 +432,17 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
                   placeholder="Add a comment about this task change..."
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  className="min-h-[80px] resize-none"
+                  className="min-h-[80px] resize-none w-full"
                 />
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs text-muted-foreground truncate">
                     {comment.length}/500 characters
                   </span>
                   <Button 
                     size="sm" 
                     onClick={handleSendComment}
                     disabled={!comment.trim()}
-                    className="gap-2"
+                    className="gap-2 flex-shrink-0"
                   >
                     <Send className="w-3 h-3" />
                     Send Comment
