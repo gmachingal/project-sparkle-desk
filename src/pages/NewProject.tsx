@@ -14,6 +14,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import MilestoneManager from "@/components/MilestoneManager";
 
 const NewProject = () => {
   const navigate = useNavigate();
@@ -28,10 +29,7 @@ const NewProject = () => {
     organization: ""
   });
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
-  const [milestones, setMilestones] = useState([
-    { id: Date.now().toString(), name: '', description: '', startDate: undefined as Date | undefined, dueDate: undefined as Date | undefined, isCustom: true }
-  ]);
-  const [selectedExistingMilestones, setSelectedExistingMilestones] = useState<string[]>([]);
+  const [milestones, setMilestones] = useState<any[]>([]);
 
   const projectTemplates = [
     { id: "blank", name: "Blank Project", description: "Start from scratch" },
@@ -81,24 +79,6 @@ const NewProject = () => {
     );
   };
 
-  const toggleExistingMilestone = (milestoneId: string) => {
-    setSelectedExistingMilestones(prev => 
-      prev.includes(milestoneId)
-        ? prev.filter(id => id !== milestoneId)
-        : [...prev, milestoneId]
-    );
-  };
-
-  const addCustomMilestone = () => {
-    setMilestones([...milestones, { 
-      id: Date.now().toString(), 
-      name: '', 
-      description: '', 
-      startDate: undefined,
-      dueDate: undefined, 
-      isCustom: true 
-    }]);
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -332,177 +312,11 @@ const NewProject = () => {
               </CardContent>
             </Card>
 
-            {/* Milestones */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="w-5 h-5" />
-                  Project Milestones
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Existing Milestones */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Select from Common Milestones</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {existingMilestones.map((milestone) => (
-                      <div
-                        key={milestone.id}
-                        className={cn(
-                          "p-4 border rounded-lg cursor-pointer transition-all hover:shadow-sm",
-                          selectedExistingMilestones.includes(milestone.id) ? "border-primary bg-primary/5" : "border-border"
-                        )}
-                        onClick={() => toggleExistingMilestone(milestone.id)}
-                      >
-                        <div className="flex items-start justify-between mb-2">
-                          <h4 className="font-medium text-sm">{milestone.name}</h4>
-                          {selectedExistingMilestones.includes(milestone.id) && (
-                            <Badge variant="secondary" className="text-xs">Selected</Badge>
-                          )}
-                        </div>
-                        <p className="text-xs text-muted-foreground mb-2">{milestone.description}</p>
-                        <div className="text-xs text-primary font-medium">
-                          Est. {milestone.estimatedDuration}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {selectedExistingMilestones.length} milestone{selectedExistingMilestones.length !== 1 ? 's' : ''} selected
-                  </div>
-                </div>
-
-                {/* Custom Milestones */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-medium">Custom Milestones</h3>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={addCustomMilestone}
-                      className="gap-2"
-                    >
-                      <Plus className="w-4 h-4" />
-                      Add Custom
-                    </Button>
-                  </div>
-                  
-                  {milestones.map((milestone, index) => (
-                    <div key={milestone.id} className="p-4 border rounded-lg space-y-3 bg-muted/30">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-base font-medium">Custom Milestone {index + 1}</Label>
-                        {milestones.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setMilestones(milestones.filter((_, i) => i !== index))}
-                          >
-                            <X className="w-4 h-4" />
-                          </Button>
-                        )}
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                          <Label htmlFor={`milestone-name-${index}`}>Milestone Name</Label>
-                          <Input
-                            id={`milestone-name-${index}`}
-                            placeholder="e.g., Design Phase Complete"
-                            value={milestone.name}
-                            onChange={(e) => {
-                              const newMilestones = [...milestones];
-                              newMilestones[index].name = e.target.value;
-                              setMilestones(newMilestones);
-                            }}
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor={`milestone-start-date-${index}`}>Start Date</Label>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant="outline"
-                                className={cn(
-                                  "w-full justify-start text-left font-normal",
-                                  !milestone.startDate && "text-muted-foreground"
-                                )}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {milestone.startDate ? format(milestone.startDate, "PPP") : "Start date"}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                              <Calendar
-                                mode="single"
-                                selected={milestone.startDate}
-                                onSelect={(date) => {
-                                  const newMilestones = [...milestones];
-                                  newMilestones[index].startDate = date;
-                                  setMilestones(newMilestones);
-                                }}
-                                initialFocus
-                                className="p-3 pointer-events-auto"
-                              />
-                            </PopoverContent>
-                          </Popover>
-                        </div>
-                        <div>
-                          <Label htmlFor={`milestone-due-date-${index}`}>Due Date</Label>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant="outline"
-                                className={cn(
-                                  "w-full justify-start text-left font-normal",
-                                  !milestone.dueDate && "text-muted-foreground"
-                                )}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {milestone.dueDate ? format(milestone.dueDate, "PPP") : "Due date"}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                              <Calendar
-                                mode="single"
-                                selected={milestone.dueDate}
-                                onSelect={(date) => {
-                                  const newMilestones = [...milestones];
-                                  newMilestones[index].dueDate = date;
-                                  setMilestones(newMilestones);
-                                }}
-                                disabled={(date) => {
-                                  // Disable dates before start date if start date is set
-                                  if (milestone.startDate) {
-                                    return date < milestone.startDate;
-                                  }
-                                  return false;
-                                }}
-                                initialFocus
-                                className="p-3 pointer-events-auto"
-                              />
-                            </PopoverContent>
-                          </Popover>
-                        </div>
-                      </div>
-                      <div>
-                        <Label htmlFor={`milestone-desc-${index}`}>Description</Label>
-                        <Textarea
-                          id={`milestone-desc-${index}`}
-                          placeholder="Describe what needs to be accomplished..."
-                          value={milestone.description}
-                          onChange={(e) => {
-                            const newMilestones = [...milestones];
-                            newMilestones[index].description = e.target.value;
-                            setMilestones(newMilestones);
-                          }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            {/* Enhanced Milestones Section */}
+            <MilestoneManager
+              milestones={milestones}
+              onMilestonesChange={setMilestones}
+            />
 
             <div className="flex justify-end gap-3">
               <Button variant="outline" type="button" onClick={() => navigate("/")}>
