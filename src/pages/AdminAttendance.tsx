@@ -524,7 +524,7 @@ const AdminAttendance = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
                {musterRollData
                  .filter(employee => 
                    selectedDepartment === 'all' || employee.department.toLowerCase() === selectedDepartment.toLowerCase()
@@ -539,101 +539,94 @@ const AdminAttendance = () => {
                      key={employee.id} 
                      className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0 shadow-sm bg-gradient-to-br from-card to-card/50 cursor-pointer"
                    >
-                     <CardContent className="p-4">
-                       <div className="flex items-start justify-between mb-3">
-                         <div className="flex items-center gap-3">
+                     <CardContent className="p-3">
+                       <div className="flex items-start justify-between mb-2">
+                         <div className="flex items-center gap-2">
                            <div className="relative">
-                             <Avatar className="w-10 h-10 border-2 border-background shadow-sm">
+                             <Avatar className="w-8 h-8 border-2 border-background shadow-sm">
                                <AvatarImage src="" />
-                               <AvatarFallback className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground font-semibold text-sm">
+                               <AvatarFallback className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground font-semibold text-xs">
                                  {employee.name.split(' ').map(n => n[0]).join('')}
                                </AvatarFallback>
                              </Avatar>
                              {/* Online Status Indicator */}
-                             <div className={`absolute -bottom-0 -right-0 w-3 h-3 rounded-full border-2 border-background ${
+                             <div className={`absolute -bottom-0 -right-0 w-2 h-2 rounded-full border border-background ${
                                employee.status === 'present' ? 'bg-green-500' :
                                employee.status === 'wfh' ? 'bg-blue-500' :
                                employee.status === 'late' ? 'bg-yellow-500' : 'bg-red-500'
                              }`}></div>
                            </div>
-                           <div>
-                             <h4 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors">{employee.name}</h4>
-                             <p className="text-xs text-muted-foreground">{employee.employeeId}</p>
-                             <p className="text-xs text-muted-foreground">{employee.department}</p>
+                           <div className="min-w-0 flex-1">
+                             <h4 className="font-semibold text-xs text-foreground group-hover:text-primary transition-colors truncate">{employee.name}</h4>
+                             <p className="text-xs text-muted-foreground truncate">{employee.employeeId}</p>
+                             <p className="text-xs text-muted-foreground truncate">{employee.department}</p>
                            </div>
                          </div>
                          <Badge 
                            variant="outline"
                            className={
-                             employee.status === 'present' ? "bg-green-100 text-green-700 border-green-200" :
+                             "text-xs px-1.5 py-0.5 h-5 " +
+                             (employee.status === 'present' ? "bg-green-100 text-green-700 border-green-200" :
                              employee.status === 'wfh' ? "bg-blue-100 text-blue-700 border-blue-200" :
                              employee.status === 'absent' ? "bg-red-100 text-red-700 border-red-200" :
-                             "bg-yellow-100 text-yellow-700 border-yellow-200"
+                             "bg-yellow-100 text-yellow-700 border-yellow-200")
                            }
-                        >
-                          {employee.status === 'wfh' ? 'Remote' : 
-                           employee.status === 'present' ? 'Present' :
-                           employee.status === 'absent' ? 'Absent' : 'Late'}
-                        </Badge>
-                      </div>
+                         >
+                           {employee.status === 'wfh' ? 'WFH' : 
+                            employee.status === 'present' ? 'Present' :
+                            employee.status === 'absent' ? 'Absent' : 'Late'}
+                         </Badge>
+                       </div>
                        
-                       <div className="space-y-2">
+                       
+                       <div className="space-y-1.5">
                          <div className="flex items-center justify-between text-xs">
                            <span className="text-muted-foreground flex items-center gap-1">
                              <Clock className="w-3 h-3" />
-                             Check In
+                             In
                            </span>
-                           <span className={`font-medium ${
+                           <span className={`font-medium text-xs ${
                              employee.checkIn ? 'text-green-600' : 'text-muted-foreground'
                            }`}>
-                             {employee.checkIn || 'Not yet'}
+                             {employee.checkIn || '--'}
                            </span>
                          </div>
                          <div className="flex items-center justify-between text-xs">
                            <span className="text-muted-foreground flex items-center gap-1">
                              <Clock className="w-3 h-3" />
-                             Check Out
+                             Out
                            </span>
-                           <span className={`font-medium ${
+                           <span className={`font-medium text-xs ${
                              employee.checkOut ? 'text-blue-600' : 'text-muted-foreground'
                            }`}>
-                             {employee.checkOut || 'Not yet'}
+                             {employee.checkOut || '--'}
                            </span>
-                        </div>
-                        {employee.status !== 'absent' && (
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="text-muted-foreground flex items-center gap-1">
-                              <Target className="w-3 h-3" />
-                              Hours
-                            </span>
-                            <span className="font-medium text-primary">{employee.totalHours.toFixed(1)}h</span>
-                          </div>
-                        )}
-                        {employee.status === 'wfh' && (
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="text-muted-foreground flex items-center gap-1">
-                              <MapPin className="w-3 h-3" />
-                              Location
-                            </span>
-                            <span className="font-medium">Remote</span>
-                          </div>
-                        )}
-                      </div>
-                      
-                      {employee.status !== 'absent' && (
-                        <div className="mt-3 pt-3 border-t border-border/50">
-                          <div className="flex items-center justify-between text-xs mb-1">
-                            <span className="text-muted-foreground">Daily Progress</span>
-                            <span className="font-medium">{Math.round((employee.totalHours / 8) * 100)}%</span>
-                          </div>
-                          <div className="w-full bg-muted rounded-full h-1.5">
-                            <div 
-                              className="bg-gradient-to-r from-primary to-primary-glow h-1.5 rounded-full transition-all duration-300"
-                              style={{ width: `${Math.min((employee.totalHours / 8) * 100, 100)}%` }}
-                            ></div>
-                          </div>
-                        </div>
-                      )}
+                         </div>
+                         {employee.status !== 'absent' && (
+                           <div className="flex items-center justify-between text-xs">
+                             <span className="text-muted-foreground flex items-center gap-1">
+                               <Target className="w-3 h-3" />
+                               Hours
+                             </span>
+                             <span className="font-medium text-primary text-xs">{employee.totalHours.toFixed(1)}h</span>
+                           </div>
+                         )}
+                       </div>
+                       
+                       {employee.status !== 'absent' && (
+                         <div className="mt-2 pt-2 border-t border-border/50">
+                           <div className="flex items-center justify-between text-xs mb-1">
+                             <span className="text-muted-foreground">Progress</span>
+                             <span className="font-medium text-xs">{Math.round((employee.totalHours / 8) * 100)}%</span>
+                           </div>
+                           <div className="w-full bg-muted rounded-full h-1">
+                             <div 
+                               className="bg-gradient-to-r from-primary to-primary-glow h-1 rounded-full transition-all duration-300"
+                               style={{ width: `${Math.min((employee.totalHours / 8) * 100, 100)}%` }}
+                             ></div>
+                           </div>
+                         </div>
+                       )}
                     </CardContent>
                   </Card>
                 ))}
