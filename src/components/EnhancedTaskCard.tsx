@@ -281,7 +281,135 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
   );
 
   if (size === 'compact') {
-    return <TaskCardContent />;
+    return (
+      <HoverCard>
+        <HoverCardTrigger asChild>
+          <div>
+            <TaskCardContent />
+          </div>
+        </HoverCardTrigger>
+        <HoverCardContent className="w-72 p-3" side="top">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <h4 className="font-semibold text-sm">{taskTitle}</h4>
+              <Badge 
+                variant="outline" 
+                className={cn("text-xs", getPriorityColor(task.priority))}
+              >
+                {task.priority}
+              </Badge>
+            </div>
+            
+            {task.description && (
+              <p className="text-xs text-muted-foreground line-clamp-2">
+                {task.description}
+              </p>
+            )}
+            
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Status</span>
+                <Badge variant="secondary" className="text-xs">{task.status.replace('-', ' ')}</Badge>
+              </div>
+              {task.assignee && (
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Assignee</span>
+                  <div className="flex items-center gap-1">
+                    <Avatar className="w-4 h-4">
+                      <AvatarImage src={getAssigneeAvatar()} />
+                      <AvatarFallback className="text-xs">
+                        {getAssigneeName().charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-xs">{getAssigneeName()}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Quick Actions Section */}
+            {enableQuickActions && (
+              <div className="pt-2 border-t space-y-2">
+                {/* Status Change */}
+                <div>
+                  <h4 className="text-xs font-medium mb-1">Change Status</h4>
+                  <div className="grid grid-cols-2 gap-1">
+                    {[
+                      { status: 'todo', label: 'To Do', color: 'bg-gray-100 text-gray-700 hover:bg-gray-200' },
+                      { status: 'in-progress', label: 'In Progress', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200' },
+                      { status: 'completed', label: 'Completed', color: 'bg-green-100 text-green-700 hover:bg-green-200' },
+                      { status: 'blocked', label: 'Blocked', color: 'bg-red-100 text-red-700 hover:bg-red-200' }
+                    ].map((statusOption) => (
+                      <Button
+                        key={statusOption.status}
+                        variant="outline"
+                        size="sm"
+                        className={`text-xs h-6 ${statusOption.color} border-0 ${
+                          task.status === statusOption.status ? 'ring-1 ring-primary' : ''
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleStatusChange(statusOption.status);
+                        }}
+                      >
+                        {statusOption.label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Quick Assign */}
+                <div>
+                  <h4 className="text-xs font-medium mb-1">Quick Assign</h4>
+                  <div className="space-y-1 max-h-20 overflow-y-auto">
+                    {teamMembers.slice(0, 2).map((teamMember) => (
+                      <Button
+                        key={teamMember.id}
+                        variant="outline"
+                        size="sm"
+                        className={`w-full justify-start h-6 text-xs ${
+                          !teamMember.active ? 'opacity-50' : ''
+                        } ${
+                          getAssigneeName() === teamMember.name ? 'ring-1 ring-primary bg-primary/5' : ''
+                        }`}
+                        disabled={!teamMember.active}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAssigneeChange(teamMember.name);
+                        }}
+                      >
+                        <div className="flex items-center gap-1">
+                          <div className={`w-4 h-4 rounded-full flex items-center justify-center text-white font-semibold text-xs ${
+                            teamMember.active ? 'bg-primary' : 'bg-gray-400'
+                          }`}>
+                            {teamMember.name.split(' ').map(n => n[0]).join('')}
+                          </div>
+                          <span className="truncate">{teamMember.name}</span>
+                        </div>
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="pt-2 border-t">
+              <Button 
+                size="sm" 
+                className="w-full h-6 text-xs"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/task/${task.id}`);
+                }}
+              >
+                <Edit className="w-3 h-3 mr-1" />
+                View Task
+              </Button>
+            </div>
+          </div>
+        </HoverCardContent>
+      </HoverCard>
+    );
   }
 
   return (
