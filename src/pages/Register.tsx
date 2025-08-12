@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Building2, Users, Mail, Lock, User, Globe, Phone, MapPin, ArrowRight, ArrowLeft } from "lucide-react";
+import { Building2, Users, Mail, Lock, User, Globe, Phone, MapPin, ArrowRight, ArrowLeft, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
@@ -15,6 +15,7 @@ const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("create");
+  const [orgSearchQuery, setOrgSearchQuery] = useState("");
   const [formData, setFormData] = useState({
     // Personal Info
     firstName: "",
@@ -61,8 +62,18 @@ const Register = () => {
     { id: "1", name: "TechCorp Inc", domain: "techcorp.com", members: 150, industry: "Technology" },
     { id: "2", name: "StartupHub", domain: "startuphub.io", members: 25, industry: "Technology" },
     { id: "3", name: "Global Solutions", domain: "globalsolutions.net", members: 500, industry: "Consulting" },
-    { id: "4", name: "Innovation Labs", domain: "innovationlabs.org", members: 75, industry: "Technology" }
+    { id: "4", name: "Innovation Labs", domain: "innovationlabs.org", members: 75, industry: "Technology" },
+    { id: "5", name: "Healthcare Partners", domain: "healthcarepartners.com", members: 200, industry: "Healthcare" },
+    { id: "6", name: "Finance Pro", domain: "financepro.com", members: 300, industry: "Finance" },
+    { id: "7", name: "EduTech Solutions", domain: "edutech.edu", members: 120, industry: "Education" }
   ];
+
+  // Filter organizations based on search query
+  const filteredOrganizations = existingOrganizations.filter(org =>
+    org.name.toLowerCase().includes(orgSearchQuery.toLowerCase()) ||
+    org.domain.toLowerCase().includes(orgSearchQuery.toLowerCase()) ||
+    org.industry.toLowerCase().includes(orgSearchQuery.toLowerCase())
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -383,8 +394,21 @@ const Register = () => {
                         {/* Browse Organizations */}
                         <div className="space-y-3">
                           <Label>Browse Organizations</Label>
+                          
+                          {/* Search Input */}
+                          <div className="relative">
+                            <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+                            <Input
+                              placeholder="Search organizations by name, domain, or industry..."
+                              className="pl-10"
+                              value={orgSearchQuery}
+                              onChange={(e) => setOrgSearchQuery(e.target.value)}
+                            />
+                          </div>
+                          
                           <div className="grid grid-cols-1 gap-3 max-h-64 overflow-y-auto">
-                            {existingOrganizations.map((org) => (
+                            {filteredOrganizations.length > 0 ? (
+                              filteredOrganizations.map((org) => (
                               <div
                                 key={org.id}
                                 className={`p-4 border rounded-lg cursor-pointer transition-all hover:shadow-sm ${
@@ -416,8 +440,32 @@ const Register = () => {
                                   </div>
                                 </div>
                               </div>
-                            ))}
+                            ))
+                            ) : (
+                              <div className="text-center py-8 text-muted-foreground">
+                                <Building2 className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                                <p className="text-sm">No organizations found matching "{orgSearchQuery}"</p>
+                                <p className="text-xs mt-1">Try adjusting your search terms</p>
+                              </div>
+                            )}
                           </div>
+                          
+                          <div className="flex items-center justify-between text-sm text-muted-foreground">
+                            <span>
+                              {filteredOrganizations.length} organization{filteredOrganizations.length !== 1 ? 's' : ''} found
+                            </span>
+                            {orgSearchQuery && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setOrgSearchQuery("")}
+                                className="h-6 px-2 text-xs"
+                              >
+                                Clear search
+                              </Button>
+                            )}
+                          </div>
+                          
                           <p className="text-sm text-muted-foreground">
                             Select an organization to request to join. Your request will be sent to the organization admin.
                           </p>
