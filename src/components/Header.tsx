@@ -1,14 +1,45 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Bell, Plus, Settings, User, Clock, Users, Briefcase, FileText, Calendar, Home, LogOut, Building2 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Search, Bell, Plus, Settings, User, Clock, Users, Briefcase, FileText, Calendar, Home, LogOut, Building2, ChevronDown, Check } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 import reposeLogo from "@/assets/repose-logo-bigger-font.png";
 
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { toast } = useToast();
+  
+  // User's organizations - in real app, this would come from user context/API
+  const [currentOrganization, setCurrentOrganization] = useState("ORG-001");
+  const userOrganizations = [
+    { 
+      id: "ORG-001", 
+      name: "TechCorp Solutions", 
+      role: "Admin", 
+      domain: "techcorp.com",
+      isActive: true 
+    },
+    { 
+      id: "ORG-002", 
+      name: "StartupXYZ", 
+      role: "Member", 
+      domain: "startupxyz.com",
+      isActive: true 
+    },
+    { 
+      id: "ORG-003", 
+      name: "Innovation Labs", 
+      role: "Manager", 
+      domain: "innovationlabs.org",
+      isActive: true 
+    }
+  ];
   
   const isActivePage = (path: string) => {
     return location.pathname === path || (path === "/dashboard" && location.pathname === "/");
@@ -18,6 +49,18 @@ const Header = () => {
     // TODO: Implement actual logout logic
     navigate("/");
   };
+
+  const switchOrganization = (orgId: string) => {
+    const org = userOrganizations.find(o => o.id === orgId);
+    setCurrentOrganization(orgId);
+    toast({
+      title: "Organization Switched",
+      description: `Now working in ${org?.name}`,
+    });
+    // TODO: In real app, update user context and refresh data
+  };
+
+  const getCurrentOrg = () => userOrganizations.find(org => org.id === currentOrganization);
 
   return (
     <header className="border-b bg-gradient-to-r from-primary/10 via-primary/7 to-primary/10 backdrop-blur-sm sticky top-0 z-50 border-border/50">
@@ -99,6 +142,67 @@ const Header = () => {
         </div>
 
         <div className="flex items-center gap-4">
+          {/* Organization Switcher */}
+          <div className="hidden lg:flex items-center gap-3 px-3 py-2 bg-card/50 rounded-lg border border-border/50">
+            <Building2 className="w-4 h-4 text-muted-foreground" />
+            <div className="flex flex-col">
+              <span className="text-xs text-muted-foreground">Organization</span>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="h-auto p-0 gap-1 hover:bg-transparent">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-sm">{getCurrentOrg()?.name}</span>
+                      <Badge variant="outline" className="text-xs h-4">
+                        {getCurrentOrg()?.role}
+                      </Badge>
+                    </div>
+                    <ChevronDown className="w-3 h-3 opacity-50" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-80 bg-background/95 backdrop-blur-sm border border-border/50">
+                  <div className="p-2">
+                    <div className="text-xs font-medium text-muted-foreground mb-2 px-2">
+                      Switch Organization
+                    </div>
+                    {userOrganizations.map((org) => (
+                      <DropdownMenuItem
+                        key={org.id}
+                        onClick={() => switchOrganization(org.id)}
+                        className="flex items-center justify-between p-3 rounded-md cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <Building2 className="w-4 h-4 text-primary" />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="font-medium text-sm">{org.name}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-muted-foreground">{org.domain}</span>
+                              <Badge variant="outline" className="text-xs h-4">
+                                {org.role}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+                        {currentOrganization === org.id && (
+                          <Check className="w-4 h-4 text-primary" />
+                        )}
+                      </DropdownMenuItem>
+                    ))}
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    onClick={() => navigate("/organization")}
+                    className="gap-2 mx-2 mb-2"
+                  >
+                    <Settings className="w-4 h-4" />
+                    Organization Settings
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+
           <div className="relative hidden sm:block">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
