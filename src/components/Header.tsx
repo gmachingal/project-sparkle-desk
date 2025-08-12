@@ -74,7 +74,7 @@ const Header = () => {
             />
           </div>
           
-          {/* Primary Navigation - Only show most important items */}
+          {/* Primary Navigation - Show more items on larger screens */}
           <nav className="hidden lg:flex items-center gap-1">
             <Button 
               variant="ghost" 
@@ -102,6 +102,42 @@ const Header = () => {
             >
               <Briefcase className="w-4 h-4" />
               <span className="hidden xl:inline">Projects</span>
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate("/teams")} 
+              className={`gap-2 ${isActivePage("/teams") ? "bg-primary text-primary-foreground" : "hover:bg-primary/20 hover:text-primary"}`}
+            >
+              <Users className="w-4 h-4" />
+              <span className="hidden xl:inline">Teams</span>
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate("/attendance")} 
+              className={`gap-2 ${isActivePage("/attendance") ? "bg-primary text-primary-foreground" : "hover:bg-primary/20 hover:text-primary"}`}
+            >
+              <Clock className="w-4 h-4" />
+              <span className="hidden xl:inline">Attendance</span>
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate("/leave-management")} 
+              className={`gap-2 ${isActivePage("/leave-management") ? "bg-primary text-primary-foreground" : "hover:bg-primary/20 hover:text-primary"}`}
+            >
+              <Calendar className="w-4 h-4" />
+              <span className="hidden xl:inline">Leave</span>
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate("/organization")} 
+              className={`gap-2 ${isActivePage("/organization") ? "bg-primary text-primary-foreground" : "hover:bg-primary/20 hover:text-primary"}`}
+            >
+              <Building2 className="w-4 h-4" />
+              <span className="hidden xl:inline">Organization</span>
             </Button>
           </nav>
 
