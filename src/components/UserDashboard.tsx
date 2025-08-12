@@ -85,6 +85,17 @@ const UserDashboard = () => {
       dueDate: "Dec 1",
       assignee: { name: "You", avatar: "" },
       project: "Marketing Campaign"
+    },
+    {
+      id: "4",
+      title: "Server deployment blocked",
+      description: "Deployment blocked pending security review approval",
+      status: "blocked" as const,
+      priority: "high" as const,
+      dueDate: "Today",
+      assignee: { name: "You", avatar: "" },
+      project: "Website Redesign",
+      milestone: { id: "3", name: "Deployment", status: "in-progress" as const }
     }
   ];
 

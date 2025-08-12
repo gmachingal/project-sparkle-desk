@@ -307,6 +307,46 @@ const TaskView = () => {
       estimatedHours: 8,
       actualHours: 3,
       tags: ["presentation", "quarterly review", "metrics"]
+    },
+    {
+      id: "6",
+      title: "Database server migration",
+      description: "Migration blocked due to pending security clearance and backup verification",
+      status: "blocked" as const,
+      priority: "high" as const,
+      startDate: new Date(currentYear, currentMonth, 20),
+      dueDate: new Date(currentYear, currentMonth, 30),
+      assignee: { name: "You", avatar: "" },
+      project: "Infrastructure",
+      projectId: "5",
+      sprint: {
+        id: "4",
+        name: "Sprint 3 - Infrastructure",
+        status: "active" as const,
+        startDate: new Date(currentYear, currentMonth, 15),
+        endDate: new Date(currentYear, currentMonth + 1, 5),
+        progress: 30
+      },
+      milestone: {
+        id: "5",
+        name: "Server Migration",
+        status: "in-progress" as const
+      },
+      createdDate: new Date(currentYear, currentMonth, 10),
+      estimatedHours: 24,
+      actualHours: 4,
+      tags: ["infrastructure", "database", "security"],
+      documents: [],
+      assigneeHistory: [
+        {
+          id: "1",
+          assignee: { name: "You", avatar: "" },
+          status: "blocked",
+          assignedDate: new Date(currentYear, currentMonth, 10),
+          completedDate: null,
+          notes: "Waiting for security clearance approval from IT department"
+        }
+      ]
     }
   ];
 

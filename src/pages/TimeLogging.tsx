@@ -118,6 +118,28 @@ const TimeLogging = () => {
       project: "Website Redesign",
       estimatedHours: 24,
       loggedHours: 12
+    },
+    {
+      id: "8",
+      title: "CI/CD pipeline setup",
+      description: "Pipeline setup blocked due to server access restrictions",
+      status: "blocked" as const,
+      priority: "high" as const,
+      dueDate: new Date(currentYear, currentMonth, 28),
+      project: "Infrastructure",
+      estimatedHours: 16,
+      loggedHours: 3
+    },
+    {
+      id: "9",
+      title: "Payment integration testing",
+      description: "Testing blocked pending merchant account verification",
+      status: "blocked" as const,
+      priority: "medium" as const,
+      dueDate: new Date(currentYear, currentMonth + 1, 5),
+      project: "Mobile App",
+      estimatedHours: 8,
+      loggedHours: 1
     }
   ];
 

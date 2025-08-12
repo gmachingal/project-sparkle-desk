@@ -157,6 +157,32 @@ const SprintDashboard = () => {
       startDate: new Date(currentYear, currentMonth, 25),
       estimatedHours: 8,
       loggedHours: 0
+    },
+    {
+      id: '8',
+      title: 'External Service Integration',
+      description: 'Integration blocked due to third-party service downtime',
+      status: 'blocked',
+      priority: 'high',
+      assigneeId: '3',
+      storyPoints: 6,
+      dueDate: new Date(currentYear, currentMonth, 30),
+      startDate: new Date(currentYear, currentMonth, 26),
+      estimatedHours: 12,
+      loggedHours: 2
+    },
+    {
+      id: '9',
+      title: 'SSL Certificate Setup',
+      description: 'Certificate installation blocked pending IT approval',
+      status: 'blocked',
+      priority: 'medium',
+      assigneeId: '1',
+      storyPoints: 2,
+      dueDate: new Date(currentYear, currentMonth + 1, 2),
+      startDate: new Date(currentYear, currentMonth, 28),
+      estimatedHours: 4,
+      loggedHours: 0
     }
   ];
 

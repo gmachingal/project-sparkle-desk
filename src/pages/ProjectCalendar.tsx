@@ -183,6 +183,28 @@ const ProjectCalendar = () => {
       dueDate: new Date(currentYear, currentMonth + 1, 15),
       startDate: new Date(currentYear, currentMonth + 1, 12),
       estimatedHours: 10
+    },
+    {
+      id: '13',
+      title: 'Third-party API Integration',
+      description: 'Integration blocked due to API key approval delays',
+      status: 'blocked',
+      priority: 'high',
+      assigneeId: '3',
+      dueDate: new Date(currentYear, currentMonth, 30),
+      startDate: new Date(currentYear, currentMonth, 25),
+      estimatedHours: 14
+    },
+    {
+      id: '14',
+      title: 'Payment Gateway Setup',
+      description: 'Setup blocked pending merchant account verification',
+      status: 'blocked',
+      priority: 'medium',
+      assigneeId: '1',
+      dueDate: new Date(currentYear, currentMonth + 1, 8),
+      startDate: new Date(currentYear, currentMonth + 1, 5),
+      estimatedHours: 12
     }
   ];
 

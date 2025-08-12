@@ -134,6 +134,17 @@ const Dashboard = () => {
       assignee: { name: "Alex Kim", avatar: "" },
       project: "Website Redesign",
       milestone: { id: "3", name: "Frontend Development", status: "in-progress" as const }
+    },
+    {
+      id: "5",
+      title: "Database migration blocked",
+      description: "Migration scripts blocked due to production dependencies",
+      status: "blocked" as const,
+      priority: "high" as const,
+      dueDate: "Dec 5",
+      assignee: { name: "David Park", avatar: "" },
+      project: "Website Redesign",
+      milestone: { id: "2", name: "Backend Development", status: "in-progress" as const }
     }
   ];
 
