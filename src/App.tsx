@@ -30,6 +30,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Organization from "./pages/Organization";
 import AdminOrganizations from "./pages/AdminOrganizations";
+import DocumentMockup from "./pages/DocumentMockup";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,7 @@ const App = () => (
           <Route path="/project-status-report/:id" element={<ProjectStatusReport />} />
           <Route path="/organization" element={<Organization />} />
           <Route path="/admin/organizations" element={<AdminOrganizations />} />
+          <Route path="/document-mockup" element={<DocumentMockup />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
