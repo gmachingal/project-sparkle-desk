@@ -10,6 +10,7 @@ import { EnhancedCalendar } from "@/components/ui/enhanced-calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Header from "@/components/Header";
+import Breadcrumb from "@/components/Breadcrumb";
 import { CalendarIcon, User, ArrowLeft, Save, Plus, Target, Tag, X } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -162,26 +163,28 @@ const CreateTask = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
-      <div className="container mx-auto px-4 py-8">
-        {/* Back Button - Separate Section */}
-        <div className="pb-4 mb-6 border-b border-border">
-          <Button variant="back" onClick={() => navigate('/my-tasks')}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to My Tasks
-          </Button>
-        </div>
+      <div className="p-6 space-y-6">
+        <Breadcrumb />
+        
+        <div className="container mx-auto px-4 py-8">
+          {/* Back Button - Separate Section */}
+          <div className="pb-4 mb-6 border-b border-border">
+            <Button variant="back" onClick={() => navigate('/my-tasks')}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to My Tasks
+            </Button>
+          </div>
 
-        {/* Header Section */}
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Create New Task</h1>
-          <Button onClick={handleSubmit} className="gap-2">
-            <Plus className="w-4 h-4" />
-            Create Task
-          </Button>
-        </div>
+          {/* Header Section */}
+          <div className="mb-6 flex items-center justify-between">
+            <h1 className="text-2xl font-bold">Create New Task</h1>
+            <Button onClick={handleSubmit} className="gap-2">
+              <Plus className="w-4 h-4" />
+              Create Task
+            </Button>
+          </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Task Details */}
             <Card>
@@ -574,6 +577,7 @@ const CreateTask = () => {
             </Button>
           </div>
         </form>
+        </div>
       </div>
     </div>
   );
