@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   Target,
   CheckCircle,
@@ -14,7 +16,9 @@ import {
   TrendingUp,
   FileText,
   Play,
-  Pause
+  Pause,
+  ChevronDown,
+  ChevronRight
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -175,6 +179,7 @@ export const MilestoneTimeline: React.FC<MilestoneTimelineProps> = ({
   milestones = defaultMilestones, 
   className 
 }) => {
+  const [expandedMilestones, setExpandedMilestones] = useState<Set<string>>(new Set());
   const calculateOverallProgress = () => {
     if (milestones.length === 0) return 0;
     return Math.round(milestones.reduce((sum, m) => sum + m.progress, 0) / milestones.length);
@@ -209,6 +214,15 @@ export const MilestoneTimeline: React.FC<MilestoneTimelineProps> = ({
       default:
         return 'text-gray-600 bg-gray-50 border-gray-200';
     }
+  };
+  const toggleMilestoneExpansion = (milestoneId: string) => {
+    const newExpanded = new Set(expandedMilestones);
+    if (newExpanded.has(milestoneId)) {
+      newExpanded.delete(milestoneId);
+    } else {
+      newExpanded.add(milestoneId);
+    }
+    setExpandedMilestones(newExpanded);
   };
 
   return (
@@ -345,108 +359,95 @@ export const MilestoneTimeline: React.FC<MilestoneTimelineProps> = ({
                         </div>
                       )}
                       
-                      {/* Tasks Section */}
-                      {milestone.tasks && milestone.tasks.length > 0 && (
-                        <div className="mt-4 pt-4 border-t border-border/30">
-                          <div className="flex items-center justify-between mb-3">
-                            <h5 className="font-medium text-sm flex items-center gap-2">
-                              <FileText className="w-4 h-4" />
-                              Milestone Tasks ({milestone.tasks.length})
-                            </h5>
-                            <div className="text-xs text-muted-foreground">
-                              {milestone.tasks.filter(t => t.status === 'completed').length} / {milestone.tasks.length} completed
-                            </div>
+                       {/* Tasks Section */}
+                       {milestone.tasks && milestone.tasks.length > 0 && (
+                         <div className="mt-4 pt-4 border-t border-border/30">
+                           <Collapsible 
+                             open={expandedMilestones.has(milestone.id)}
+                             onOpenChange={() => toggleMilestoneExpansion(milestone.id)}
+                           >
+                             <CollapsibleTrigger asChild>
+                               <Button 
+                                 variant="ghost" 
+                                 size="sm" 
+                                 className="w-full justify-between p-0 h-auto hover:bg-transparent"
+                               >
+                                 <div className="flex items-center justify-between w-full">
+                                   <h5 className="font-medium text-sm flex items-center gap-2">
+                                     <FileText className="w-4 h-4" />
+                                     View Tasks ({milestone.tasks.length})
+                                   </h5>
+                                   <div className="flex items-center gap-2">
+                                     <div className="text-xs text-muted-foreground">
+                                       {milestone.tasks.filter(t => t.status === 'completed').length} / {milestone.tasks.length} completed
+                                     </div>
+                                     {expandedMilestones.has(milestone.id) ? 
+                                       <ChevronDown className="w-4 h-4" /> : 
+                                       <ChevronRight className="w-4 h-4" />
+                                     }
+                                   </div>
+                                 </div>
+                               </Button>
+                             </CollapsibleTrigger>
+                             
+                             <CollapsibleContent className="mt-3">
+                               <div className="space-y-2">
+                                 {milestone.tasks.map((task) => (
+                                   <div key={task.id} className="flex items-center justify-between p-3 bg-background/80 rounded-lg border border-border/20 hover:shadow-sm transition-shadow">
+                                     <div className="flex items-center gap-3 flex-1 min-w-0">
+                                       <div className="flex-shrink-0">
+                                         {getTaskStatusIcon(task.status)}
+                                       </div>
+                                       <div className="flex-1 min-w-0">
+                                         <div className="flex items-center gap-2 mb-1">
+                                           <span className="text-sm font-medium truncate">{task.name}</span>
+                                           <Badge 
+                                             variant="outline" 
+                                             className={cn("text-xs px-1.5 py-0.5", getTaskPriorityColor(task.priority))}
+                                           >
+                                             {task.priority}
+                                           </Badge>
+                                         </div>
+                                         <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                                           <span className="flex items-center gap-1">
+                                             <Users className="w-3 h-3" />
+                                             {task.assignee}
+                                           </span>
+                                           <span className="flex items-center gap-1">
+                                             <Clock className="w-3 h-3" />
+                                             {task.loggedHours}h / {task.estimatedHours}h
+                                           </span>
+                                           <div className="flex-1 max-w-16">
+                                             <Progress 
+                                               value={task.estimatedHours > 0 ? (task.loggedHours / task.estimatedHours) * 100 : 0} 
+                                               className="h-1.5"
+                                             />
+                                           </div>
+                                         </div>
+                                       </div>
+                                     </div>
+                                   </div>
+                                 ))}
+                               </div>
+                             </CollapsibleContent>
+                            </Collapsible>
                           </div>
-                          
-                          <div className="space-y-2">
-                            {milestone.tasks.map((task) => (
-                              <div key={task.id} className="flex items-center justify-between p-3 bg-background/50 rounded-lg border border-border/30">
-                                <div className="flex items-center gap-3 flex-1 min-w-0">
-                                  <div className="flex-shrink-0">
-                                    {getTaskStatusIcon(task.status)}
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-sm font-medium truncate">{task.name}</span>
-                                      <Badge 
-                                        variant="outline" 
-                                        className={`text-xs px-1.5 py-0.5 ${getTaskPriorityColor(task.priority)}`}
-                                      >
-                                        {task.priority}
-                                      </Badge>
-                                    </div>
-                                    <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
-                                      <span className="flex items-center gap-1">
-                                        <Users className="w-3 h-3" />
-                                        {task.assignee}
-                                      </span>
-                                      <span className="flex items-center gap-1">
-                                        <Clock className="w-3 h-3" />
-                                        {task.loggedHours}h / {task.estimatedHours}h
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="flex-shrink-0 ml-2">
-                                  <div className="w-8 h-1.5 bg-muted rounded-full overflow-hidden">
-                                    <div 
-                                      className={`h-full rounded-full transition-all duration-300 ${
-                                        task.status === 'completed' ? 'bg-green-500' :
-                                        task.status === 'in-progress' ? 'bg-blue-500' :
-                                        task.status === 'blocked' ? 'bg-red-500' : 'bg-gray-300'
-                                      }`}
-                                      style={{ 
-                                        width: task.estimatedHours > 0 
-                                          ? `${Math.min((task.loggedHours / task.estimatedHours) * 100, 100)}%`
-                                          : '0%'
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                          
-                          {/* Task Summary */}
-                          <div className="mt-3 p-2 bg-muted/20 rounded border border-border/20">
-                            <div className="grid grid-cols-3 gap-4 text-xs">
-                              <div className="text-center">
-                                <div className="font-medium text-green-600">
-                                  {milestone.tasks.filter(t => t.status === 'completed').length}
-                                </div>
-                                <div className="text-muted-foreground">Completed</div>
-                              </div>
-                              <div className="text-center">
-                                <div className="font-medium text-blue-600">
-                                  {milestone.tasks.filter(t => t.status === 'in-progress').length}
-                                </div>
-                                <div className="text-muted-foreground">In Progress</div>
-                              </div>
-                              <div className="text-center">
-                                <div className="font-medium text-orange-600">
-                                  {milestone.tasks.reduce((sum, t) => sum + t.loggedHours, 0)}h
-                                </div>
-                                <div className="text-muted-foreground">Total Hours</div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                  
-                  {/* Connection line to next milestone */}
-                  {!isLast && (
-                    <div className="absolute left-6 top-16 w-0.5 h-8 bg-gradient-to-b from-transparent via-border to-transparent"></div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
+                        )}
+                     </CardContent>
+                   </Card>
+                   
+                   {/* Connection line to next milestone */}
+                   {!isLast && (
+                     <div className="absolute left-6 top-16 w-0.5 h-8 bg-gradient-to-b from-transparent via-border to-transparent"></div>
+                   )}
+                 </div>
+               );
+             })}
+           </div>
+         </div>
+       </CardContent>
+     </Card>
+   );
+ };
 
 export default MilestoneTimeline;

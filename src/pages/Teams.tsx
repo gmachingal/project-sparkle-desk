@@ -9,7 +9,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 import Header from "@/components/Header";
 import { 
   Users, 
@@ -34,7 +36,10 @@ import {
   Target,
   TrendingUp,
   Clock,
-  Eye
+  Eye,
+  CheckCircle,
+  AlertCircle,
+  Play
 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
@@ -48,6 +53,7 @@ const Teams = () => {
   const [isDepartmentDetailsOpen, setIsDepartmentDetailsOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<any>(null);
   const [selectedDepartment, setSelectedDepartment] = useState<any>(null);
+  const [selectedMemberForTasks, setSelectedMemberForTasks] = useState<any>(null);
   const [currentUserRole, setCurrentUserRole] = useState("admin"); // Mock current user role
   const { toast } = useToast();
 
@@ -92,7 +98,12 @@ const Teams = () => {
       skills: ["React", "TypeScript", "Node.js"],
       isLead: true,
       permissions: ["admin", "create_projects", "manage_team", "view_analytics"],
-      systemRole: "admin"
+      systemRole: "admin",
+      tasks: [
+        { id: "1", name: "Project Architecture Review", status: "in-progress", priority: "high", loggedHours: 8, estimatedHours: 12 },
+        { id: "2", name: "Team Onboarding", status: "completed", priority: "medium", loggedHours: 6, estimatedHours: 6 },
+        { id: "3", name: "Code Review Process Setup", status: "todo", priority: "medium", loggedHours: 0, estimatedHours: 4 }
+      ]
     },
     {
       id: "2",
@@ -106,7 +117,12 @@ const Teams = () => {
       projects: ["Website Redesign", "Marketing Campaign"],
       skills: ["Figma", "Sketch", "Prototyping"],
       permissions: ["create_projects", "view_analytics"],
-      systemRole: "manager"
+      systemRole: "manager",
+      tasks: [
+        { id: "4", name: "Homepage Wireframes", status: "completed", priority: "high", loggedHours: 18, estimatedHours: 16 },
+        { id: "5", name: "Design System Update", status: "in-progress", priority: "medium", loggedHours: 12, estimatedHours: 20 },
+        { id: "6", name: "User Testing Analysis", status: "todo", priority: "low", loggedHours: 0, estimatedHours: 8 }
+      ]
     },
     {
       id: "3",
@@ -120,7 +136,12 @@ const Teams = () => {
       projects: ["Mobile App", "Data Analytics"],
       skills: ["Python", "PostgreSQL", "AWS"],
       permissions: ["create_projects"],
-      systemRole: "member"
+      systemRole: "member",
+      tasks: [
+        { id: "7", name: "API Development", status: "in-progress", priority: "high", loggedHours: 20, estimatedHours: 28 },
+        { id: "8", name: "Database Optimization", status: "completed", priority: "medium", loggedHours: 14, estimatedHours: 12 },
+        { id: "9", name: "Security Audit", status: "todo", priority: "high", loggedHours: 0, estimatedHours: 16 }
+      ]
     },
     {
       id: "4",
@@ -134,7 +155,12 @@ const Teams = () => {
       projects: ["Marketing Campaign"],
       skills: ["Content Strategy", "SEO", "Analytics"],
       permissions: ["create_projects", "view_analytics"],
-      systemRole: "manager"
+      systemRole: "manager",
+      tasks: [
+        { id: "10", name: "Campaign Strategy", status: "completed", priority: "high", loggedHours: 15, estimatedHours: 16 },
+        { id: "11", name: "Content Calendar", status: "in-progress", priority: "medium", loggedHours: 8, estimatedHours: 12 },
+        { id: "12", name: "Analytics Dashboard", status: "todo", priority: "low", loggedHours: 0, estimatedHours: 10 }
+      ]
     },
     {
       id: "5",
@@ -148,7 +174,12 @@ const Teams = () => {
       projects: ["Website Redesign", "Mobile App"],
       skills: ["React", "CSS", "JavaScript"],
       permissions: [],
-      systemRole: "member"
+      systemRole: "member",
+      tasks: [
+        { id: "13", name: "Component Library", status: "in-progress", priority: "medium", loggedHours: 14, estimatedHours: 20 },
+        { id: "14", name: "Responsive Design", status: "todo", priority: "medium", loggedHours: 0, estimatedHours: 16 },
+        { id: "15", name: "Performance Optimization", status: "todo", priority: "low", loggedHours: 0, estimatedHours: 8 }
+      ]
     },
     {
       id: "6",
@@ -162,7 +193,12 @@ const Teams = () => {
       projects: ["Mobile App", "Data Analytics"],
       skills: ["Product Strategy", "User Research", "Agile"],
       permissions: ["create_projects", "manage_team", "view_analytics"],
-      systemRole: "manager"
+      systemRole: "manager",
+      tasks: [
+        { id: "16", name: "Product Roadmap", status: "completed", priority: "high", loggedHours: 12, estimatedHours: 12 },
+        { id: "17", name: "User Stories Definition", status: "in-progress", priority: "high", loggedHours: 8, estimatedHours: 16 },
+        { id: "18", name: "Stakeholder Meetings", status: "in-progress", priority: "medium", loggedHours: 6, estimatedHours: 10 }
+      ]
     }
   ]);
 
@@ -267,7 +303,8 @@ const Teams = () => {
       projects: [],
       skills: formData.skills.split(',').map(s => s.trim()).filter(s => s),
       permissions: formData.permissions,
-      systemRole: formData.role.toLowerCase()
+      systemRole: formData.role.toLowerCase(),
+      tasks: []
     };
 
     setTeamMembers([...teamMembers, newMember]);
@@ -446,6 +483,32 @@ const Teams = () => {
     online: teamMembers.filter(m => m.status === "online").length,
     departments: departments.length,
     activeProjects: [...new Set(teamMembers.flatMap(m => m.projects))].length
+  };
+
+  const getTaskStatusIcon = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return <CheckCircle className="w-3 h-3 text-green-500" />;
+      case 'in-progress':
+        return <Play className="w-3 h-3 text-blue-500" />;
+      case 'blocked':
+        return <AlertCircle className="w-3 h-3 text-red-500" />;
+      default:
+        return <Clock className="w-3 h-3 text-gray-400" />;
+    }
+  };
+
+  const getTaskPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'high':
+        return 'text-red-600 bg-red-50 border-red-200';
+      case 'medium':
+        return 'text-blue-600 bg-blue-50 border-blue-200';
+      case 'low':
+        return 'text-gray-600 bg-gray-50 border-gray-200';
+      default:
+        return 'text-gray-600 bg-gray-50 border-gray-200';
+    }
   };
 
   return (
@@ -654,33 +717,33 @@ const Teams = () => {
           </TabsList>
 
           <TabsContent value="members" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {getFilteredMembers().map((member) => (
                 <Card key={member.id} className="group hover:shadow-lg transition-shadow">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="w-10 h-10">
+                      <div className="flex items-center gap-2">
+                        <Avatar className="w-8 h-8">
                           <AvatarImage src={member.avatar} />
-                          <AvatarFallback className="bg-primary text-primary-foreground">
+                          <AvatarFallback className="bg-primary text-primary-foreground text-xs">
                             {member.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
-                        <div>
-                          <h4 className="font-semibold text-sm flex items-center gap-2">
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-semibold text-sm flex items-center gap-1 truncate">
                             {member.name}
-                            {member.isLead && <Crown className="w-4 h-4 text-yellow-500" />}
+                            {member.isLead && <Crown className="w-3 h-3 text-yellow-500 flex-shrink-0" />}
                           </h4>
-                          <p className="text-xs text-muted-foreground">{member.role}</p>
+                          <p className="text-xs text-muted-foreground truncate">{member.role}</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 flex-shrink-0">
                         <div className={`w-2 h-2 rounded-full ${getStatusColor(member.status)}`} />
                         {currentUserRole === "admin" && (
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                                <MoreHorizontal className="w-4 h-4" />
+                              <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0">
+                                <MoreHorizontal className="w-3 h-3" />
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
@@ -701,67 +764,173 @@ const Teams = () => {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="flex items-center gap-2 text-sm">
-                      <Mail className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">{member.email}</span>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 text-sm">
-                      <Briefcase className="w-4 h-4 text-muted-foreground" />
+                  <CardContent className="space-y-2 pt-0">
+                    <div className="flex items-center gap-2 text-xs">
+                      <Briefcase className="w-3 h-3 text-muted-foreground flex-shrink-0" />
                       <Badge variant="outline" className="text-xs">
                         {member.department}
                       </Badge>
                     </div>
 
-                    <div className="flex items-center gap-2 text-sm">
-                      <Calendar className="w-4 h-4 text-muted-foreground" />
+                    <div className="flex items-center gap-2 text-xs">
+                      <Calendar className="w-3 h-3 text-muted-foreground flex-shrink-0" />
                       <span className="text-muted-foreground">Joined {member.joinDate}</span>
                     </div>
 
                     <div>
-                      <p className="text-sm font-medium mb-2">Skills</p>
                       <div className="flex flex-wrap gap-1">
-                        {member.skills.slice(0, 3).map((skill, index) => (
+                        {member.skills.slice(0, 2).map((skill, index) => (
                           <Badge key={index} variant="secondary" className="text-xs">
                             {skill}
                           </Badge>
                         ))}
-                        {member.skills.length > 3 && (
+                        {member.skills.length > 2 && (
                           <Badge variant="secondary" className="text-xs">
-                            +{member.skills.length - 3}
+                            +{member.skills.length - 2}
                           </Badge>
                         )}
                       </div>
                     </div>
 
-                    <div>
-                      <p className="text-sm font-medium mb-2">System Role</p>
-                      <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-between pt-2">
+                      <div className="flex items-center gap-1">
                         {(() => {
                           const RoleIcon = getRoleIcon(member.systemRole);
-                          return <RoleIcon className={`w-4 h-4 ${getRoleColor(member.systemRole)}`} />;
+                          return <RoleIcon className={`w-3 h-3 ${getRoleColor(member.systemRole)}`} />;
                         })()}
                         <Badge variant="outline" className={`text-xs ${getRoleColor(member.systemRole)}`}>
                           {member.systemRole}
                         </Badge>
                       </div>
-                    </div>
-
-                    <div>
-                      <p className="text-sm font-medium mb-2">Active Projects</p>
-                      <div className="flex flex-wrap gap-1">
-                        {member.projects.slice(0, 2).map((project, index) => (
-                          <Badge key={index} variant="outline" className="text-xs">
-                            {project}
-                          </Badge>
-                        ))}
-                        {member.projects.length > 2 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{member.projects.length - 2}
-                          </Badge>
-                        )}
-                      </div>
+                      
+                      <Sheet>
+                        <SheetTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-6 px-2 text-xs"
+                            onClick={() => setSelectedMemberForTasks(member)}
+                          >
+                            <Eye className="w-3 h-3 mr-1" />
+                            Tasks
+                          </Button>
+                        </SheetTrigger>
+                        <SheetContent className="w-[400px] sm:w-[540px]">
+                          <SheetHeader>
+                            <SheetTitle className="flex items-center gap-3">
+                              <Avatar className="w-10 h-10">
+                                <AvatarImage src={member.avatar} />
+                                <AvatarFallback className="bg-primary text-primary-foreground">
+                                  {member.name.split(' ').map(n => n[0]).join('')}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <div className="font-semibold">{member.name}</div>
+                                <div className="text-sm text-muted-foreground">{member.role}</div>
+                              </div>
+                            </SheetTitle>
+                          </SheetHeader>
+                          
+                          <div className="mt-6 space-y-6">
+                            {/* Task Stats */}
+                            <div className="grid grid-cols-3 gap-4">
+                              <div className="text-center p-3 bg-muted/30 rounded-lg">
+                                <div className="text-2xl font-bold text-green-600">
+                                  {member.tasks?.filter(t => t.status === 'completed').length || 0}
+                                </div>
+                                <div className="text-xs text-muted-foreground">Completed</div>
+                              </div>
+                              <div className="text-center p-3 bg-muted/30 rounded-lg">
+                                <div className="text-2xl font-bold text-blue-600">
+                                  {member.tasks?.filter(t => t.status === 'in-progress').length || 0}
+                                </div>
+                                <div className="text-xs text-muted-foreground">In Progress</div>
+                              </div>
+                              <div className="text-center p-3 bg-muted/30 rounded-lg">
+                                <div className="text-2xl font-bold text-orange-600">
+                                  {member.tasks?.reduce((sum, t) => sum + t.loggedHours, 0) || 0}h
+                                </div>
+                                <div className="text-xs text-muted-foreground">Total Hours</div>
+                              </div>
+                            </div>
+                            
+                            {/* Task List */}
+                            <div className="space-y-3">
+                              <h4 className="font-medium flex items-center gap-2">
+                                <Target className="w-4 h-4" />
+                                Current Tasks ({member.tasks?.length || 0})
+                              </h4>
+                              
+                              <div className="space-y-2 max-h-96 overflow-y-auto">
+                                {member.tasks && member.tasks.length > 0 ? (
+                                  member.tasks.map((task) => (
+                                    <Card key={task.id} className="p-3 hover:shadow-sm transition-shadow">
+                                      <div className="flex items-start gap-3">
+                                        <div className="flex-shrink-0 mt-0.5">
+                                          {getTaskStatusIcon(task.status)}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                          <div className="flex items-center gap-2 mb-1">
+                                            <span className="font-medium text-sm truncate">{task.name}</span>
+                                            <Badge 
+                                              variant="outline" 
+                                              className={cn("text-xs px-1.5 py-0.5", getTaskPriorityColor(task.priority))}
+                                            >
+                                              {task.priority}
+                                            </Badge>
+                                          </div>
+                                          <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
+                                            <span className="flex items-center gap-1">
+                                              <Clock className="w-3 h-3" />
+                                              {task.loggedHours}h / {task.estimatedHours}h
+                                            </span>
+                                            <span className="flex items-center gap-1">
+                                              <TrendingUp className="w-3 h-3" />
+                                              {task.estimatedHours > 0 ? Math.round((task.loggedHours / task.estimatedHours) * 100) : 0}%
+                                            </span>
+                                          </div>
+                                          <div className="w-full bg-muted rounded-full h-1.5">
+                                            <div 
+                                              className={cn(
+                                                "h-1.5 rounded-full transition-all duration-300",
+                                                task.status === 'completed' ? 'bg-green-500' :
+                                                task.status === 'in-progress' ? 'bg-blue-500' :
+                                                task.status === 'blocked' ? 'bg-red-500' : 'bg-gray-300'
+                                              )}
+                                              style={{ 
+                                                width: task.estimatedHours > 0 
+                                                  ? `${Math.min((task.loggedHours / task.estimatedHours) * 100, 100)}%`
+                                                  : '0%'
+                                              }}
+                                            />
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </Card>
+                                  ))
+                                ) : (
+                                  <div className="text-center py-8 text-muted-foreground">
+                                    <Target className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                                    <p>No tasks assigned</p>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            
+                            {/* Projects */}
+                            <div>
+                              <h4 className="font-medium mb-2">Active Projects</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {member.projects.map((project, index) => (
+                                  <Badge key={index} variant="outline" className="text-xs">
+                                    {project}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </SheetContent>
+                      </Sheet>
                     </div>
                   </CardContent>
                 </Card>
