@@ -417,12 +417,12 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
                               {(!showConfirmAssignment || currentTaskId !== task.id) ? (
                                 teamMembers.length > 2 ? (
                                   <Select value={task.assignee?.name || ''} onValueChange={(value) => confirmAssigneeChange(task.id, value)}>
-                                    <SelectTrigger className="h-6 text-xs bg-background border z-50">
+                                    <SelectTrigger className="h-6 text-xs">
                                       <SelectValue placeholder="Select assignee" />
                                     </SelectTrigger>
-                                    <SelectContent className="bg-background border shadow-lg z-50">
+                                    <SelectContent className="z-[9999] bg-popover">
                                       {teamMembers.filter(m => m.active).map((teamMember) => (
-                                        <SelectItem key={teamMember.id} value={teamMember.name} className="text-xs">
+                                        <SelectItem key={teamMember.id} value={teamMember.name} className="text-xs cursor-pointer">
                                           <div className="flex items-center gap-2">
                                             <div className="w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center text-xs font-semibold">
                                               {teamMember.name.split(' ').map(n => n[0]).join('')}
