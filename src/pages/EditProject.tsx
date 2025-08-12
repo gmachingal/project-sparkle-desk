@@ -53,25 +53,25 @@ const EditProject = () => {
   const [milestones, setMilestones] = useState<Milestone[]>([
     { 
       id: '1', 
-      name: 'Design Phase Complete', 
-      description: 'Complete all UI/UX designs and prototypes', 
+      name: 'Design Phase', 
+      description: 'UI/UX design, wireframes, prototypes, and design system creation', 
       status: 'in-progress',
       priority: 'high',
       startDate: new Date('2024-01-15'), 
       endDate: new Date('2024-02-15'),
       progress: 75,
-      estimatedDuration: '4 weeks'
+      estimatedDuration: '2-3 weeks'
     },
     { 
       id: '2', 
-      name: 'Backend Development', 
-      description: 'Complete API development and database setup', 
+      name: 'Development Sprint 1', 
+      description: 'Core functionality development and basic features implementation', 
       status: 'planned',
       priority: 'medium',
       startDate: new Date('2024-02-16'), 
       endDate: new Date('2024-03-01'),
       progress: 0,
-      estimatedDuration: '2 weeks'
+      estimatedDuration: '3-4 weeks'
     }
   ]);
 

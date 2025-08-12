@@ -133,7 +133,11 @@ export const MilestoneManager: React.FC<MilestoneManagerProps> = ({
   // Calculate which presets are currently selected based on milestone names
   const getSelectedPresets = () => {
     return availablePresets
-      .filter(preset => milestones.some(milestone => milestone.name === preset.name))
+      .filter(preset => 
+        milestones.some(milestone => 
+          milestone.name.toLowerCase().trim() === preset.name.toLowerCase().trim()
+        )
+      )
       .map(preset => preset.id);
   };
 
@@ -144,7 +148,9 @@ export const MilestoneManager: React.FC<MilestoneManagerProps> = ({
     
     if (isCurrentlySelected) {
       // Remove the milestone that matches this preset
-      onMilestonesChange(milestones.filter(m => m.name !== preset.name));
+      onMilestonesChange(milestones.filter(m => 
+        m.name.toLowerCase().trim() !== preset.name.toLowerCase().trim()
+      ));
     } else {
       // Add the preset as a new milestone
       const newMilestone = { 
