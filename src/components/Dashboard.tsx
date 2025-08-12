@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StatsCard from "./StatsCard";
 import ProjectCard from "./ProjectCard";
-import TaskCard from "./TaskCard";
+import EnhancedTaskCard from "./EnhancedTaskCard";
 import { 
   CheckSquare, 
   Clock, 
@@ -202,7 +202,7 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent className="space-y-3">
                 {tasks.slice(0, 3).map((task) => (
-                  <TaskCard key={task.id} task={task} />
+                  <EnhancedTaskCard key={task.id} task={task} />
                 ))}
               </CardContent>
             </Card>
@@ -246,7 +246,7 @@ const Dashboard = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {tasks.map((task) => (
-              <TaskCard key={task.id} task={task} />
+              <EnhancedTaskCard key={task.id} task={task} />
             ))}
           </div>
         </TabsContent>

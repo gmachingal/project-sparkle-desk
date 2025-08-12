@@ -10,7 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { EnhancedCalendar } from "@/components/ui/enhanced-calendar";
 import { Calendar } from "@/components/ui/calendar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import TaskCard from "@/components/TaskCard";
+import EnhancedTaskCard from "@/components/EnhancedTaskCard";
 import Header from "@/components/Header";
 import { 
   CheckSquare, 
@@ -479,7 +479,7 @@ const MyTasks = () => {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {getFilteredTasks().map((task) => (
-                    <TaskCard key={task.id} task={formatTaskForCard(task)} />
+                    <EnhancedTaskCard key={task.id} task={formatTaskForCard(task)} />
                   ))}
                 </div>
                 {getFilteredTasks().length === 0 && (

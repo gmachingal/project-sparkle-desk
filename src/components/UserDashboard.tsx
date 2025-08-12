@@ -5,7 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import StatsCard from "./StatsCard";
 import AttendanceCard from "./AttendanceCard";
 import LeaveCard from "./LeaveCard";
-import TaskCard from "./TaskCard";
+import EnhancedTaskCard from "./EnhancedTaskCard";
 import QuickActionsDropdown from "./QuickActionsDropdown";
 import SprintOverview from "./SprintOverview";
 import DailyTaskReport from "./DailyTaskReport";
@@ -174,7 +174,7 @@ const UserDashboard = () => {
             </CardHeader>
             <CardContent className="space-y-3">
               {recentTasks.slice(0, 3).map((task) => (
-                <TaskCard key={task.id} task={task} size="compact" />
+                <EnhancedTaskCard key={task.id} task={task} size="compact" />
               ))}
             </CardContent>
           </Card>
