@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import {
   Target,
   CheckCircle,
@@ -18,7 +18,9 @@ import {
   Play,
   Pause,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  Eye,
+  Edit
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -179,7 +181,8 @@ export const MilestoneTimeline: React.FC<MilestoneTimelineProps> = ({
   milestones = defaultMilestones, 
   className 
 }) => {
-  const [expandedMilestones, setExpandedMilestones] = useState<Set<string>>(new Set());
+  const [selectedMilestoneForTasks, setSelectedMilestoneForTasks] = useState<any>(null);
+  const [selectedTaskDetails, setSelectedTaskDetails] = useState<any>(null);
   const calculateOverallProgress = () => {
     if (milestones.length === 0) return 0;
     return Math.round(milestones.reduce((sum, m) => sum + m.progress, 0) / milestones.length);
@@ -214,15 +217,6 @@ export const MilestoneTimeline: React.FC<MilestoneTimelineProps> = ({
       default:
         return 'text-gray-600 bg-gray-50 border-gray-200';
     }
-  };
-  const toggleMilestoneExpansion = (milestoneId: string) => {
-    const newExpanded = new Set(expandedMilestones);
-    if (newExpanded.has(milestoneId)) {
-      newExpanded.delete(milestoneId);
-    } else {
-      newExpanded.add(milestoneId);
-    }
-    setExpandedMilestones(newExpanded);
   };
 
   return (
@@ -362,77 +356,228 @@ export const MilestoneTimeline: React.FC<MilestoneTimelineProps> = ({
                        {/* Tasks Section */}
                        {milestone.tasks && milestone.tasks.length > 0 && (
                          <div className="mt-4 pt-4 border-t border-border/30">
-                           <Collapsible 
-                             open={expandedMilestones.has(milestone.id)}
-                             onOpenChange={() => toggleMilestoneExpansion(milestone.id)}
-                           >
-                             <CollapsibleTrigger asChild>
-                               <Button 
-                                 variant="ghost" 
-                                 size="sm" 
-                                 className="w-full justify-between p-0 h-auto hover:bg-transparent"
-                               >
-                                 <div className="flex items-center justify-between w-full">
-                                   <h5 className="font-medium text-sm flex items-center gap-2">
-                                     <FileText className="w-4 h-4" />
-                                     View Tasks ({milestone.tasks.length})
-                                   </h5>
-                                   <div className="flex items-center gap-2">
-                                     <div className="text-xs text-muted-foreground">
-                                       {milestone.tasks.filter(t => t.status === 'completed').length} / {milestone.tasks.length} completed
-                                     </div>
-                                     {expandedMilestones.has(milestone.id) ? 
-                                       <ChevronDown className="w-4 h-4" /> : 
-                                       <ChevronRight className="w-4 h-4" />
-                                     }
-                                   </div>
-                                 </div>
-                               </Button>
-                             </CollapsibleTrigger>
-                             
-                             <CollapsibleContent className="mt-3">
-                               <div className="space-y-2">
-                                 {milestone.tasks.map((task) => (
-                                   <div key={task.id} className="flex items-center justify-between p-3 bg-background/80 rounded-lg border border-border/20 hover:shadow-sm transition-shadow">
-                                     <div className="flex items-center gap-3 flex-1 min-w-0">
-                                       <div className="flex-shrink-0">
-                                         {getTaskStatusIcon(task.status)}
-                                       </div>
-                                       <div className="flex-1 min-w-0">
-                                         <div className="flex items-center gap-2 mb-1">
-                                           <span className="text-sm font-medium truncate">{task.name}</span>
-                                           <Badge 
-                                             variant="outline" 
-                                             className={cn("text-xs px-1.5 py-0.5", getTaskPriorityColor(task.priority))}
-                                           >
-                                             {task.priority}
-                                           </Badge>
-                                         </div>
-                                         <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                                           <span className="flex items-center gap-1">
-                                             <Users className="w-3 h-3" />
-                                             {task.assignee}
-                                           </span>
-                                           <span className="flex items-center gap-1">
-                                             <Clock className="w-3 h-3" />
-                                             {task.loggedHours}h / {task.estimatedHours}h
-                                           </span>
-                                           <div className="flex-1 max-w-16">
-                                             <Progress 
-                                               value={task.estimatedHours > 0 ? (task.loggedHours / task.estimatedHours) * 100 : 0} 
-                                               className="h-1.5"
-                                             />
-                                           </div>
-                                         </div>
-                                       </div>
-                                     </div>
-                                   </div>
-                                 ))}
+                           <div className="flex items-center justify-between w-full">
+                             <h5 className="font-medium text-sm flex items-center gap-2">
+                               <FileText className="w-4 h-4" />
+                               Tasks ({milestone.tasks.length})
+                             </h5>
+                             <div className="flex items-center gap-2">
+                               <div className="text-xs text-muted-foreground">
+                                 {milestone.tasks.filter(t => t.status === 'completed').length} / {milestone.tasks.length} completed
                                </div>
-                             </CollapsibleContent>
-                            </Collapsible>
-                          </div>
-                        )}
+                               <Sheet>
+                                 <SheetTrigger asChild>
+                                   <Button 
+                                     variant="outline" 
+                                     size="sm" 
+                                     onClick={() => setSelectedMilestoneForTasks(milestone)}
+                                   >
+                                     <Eye className="w-4 h-4 mr-2" />
+                                     View Tasks
+                                   </Button>
+                                 </SheetTrigger>
+                                 <SheetContent className="w-[400px] sm:w-[540px]">
+                                   <SheetHeader>
+                                     <SheetTitle className="flex items-center gap-3">
+                                       <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center text-primary-foreground font-semibold">
+                                         <Target className="w-5 h-5" />
+                                       </div>
+                                       <div>
+                                         <div className="font-semibold">{milestone.name}</div>
+                                         <div className="text-sm text-muted-foreground">{milestone.tasks?.length} Tasks</div>
+                                       </div>
+                                     </SheetTitle>
+                                   </SheetHeader>
+                                   
+                                   <div className="mt-6 space-y-6">
+                                     {/* Task Stats */}
+                                     <div className="grid grid-cols-4 gap-4">
+                                       <div className="text-center p-3 bg-muted/30 rounded-lg">
+                                         <div className="text-2xl font-bold text-green-600">{milestone.tasks?.filter(t => t.status === 'completed').length || 0}</div>
+                                         <div className="text-xs text-muted-foreground">Completed</div>
+                                       </div>
+                                       <div className="text-center p-3 bg-muted/30 rounded-lg">
+                                         <div className="text-2xl font-bold text-blue-600">{milestone.tasks?.filter(t => t.status === 'in-progress').length || 0}</div>
+                                         <div className="text-xs text-muted-foreground">In Progress</div>
+                                       </div>
+                                       <div className="text-center p-3 bg-muted/30 rounded-lg">
+                                         <div className="text-2xl font-bold text-gray-600">{milestone.tasks?.filter(t => t.status === 'todo').length || 0}</div>
+                                         <div className="text-xs text-muted-foreground">Todo</div>
+                                       </div>
+                                       <div className="text-center p-3 bg-muted/30 rounded-lg">
+                                         <div className="text-2xl font-bold text-orange-600">{milestone.tasks?.reduce((sum, t) => sum + t.loggedHours, 0) || 0}h</div>
+                                         <div className="text-xs text-muted-foreground">Total Hours</div>
+                                       </div>
+                                     </div>
+                                     
+                                     {/* Tasks List */}
+                                     <div className="space-y-3">
+                                       <h4 className="font-medium flex items-center gap-2">
+                                         <FileText className="w-4 h-4" />
+                                         All Tasks ({milestone.tasks?.length || 0})
+                                       </h4>
+                                       
+                                       <div className="space-y-2 max-h-96 overflow-y-auto">
+                                         {milestone.tasks?.map((task) => (
+                                           <Card key={task.id} className="p-3 hover:shadow-sm transition-shadow cursor-pointer">
+                                             <div className="flex items-start gap-3">
+                                               <div className="flex-shrink-0 mt-0.5">
+                                                 {getTaskStatusIcon(task.status)}
+                                               </div>
+                                               <div className="flex-1 min-w-0">
+                                                 <div className="flex items-center gap-2 mb-1">
+                                                   <span className="font-medium text-sm truncate">{task.name}</span>
+                                                   <Badge 
+                                                     variant="outline" 
+                                                     className={cn("text-xs px-1.5 py-0.5", getTaskPriorityColor(task.priority))}
+                                                   >
+                                                     {task.priority}
+                                                   </Badge>
+                                                 </div>
+                                                 <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
+                                                   <span className="flex items-center gap-1">
+                                                     <Users className="w-3 h-3" />
+                                                     {task.assignee}
+                                                   </span>
+                                                   <span className="flex items-center gap-1">
+                                                     <Clock className="w-3 h-3" />
+                                                     {task.loggedHours}h / {task.estimatedHours}h
+                                                   </span>
+                                                 </div>
+                                                 <div className="space-y-1">
+                                                   <div className="flex items-center justify-between text-xs">
+                                                     <span className="text-muted-foreground">Progress</span>
+                                                     <span className="font-medium">
+                                                       {task.estimatedHours > 0 ? Math.round((task.loggedHours / task.estimatedHours) * 100) : 0}%
+                                                     </span>
+                                                   </div>
+                                                   <Progress 
+                                                     value={task.estimatedHours > 0 ? (task.loggedHours / task.estimatedHours) * 100 : 0} 
+                                                     className="h-1.5"
+                                                   />
+                                                 </div>
+                                               </div>
+                                               <Sheet>
+                                                 <SheetTrigger asChild>
+                                                   <Button 
+                                                     variant="ghost" 
+                                                     size="sm" 
+                                                     className="h-6 px-2 text-xs"
+                                                     onClick={() => setSelectedTaskDetails(task)}
+                                                   >
+                                                     <Eye className="w-3 h-3 mr-1" />
+                                                     Details
+                                                   </Button>
+                                                 </SheetTrigger>
+                                                 <SheetContent className="w-[400px] sm:w-[540px]">
+                                                   <SheetHeader>
+                                                     <SheetTitle className="flex items-center gap-2">
+                                                       {getTaskStatusIcon(task.status)}
+                                                       Task Details
+                                                     </SheetTitle>
+                                                   </SheetHeader>
+                                                   
+                                                   <div className="mt-6 space-y-6">
+                                                     <Card>
+                                                       <CardContent className="p-4">
+                                                         <div className="space-y-3">
+                                                           <div>
+                                                             <label className="text-sm font-medium text-muted-foreground">Task Name</label>
+                                                             <div className="font-semibold text-lg">{task.name}</div>
+                                                           </div>
+                                                           <div className="grid grid-cols-2 gap-4">
+                                                             <div>
+                                                               <label className="text-sm font-medium text-muted-foreground">Status</label>
+                                                               <div className="flex items-center gap-2">
+                                                                 {getTaskStatusIcon(task.status)}
+                                                                 <span className="capitalize">{task.status.replace('-', ' ')}</span>
+                                                               </div>
+                                                             </div>
+                                                             <div>
+                                                               <label className="text-sm font-medium text-muted-foreground">Priority</label>
+                                                               <div>
+                                                                 <Badge 
+                                                                   variant="outline" 
+                                                                   className={cn("text-xs", getTaskPriorityColor(task.priority))}
+                                                                 >
+                                                                   {task.priority}
+                                                                 </Badge>
+                                                               </div>
+                                                             </div>
+                                                           </div>
+                                                           <div className="grid grid-cols-2 gap-4">
+                                                             <div>
+                                                               <label className="text-sm font-medium text-muted-foreground">Assignee</label>
+                                                               <div className="font-medium">{task.assignee}</div>
+                                                             </div>
+                                                             <div>
+                                                               <label className="text-sm font-medium text-muted-foreground">Milestone</label>
+                                                               <div className="font-medium">{milestone.name}</div>
+                                                             </div>
+                                                           </div>
+                                                         </div>
+                                                       </CardContent>
+                                                     </Card>
+
+                                                     {/* Time Tracking */}
+                                                     <Card>
+                                                       <CardHeader>
+                                                         <CardTitle className="text-sm">Time Tracking</CardTitle>
+                                                       </CardHeader>
+                                                       <CardContent>
+                                                         <div className="space-y-4">
+                                                           <div className="grid grid-cols-2 gap-4 text-center">
+                                                             <div className="p-3 bg-muted/30 rounded-lg">
+                                                               <div className="text-lg font-bold text-primary">{task.loggedHours}h</div>
+                                                               <div className="text-xs text-muted-foreground">Logged</div>
+                                                             </div>
+                                                             <div className="p-3 bg-muted/30 rounded-lg">
+                                                               <div className="text-lg font-bold text-blue-600">{task.estimatedHours}h</div>
+                                                               <div className="text-xs text-muted-foreground">Estimated</div>
+                                                             </div>
+                                                           </div>
+                                                           <div className="space-y-2">
+                                                             <div className="flex items-center justify-between text-sm">
+                                                               <span className="text-muted-foreground">Progress</span>
+                                                               <span className="font-medium">
+                                                                 {task.estimatedHours > 0 ? Math.round((task.loggedHours / task.estimatedHours) * 100) : 0}%
+                                                               </span>
+                                                             </div>
+                                                             <Progress 
+                                                               value={task.estimatedHours > 0 ? (task.loggedHours / task.estimatedHours) * 100 : 0} 
+                                                               className="h-2"
+                                                             />
+                                                           </div>
+                                                         </div>
+                                                       </CardContent>
+                                                     </Card>
+
+                                                     {/* Action Buttons */}
+                                                     <div className="flex gap-2">
+                                                       <Button className="flex-1">
+                                                         <Edit className="w-4 h-4 mr-2" />
+                                                         Edit Task
+                                                       </Button>
+                                                       <Button variant="outline" className="flex-1">
+                                                         <Clock className="w-4 h-4 mr-2" />
+                                                         Log Time
+                                                       </Button>
+                                                     </div>
+                                                   </div>
+                                                 </SheetContent>
+                                               </Sheet>
+                                             </div>
+                                           </Card>
+                                         ))}
+                                       </div>
+                                     </div>
+                                   </div>
+                                 </SheetContent>
+                               </Sheet>
+                             </div>
+                           </div>
+                         </div>
+                       )}
                      </CardContent>
                    </Card>
                    
