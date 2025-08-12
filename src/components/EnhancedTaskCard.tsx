@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
@@ -15,6 +16,7 @@ import {
   Users,
   Edit,
   Calendar,
+  ChevronDown,
   Target,
   Flag,
   Tag,
@@ -384,23 +386,39 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
                   <h4 className="text-xs font-medium mb-1">Quick Assign</h4>
                   {!showConfirmAssignment ? (
                     teamMembers.length > 2 ? (
-                      <Select value={getAssigneeName()} onValueChange={confirmAssigneeChange}>
-                        <SelectTrigger className="h-6 text-xs">
-                          <SelectValue placeholder="Select assignee" />
-                        </SelectTrigger>
-                        <SelectContent className="z-[9999] bg-popover">
-                          {teamMembers.filter(m => m.active).map((teamMember) => (
-                            <SelectItem key={teamMember.id} value={teamMember.name} className="text-xs cursor-pointer">
-                              <div className="flex items-center gap-2">
-                                <div className="w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center text-xs font-semibold">
-                                  {teamMember.name.split(' ').map(n => n[0]).join('')}
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" className="h-6 text-xs w-full justify-between">
+                            <span className="truncate">{getAssigneeName()}</span>
+                            <ChevronDown className="w-3 h-3" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-48 p-2 z-[9999]" align="start">
+                          <div className="space-y-1">
+                            {teamMembers.filter(m => m.active).map((teamMember) => (
+                              <Button
+                                key={teamMember.id}
+                                variant="ghost"
+                                size="sm"
+                                className={`w-full justify-start h-8 text-xs ${
+                                  getAssigneeName() === teamMember.name ? 'bg-primary/10' : ''
+                                }`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  confirmAssigneeChange(teamMember.name);
+                                }}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <div className="w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center text-xs font-semibold">
+                                    {teamMember.name.split(' ').map(n => n[0]).join('')}
+                                  </div>
+                                  <span>{teamMember.name}</span>
                                 </div>
-                                <span>{teamMember.name}</span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                              </Button>
+                            ))}
+                          </div>
+                        </PopoverContent>
+                      </Popover>
                     ) : (
                       <div className="space-y-1">
                         {teamMembers.filter(m => m.active).slice(0, 2).map((teamMember) => (
@@ -562,23 +580,39 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
                 <h4 className="text-xs font-medium mb-1">Quick Assign</h4>
                 {!showConfirmAssignment ? (
                   teamMembers.length > 2 ? (
-                    <Select value={getAssigneeName()} onValueChange={confirmAssigneeChange}>
-                      <SelectTrigger className="h-6 text-xs">
-                        <SelectValue placeholder="Select assignee" />
-                      </SelectTrigger>
-                      <SelectContent className="z-[9999] bg-popover">
-                        {teamMembers.filter(m => m.active).map((teamMember) => (
-                          <SelectItem key={teamMember.id} value={teamMember.name} className="text-xs cursor-pointer">
-                            <div className="flex items-center gap-2">
-                              <div className="w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center text-xs font-semibold">
-                                {teamMember.name.split(' ').map(n => n[0]).join('')}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="h-6 text-xs w-full justify-between">
+                          <span className="truncate">{getAssigneeName()}</span>
+                          <ChevronDown className="w-3 h-3" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-48 p-2 z-[9999]" align="start">
+                        <div className="space-y-1">
+                          {teamMembers.filter(m => m.active).map((teamMember) => (
+                            <Button
+                              key={teamMember.id}
+                              variant="ghost"
+                              size="sm"
+                              className={`w-full justify-start h-8 text-xs ${
+                                getAssigneeName() === teamMember.name ? 'bg-primary/10' : ''
+                              }`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                confirmAssigneeChange(teamMember.name);
+                              }}
+                            >
+                              <div className="flex items-center gap-2">
+                                <div className="w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center text-xs font-semibold">
+                                  {teamMember.name.split(' ').map(n => n[0]).join('')}
+                                </div>
+                                <span>{teamMember.name}</span>
                               </div>
-                              <span>{teamMember.name}</span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                            </Button>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   ) : (
                     <div className="space-y-1">
                       {teamMembers.filter(m => m.active).slice(0, 2).map((teamMember) => (

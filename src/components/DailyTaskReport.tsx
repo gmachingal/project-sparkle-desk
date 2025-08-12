@@ -7,7 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Calendar } from "@/components/ui/calendar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CalendarIcon, ChevronLeft, ChevronRight, Send, Eye, CheckSquare, Clock, Target, Flag, User, CalendarDays, Tag, BarChart3 } from "lucide-react";
+import { CalendarIcon, ChevronLeft, ChevronRight, Send, Eye, CheckSquare, Clock, Target, Flag, User, CalendarDays, Tag, BarChart3, ChevronDown } from "lucide-react";
 import { format, addDays, subDays, parseISO } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -416,23 +416,39 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
                               <h4 className="text-xs font-medium mb-1">Quick Assign</h4>
                               {(!showConfirmAssignment || currentTaskId !== task.id) ? (
                                 teamMembers.length > 2 ? (
-                                  <Select value={task.assignee?.name || ''} onValueChange={(value) => confirmAssigneeChange(task.id, value)}>
-                                    <SelectTrigger className="h-6 text-xs">
-                                      <SelectValue placeholder="Select assignee" />
-                                    </SelectTrigger>
-                                    <SelectContent className="z-[9999] bg-popover">
-                                      {teamMembers.filter(m => m.active).map((teamMember) => (
-                                        <SelectItem key={teamMember.id} value={teamMember.name} className="text-xs cursor-pointer">
-                                          <div className="flex items-center gap-2">
-                                            <div className="w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center text-xs font-semibold">
-                                              {teamMember.name.split(' ').map(n => n[0]).join('')}
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <Button variant="outline" className="h-6 text-xs w-full justify-between">
+                                        <span className="truncate">{task.assignee?.name || 'Select assignee'}</span>
+                                        <ChevronDown className="w-3 h-3" />
+                                      </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-48 p-2 z-[9999]" align="start">
+                                      <div className="space-y-1">
+                                        {teamMembers.filter(m => m.active).map((teamMember) => (
+                                          <Button
+                                            key={teamMember.id}
+                                            variant="ghost"
+                                            size="sm"
+                                            className={`w-full justify-start h-8 text-xs ${
+                                              task.assignee?.name === teamMember.name ? 'bg-primary/10' : ''
+                                            }`}
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              confirmAssigneeChange(task.id, teamMember.name);
+                                            }}
+                                          >
+                                            <div className="flex items-center gap-2">
+                                              <div className="w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center text-xs font-semibold">
+                                                {teamMember.name.split(' ').map(n => n[0]).join('')}
+                                              </div>
+                                              <span>{teamMember.name}</span>
                                             </div>
-                                            <span>{teamMember.name}</span>
-                                          </div>
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
+                                          </Button>
+                                        ))}
+                                      </div>
+                                    </PopoverContent>
+                                  </Popover>
                                 ) : (
                                   <div className="space-y-1">
                                     {teamMembers.filter(m => m.active).slice(0, 2).map((teamMember) => (
