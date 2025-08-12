@@ -407,40 +407,46 @@ const Register = () => {
                           </div>
                           
                           <div className="grid grid-cols-1 gap-3 max-h-64 overflow-y-auto">
-                            {filteredOrganizations.length > 0 ? (
+                            {!orgSearchQuery ? (
+                              <div className="text-center py-12 text-muted-foreground">
+                                <Search className="w-16 h-16 mx-auto mb-4 opacity-30" />
+                                <p className="text-lg font-medium mb-2">Search for Organizations</p>
+                                <p className="text-sm">Enter organization name, domain, or industry to find organizations to join</p>
+                              </div>
+                            ) : filteredOrganizations.length > 0 ? (
                               filteredOrganizations.map((org) => (
-                              <div
-                                key={org.id}
-                                className={`p-4 border rounded-lg cursor-pointer transition-all hover:shadow-sm ${
-                                  formData.selectedOrg === org.id ? "border-primary bg-primary/5" : "border-border"
-                                }`}
-                                onClick={() => setFormData({ ...formData, selectedOrg: org.id })}
-                              >
-                                <div className="flex items-center justify-between">
-                                  <div className="flex-1">
-                                    <div className="flex items-center gap-3 mb-1">
-                                      <h4 className="font-medium">{org.name}</h4>
-                                      {formData.selectedOrg === org.id && (
-                                        <Badge variant="secondary" className="text-xs">Selected</Badge>
-                                      )}
-                                    </div>
-                                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                                      <span className="flex items-center gap-1">
-                                        <Globe className="w-3 h-3" />
-                                        {org.domain}
-                                      </span>
-                                      <span className="flex items-center gap-1">
-                                        <Users className="w-3 h-3" />
-                                        {org.members} members
-                                      </span>
-                                      <Badge variant="outline" className="text-xs">
-                                        {org.industry}
-                                      </Badge>
+                                <div
+                                  key={org.id}
+                                  className={`p-4 border rounded-lg cursor-pointer transition-all hover:shadow-sm ${
+                                    formData.selectedOrg === org.id ? "border-primary bg-primary/5" : "border-border"
+                                  }`}
+                                  onClick={() => setFormData({ ...formData, selectedOrg: org.id })}
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex-1">
+                                      <div className="flex items-center gap-3 mb-1">
+                                        <h4 className="font-medium">{org.name}</h4>
+                                        {formData.selectedOrg === org.id && (
+                                          <Badge variant="secondary" className="text-xs">Selected</Badge>
+                                        )}
+                                      </div>
+                                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                        <span className="flex items-center gap-1">
+                                          <Globe className="w-3 h-3" />
+                                          {org.domain}
+                                        </span>
+                                        <span className="flex items-center gap-1">
+                                          <Users className="w-3 h-3" />
+                                          {org.members} members
+                                        </span>
+                                        <Badge variant="outline" className="text-xs">
+                                          {org.industry}
+                                        </Badge>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                            ))
+                              ))
                             ) : (
                               <div className="text-center py-8 text-muted-foreground">
                                 <Building2 className="w-12 h-12 mx-auto mb-3 opacity-50" />
@@ -451,9 +457,11 @@ const Register = () => {
                           </div>
                           
                           <div className="flex items-center justify-between text-sm text-muted-foreground">
-                            <span>
-                              {filteredOrganizations.length} organization{filteredOrganizations.length !== 1 ? 's' : ''} found
-                            </span>
+                            {orgSearchQuery && (
+                              <span>
+                                {filteredOrganizations.length} organization{filteredOrganizations.length !== 1 ? 's' : ''} found
+                              </span>
+                            )}
                             {orgSearchQuery && (
                               <Button
                                 variant="ghost"
