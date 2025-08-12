@@ -29,7 +29,12 @@ import {
   ShieldCheck,
   User,
   Edit,
-  Trash2
+  Trash2,
+  DollarSign,
+  Target,
+  TrendingUp,
+  Clock,
+  Eye
 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
@@ -40,6 +45,7 @@ const Teams = () => {
   const [isEditMemberOpen, setIsEditMemberOpen] = useState(false);
   const [isAddDepartmentOpen, setIsAddDepartmentOpen] = useState(false);
   const [isEditDepartmentOpen, setIsEditDepartmentOpen] = useState(false);
+  const [isDepartmentDetailsOpen, setIsDepartmentDetailsOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<any>(null);
   const [selectedDepartment, setSelectedDepartment] = useState<any>(null);
   const [currentUserRole, setCurrentUserRole] = useState("admin"); // Mock current user role
@@ -408,6 +414,21 @@ const Teams = () => {
       title: "Success",
       description: "Department deleted successfully"
     });
+  };
+
+  const handleViewDepartmentDetails = (department: any) => {
+    setSelectedDepartment(department);
+    setIsDepartmentDetailsOpen(true);
+  };
+
+  const getDepartmentMembers = (departmentName: string) => {
+    return teamMembers.filter(member => member.department === departmentName);
+  };
+
+  const getDepartmentProjects = (departmentName: string) => {
+    const deptMembers = getDepartmentMembers(departmentName);
+    const projects = [...new Set(deptMembers.flatMap(member => member.projects))];
+    return projects;
   };
 
   const getRoleIcon = (systemRole: string) => {
@@ -901,7 +922,13 @@ const Teams = () => {
                     </div>
 
                     <div className="pt-2">
-                      <Button variant="outline" size="sm" className="w-full">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full gap-2" 
+                        onClick={() => handleViewDepartmentDetails(dept)}
+                      >
+                        <Eye className="w-4 h-4" />
                         View Details
                       </Button>
                     </div>
@@ -1124,6 +1151,181 @@ const Teams = () => {
                 <Button onClick={handleUpdateDepartment}>Update Department</Button>
               </div>
             </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Department Details Dialog */}
+        <Dialog open={isDepartmentDetailsOpen} onOpenChange={setIsDepartmentDetailsOpen}>
+          <DialogContent className="sm:max-w-[800px] max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-3">
+                <div 
+                  className="w-4 h-4 rounded-full" 
+                  style={{ backgroundColor: selectedDepartment?.color }}
+                />
+                {selectedDepartment?.name} Department Details
+              </DialogTitle>
+            </DialogHeader>
+            
+            {selectedDepartment && (
+              <div className="space-y-6">
+                {/* Department Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                        <Users className="w-4 h-4" />
+                        Total Members
+                      </div>
+                      <div className="text-2xl font-bold">{getDepartmentMembers(selectedDepartment.name).length}</div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                        <Target className="w-4 h-4" />
+                        Active Projects
+                      </div>
+                      <div className="text-2xl font-bold">{getDepartmentProjects(selectedDepartment.name).length}</div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                        <DollarSign className="w-4 h-4" />
+                        Budget
+                      </div>
+                      <div className="text-2xl font-bold">${selectedDepartment.budget?.toLocaleString() || 'N/A'}</div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Department Information */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Department Information</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label className="text-sm font-medium">Description</Label>
+                      <p className="text-sm text-muted-foreground mt-1">{selectedDepartment.description}</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium">Department Lead</Label>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Avatar className="h-6 w-6">
+                            <AvatarImage src="" />
+                            <AvatarFallback className="text-xs">
+                              {selectedDepartment.lead.split(" ").map((n: string) => n[0]).join("")}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="text-sm">{selectedDepartment.lead}</span>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <Label className="text-sm font-medium">Location</Label>
+                        <div className="flex items-center gap-2 mt-1">
+                          <MapPin className="w-4 h-4 text-muted-foreground" />
+                          <span className="text-sm">{selectedDepartment.location || 'Not specified'}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Team Members */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Team Members</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {getDepartmentMembers(selectedDepartment.name).map((member) => (
+                        <div key={member.id} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-10 w-10">
+                              <AvatarImage src={member.avatar} />
+                              <AvatarFallback>
+                                {member.name.split(" ").map((n: string) => n[0]).join("")}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <p className="font-medium">{member.name}</p>
+                                <div className={`w-2 h-2 rounded-full ${getStatusColor(member.status)}`} />
+                              </div>
+                              <p className="text-sm text-muted-foreground">{member.role}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="text-xs">
+                              {member.systemRole}
+                            </Badge>
+                            {member.skills.slice(0, 2).map((skill) => (
+                              <Badge key={skill} variant="secondary" className="text-xs">
+                                {skill}
+                              </Badge>
+                            ))}
+                            {member.skills.length > 2 && (
+                              <Badge variant="secondary" className="text-xs">
+                                +{member.skills.length - 2}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                      
+                      {getDepartmentMembers(selectedDepartment.name).length === 0 && (
+                        <div className="text-center py-6 text-muted-foreground">
+                          No team members assigned to this department
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Active Projects */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Active Projects</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      {getDepartmentProjects(selectedDepartment.name).map((project, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center gap-2">
+                            <Briefcase className="w-4 h-4 text-muted-foreground" />
+                            <span className="font-medium">{project}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-sm text-muted-foreground">In Progress</span>
+                          </div>
+                        </div>
+                      ))}
+                      
+                      {getDepartmentProjects(selectedDepartment.name).length === 0 && (
+                        <div className="text-center py-6 text-muted-foreground">
+                          No active projects assigned to this department
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="flex justify-end pt-4">
+                  <Button variant="outline" onClick={() => setIsDepartmentDetailsOpen(false)}>
+                    Close
+                  </Button>
+                </div>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
       </div>
