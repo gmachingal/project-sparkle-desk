@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
@@ -22,7 +22,10 @@ import {
   Flag,
   Tag,
   CalendarDays,
-  MessageSquare
+  MessageSquare,
+  Activity,
+  User,
+  X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
@@ -383,7 +386,7 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
                       Quick Change
                     </Button>
                   </SheetTrigger>
-                  <SheetContent className="w-[400px] sm:w-[540px]">
+                  <SheetContent className="w-[500px] sm:w-[600px] overflow-y-auto">
                     <SheetHeader>
                       <SheetTitle className="flex items-center gap-2">
                         <Edit className="w-5 h-5" />
@@ -392,146 +395,191 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
                     </SheetHeader>
                     
                     <div className="mt-6 space-y-6">
-                      {/* Task Info */}
-                      <Card>
-                        <CardContent className="p-4">
-                          <div className="space-y-2">
-                            <h4 className="font-semibold">{taskTitle}</h4>
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                              <span className="flex items-center gap-1">
-                                <Clock className="w-3 h-3" />
-                                {task.loggedHours || task.hours || 0}h / {task.estimatedHours || 0}h
-                              </span>
+                      {/* Task Info Card */}
+                      <Card className="bg-gradient-to-r from-primary/5 to-primary-glow/5 border-primary/20">
+                        <CardContent className="p-6">
+                          <div className="space-y-4">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <h4 className="font-semibold text-lg text-foreground">{taskTitle}</h4>
+                                {task.description && (
+                                  <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{task.description}</p>
+                                )}
+                              </div>
                               <Badge 
                                 variant="outline" 
-                                className={cn("text-xs", getPriorityColor(task.priority))}
+                                className={cn("text-xs ml-4 flex-shrink-0", getPriorityColor(task.priority))}
                               >
+                                <Flag className="w-3 h-3 mr-1" />
                                 {task.priority} Priority
                               </Badge>
                             </div>
-                            {task.description && (
-                              <p className="text-sm text-muted-foreground">{task.description}</p>
-                            )}
+                            
+                            <div className="grid grid-cols-2 gap-4 pt-2 border-t border-primary/10">
+                              <div className="flex items-center gap-2 text-sm">
+                                <Clock className="w-4 h-4 text-muted-foreground" />
+                                <span className="text-muted-foreground">Progress:</span>
+                                <span className="font-medium">{task.loggedHours || task.hours || 0}h / {task.estimatedHours || 0}h</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-sm">
+                                <User className="w-4 h-4 text-muted-foreground" />
+                                <span className="text-muted-foreground">Assigned:</span>
+                                <span className="font-medium">{getAssigneeName()}</span>
+                              </div>
+                            </div>
                           </div>
                         </CardContent>
                       </Card>
 
-                      {/* Quick Status Change */}
-                      <Card>
-                        <CardContent className="p-4">
-                          {!showStatusConfirm ? (
-                            <>
-                              <h3 className="font-semibold mb-3">Change Status</h3>
-                               <div className="grid grid-cols-2 gap-2">
-                                 {[
-                                   { status: 'todo', label: 'To Do', color: 'bg-muted text-muted-foreground hover:bg-muted/80' },
-                                   { status: 'in-progress', label: 'In Progress', color: 'bg-primary/10 text-primary hover:bg-primary/20' },
-                                   { status: 'completed', label: 'Completed', color: 'bg-success/10 text-success hover:bg-success/20' },
-                                   { status: 'blocked', label: 'Blocked', color: 'bg-blocked/10 text-blocked hover:bg-blocked/20' }
-                                 ].map((statusOption) => (
-                                  <Button
-                                    key={statusOption.status}
-                                    variant="outline"
-                                    className={`${statusOption.color} border-0 ${
-                                      task.status === statusOption.status ? 'ring-2 ring-primary' : ''
-                                    }`}
-                                    onClick={() => handleStatusChangeRequest(statusOption.status)}
-                                  >
-                                    {statusOption.label}
+                      {/* Actions Grid */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        
+                        {/* Status Management */}
+                        <Card className="h-fit">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-base flex items-center gap-2">
+                              <Activity className="w-4 h-4" />
+                              Change Status
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="pt-0">
+                            {!showStatusConfirm ? (
+                              <div className="space-y-3">
+                                <div className="grid grid-cols-1 gap-2">
+                                  {[
+                                    { status: 'todo', label: 'To Do', icon: '○', color: 'bg-muted text-muted-foreground hover:bg-muted/80' },
+                                    { status: 'in-progress', label: 'In Progress', icon: '⟳', color: 'bg-primary/10 text-primary hover:bg-primary/20' },
+                                    { status: 'completed', label: 'Completed', icon: '✓', color: 'bg-success/10 text-success hover:bg-success/20' },
+                                    { status: 'blocked', label: 'Blocked', icon: '🚫', color: 'bg-blocked/10 text-blocked hover:bg-blocked/20' }
+                                  ].map((statusOption) => (
+                                    <Button
+                                      key={statusOption.status}
+                                      variant="outline"
+                                      className={`${statusOption.color} border-0 h-12 justify-start text-left ${
+                                        task.status === statusOption.status ? 'ring-2 ring-primary shadow-md' : ''
+                                      }`}
+                                      onClick={() => handleStatusChangeRequest(statusOption.status)}
+                                    >
+                                      <span className="text-lg mr-3">{statusOption.icon}</span>
+                                      <div>
+                                        <div className="font-medium">{statusOption.label}</div>
+                                        {task.status === statusOption.status && (
+                                          <div className="text-xs opacity-70">Current Status</div>
+                                        )}
+                                      </div>
+                                    </Button>
+                                  ))}
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="space-y-4">
+                                <div className="p-4 bg-muted/50 rounded-lg">
+                                  <h4 className="font-medium mb-2">Confirm Status Change</h4>
+                                  <p className="text-sm text-muted-foreground">
+                                    Change task status from "<span className="font-medium">{task.status.replace('-', ' ')}</span>" to "<span className="font-medium">{pendingStatusChange?.replace('-', ' ')}</span>"?
+                                  </p>
+                                </div>
+                                <div className="flex gap-3">
+                                  <Button onClick={confirmStatusChange} className="flex-1">
+                                    <CheckCircle className="w-4 h-4 mr-2" />
+                                    Confirm
                                   </Button>
-                                ))}
+                                  <Button variant="outline" onClick={cancelStatusChange} className="flex-1">
+                                    <X className="w-4 h-4 mr-2" />
+                                    Cancel
+                                  </Button>
+                                </div>
                               </div>
-                            </>
-                          ) : (
-                            <div className="space-y-3">
-                              <h3 className="font-semibold">Confirm Status Change</h3>
-                              <p className="text-sm text-muted-foreground">
-                                Change task status from "{task.status.replace('-', ' ')}" to "{pendingStatusChange?.replace('-', ' ')}"?
-                              </p>
-                              <div className="flex gap-2">
-                                <Button onClick={confirmStatusChange} className="flex-1">
-                                  Confirm
-                                </Button>
-                                <Button variant="outline" onClick={cancelStatusChange} className="flex-1">
-                                  Cancel
-                                </Button>
-                              </div>
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
+                            )}
+                          </CardContent>
+                        </Card>
 
-                      {/* Quick Assign */}
-                      <Card>
-                        <CardContent className="p-4">
-                          {!showAssigneeConfirm ? (
-                            <>
-                              <h3 className="font-semibold mb-3">Assign To</h3>
-                              <div className="space-y-2">
+                        {/* Team Assignment */}
+                        <Card className="h-fit">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-base flex items-center gap-2">
+                              <Users className="w-4 h-4" />
+                              Assign To Team
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="pt-0">
+                            {!showAssigneeConfirm ? (
+                              <div className="space-y-2 max-h-72 overflow-y-auto">
                                 {teamMembers.map((teamMember) => (
                                   <Button
                                     key={teamMember.id}
                                     variant="outline"
-                                    className={`w-full justify-start h-auto p-3 ${
+                                    className={`w-full justify-start h-auto p-3 border-0 bg-muted/30 hover:bg-muted/60 ${
                                       !teamMember.active ? 'opacity-50' : ''
                                     } ${
-                                      getAssigneeName() === teamMember.name ? 'ring-2 ring-primary bg-primary/5' : ''
+                                      getAssigneeName() === teamMember.name ? 'ring-2 ring-primary bg-primary/10 shadow-md' : ''
                                     }`}
                                     disabled={!teamMember.active}
                                     onClick={() => handleAssigneeChangeRequest(teamMember.name)}
                                   >
-                                    <div className="flex items-center gap-3">
-                                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold ${
+                                    <div className="flex items-center gap-3 w-full">
+                                      <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm ${
                                         teamMember.active ? 'bg-primary' : 'bg-gray-400'
                                       }`}>
                                         {teamMember.name.split(' ').map(n => n[0]).join('')}
                                       </div>
-                                      <div className="text-left">
+                                      <div className="text-left flex-1">
                                         <div className="font-medium">{teamMember.name}</div>
                                         <div className="text-xs text-muted-foreground">{teamMember.role}</div>
+                                        {!teamMember.active && (
+                                          <div className="text-xs text-destructive">Inactive</div>
+                                        )}
                                       </div>
+                                      {getAssigneeName() === teamMember.name && (
+                                        <CheckCircle className="w-4 h-4 text-primary" />
+                                      )}
                                     </div>
                                   </Button>
                                 ))}
                               </div>
-                            </>
-                          ) : (
-                            <div className="space-y-3">
-                              <h3 className="font-semibold">Confirm Assignment</h3>
-                              <p className="text-sm text-muted-foreground">
-                                Assign task to {pendingAssigneeChange}?
-                              </p>
-                              <div className="flex gap-2">
-                                <Button onClick={confirmAssigneeChange} className="flex-1">
-                                  Confirm
-                                </Button>
-                                <Button variant="outline" onClick={cancelAssigneeChange} className="flex-1">
-                                  Cancel
-                                </Button>
+                            ) : (
+                              <div className="space-y-4">
+                                <div className="p-4 bg-muted/50 rounded-lg">
+                                  <h4 className="font-medium mb-2">Confirm Assignment</h4>
+                                  <p className="text-sm text-muted-foreground">
+                                    Assign task to <span className="font-medium">{pendingAssigneeChange}</span>?
+                                  </p>
+                                </div>
+                                <div className="flex gap-3">
+                                  <Button onClick={confirmAssigneeChange} className="flex-1">
+                                    <CheckCircle className="w-4 h-4 mr-2" />
+                                    Confirm
+                                  </Button>
+                                  <Button variant="outline" onClick={cancelAssigneeChange} className="flex-1">
+                                    <X className="w-4 h-4 mr-2" />
+                                    Cancel
+                                  </Button>
+                                </div>
                               </div>
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
+                            )}
+                          </CardContent>
+                        </Card>
+                      </div>
 
-                      {/* Add Comment */}
+                      {/* Comments Section - Full Width */}
                       <Card>
-                        <CardContent className="p-4">
-                          <h3 className="font-semibold mb-3 flex items-center gap-2">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-base flex items-center gap-2">
                             <MessageSquare className="w-4 h-4" />
                             Add Comment
-                          </h3>
-                          <div className="space-y-3">
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          <div className="space-y-4">
                             <Textarea
                               placeholder="Add a comment about this task..."
                               value={comment}
                               onChange={(e) => setComment(e.target.value)}
-                              rows={3}
-                              className="resize-none"
+                              rows={4}
+                              className="resize-none bg-muted/30 border-muted"
                             />
-                            <div className="flex gap-2">
+                            <div className="flex gap-3">
                               <Button 
-                                size="sm" 
                                 className="flex-1"
                                 disabled={!comment.trim()}
                                 onClick={() => {
@@ -540,13 +588,15 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
                                   setComment('');
                                 }}
                               >
+                                <MessageSquare className="w-4 h-4 mr-2" />
                                 Add Comment
                               </Button>
                               <Button 
-                                variant="outline" 
-                                size="sm"
+                                variant="outline"
                                 onClick={() => setComment('')}
+                                disabled={!comment.trim()}
                               >
+                                <X className="w-4 h-4 mr-2" />
                                 Clear
                               </Button>
                             </div>

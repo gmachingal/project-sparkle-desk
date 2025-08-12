@@ -9,7 +9,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/h
 import { Calendar } from "@/components/ui/calendar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
-import { CalendarIcon, ChevronLeft, ChevronRight, Send, Eye, CheckSquare, Clock, Target, Flag, User, CalendarDays, Tag, BarChart3, ChevronDown, Edit, MessageSquare } from "lucide-react";
+import { CalendarIcon, ChevronLeft, ChevronRight, Send, Eye, CheckSquare, Clock, Target, Flag, User, CalendarDays, Tag, BarChart3, ChevronDown, Edit, MessageSquare, Activity, Users, CheckCircle, X } from "lucide-react";
 import { format, addDays, subDays, parseISO } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -461,7 +461,7 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
                                   Quick Change
                                 </Button>
                               </SheetTrigger>
-                              <SheetContent className="w-[400px] sm:w-[540px]">
+                              <SheetContent className="w-[500px] sm:w-[600px] overflow-y-auto">
                                 <SheetHeader>
                                   <SheetTitle className="flex items-center gap-2">
                                     <Edit className="w-5 h-5" />
@@ -469,30 +469,42 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
                                   </SheetTitle>
                                 </SheetHeader>
                                 
-                                <div className="mt-6 space-y-6">
-                                  {/* Task Info */}
-                                  <Card>
-                                    <CardContent className="p-4">
-                                      <div className="space-y-2">
-                                        <h4 className="font-semibold">{selectedTaskForActions?.title}</h4>
-                                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                                          <span className="flex items-center gap-1">
-                                            <Clock className="w-3 h-3" />
-                                            {selectedTaskForActions?.timeSpent}
-                                          </span>
-                                          <Badge 
-                                            variant="outline" 
-                                            className={cn("text-xs", priorityColors[selectedTaskForActions?.priority])}
-                                          >
-                                            {selectedTaskForActions?.priority} Priority
-                                          </Badge>
-                                        </div>
-                                        {selectedTaskForActions?.description && (
-                                          <p className="text-sm text-muted-foreground">{selectedTaskForActions.description}</p>
-                                        )}
-                                      </div>
-                                    </CardContent>
-                                  </Card>
+                                 <div className="mt-6 space-y-6">
+                                   {/* Task Info Card */}
+                                   <Card className="bg-gradient-to-r from-primary/5 to-primary-glow/5 border-primary/20">
+                                     <CardContent className="p-6">
+                                       <div className="space-y-4">
+                                         <div className="flex items-start justify-between">
+                                           <div className="flex-1">
+                                             <h4 className="font-semibold text-lg text-foreground">{selectedTaskForActions?.title}</h4>
+                                             {selectedTaskForActions?.description && (
+                                               <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{selectedTaskForActions.description}</p>
+                                             )}
+                                           </div>
+                                           <Badge 
+                                             variant="outline" 
+                                             className={cn("text-xs ml-4 flex-shrink-0", priorityColors[selectedTaskForActions?.priority || 'medium'])}
+                                           >
+                                             <Flag className="w-3 h-3 mr-1" />
+                                             {selectedTaskForActions?.priority} Priority
+                                           </Badge>
+                                         </div>
+                                         
+                                         <div className="grid grid-cols-2 gap-4 pt-2 border-t border-primary/10">
+                                           <div className="flex items-center gap-2 text-sm">
+                                             <Clock className="w-4 h-4 text-muted-foreground" />
+                                             <span className="text-muted-foreground">Time Spent:</span>
+                                             <span className="font-medium">{selectedTaskForActions?.timeSpent}</span>
+                                           </div>
+                                           <div className="flex items-center gap-2 text-sm">
+                                             <User className="w-4 h-4 text-muted-foreground" />
+                                             <span className="text-muted-foreground">Assigned:</span>
+                                             <span className="font-medium">{selectedTaskForActions?.assignee?.name}</span>
+                                           </div>
+                                         </div>
+                                       </div>
+                                     </CardContent>
+                                   </Card>
 
                                   {/* Quick Status Change */}
                                   <Card>
