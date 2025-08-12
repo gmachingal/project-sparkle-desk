@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Users, Calendar, CheckCircle, XCircle, Clock, FileText, Plus, Edit } from "lucide-react";
+import { Users, Calendar, CheckCircle, XCircle, Clock, FileText, Plus, Edit, CalendarIcon, UserPlus } from "lucide-react";
 import Header from "@/components/Header";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,11 +13,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 const AdminLeaveManagement = () => {
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
   const [actionReason, setActionReason] = useState("");
+  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+  const [isBulkAllocateDialogOpen, setIsBulkAllocateDialogOpen] = useState(false);
+  const [bulkAllocateType, setBulkAllocateType] = useState("");
+  const [bulkAllocateDays, setBulkAllocateDays] = useState("");
+
+  // Generate years from 2020 to current year + 2
+  const availableYears = Array.from({ length: new Date().getFullYear() - 2019 + 3 }, (_, i) => 2020 + i);
 
   // Mock data
   const leaveStats = {
@@ -110,6 +119,26 @@ const AdminLeaveManagement = () => {
       default:
         return "bg-gray-500/10 text-gray-500 border-gray-500/20";
     }
+  };
+
+  const handleBulkAllocate = () => {
+    if (!bulkAllocateType || !bulkAllocateDays) {
+      toast({
+        title: "Error",
+        description: "Please select leave type and enter number of days.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Leave Allocated Successfully",
+      description: `${bulkAllocateDays} days of ${bulkAllocateType} leave allocated to all employees for ${selectedYear}.`,
+    });
+    
+    setIsBulkAllocateDialogOpen(false);
+    setBulkAllocateType("");
+    setBulkAllocateDays("");
   };
 
   const getLeaveTypeColor = (type: string) => {
@@ -487,10 +516,88 @@ const AdminLeaveManagement = () => {
           <TabsContent value="balance" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  Team Leave Balance Overview
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="h-5 w-5" />
+                      Team Leave Balance Overview
+                    </CardTitle>
+                    
+                    {/* Year Selector */}
+                    <div className="flex items-center gap-2">
+                      <Label className="text-sm font-medium">Year:</Label>
+                      <Select value={selectedYear.toString()} onValueChange={(value) => setSelectedYear(parseInt(value))}>
+                        <SelectTrigger className="w-[100px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {availableYears.map((year) => (
+                            <SelectItem key={year} value={year.toString()}>
+                              {year}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  {/* Bulk Allocate Button */}
+                  <Dialog open={isBulkAllocateDialogOpen} onOpenChange={setIsBulkAllocateDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button className="gap-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800">
+                        <UserPlus className="h-4 w-4" />
+                        Bulk Allocate Leave
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Bulk Allocate Leave for {selectedYear}</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <div className="p-4 bg-muted/30 rounded-lg border-l-4 border-primary">
+                          <p className="text-sm text-muted-foreground">
+                            This will allocate the specified leave days to all employees for the year {selectedYear}.
+                          </p>
+                        </div>
+                        
+                        <div>
+                          <Label>Leave Type</Label>
+                          <Select value={bulkAllocateType} onValueChange={setBulkAllocateType}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select leave type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="CL">Casual Leave (CL)</SelectItem>
+                              <SelectItem value="SL">Sick Leave (SL)</SelectItem>
+                              <SelectItem value="PL">Paid Leave (PL)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div>
+                          <Label>Days to Allocate</Label>
+                          <Input 
+                            type="number" 
+                            placeholder="Enter number of days" 
+                            value={bulkAllocateDays}
+                            onChange={(e) => setBulkAllocateDays(e.target.value)}
+                            min="1"
+                            max="30"
+                          />
+                        </div>
+                        
+                        <div className="flex gap-2 justify-end">
+                          <Button variant="outline" onClick={() => setIsBulkAllocateDialogOpen(false)}>
+                            Cancel
+                          </Button>
+                          <Button onClick={handleBulkAllocate} className="bg-gradient-to-r from-purple-600 to-purple-700">
+                            Allocate to All Employees
+                          </Button>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
@@ -520,17 +627,17 @@ const AdminLeaveManagement = () => {
                   <Card>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Employee Leave Balance</CardTitle>
+                        <CardTitle>Employee Leave Balance - {selectedYear}</CardTitle>
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button className="gap-2">
+                            <Button variant="outline" className="gap-2">
                               <Plus className="h-4 w-4" />
-                              Add Leave Balance
+                              Add Individual Balance
                             </Button>
                           </DialogTrigger>
                           <DialogContent>
                             <DialogHeader>
-                              <DialogTitle>Add Leave Balance</DialogTitle>
+                              <DialogTitle>Add Leave Balance for {selectedYear}</DialogTitle>
                             </DialogHeader>
                             <div className="space-y-4">
                               <div>
@@ -581,9 +688,9 @@ const AdminLeaveManagement = () => {
                         <TableHeader>
                           <TableRow>
                             <TableHead>Employee</TableHead>
-                            <TableHead>CL</TableHead>
-                            <TableHead>SL</TableHead>
-                            <TableHead>PL</TableHead>
+                            <TableHead>CL ({selectedYear})</TableHead>
+                            <TableHead>SL ({selectedYear})</TableHead>
+                            <TableHead>PL ({selectedYear})</TableHead>
                             <TableHead>Total Used</TableHead>
                             <TableHead>Actions</TableHead>
                           </TableRow>
