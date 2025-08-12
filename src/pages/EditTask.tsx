@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { CalendarIcon, ArrowLeft, Trash2, Clock, Plus, Target } from 'lucide-react';
+import { CalendarIcon, ArrowLeft, Trash2, Clock, Plus, Target, Upload, FileText, Image, File } from 'lucide-react';
 import { format } from 'date-fns';
 
 const EditTask = () => {
@@ -44,6 +44,26 @@ const EditTask = () => {
     description: '',
     date: format(new Date(), 'yyyy-MM-dd')
   });
+
+  const [uploadedDocuments, setUploadedDocuments] = useState([
+    {
+      id: '1',
+      name: 'Original Design Brief.pdf',
+      type: 'pdf',
+      size: '1.2 MB',
+      uploadedAt: new Date('2024-01-15'),
+      uploadedBy: 'Project Manager'
+    },
+    {
+      id: '2',
+      name: 'Wireframe_v1.sketch',
+      type: 'design',
+      size: '3.4 MB',
+      uploadedAt: new Date('2024-01-20'),
+      uploadedBy: 'You'
+    }
+  ]);
+  const [isDragging, setIsDragging] = useState(false);
 
   const statusOptions = [
     { value: 'todo', label: 'To Do' },
@@ -203,6 +223,35 @@ const EditTask = () => {
 
   const getTotalLoggedHours = () => {
     return taskData.loggedHours.reduce((total, log) => total + log.hours, 0);
+  };
+
+  const getFileIcon = (type: string) => {
+    switch (type) {
+      case 'pdf':
+        return <FileText className="w-5 h-5 text-red-500" />;
+      case 'image':
+        return <Image className="w-5 h-5 text-green-500" />;
+      case 'design':
+        return <File className="w-5 h-5 text-purple-500" />;
+      default:
+        return <File className="w-5 h-5 text-blue-500" />;
+    }
+  };
+
+  const simulateFileUpload = () => {
+    const mockFile = {
+      id: Date.now().toString(),
+      name: `New_Document_${uploadedDocuments.length + 1}.pdf`,
+      type: 'pdf',
+      size: '2.1 MB',
+      uploadedAt: new Date(),
+      uploadedBy: 'You'
+    };
+    setUploadedDocuments([...uploadedDocuments, mockFile]);
+  };
+
+  const removeDocument = (docId: string) => {
+    setUploadedDocuments(uploadedDocuments.filter(doc => doc.id !== docId));
   };
 
   return (
@@ -629,6 +678,89 @@ const EditTask = () => {
               </CardContent>
             </Card>
           )}
+
+          {/* Document Management Section */}
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Upload className="w-5 h-5" />
+                Task Documents
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {/* Upload Zone */}
+              <div 
+                className={`border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 mb-6 ${
+                  isDragging 
+                    ? 'border-primary bg-primary/10 scale-105' 
+                    : 'border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/30'
+                }`}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsDragging(false);
+                  simulateFileUpload();
+                }}
+              >
+                <Upload className="w-8 h-8 mx-auto mb-3 text-muted-foreground" />
+                <h3 className="font-semibold mb-2">Add Documents</h3>
+                <p className="text-muted-foreground mb-3 text-sm">
+                  Drag and drop files or click to browse
+                </p>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={simulateFileUpload}
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Choose Files
+                </Button>
+              </div>
+
+              {/* Document List */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium">Documents ({uploadedDocuments.length})</h4>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {uploadedDocuments.map((doc) => (
+                    <div key={doc.id} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg border">
+                      <div className="flex-shrink-0">
+                        {getFileIcon(doc.type)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">{doc.name}</p>
+                        <p className="text-xs text-muted-foreground">{doc.size} • {doc.uploadedBy}</p>
+                        <p className="text-xs text-muted-foreground">{format(doc.uploadedAt, 'MMM dd, yyyy')}</p>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeDocument(doc.id)}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+                
+                {uploadedDocuments.length === 0 && (
+                  <div className="text-center py-6 text-muted-foreground">
+                    <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No documents uploaded yet</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
             <div className="flex justify-end gap-3">
               <Button variant="outline" type="button" onClick={() => navigate("/my-tasks")}>
                 Cancel

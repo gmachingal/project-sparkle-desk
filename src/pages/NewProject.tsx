@@ -9,7 +9,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, ArrowLeft, Save, Plus, Users, Target, Palette, X, Building2 } from "lucide-react";
+import { CalendarIcon, ArrowLeft, Save, Plus, Users, Target, Palette, X, Building2, Upload, FileText, Image, File, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -30,6 +30,8 @@ const NewProject = () => {
   });
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [milestones, setMilestones] = useState<any[]>([]);
+  const [uploadedDocuments, setUploadedDocuments] = useState<any[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
 
   const projectTemplates = [
     { id: "blank", name: "Blank Project", description: "Start from scratch" },
@@ -79,6 +81,34 @@ const NewProject = () => {
     );
   };
 
+
+  const getFileIcon = (type: string) => {
+    switch (type) {
+      case 'pdf':
+        return <FileText className="w-6 h-6 text-red-500" />;
+      case 'image':
+        return <Image className="w-6 h-6 text-green-500" />;
+      case 'design':
+        return <File className="w-6 h-6 text-purple-500" />;
+      default:
+        return <File className="w-6 h-6 text-blue-500" />;
+    }
+  };
+
+  const simulateFileUpload = () => {
+    const mockFile = {
+      id: Date.now().toString(),
+      name: `Project_Document_${uploadedDocuments.length + 1}.pdf`,
+      type: 'pdf',
+      size: '1.8 MB',
+      uploadedAt: new Date()
+    };
+    setUploadedDocuments([...uploadedDocuments, mockFile]);
+  };
+
+  const removeDocument = (docId: string) => {
+    setUploadedDocuments(uploadedDocuments.filter(doc => doc.id !== docId));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -317,6 +347,86 @@ const NewProject = () => {
               milestones={milestones}
               onMilestonesChange={setMilestones}
             />
+
+            {/* Project Documents Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Upload className="w-5 h-5" />
+                  Project Documents
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {/* Upload Zone */}
+                <div 
+                  className={`border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 ${
+                    isDragging 
+                      ? 'border-primary bg-primary/10 scale-105' 
+                      : 'border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/30'
+                  }`}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setIsDragging(true);
+                  }}
+                  onDragLeave={() => setIsDragging(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setIsDragging(false);
+                    simulateFileUpload();
+                  }}
+                >
+                  <Upload className="w-10 h-10 mx-auto mb-3 text-muted-foreground" />
+                  <h3 className="font-semibold mb-2">Upload Project Documents</h3>
+                  <p className="text-muted-foreground mb-3 text-sm">
+                    Add initial project documents, requirements, or reference materials
+                  </p>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={simulateFileUpload}
+                    className="mb-3"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Choose Files
+                  </Button>
+                  <p className="text-xs text-muted-foreground">
+                    Supports: PDF, DOC, XLS, IMG • Max 25MB per file
+                  </p>
+                </div>
+
+                {/* Uploaded Documents */}
+                {uploadedDocuments.length > 0 && (
+                  <div className="mt-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="font-medium">Uploaded Documents</h4>
+                      <Badge variant="outline">{uploadedDocuments.length} files</Badge>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {uploadedDocuments.map((doc) => (
+                        <div key={doc.id} className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg border">
+                          <div className="flex-shrink-0">
+                            {getFileIcon(doc.type)}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">{doc.name}</p>
+                            <p className="text-xs text-muted-foreground">{doc.size}</p>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeDocument(doc.id)}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
             <div className="flex justify-end gap-3">
               <Button variant="outline" type="button" onClick={() => navigate("/")}>

@@ -20,7 +20,10 @@ import {
   BarChart3,
   PieChart,
   Download,
-  FileText
+  FileText,
+  Image,
+  File,
+  Eye
 } from 'lucide-react';
 import StatsCard from '@/components/StatsCard';
 import { SimpleBarChart, SimpleAreaChart, SimplePieChart, generateMockData } from '@/components/SimpleCharts';
@@ -43,7 +46,54 @@ const ProjectStatusReport = () => {
     teamSize: 8,
     dueDate: '2024-03-15',
     status: 'On Track',
-    health: 'Good'
+    health: 'Good',
+    documents: [
+      {
+        id: '1',
+        name: 'Project_Charter_v2.pdf',
+        type: 'pdf',
+        size: '3.2 MB',
+        uploadedAt: new Date('2024-01-15'),
+        uploadedBy: 'Project Manager',
+        category: 'Planning'
+      },
+      {
+        id: '2',
+        name: 'Technical_Architecture.pdf',
+        type: 'pdf',
+        size: '5.8 MB',
+        uploadedAt: new Date('2024-01-20'),
+        uploadedBy: 'Tech Lead',
+        category: 'Technical'
+      },
+      {
+        id: '3',
+        name: 'User_Research_Findings.docx',
+        type: 'document',
+        size: '2.1 MB',
+        uploadedAt: new Date('2024-01-25'),
+        uploadedBy: 'UX Researcher',
+        category: 'Research'
+      },
+      {
+        id: '4',
+        name: 'Design_System_Guide.figma',
+        type: 'design',
+        size: '12.4 MB',
+        uploadedAt: new Date('2024-02-01'),
+        uploadedBy: 'Design Team',
+        category: 'Design'
+      },
+      {
+        id: '5',
+        name: 'API_Documentation.pdf',
+        type: 'pdf',
+        size: '4.6 MB',
+        uploadedAt: new Date('2024-02-05'),
+        uploadedBy: 'Backend Team',
+        category: 'Technical'
+      }
+    ]
   };
 
   // Analytics data
@@ -78,6 +128,21 @@ const ProjectStatusReport = () => {
     { milestone: 'Testing & QA', progress: 25, status: 'Planned', dueDate: '2024-04-01' },
     { milestone: 'Deployment', progress: 0, status: 'Planned', dueDate: '2024-04-15' }
   ];
+
+  const getFileIcon = (type: string) => {
+    switch (type) {
+      case 'pdf':
+        return <FileText className="w-6 h-6 text-red-500" />;
+      case 'image':
+        return <Image className="w-6 h-6 text-green-500" />;
+      case 'design':
+        return <File className="w-6 h-6 text-purple-500" />;
+      case 'document':
+        return <FileText className="w-6 h-6 text-blue-500" />;
+      default:
+        return <File className="w-6 h-6 text-gray-500" />;
+    }
+  };
 
   const getStatusBadge = (status: string) => {
     const variants = {
@@ -254,6 +319,50 @@ const ProjectStatusReport = () => {
                   height={350}
                   xAxisKey="sprint"
                 />
+              </CardContent>
+            </Card>
+
+            {/* Project Documents Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Project Documents ({project.documents.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {project.documents.slice(0, 6).map((doc) => (
+                    <Card key={doc.id} className="hover:shadow-lg transition-all duration-300 group">
+                      <CardContent className="p-3">
+                        <div className="flex items-start gap-3">
+                          <div className="flex-shrink-0">
+                            {getFileIcon(doc.type)}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-medium text-sm truncate group-hover:text-primary transition-colors">
+                              {doc.name}
+                            </h4>
+                            <p className="text-xs text-muted-foreground">{doc.size}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <Badge variant="outline" className="text-xs">{doc.category}</Badge>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1 mt-3">
+                          <Button variant="ghost" size="sm" className="flex-1 text-xs">
+                            <Eye className="w-3 h-3 mr-1" />
+                            View
+                          </Button>
+                          <Button variant="ghost" size="sm" className="flex-1 text-xs">
+                            <Download className="w-3 h-3 mr-1" />
+                            Download
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

@@ -10,7 +10,7 @@ import { EnhancedCalendar } from "@/components/ui/enhanced-calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Header from "@/components/Header";
-import { CalendarIcon, User, ArrowLeft, Save, Plus, Target, Tag, X } from "lucide-react";
+import { CalendarIcon, User, ArrowLeft, Save, Plus, Target, Tag, X, Upload, FileText, Image, File, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -24,6 +24,8 @@ const CreateTask = () => {
   const [startDate, setStartDate] = useState<Date>();
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
+  const [uploadedDocuments, setUploadedDocuments] = useState<any[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -131,6 +133,34 @@ const CreateTask = () => {
       e.preventDefault();
       addTag();
     }
+  };
+
+  const getFileIcon = (type: string) => {
+    switch (type) {
+      case 'pdf':
+        return <FileText className="w-6 h-6 text-red-500" />;
+      case 'image':
+        return <Image className="w-6 h-6 text-green-500" />;
+      case 'design':
+        return <File className="w-6 h-6 text-purple-500" />;
+      default:
+        return <File className="w-6 h-6 text-blue-500" />;
+    }
+  };
+
+  const simulateFileUpload = () => {
+    const mockFile = {
+      id: Date.now().toString(),
+      name: `Document_${uploadedDocuments.length + 1}.pdf`,
+      type: 'pdf',
+      size: '2.4 MB',
+      uploadedAt: new Date()
+    };
+    setUploadedDocuments([...uploadedDocuments, mockFile]);
+  };
+
+  const removeDocument = (docId: string) => {
+    setUploadedDocuments(uploadedDocuments.filter(doc => doc.id !== docId));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -563,6 +593,86 @@ const CreateTask = () => {
               </Card>
             )}
           </div>
+
+          {/* Document Upload Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Upload className="w-5 h-5" />
+                Task Documents
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {/* Upload Zone */}
+              <div 
+                className={`border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 ${
+                  isDragging 
+                    ? 'border-primary bg-primary/10 scale-105' 
+                    : 'border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/30'
+                }`}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsDragging(false);
+                  simulateFileUpload();
+                }}
+              >
+                <Upload className="w-10 h-10 mx-auto mb-3 text-muted-foreground" />
+                <h3 className="font-semibold mb-2">Upload Task Documents</h3>
+                <p className="text-muted-foreground mb-3 text-sm">
+                  Drag and drop files here or click to browse
+                </p>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={simulateFileUpload}
+                  className="mb-3"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Choose Files
+                </Button>
+                <p className="text-xs text-muted-foreground">
+                  Supports: PDF, DOC, XLS, IMG • Max 10MB per file
+                </p>
+              </div>
+
+              {/* Uploaded Documents */}
+              {uploadedDocuments.length > 0 && (
+                <div className="mt-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium text-sm">Uploaded Documents</h4>
+                    <Badge variant="outline">{uploadedDocuments.length} files</Badge>
+                  </div>
+                  <div className="space-y-2">
+                    {uploadedDocuments.map((doc) => (
+                      <div key={doc.id} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg border">
+                        <div className="flex-shrink-0">
+                          {getFileIcon(doc.type)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">{doc.name}</p>
+                          <p className="text-xs text-muted-foreground">{doc.size}</p>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeDocument(doc.id)}
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
           <div className="flex justify-end gap-3 pt-6 border-t">
             <Button variant="outline" type="button" onClick={() => navigate("/my-tasks")}>

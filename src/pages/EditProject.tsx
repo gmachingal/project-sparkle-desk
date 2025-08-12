@@ -12,7 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { CalendarIcon, ArrowLeft, Trash2, X, Plus, Target, Building2 } from 'lucide-react';
+import { CalendarIcon, ArrowLeft, Trash2, X, Plus, Target, Building2, Upload, FileText, Image, File } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import MilestoneManager from '@/components/MilestoneManager';
@@ -50,6 +50,27 @@ const EditProject = () => {
   });
 
   const [selectedMembers, setSelectedMembers] = useState(['1', '2', '3']);
+  const [uploadedDocuments, setUploadedDocuments] = useState([
+    {
+      id: '1',
+      name: 'Project Charter.pdf',
+      type: 'pdf',
+      size: '2.8 MB',
+      uploadedAt: new Date('2024-01-10'),
+      uploadedBy: 'Project Manager',
+      category: 'Planning'
+    },
+    {
+      id: '2',
+      name: 'Technical Requirements.docx',
+      type: 'document',
+      size: '1.5 MB',
+      uploadedAt: new Date('2024-01-15'),
+      uploadedBy: 'Tech Lead',
+      category: 'Requirements'
+    }
+  ]);
+  const [isDragging, setIsDragging] = useState(false);
   const [milestones, setMilestones] = useState<Milestone[]>([
     { 
       id: '1', 
@@ -118,6 +139,36 @@ const EditProject = () => {
         ? prev.filter(id => id !== memberId)
         : [...prev, memberId]
     );
+  };
+
+  const getFileIcon = (type: string) => {
+    switch (type) {
+      case 'pdf':
+        return <FileText className="w-5 h-5 text-red-500" />;
+      case 'image':
+        return <Image className="w-5 h-5 text-green-500" />;
+      case 'design':
+        return <File className="w-5 h-5 text-purple-500" />;
+      default:
+        return <File className="w-5 h-5 text-blue-500" />;
+    }
+  };
+
+  const simulateFileUpload = () => {
+    const mockFile = {
+      id: Date.now().toString(),
+      name: `New_Project_Document_${uploadedDocuments.length + 1}.pdf`,
+      type: 'pdf',
+      size: '1.9 MB',
+      uploadedAt: new Date(),
+      uploadedBy: 'You',
+      category: 'General'
+    };
+    setUploadedDocuments([...uploadedDocuments, mockFile]);
+  };
+
+  const removeDocument = (docId: string) => {
+    setUploadedDocuments(uploadedDocuments.filter(doc => doc.id !== docId));
   };
 
   const handleDelete = () => {
@@ -307,6 +358,84 @@ const EditProject = () => {
             milestones={milestones}
             onMilestonesChange={setMilestones}
           />
+
+          {/* Project Documents Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Upload className="w-5 h-5" />
+                Project Documents
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {/* Upload Zone */}
+              <div 
+                className={`border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 mb-6 ${
+                  isDragging 
+                    ? 'border-primary bg-primary/10 scale-105' 
+                    : 'border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/30'
+                }`}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsDragging(false);
+                  simulateFileUpload();
+                }}
+              >
+                <Upload className="w-8 h-8 mx-auto mb-3 text-muted-foreground" />
+                <h3 className="font-semibold mb-2">Upload Project Documents</h3>
+                <p className="text-muted-foreground mb-3 text-sm">
+                  Add or update project documentation
+                </p>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={simulateFileUpload}
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Choose Files
+                </Button>
+              </div>
+
+              {/* Document List */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium">Project Documents ({uploadedDocuments.length})</h4>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {uploadedDocuments.map((doc) => (
+                    <div key={doc.id} className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg border">
+                      <div className="flex-shrink-0">
+                        {getFileIcon(doc.type)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">{doc.name}</p>
+                        <p className="text-xs text-muted-foreground">{doc.size} • {doc.uploadedBy}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge variant="outline" className="text-xs">{doc.category}</Badge>
+                          <span className="text-xs text-muted-foreground">{format(doc.uploadedAt, 'MMM dd, yyyy')}</span>
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeDocument(doc.id)}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           <div className="flex justify-end gap-3">
             <Button variant="outline" type="button" onClick={() => navigate("/projects")}>

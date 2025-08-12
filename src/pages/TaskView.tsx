@@ -19,7 +19,12 @@ import {
   Calendar as CalendarDays,
   Users,
   ArrowRight,
-  History
+  History,
+  FileText,
+  Image,
+  File,
+  Download,
+  Eye
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -61,6 +66,32 @@ const TaskView = () => {
       estimatedHours: 16,
       actualHours: 8,
       tags: ["design", "ui/ux", "wireframes"],
+      documents: [
+        {
+          id: '1',
+          name: 'Homepage_Wireframes_v2.sketch',
+          type: 'design',
+          size: '4.2 MB',
+          uploadedAt: new Date(currentYear, currentMonth, 2),
+          uploadedBy: 'Sarah Johnson'
+        },
+        {
+          id: '2',
+          name: 'Brand_Guidelines.pdf',
+          type: 'pdf',
+          size: '1.8 MB',
+          uploadedAt: new Date(currentYear, currentMonth, 4),
+          uploadedBy: 'Design Team'
+        },
+        {
+          id: '3',
+          name: 'User_Feedback_Screenshots.zip',
+          type: 'file',
+          size: '8.7 MB',
+          uploadedAt: new Date(currentYear, currentMonth, 7),
+          uploadedBy: 'You'
+        }
+      ],
       assigneeHistory: [
         {
           id: "1",
@@ -116,6 +147,7 @@ const TaskView = () => {
       estimatedHours: 4,
       actualHours: 0,
       tags: ["api", "documentation", "review"],
+      documents: [],
       assigneeHistory: [
         {
           id: "1",
@@ -150,6 +182,24 @@ const TaskView = () => {
       estimatedHours: 6,
       actualHours: 5,
       tags: ["copywriting", "marketing", "user feedback"],
+      documents: [
+        {
+          id: '1',
+          name: 'Original_Copy_Draft.docx',
+          type: 'document',
+          size: '245 KB',
+          uploadedAt: new Date(currentYear, currentMonth - 1, 26),
+          uploadedBy: 'Marketing Lead'
+        },
+        {
+          id: '2',
+          name: 'User_Survey_Results.pdf',
+          type: 'pdf',
+          size: '1.1 MB',
+          uploadedAt: new Date(currentYear, currentMonth, 1),
+          uploadedBy: 'Research Team'
+        }
+      ],
       assigneeHistory: [
         {
           id: "1",
@@ -255,6 +305,21 @@ const TaskView = () => {
       case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       case 'low': return 'bg-green-100 text-green-800 border-green-200';
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  const getFileIcon = (type: string) => {
+    switch (type) {
+      case 'pdf':
+        return <FileText className="w-5 h-5 text-red-500" />;
+      case 'image':
+        return <Image className="w-5 h-5 text-green-500" />;
+      case 'design':
+        return <File className="w-5 h-5 text-purple-500" />;
+      case 'document':
+        return <FileText className="w-5 h-5 text-blue-500" />;
+      default:
+        return <File className="w-5 h-5 text-gray-500" />;
     }
   };
 
@@ -457,6 +522,55 @@ const TaskView = () => {
                       </div>
                     </div>
                   </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Task Documents Section */}
+        {task.documents && task.documents.length > 0 && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <FileText className="w-4 h-4" />
+                Task Documents
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {task.documents.map((doc) => (
+                  <Card key={doc.id} className="hover:shadow-lg transition-all duration-300 group">
+                    <CardContent className="p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0">
+                          {getFileIcon(doc.type)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-medium text-sm truncate group-hover:text-primary transition-colors">
+                            {doc.name}
+                          </h4>
+                          <p className="text-xs text-muted-foreground">{doc.size}</p>
+                          <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
+                            <span>{doc.uploadedBy}</span>
+                            <span>•</span>
+                            <span>{format(doc.uploadedAt, 'MMM dd, yyyy')}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 mt-4">
+                        <Button variant="ghost" size="sm" className="flex-1 text-xs">
+                          <Eye className="w-3 h-3 mr-1" />
+                          View
+                        </Button>
+                        <Button variant="ghost" size="sm" className="flex-1 text-xs">
+                          <Download className="w-3 h-3 mr-1" />
+                          Download
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             </CardContent>
