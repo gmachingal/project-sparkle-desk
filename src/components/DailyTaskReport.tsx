@@ -167,9 +167,9 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
   const tasksByProject = getTasksByProject();
 
   const priorityColors = {
-    low: 'bg-green-100 text-green-800 border-green-200',
-    medium: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    high: 'bg-red-100 text-red-800 border-red-200'
+    low: 'bg-success/10 text-success border-success/20',
+    medium: 'bg-warning/10 text-warning border-warning/20',
+    high: 'bg-destructive/10 text-destructive border-destructive/20'
   };
 
   const getStatusIcon = (status: string) => {
@@ -178,6 +178,8 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
         return '✓';
       case 'in-progress':
         return '⟳';
+      case 'blocked':
+        return '🚫';
       default:
         return '○';
     }
@@ -364,10 +366,15 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
                   {projectTasks.map((task) => (
                     <HoverCard key={task.id}>
                       <HoverCardTrigger asChild>
-                        <div 
-                          className="border rounded-lg p-3 space-y-2 bg-muted/20 cursor-pointer hover:shadow-md transition-all duration-200"
-                          onClick={() => navigate(`/task/${task.id}`)}
-                        >
+                         <div 
+                           className={cn(
+                             "border rounded-lg p-3 space-y-2 cursor-pointer hover:shadow-md transition-all duration-200",
+                             task.status === 'blocked' 
+                               ? "bg-blocked-bg/60 border-blocked-border shadow-md" 
+                               : "bg-muted/20"
+                           )}
+                           onClick={() => navigate(`/task/${task.id}`)}
+                         >
                           <div className="space-y-2">
                             <div>
                               <div className="flex items-center gap-2 mb-1">
@@ -378,23 +385,29 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
                               </div>
                               <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{task.description}</p>
                             </div>
-                            <div className="flex flex-wrap items-center gap-1">
-                              <Badge variant={task.status === 'completed' ? 'default' : 'secondary'} className="text-xs px-2 py-0">
-                                {task.status === 'completed' ? 'Done' : 'Progress'}
-                              </Badge>
+                             <div className="flex flex-wrap items-center gap-1">
+                               <Badge 
+                                 variant={task.status === 'completed' ? 'default' : task.status === 'blocked' ? 'destructive' : 'secondary'} 
+                                 className="text-xs px-2 py-0"
+                               >
+                                 {task.status === 'completed' ? 'Done' : task.status === 'blocked' ? 'Blocked' : 'Progress'}
+                               </Badge>
                               <Badge variant="outline" className="text-xs gap-1 px-2 py-0">
                                 <Clock className="w-3 h-3" />
                                 {task.timeSpent}
                               </Badge>
                             </div>
-                            <div className="text-xs text-muted-foreground">
-                              {task.status === 'completed' && task.completedAt && (
-                                <p>✓ {task.completedAt}</p>
-                              )}
-                              {task.status === 'in-progress' && task.startedAt && (
-                                <p>→ {task.startedAt}</p>
-                              )}
-                            </div>
+                             <div className="text-xs text-muted-foreground">
+                               {task.status === 'completed' && task.completedAt && (
+                                 <p>✓ {task.completedAt}</p>
+                               )}
+                               {task.status === 'in-progress' && task.startedAt && (
+                                 <p>→ {task.startedAt}</p>
+                               )}
+                               {task.status === 'blocked' && task.blockedSince && (
+                                 <p className="text-destructive">🚫 Blocked since {task.blockedSince}</p>
+                               )}
+                             </div>
                           </div>
                         </div>
                       </HoverCardTrigger>
@@ -488,12 +501,12 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
                                         <>
                                           <h3 className="font-semibold mb-3">Change Status</h3>
                                           <div className="grid grid-cols-2 gap-2">
-                                            {[
-                                              { status: 'todo', label: 'To Do', color: 'bg-gray-100 text-gray-700 hover:bg-gray-200' },
-                                              { status: 'in-progress', label: 'In Progress', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200' },
-                                              { status: 'completed', label: 'Completed', color: 'bg-green-100 text-green-700 hover:bg-green-200' },
-                                              { status: 'blocked', label: 'Blocked', color: 'bg-red-100 text-red-700 hover:bg-red-200' }
-                                            ].map((statusOption) => (
+                                             {[
+                                               { status: 'todo', label: 'To Do', color: 'bg-muted text-muted-foreground hover:bg-muted/80' },
+                                               { status: 'in-progress', label: 'In Progress', color: 'bg-primary/10 text-primary hover:bg-primary/20' },
+                                               { status: 'completed', label: 'Completed', color: 'bg-success/10 text-success hover:bg-success/20' },
+                                               { status: 'blocked', label: 'Blocked', color: 'bg-blocked/10 text-blocked hover:bg-blocked/20' }
+                                             ].map((statusOption) => (
                                               <Button
                                                 key={statusOption.status}
                                                 variant="outline"
