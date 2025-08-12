@@ -68,6 +68,17 @@ const UserDashboard = () => {
     },
     {
       id: "2",
+      title: "Server deployment blocked",
+      description: "Deployment blocked pending security review approval",
+      status: "blocked" as const,
+      priority: "high" as const,
+      dueDate: "Today",
+      assignee: { name: "You", avatar: "" },
+      project: "Website Redesign",
+      milestone: { id: "3", name: "Deployment", status: "in-progress" as const }
+    },
+    {
+      id: "3",
       title: "Update documentation",
       description: "Update API documentation with new endpoints",
       status: "todo" as const,
@@ -77,7 +88,7 @@ const UserDashboard = () => {
       project: "Mobile App"
     },
     {
-      id: "3",
+      id: "4",
       title: "Client meeting prep",
       description: "Prepare presentation for client review",
       status: "todo" as const,
@@ -85,17 +96,6 @@ const UserDashboard = () => {
       dueDate: "Dec 1",
       assignee: { name: "You", avatar: "" },
       project: "Marketing Campaign"
-    },
-    {
-      id: "4",
-      title: "Server deployment blocked",
-      description: "Deployment blocked pending security review approval",
-      status: "blocked" as const,
-      priority: "high" as const,
-      dueDate: "Today",
-      assignee: { name: "You", avatar: "" },
-      project: "Website Redesign",
-      milestone: { id: "3", name: "Deployment", status: "in-progress" as const }
     }
   ];
 
