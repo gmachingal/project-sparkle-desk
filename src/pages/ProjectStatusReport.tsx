@@ -437,22 +437,30 @@ const ProjectStatusReport = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    <SimplePieChart data={generateMockData.taskStatus} height={160} />
-                    <div className="grid grid-cols-1 gap-2">
-                      {generateMockData.taskStatus.map((item, index) => (
-                        <div key={index} className="flex items-center justify-between p-2 bg-muted/30 rounded-md">
-                          <div className="flex items-center gap-2">
-                            <div 
-                              className="w-2 h-2 rounded-full" 
-                              style={{ backgroundColor: item.color }}
-                            ></div>
-                            <span className="text-xs font-medium">{item.name}</span>
+                  <div className="grid grid-cols-2 gap-3">
+                    {[
+                      { name: 'Completed', value: 35, total: 45, color: 'bg-success', textColor: 'text-success' },
+                      { name: 'In Progress', value: 8, total: 45, color: 'bg-primary', textColor: 'text-primary' },
+                      { name: 'Pending', value: 2, total: 45, color: 'bg-warning', textColor: 'text-warning' },
+                      { name: 'Blocked', value: 3, total: 45, color: 'bg-destructive', textColor: 'text-destructive' }
+                    ].map((item, index) => (
+                      <Card key={index} className="group hover:shadow-md transition-all duration-200 border border-border/50 bg-card/50">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-3">
+                            <div className={cn("w-4 h-4 rounded-full flex-shrink-0", item.color)}></div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium truncate">{item.name}</span>
+                                <span className={cn("text-lg font-bold", item.textColor)}>{item.value}</span>
+                              </div>
+                              <div className="text-xs text-muted-foreground mt-1">
+                                {Math.round((item.value / item.total) * 100)}% of total tasks
+                              </div>
+                            </div>
                           </div>
-                          <span className="text-xs text-muted-foreground">{item.value}</span>
-                        </div>
-                      ))}
-                    </div>
+                        </CardContent>
+                      </Card>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
