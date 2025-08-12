@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Building2, Users, CreditCard, Settings, Plus, Edit, Trash2, ArrowLeft, Globe, Crown, RefreshCw } from "lucide-react";
+import { Building2, Users, CreditCard, Settings, Plus, Edit, Trash2, ArrowLeft, Globe, Crown, RefreshCw, Copy, Check, Clock, UserPlus, UserCheck, UserX, Key } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 
@@ -73,6 +73,56 @@ const AdminOrganizations = () => {
       }
     }
   ]);
+  
+  const [joinCodes, setJoinCodes] = useState([
+    { id: "1", orgId: "ORG-001", code: "TECH24", createdBy: "admin@techcorp.com", createdAt: "2024-01-15", expiresAt: "2024-02-15", usageCount: 5, maxUsage: 10, isActive: true },
+    { id: "2", orgId: "ORG-002", code: "START9", createdBy: "admin@startupxyz.com", createdAt: "2024-01-10", expiresAt: "2024-02-10", usageCount: 3, maxUsage: 5, isActive: true },
+    { id: "3", orgId: "ORG-001", code: "TEAM22", createdBy: "admin@techcorp.com", createdAt: "2024-01-01", expiresAt: "2024-01-31", usageCount: 10, maxUsage: 10, isActive: false }
+  ]);
+
+  const [pendingRegistrations, setPendingRegistrations] = useState([
+    {
+      id: "REQ-001",
+      firstName: "John",
+      lastName: "Doe", 
+      email: "john.doe@gmail.com",
+      phone: "+1 (555) 123-4567",
+      orgId: "ORG-001",
+      orgName: "TechCorp Solutions",
+      requestedAt: "2024-01-20T10:30:00Z",
+      joinMethod: "browse", // "browse" or "code"
+      joinCode: null,
+      status: "pending"
+    },
+    {
+      id: "REQ-002", 
+      firstName: "Jane",
+      lastName: "Smith",
+      email: "jane.smith@outlook.com",
+      phone: "+1 (555) 987-6543",
+      orgId: "ORG-002",
+      orgName: "StartupXYZ",
+      requestedAt: "2024-01-19T14:15:00Z",
+      joinMethod: "code",
+      joinCode: "START9",
+      status: "pending"
+    },
+    {
+      id: "REQ-003",
+      firstName: "Bob",
+      lastName: "Wilson", 
+      email: "bob.wilson@yahoo.com",
+      phone: "+1 (555) 456-7890",
+      orgId: "ORG-001",
+      orgName: "TechCorp Solutions",
+      requestedAt: "2024-01-18T09:45:00Z",
+      joinMethod: "browse",
+      joinCode: null,
+      status: "pending"
+    }
+  ]);
+
+  const [copiedCode, setCopiedCode] = useState("");
 
   const toggleFeature = (orgId: string, feature: string) => {
     setOrganizations(orgs => 
@@ -123,6 +173,74 @@ const AdminOrganizations = () => {
     toast({
       title: "Organization Switched",
       description: `Now managing ${organizations.find(org => org.id === orgId)?.name}`,
+    });
+  };
+
+  const generateJoinCode = (orgId: string) => {
+    const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const newJoinCode = {
+      id: Date.now().toString(),
+      orgId,
+      code,
+      createdBy: "admin@repose.com",
+      createdAt: new Date().toISOString().split('T')[0],
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 days
+      usageCount: 0,
+      maxUsage: 10,
+      isActive: true
+    };
+    
+    setJoinCodes(prev => [...prev, newJoinCode]);
+    toast({
+      title: "Join Code Generated",
+      description: `New join code "${code}" created for organization.`,
+    });
+  };
+
+  const copyJoinCode = (code: string) => {
+    navigator.clipboard.writeText(code);
+    setCopiedCode(code);
+    setTimeout(() => setCopiedCode(""), 2000);
+    toast({
+      title: "Copied!",
+      description: "Join code copied to clipboard.",
+    });
+  };
+
+  const deactivateJoinCode = (codeId: string) => {
+    setJoinCodes(prev => 
+      prev.map(code => 
+        code.id === codeId ? { ...code, isActive: false } : code
+      )
+    );
+    toast({
+      title: "Join Code Deactivated",
+      description: "The join code has been deactivated.",
+    });
+  };
+
+  const approveRegistration = (requestId: string) => {
+    setPendingRegistrations(prev => 
+      prev.map(req => 
+        req.id === requestId ? { ...req, status: "approved" } : req
+      )
+    );
+    toast({
+      title: "Registration Approved",
+      description: "User has been approved and can now access the organization.",
+    });
+  };
+
+  const rejectRegistration = (requestId: string) => {
+    setPendingRegistrations(prev => 
+      prev.map(req => 
+        req.id === requestId ? { ...req, status: "rejected" } : req
+      )
+    );
+    toast({
+      title: "Registration Rejected",
+      description: "User registration has been rejected.",
+      variant: "destructive"
     });
   };
 
@@ -214,6 +332,8 @@ const AdminOrganizations = () => {
             <TabsTrigger value="features">Feature Management</TabsTrigger>
             <TabsTrigger value="billing">Plans & Billing</TabsTrigger>
             <TabsTrigger value="users">User Management</TabsTrigger>
+            <TabsTrigger value="join-codes">Join Codes</TabsTrigger>
+            <TabsTrigger value="registrations">Registration Requests</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
@@ -767,6 +887,291 @@ const AdminOrganizations = () => {
                           </div>
                         </TableCell>
                       </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="join-codes">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Key className="w-5 h-5" />
+                  Join Code Management
+                </CardTitle>
+                <CardDescription>Generate and manage organization join codes</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">Active Join Codes</h3>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button className="gap-2">
+                          <Plus className="w-4 h-4" />
+                          Generate Join Code
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Generate Join Code</DialogTitle>
+                          <DialogDescription>Create a new join code for an organization</DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div>
+                            <Label htmlFor="joinCodeOrg">Organization</Label>
+                            <Select>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select organization" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {organizations.map((org) => (
+                                  <SelectItem key={org.id} value={org.id}>
+                                    {org.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="maxUsage">Max Usage</Label>
+                              <Input id="maxUsage" type="number" defaultValue="10" min="1" max="100" />
+                            </div>
+                            <div>
+                              <Label htmlFor="expiryDays">Expires in (days)</Label>
+                              <Input id="expiryDays" type="number" defaultValue="30" min="1" max="365" />
+                            </div>
+                          </div>
+                          <Button 
+                            className="w-full" 
+                            onClick={() => generateJoinCode(selectedOrganization)}
+                          >
+                            Generate Code
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Code</TableHead>
+                        <TableHead>Organization</TableHead>
+                        <TableHead>Created By</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead>Expires</TableHead>
+                        <TableHead>Usage</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {joinCodes.map((code) => {
+                        const org = organizations.find(o => o.id === code.orgId);
+                        const isExpired = new Date(code.expiresAt) < new Date();
+                        const isFullyUsed = code.usageCount >= code.maxUsage;
+                        
+                        return (
+                          <TableRow key={code.id}>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <span className="font-mono font-medium">{code.code}</span>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => copyJoinCode(code.code)}
+                                  className="h-6 w-6 p-0"
+                                >
+                                  {copiedCode === code.code ? (
+                                    <Check className="w-3 h-3 text-green-500" />
+                                  ) : (
+                                    <Copy className="w-3 h-3" />
+                                  )}
+                                </Button>
+                              </div>
+                            </TableCell>
+                            <TableCell>{org?.name}</TableCell>
+                            <TableCell className="text-sm text-muted-foreground">{code.createdBy}</TableCell>
+                            <TableCell className="text-sm">{code.createdAt}</TableCell>
+                            <TableCell className="text-sm">{code.expiresAt}</TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm">{code.usageCount}/{code.maxUsage}</span>
+                                <Progress 
+                                  value={(code.usageCount / code.maxUsage) * 100} 
+                                  className="w-16 h-1" 
+                                />
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={
+                                !code.isActive ? "destructive" :
+                                isExpired ? "secondary" :
+                                isFullyUsed ? "outline" : "default"
+                              }>
+                                {!code.isActive ? "Deactivated" :
+                                 isExpired ? "Expired" :
+                                 isFullyUsed ? "Full" : "Active"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex gap-2">
+                                {code.isActive && !isExpired && !isFullyUsed && (
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    onClick={() => deactivateJoinCode(code.id)}
+                                  >
+                                    <Clock className="w-3 h-3" />
+                                  </Button>
+                                )}
+                                <Button variant="outline" size="sm">
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="registrations">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <UserPlus className="w-5 h-5" />
+                  Registration Requests
+                </CardTitle>
+                <CardDescription>Review and approve pending registration requests</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <Card className="border-orange-200 bg-orange-50">
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-4 h-4 text-orange-600" />
+                          <span className="text-sm font-medium">Pending</span>
+                        </div>
+                        <p className="text-2xl font-bold text-orange-600">
+                          {pendingRegistrations.filter(req => req.status === "pending").length}
+                        </p>
+                      </CardContent>
+                    </Card>
+                    <Card className="border-green-200 bg-green-50">
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-2">
+                          <UserCheck className="w-4 h-4 text-green-600" />
+                          <span className="text-sm font-medium">Approved</span>
+                        </div>
+                        <p className="text-2xl font-bold text-green-600">
+                          {pendingRegistrations.filter(req => req.status === "approved").length}
+                        </p>
+                      </CardContent>
+                    </Card>
+                    <Card className="border-red-200 bg-red-50">
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-2">
+                          <UserX className="w-4 h-4 text-red-600" />
+                          <span className="text-sm font-medium">Rejected</span>
+                        </div>
+                        <p className="text-2xl font-bold text-red-600">
+                          {pendingRegistrations.filter(req => req.status === "rejected").length}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>User</TableHead>
+                        <TableHead>Organization</TableHead>
+                        <TableHead>Join Method</TableHead>
+                        <TableHead>Requested</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {pendingRegistrations.map((request) => (
+                        <TableRow key={request.id}>
+                          <TableCell>
+                            <div>
+                              <p className="font-medium">{request.firstName} {request.lastName}</p>
+                              <p className="text-sm text-muted-foreground">{request.email}</p>
+                              {request.phone && (
+                                <p className="text-xs text-muted-foreground">{request.phone}</p>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Building2 className="w-4 h-4 text-muted-foreground" />
+                              {request.orgName}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              {request.joinMethod === "code" ? (
+                                <>
+                                  <Key className="w-4 h-4 text-muted-foreground" />
+                                  <span className="text-sm">Code: {request.joinCode}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Globe className="w-4 h-4 text-muted-foreground" />
+                                  <span className="text-sm">Browse</span>
+                                </>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-sm">
+                            {new Date(request.requestedAt).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={
+                              request.status === "pending" ? "outline" :
+                              request.status === "approved" ? "default" : "destructive"
+                            }>
+                              {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {request.status === "pending" && (
+                              <div className="flex gap-2">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  onClick={() => approveRegistration(request.id)}
+                                  className="gap-1"
+                                >
+                                  <UserCheck className="w-3 h-3" />
+                                  Approve
+                                </Button>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => rejectRegistration(request.id)}
+                                  className="gap-1"
+                                >
+                                  <UserX className="w-3 h-3" />
+                                  Reject
+                                </Button>
+                              </div>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
                     </TableBody>
                   </Table>
                 </div>
