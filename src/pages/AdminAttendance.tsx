@@ -13,7 +13,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { useToast } from '@/hooks/use-toast';
 import { 
   Users, 
-  Calendar, 
   Clock, 
   Building, 
   Home, 
@@ -45,16 +44,22 @@ import {
   Eye,
   Star,
   Zap,
-  MessageSquare
+  MessageSquare,
+  ChevronLeft,
+  ChevronRight,
+  CalendarIcon
 } from 'lucide-react';
 import StatsCard from '@/components/StatsCard';
 import { SimpleBarChart, SimpleAreaChart, SimplePieChart, SimpleComposedChart, generateMockData } from '@/components/SimpleCharts';
-import { format } from 'date-fns';
+import { format, addDays, subDays, addMonths, subMonths } from 'date-fns';
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const AdminAttendance = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('overview');
   const [musterView, setMusterView] = useState('day');
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
@@ -67,6 +72,39 @@ const AdminAttendance = () => {
     absentToday: 14,
     lateToday: 8,
     averageHours: 8.2
+  };
+
+  // Date navigation functions
+  const navigatePrevious = () => {
+    if (musterView === 'day') {
+      setCurrentDate(prev => subDays(prev, 1));
+    } else {
+      setCurrentDate(prev => subMonths(prev, 1));
+    }
+  };
+
+  const navigateNext = () => {
+    if (musterView === 'day') {
+      setCurrentDate(prev => addDays(prev, 1));
+    } else {
+      setCurrentDate(prev => addMonths(prev, 1));
+    }
+  };
+
+  const navigateToday = () => {
+    setCurrentDate(new Date());
+  };
+
+  const getDateDisplayText = () => {
+    if (musterView === 'day') {
+      return format(currentDate, 'EEEE, MMMM dd, yyyy');
+    } else {
+      return format(currentDate, 'MMMM yyyy');
+    }
+  };
+
+  const getNavigationLabel = () => {
+    return musterView === 'day' ? 'Day' : 'Month';
   };
 
   const musterRollData = [
@@ -550,7 +588,7 @@ const AdminAttendance = () => {
                       </Select>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-muted-foreground" />
+                      <CalendarIcon className="w-4 h-4 text-muted-foreground" />
                       <Select defaultValue="today">
                         <SelectTrigger className="w-[130px]">
                           <SelectValue />
@@ -689,9 +727,9 @@ const AdminAttendance = () => {
                       
                       {/* Request Details Grid */}
                       <div className="grid grid-cols-2 gap-3 mb-3 p-3 bg-muted/30 rounded-lg">
-                        <div className="text-center">
-                          <div className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">
-                            <Calendar className="w-3 h-3" />
+                         <div className="text-center">
+                           <div className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">
+                             <CalendarIcon className="w-3 h-3" />
                             {format(new Date(request.requestDate), 'MMM dd')}
                           </div>
                         </div>
@@ -759,7 +797,10 @@ const AdminAttendance = () => {
                     Muster Roll
                   </div>
                   <div className="flex items-center gap-2">
-                    <Select value={musterView} onValueChange={setMusterView}>
+                    <Select value={musterView} onValueChange={(value) => {
+                      setMusterView(value);
+                      setCurrentDate(new Date()); // Reset to today when changing view
+                    }}>
                       <SelectTrigger className="w-[120px]">
                         <SelectValue />
                       </SelectTrigger>
@@ -774,6 +815,59 @@ const AdminAttendance = () => {
                     </Button>
                   </div>
                 </CardTitle>
+                
+                {/* Date Navigation Controls */}
+                <div className="flex items-center justify-between pt-4">
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={navigatePrevious}
+                      className="gap-1"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      Previous {getNavigationLabel()}
+                    </Button>
+                    
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="gap-2 min-w-[200px]">
+                          <CalendarIcon className="w-4 h-4" />
+                          {getDateDisplayText()}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={currentDate}
+                          onSelect={(date) => date && setCurrentDate(date)}
+                          initialFocus
+                          className="p-3 pointer-events-auto"
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={navigateNext}
+                      className="gap-1"
+                    >
+                      Next {getNavigationLabel()}
+                      <ChevronRight className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={navigateToday}
+                    className="gap-1"
+                  >
+                    <Target className="w-4 h-4" />
+                    Today
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
