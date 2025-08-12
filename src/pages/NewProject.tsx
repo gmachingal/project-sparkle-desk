@@ -9,7 +9,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, ArrowLeft, Save, Plus, Users, Target, Palette, X } from "lucide-react";
+import { CalendarIcon, ArrowLeft, Save, Plus, Users, Target, Palette, X, Building2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -24,7 +24,8 @@ const NewProject = () => {
     description: "",
     template: "",
     privacy: "team",
-    color: "#8B5CF6"
+    color: "#8B5CF6",
+    organization: ""
   });
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [milestones, setMilestones] = useState([
@@ -50,6 +51,13 @@ const NewProject = () => {
 
   const projectColors = [
     "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B", "#EF4444", "#8B5A3C", "#6366F1", "#EC4899"
+  ];
+
+  const organizations = [
+    { id: "1", name: "TechCorp Inc", domain: "techcorp.com" },
+    { id: "2", name: "StartupHub", domain: "startuphub.io" },
+    { id: "3", name: "Global Solutions", domain: "globalsolutions.net" },
+    { id: "4", name: "Innovation Labs", domain: "innovationlabs.org" }
   ];
 
   const toggleMember = (memberId: string) => {
@@ -164,6 +172,25 @@ const NewProject = () => {
                           />
                         </PopoverContent>
                       </Popover>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                        <Building2 className="w-4 h-4" />
+                        Organization
+                      </Label>
+                      <Select value={formData.organization} onValueChange={(value) => setFormData({ ...formData, organization: value })}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select organization" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {organizations.map((org) => (
+                            <SelectItem key={org.id} value={org.id}>
+                              {org.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     <div className="space-y-2">

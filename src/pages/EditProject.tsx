@@ -12,7 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { CalendarIcon, ArrowLeft, Trash2, X, Plus, Target } from 'lucide-react';
+import { CalendarIcon, ArrowLeft, Trash2, X, Plus, Target, Building2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -30,7 +30,8 @@ const EditProject = () => {
     progress: 65,
     dueDate: new Date('2024-03-15'),
     budget: 50000,
-    color: '#3B82F6'
+    color: '#3B82F6',
+    organization: '1'
   });
 
   const [selectedMembers, setSelectedMembers] = useState(['1', '2', '3']);
@@ -58,6 +59,13 @@ const EditProject = () => {
     { value: 'medium', label: 'Medium' },
     { value: 'high', label: 'High' },
     { value: 'urgent', label: 'Urgent' },
+  ];
+
+  const organizations = [
+    { id: '1', name: 'TechCorp Inc', domain: 'techcorp.com' },
+    { id: '2', name: 'StartupHub', domain: 'startuphub.io' },
+    { id: '3', name: 'Global Solutions', domain: 'globalsolutions.net' },
+    { id: '4', name: 'Innovation Labs', domain: 'innovationlabs.org' }
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -131,6 +139,25 @@ const EditProject = () => {
                     placeholder="Enter project description"
                     rows={3}
                   />
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Building2 className="w-4 h-4" />
+                    Organization
+                  </label>
+                  <Select value={projectData.organization} onValueChange={(value) => setProjectData({...projectData, organization: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select organization" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {organizations.map(org => (
+                        <SelectItem key={org.id} value={org.id}>
+                          {org.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
