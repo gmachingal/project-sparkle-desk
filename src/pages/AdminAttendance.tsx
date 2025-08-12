@@ -636,11 +636,11 @@ const AdminAttendance = () => {
             </div>
 
             {/* Enhanced Request Cards */}
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {pendingRequests.map((request, index) => (
                 <Card 
                   key={request.id} 
-                  className="border border-border/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-card to-card/50 overflow-hidden"
+                  className="border border-border/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-card to-card/50 overflow-hidden h-fit"
                 >
                   <CardContent className="p-0">
                     {/* Priority Strip */}
@@ -650,23 +650,23 @@ const AdminAttendance = () => {
                       'bg-green-500'
                     }`}></div>
                     
-                    <div className="p-6">
+                    <div className="p-4">
                       {/* Header Section */}
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center gap-4">
-                          <Avatar className="w-12 h-12 border-2 border-background shadow-sm">
-                            <AvatarFallback className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground font-semibold">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-10 h-10 border-2 border-background shadow-sm">
+                            <AvatarFallback className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground font-semibold text-sm">
                               {request.employeeName.split(' ').map(n => n[0]).join('')}
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <h4 className="font-semibold text-lg">{request.employeeName}</h4>
-                            <p className="text-sm text-muted-foreground flex items-center gap-1">
+                            <h4 className="font-semibold text-base">{request.employeeName}</h4>
+                            <p className="text-xs text-muted-foreground flex items-center gap-1">
                               <Building className="w-3 h-3" />
                               {request.department}
                             </p>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              Submitted {format(new Date(request.requestDate), 'MMM dd, yyyy • HH:mm')}
+                            <p className="text-xs text-muted-foreground">
+                              {format(new Date(request.requestDate), 'MMM dd • HH:mm')}
                             </p>
                           </div>
                         </div>
@@ -688,70 +688,46 @@ const AdminAttendance = () => {
                       </div>
                       
                       {/* Request Details Grid */}
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 p-4 bg-muted/30 rounded-lg">
+                      <div className="grid grid-cols-2 gap-3 mb-3 p-3 bg-muted/30 rounded-lg">
                         <div className="text-center">
                           <div className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">
                             <Calendar className="w-3 h-3" />
-                            Date
+                            {format(new Date(request.requestDate), 'MMM dd')}
                           </div>
-                          <div className="text-sm font-semibold">{format(new Date(request.requestDate), 'MMM dd')}</div>
                         </div>
                         <div className="text-center">
                           <div className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">
                             <Clock className="w-3 h-3" />
-                            Check In
+                            {request.checkIn} - {request.checkOut}
                           </div>
-                          <div className="text-sm font-semibold text-green-600">{request.checkIn}</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            Check Out
-                          </div>
-                          <div className="text-sm font-semibold text-blue-600">{request.checkOut}</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">
-                            <MapPin className="w-3 h-3" />
-                            Location
-                          </div>
-                          <div className="text-sm font-semibold capitalize">{request.location}</div>
                         </div>
                       </div>
                       
                       {/* Reason Section */}
-                      <div className="mb-6 p-4 bg-muted/20 rounded-lg border-l-4 border-primary">
-                        <div className="text-sm text-muted-foreground mb-2 flex items-center gap-1">
+                      <div className="mb-4 p-3 bg-muted/20 rounded-lg border-l-4 border-primary">
+                        <div className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
                           <MessageSquare className="w-3 h-3" />
-                          Reason for Request
+                          Reason
                         </div>
-                        <p className="text-sm leading-relaxed">{request.reason}</p>
+                        <p className="text-xs leading-relaxed line-clamp-2">{request.reason}</p>
                       </div>
                       
                       {/* Action Buttons */}
-                      <div className="flex flex-col sm:flex-row gap-3">
+                      <div className="flex flex-col gap-2">
                         <Button 
                           className="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl transition-all duration-300"
-                          size="lg"
+                          size="sm"
                         >
-                          <CheckCircle className="w-4 h-4 mr-2" />
-                          Approve Request
+                          <CheckCircle className="w-3 h-3 mr-1" />
+                          Approve
                         </Button>
                         <Button 
                           variant="outline" 
                           className="flex-1 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 shadow-lg hover:shadow-xl transition-all duration-300"
-                          size="lg"
+                          size="sm"
                         >
-                          <XCircle className="w-4 h-4 mr-2" />
-                          Reject Request
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="lg"
-                          className="hover:bg-muted/50"
-                        >
-                          <MessageSquare className="w-4 h-4 mr-2" />
-                          Comment
+                          <XCircle className="w-3 h-3 mr-1" />
+                          Reject
                         </Button>
                       </div>
                     </div>
