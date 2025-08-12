@@ -218,67 +218,237 @@ const AdminLeaveManagement = () => {
           </TabsList>
 
           <TabsContent value="pending" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-yellow-500" />
-                  Pending Leave Requests
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Employee</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Duration</TableHead>
-                      <TableHead>Days</TableHead>
-                      <TableHead>Applied On</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {pendingRequests.map((request) => (
-                      <TableRow key={request.id} className="cursor-pointer hover:bg-muted/50">
-                        <TableCell>
-                          <div className="flex items-center gap-3">
-                            <Avatar className="h-8 w-8">
-                              <AvatarImage src={request.employee.avatar} />
-                              <AvatarFallback>
-                                {request.employee.name.split(" ").map(n => n[0]).join("")}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <p className="font-medium">{request.employee.name}</p>
-                              <p className="text-sm text-muted-foreground">{request.employee.department}</p>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge className={getLeaveTypeColor(request.type)}>
-                            {request.type}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-sm">
-                          {request.startDate} to {request.endDate}
-                        </TableCell>
-                        <TableCell>{request.days}</TableCell>
-                        <TableCell>{request.appliedOn}</TableCell>
-                        <TableCell>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => openRequestDetail(request)}
-                          >
-                            Review
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+            {/* Enhanced Filters and Actions Bar */}
+            <Card className="border-0 shadow-sm bg-gradient-to-br from-card to-card/80">
+              <CardContent className="p-4">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-muted-foreground" />
+                      <Select defaultValue="all">
+                        <SelectTrigger className="w-[140px]">
+                          <SelectValue placeholder="Filter by" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Types</SelectItem>
+                          <SelectItem value="PL">Paid Leave</SelectItem>
+                          <SelectItem value="SL">Sick Leave</SelectItem>
+                          <SelectItem value="CL">Casual Leave</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-muted-foreground" />
+                      <Select defaultValue="today">
+                        <SelectTrigger className="w-[130px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="today">This Week</SelectItem>
+                          <SelectItem value="week">This Month</SelectItem>
+                          <SelectItem value="month">All Time</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
+                      {pendingRequests.length} Pending
+                    </Badge>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <FileText className="w-4 h-4" />
+                      Export
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
+
+            {/* Quick Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-yellow-50 to-yellow-100/50 dark:from-yellow-950/20 dark:to-yellow-900/10">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-yellow-100 dark:bg-yellow-900/50 rounded-lg">
+                      <Clock className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Pending</p>
+                      <p className="text-xl font-bold text-yellow-600 dark:text-yellow-400">{pendingRequests.length}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-950/20 dark:to-purple-900/10">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-purple-100 dark:bg-purple-900/50 rounded-lg">
+                      <Calendar className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Paid Leave</p>
+                      <p className="text-xl font-bold text-purple-600 dark:text-purple-400">{pendingRequests.filter(r => r.type === 'PL').length}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-950/20 dark:to-orange-900/10">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-orange-100 dark:bg-orange-900/50 rounded-lg">
+                      <Plus className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Sick Leave</p>
+                      <p className="text-xl font-bold text-orange-600 dark:text-orange-400">{pendingRequests.filter(r => r.type === 'SL').length}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/20 dark:to-blue-900/10">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
+                      <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Casual Leave</p>
+                      <p className="text-xl font-bold text-blue-600 dark:text-blue-400">{pendingRequests.filter(r => r.type === 'CL').length}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Enhanced Request Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {pendingRequests.map((request, index) => (
+                <Card 
+                  key={request.id} 
+                  className="border border-border/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-card to-card/50 overflow-hidden h-fit"
+                >
+                  <CardContent className="p-0">
+                    {/* Priority Strip */}
+                    <div className={`h-1 w-full ${
+                      request.type === 'SL' ? 'bg-red-500' : 
+                      request.type === 'PL' ? 'bg-purple-500' : 
+                      'bg-blue-500'
+                    }`}></div>
+                    
+                    <div className="p-4">
+                      {/* Header Section */}
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-10 h-10 border-2 border-background shadow-sm">
+                            <AvatarFallback className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground font-semibold text-sm">
+                              {request.employee.name.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <h4 className="font-semibold text-base">{request.employee.name}</h4>
+                            <p className="text-xs text-muted-foreground flex items-center gap-1">
+                              <Users className="w-3 h-3" />
+                              {request.employee.department}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Applied on {new Date(request.appliedOn).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end gap-2">
+                          <Badge 
+                            variant="outline" 
+                            className={`${getLeaveTypeColor(request.type)} text-xs`}
+                          >
+                            {request.type === 'PL' ? 'Paid Leave' : 
+                             request.type === 'SL' ? 'Sick Leave' : 
+                             'Casual Leave'}
+                          </Badge>
+                          <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200 text-xs">
+                            Pending
+                          </Badge>
+                        </div>
+                      </div>
+                      
+                      {/* Leave Details Grid */}
+                      <div className="grid grid-cols-2 gap-3 mb-3 p-3 bg-muted/30 rounded-lg">
+                        <div className="text-center">
+                          <div className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">
+                            <Calendar className="w-3 h-3" />
+                            Duration
+                          </div>
+                          <div className="text-sm font-semibold">
+                            {new Date(request.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - 
+                            {new Date(request.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                          </div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            Days
+                          </div>
+                          <div className="text-sm font-semibold text-primary">{request.days} day{request.days > 1 ? 's' : ''}</div>
+                        </div>
+                      </div>
+                      
+                      {/* Reason Section */}
+                      <div className="mb-4 p-3 bg-muted/20 rounded-lg border-l-4 border-primary">
+                        <div className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
+                          <FileText className="w-3 h-3" />
+                          Reason
+                        </div>
+                        <p className="text-xs leading-relaxed line-clamp-2">{request.reason}</p>
+                      </div>
+                      
+                      {/* Action Buttons */}
+                      <div className="flex gap-2">
+                        <Button 
+                          className="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                          size="sm"
+                          onClick={() => handleAction(request, 'approve')}
+                        >
+                          <CheckCircle className="w-3 h-3 mr-1" />
+                          Approve
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="flex-1 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 shadow-lg hover:shadow-xl transition-all duration-300"
+                          size="sm"
+                          onClick={() => handleAction(request, 'reject')}
+                        >
+                          <XCircle className="w-3 h-3 mr-1" />
+                          Reject
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => openRequestDetail(request)}
+                          className="hover:bg-muted/50"
+                        >
+                          <Edit className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Empty State (when no requests) */}
+            {pendingRequests.length === 0 && (
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-card to-card/80">
+                <CardContent className="p-12 text-center">
+                  <div className="w-16 h-16 mx-auto mb-4 p-4 bg-muted/50 rounded-full">
+                    <CheckCircle className="w-8 h-8 text-muted-foreground" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">All Caught Up!</h3>
+                  <p className="text-muted-foreground">No pending leave requests at the moment.</p>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           <TabsContent value="all" className="space-y-6">
