@@ -295,55 +295,175 @@ const ProjectStatusReport = () => {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Project Health */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Activity className="h-5 w-5" />
-                    Project Health Overview
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
+          <TabsContent value="overview" className="space-y-8 animate-fade-in">
+            {/* Enhanced Header Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/30 dark:to-blue-900/20">
+                <CardContent className="p-6">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Overall Status</span>
-                    <Badge variant="default" className="bg-green-100 text-green-700">
-                      {project.status}
-                    </Badge>
+                    <div>
+                      <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Project Health</p>
+                      <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">{project.health}</p>
+                    </div>
+                    <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Activity className="w-6 h-6 text-white" />
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Health Score</span>
-                    <Badge variant="outline" className="text-green-600 border-green-200">
-                      {project.health}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Tasks Completion Rate</span>
-                    <span className="text-sm font-semibold">{Math.round((project.completedTasks / project.totalTasks) * 100)}%</span>
+                  <div className="mt-4 flex items-center">
+                    <div className="w-full bg-blue-200 rounded-full h-2 dark:bg-blue-800">
+                      <div className="bg-blue-500 h-2 rounded-full transition-all duration-1000" style={{ width: '95%' }}></div>
+                    </div>
+                    <span className="ml-2 text-sm font-medium text-blue-600 dark:text-blue-400">95%</span>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Task Distribution */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <PieChart className="h-5 w-5" />
-                    Task Status Distribution
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <SimplePieChart data={generateMockData.taskStatus} height={280} />
+              <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-950/30 dark:to-green-900/20">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-green-600 dark:text-green-400">Completion Rate</p>
+                      <p className="text-2xl font-bold text-green-900 dark:text-green-100">{Math.round((project.completedTasks / project.totalTasks) * 100)}%</p>
+                    </div>
+                    <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <CheckCircle className="w-6 h-6 text-white" />
+                    </div>
+                  </div>
+                  <div className="mt-4 text-sm text-green-600 dark:text-green-400">
+                    {project.completedTasks} of {project.totalTasks} tasks completed
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-950/30 dark:to-purple-900/20">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Team Members</p>
+                      <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">{project.teamSize}</p>
+                    </div>
+                    <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Users className="w-6 h-6 text-white" />
+                    </div>
+                  </div>
+                  <div className="mt-4 text-sm text-purple-600 dark:text-purple-400">
+                    Active contributors
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-950/30 dark:to-orange-900/20">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Days Remaining</p>
+                      <p className="text-2xl font-bold text-orange-900 dark:text-orange-100">28</p>
+                    </div>
+                    <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Clock className="w-6 h-6 text-white" />
+                    </div>
+                  </div>
+                  <div className="mt-4 text-sm text-orange-600 dark:text-orange-400">
+                    Until deadline
+                  </div>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Progress vs Planned */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5" />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Enhanced Project Status */}
+              <Card className="hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-background to-muted/20">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center gap-3 text-xl">
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-glow rounded-lg flex items-center justify-center">
+                      <Target className="h-5 w-5 text-primary-foreground" />
+                    </div>
+                    Project Progress Overview
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="relative">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">Overall Progress</span>
+                      <span className="text-lg font-bold text-primary">{project.progress}%</span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
+                      <div 
+                        className="bg-gradient-to-r from-primary to-primary-glow h-3 rounded-full transition-all duration-1000 ease-out"
+                        style={{ width: `${project.progress}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center p-4 bg-muted/50 rounded-lg">
+                      <div className="text-2xl font-bold text-green-600">{project.completedTasks}</div>
+                      <div className="text-sm text-muted-foreground">Completed</div>
+                    </div>
+                    <div className="text-center p-4 bg-muted/50 rounded-lg">
+                      <div className="text-2xl font-bold text-blue-600">{project.totalTasks - project.completedTasks}</div>
+                      <div className="text-sm text-muted-foreground">Remaining</div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <span className="text-sm font-medium">On Track</span>
+                      </div>
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        {project.status}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                        <span className="text-sm font-medium">Health Score</span>
+                      </div>
+                      <span className="text-sm font-semibold text-blue-600">{project.health}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Enhanced Task Distribution */}
+              <Card className="hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-background to-muted/20">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center gap-3 text-xl">
+                    <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent/80 rounded-lg flex items-center justify-center">
+                      <PieChart className="h-5 w-5 text-accent-foreground" />
+                    </div>
+                    Task Status Distribution
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <SimplePieChart data={generateMockData.taskStatus} height={200} />
+                    <div className="grid grid-cols-2 gap-3">
+                      {generateMockData.taskStatus.map((item, index) => (
+                        <div key={index} className="flex items-center gap-2 p-2 bg-muted/30 rounded-lg">
+                          <div 
+                            className="w-3 h-3 rounded-full" 
+                            style={{ backgroundColor: item.color }}
+                          ></div>
+                          <span className="text-sm font-medium">{item.name}</span>
+                          <span className="text-sm text-muted-foreground ml-auto">{item.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Enhanced Progress Timeline */}
+            <Card className="hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-background to-muted/20">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-3 text-xl">
+                  <div className="w-10 h-10 bg-gradient-to-br from-secondary to-secondary/80 rounded-lg flex items-center justify-center">
+                    <BarChart3 className="h-5 w-5 text-secondary-foreground" />
+                  </div>
                   Progress vs Planned Timeline
                 </CardTitle>
               </CardHeader>
@@ -360,39 +480,40 @@ const ProjectStatusReport = () => {
               </CardContent>
             </Card>
 
-            {/* Project Documents Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  Project Documents ({project.documents.length})
+            {/* Enhanced Project Documents */}
+            <Card className="hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-background to-muted/20">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-3 text-xl">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                    <FileText className="h-5 w-5 text-white" />
+                  </div>
+                  Project Documents
+                  <Badge variant="outline" className="ml-2">{project.documents.length}</Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {project.documents.slice(0, 6).map((doc) => (
-                    <Card key={doc.id} className="hover:shadow-lg transition-all duration-300 group">
-                      <CardContent className="p-3">
+                    <Card key={doc.id} className="group hover:shadow-md hover:scale-[1.02] transition-all duration-300 border border-border/50 bg-muted/20">
+                      <CardContent className="p-4">
                         <div className="flex items-start gap-3">
-                          <div className="flex-shrink-0">
+                          <div className="flex-shrink-0 group-hover:scale-110 transition-transform duration-200">
                             {getFileIcon(doc.type)}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-sm truncate group-hover:text-primary transition-colors">
+                            <h4 className="font-medium text-sm truncate group-hover:text-primary transition-colors duration-200">
                               {doc.name}
                             </h4>
-                            <p className="text-xs text-muted-foreground">{doc.size}</p>
-                            <div className="flex items-center gap-2 mt-1">
-                              <Badge variant="outline" className="text-xs">{doc.category}</Badge>
-                            </div>
+                            <p className="text-xs text-muted-foreground mt-1">{doc.size}</p>
+                            <Badge variant="outline" className="text-xs mt-2">{doc.category}</Badge>
                           </div>
                         </div>
-                        <div className="flex items-center gap-1 mt-3">
-                          <Button variant="ghost" size="sm" className="flex-1 text-xs">
+                        <div className="flex items-center gap-1 mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                          <Button variant="ghost" size="sm" className="flex-1 text-xs h-8 hover:bg-primary/10">
                             <Eye className="w-3 h-3 mr-1" />
                             View
                           </Button>
-                          <Button variant="ghost" size="sm" className="flex-1 text-xs">
+                          <Button variant="ghost" size="sm" className="flex-1 text-xs h-8 hover:bg-primary/10">
                             <Download className="w-3 h-3 mr-1" />
                             Download
                           </Button>
@@ -405,11 +526,77 @@ const ProjectStatusReport = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="progress" className="space-y-6">
+          <TabsContent value="progress" className="space-y-8 animate-fade-in">
+            {/* Enhanced Progress Header */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-950/30 dark:to-green-900/20">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-green-600 dark:text-green-400">Sprint Velocity</p>
+                      <p className="text-3xl font-bold text-green-900 dark:text-green-100">47</p>
+                      <p className="text-sm text-green-600 dark:text-green-400 mt-1">Points per sprint</p>
+                    </div>
+                    <div className="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <TrendingUp className="w-7 h-7 text-white" />
+                    </div>
+                  </div>
+                  <div className="mt-4 flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-green-500" />
+                    <span className="text-sm font-medium text-green-600 dark:text-green-400">+8.3% from last sprint</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/30 dark:to-blue-900/20">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Burndown Rate</p>
+                      <p className="text-3xl font-bold text-blue-900 dark:text-blue-100">92%</p>
+                      <p className="text-sm text-blue-600 dark:text-blue-400 mt-1">On schedule</p>
+                    </div>
+                    <div className="w-14 h-14 bg-blue-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Activity className="w-7 h-7 text-white" />
+                    </div>
+                  </div>
+                  <div className="mt-4 flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-blue-500" />
+                    <span className="text-sm font-medium text-blue-600 dark:text-blue-400">Ahead of timeline</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-950/30 dark:to-purple-900/20">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Quality Score</p>
+                      <p className="text-3xl font-bold text-purple-900 dark:text-purple-100">88%</p>
+                      <p className="text-sm text-purple-600 dark:text-purple-400 mt-1">Code quality</p>
+                    </div>
+                    <div className="w-14 h-14 bg-purple-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Target className="w-7 h-7 text-white" />
+                    </div>
+                  </div>
+                  <div className="mt-4 flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-purple-500" />
+                    <span className="text-sm font-medium text-purple-600 dark:text-purple-400">+2.1% improvement</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
             
-            <Card>
-              <CardHeader>
-                <CardTitle>Sprint Velocity & Burndown</CardTitle>
+            {/* Enhanced Sprint Velocity Chart */}
+            <Card className="hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-background to-muted/20">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-3 text-xl">
+                  <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-glow rounded-lg flex items-center justify-center">
+                    <BarChart3 className="h-5 w-5 text-primary-foreground" />
+                  </div>
+                  Sprint Velocity & Burndown Analysis
+                </CardTitle>
+                <p className="text-muted-foreground text-sm">Track planned vs actual progress across sprints</p>
               </CardHeader>
               <CardContent>
                 <SimpleAreaChart 
@@ -424,15 +611,22 @@ const ProjectStatusReport = () => {
                     { key: 'planned', color: '#94a3b8' },
                     { key: 'completed', color: '#10b981' }
                   ]}
-                  height={300}
+                  height={350}
                 />
               </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Daily Task Completion</CardTitle>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Enhanced Daily Progress */}
+              <Card className="hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-background to-muted/20">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center gap-3 text-xl">
+                    <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent/80 rounded-lg flex items-center justify-center">
+                      <Calendar className="h-5 w-5 text-accent-foreground" />
+                    </div>
+                    Daily Task Activity
+                  </CardTitle>
+                  <p className="text-muted-foreground text-sm">Weekly completion vs creation trends</p>
                 </CardHeader>
                 <CardContent>
                   <SimpleBarChart 
@@ -453,38 +647,71 @@ const ProjectStatusReport = () => {
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Progress Health Score</CardTitle>
+              {/* Enhanced Health Metrics */}
+              <Card className="hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-background to-muted/20">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center gap-3 text-xl">
+                    <div className="w-10 h-10 bg-gradient-to-br from-secondary to-secondary/80 rounded-lg flex items-center justify-center">
+                      <Activity className="h-5 w-5 text-secondary-foreground" />
+                    </div>
+                    Project Health Metrics
+                  </CardTitle>
+                  <p className="text-muted-foreground text-sm">Key performance indicators</p>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium">On Schedule</span>
-                      <div className="flex items-center gap-2">
-                        <div className="w-24 bg-muted rounded-full h-2">
-                          <div className="bg-green-500 h-2 rounded-full" style={{ width: '92%' }}></div>
-                        </div>
-                        <span className="text-sm font-semibold">92%</span>
+                <CardContent className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          Schedule Adherence
+                        </span>
+                        <span className="text-lg font-bold text-green-600">92%</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
+                        <div className="bg-gradient-to-r from-green-400 to-green-600 h-3 rounded-full transition-all duration-1000" style={{ width: '92%' }}></div>
                       </div>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium">Quality Score</span>
-                      <div className="flex items-center gap-2">
-                        <div className="w-24 bg-muted rounded-full h-2">
-                          <div className="bg-blue-500 h-2 rounded-full" style={{ width: '88%' }}></div>
-                        </div>
-                        <span className="text-sm font-semibold">88%</span>
+
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium flex items-center gap-2">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          Code Quality
+                        </span>
+                        <span className="text-lg font-bold text-blue-600">88%</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
+                        <div className="bg-gradient-to-r from-blue-400 to-blue-600 h-3 rounded-full transition-all duration-1000" style={{ width: '88%' }}></div>
                       </div>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium">Team Satisfaction</span>
-                      <div className="flex items-center gap-2">
-                        <div className="w-24 bg-muted rounded-full h-2">
-                          <div className="bg-purple-500 h-2 rounded-full" style={{ width: '94%' }}></div>
-                        </div>
-                        <span className="text-sm font-semibold">94%</span>
+
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium flex items-center gap-2">
+                          <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                          Team Satisfaction
+                        </span>
+                        <span className="text-lg font-bold text-purple-600">94%</span>
                       </div>
+                      <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
+                        <div className="bg-gradient-to-r from-purple-400 to-purple-600 h-3 rounded-full transition-all duration-1000" style={{ width: '94%' }}></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3 pt-4 border-t border-border">
+                    <div className="text-center p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
+                      <div className="text-xl font-bold text-green-600">15</div>
+                      <div className="text-xs text-green-600 font-medium">On Time</div>
+                    </div>
+                    <div className="text-center p-3 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg">
+                      <div className="text-xl font-bold text-yellow-600">3</div>
+                      <div className="text-xs text-yellow-600 font-medium">At Risk</div>
+                    </div>
+                    <div className="text-center p-3 bg-red-50 dark:bg-red-950/20 rounded-lg">
+                      <div className="text-xl font-bold text-red-600">0</div>
+                      <div className="text-xs text-red-600 font-medium">Delayed</div>
                     </div>
                   </div>
                 </CardContent>
@@ -813,35 +1040,78 @@ const ProjectStatusReport = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="sprints" className="space-y-6">
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <StatsCard
-                title="Active Sprints"
-                value="2"
-                description="Currently running"
-                icon={Target}
-              />
-              <StatsCard
-                title="Average Velocity"
-                value="47"
-                description="Story points per sprint"
-                icon={TrendingUp}
-                trend={{ value: 8.3, positive: true }}
-              />
-              <StatsCard
-                title="Sprint Success Rate"
-                value="94%"
-                description="Goals achieved"
-                icon={CheckCircle}
-                trend={{ value: 2.1, positive: true }}
-              />
+          <TabsContent value="sprints" className="space-y-8 animate-fade-in">
+            {/* Enhanced Sprint Header */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-violet-50 to-violet-100/50 dark:from-violet-950/30 dark:to-violet-900/20">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-violet-600 dark:text-violet-400">Active Sprints</p>
+                      <p className="text-3xl font-bold text-violet-900 dark:text-violet-100">2</p>
+                      <p className="text-sm text-violet-600 dark:text-violet-400 mt-1">Currently running</p>
+                    </div>
+                    <div className="w-14 h-14 bg-violet-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Target className="w-7 h-7 text-white" />
+                    </div>
+                  </div>
+                  <div className="mt-4 flex items-center gap-2">
+                    <Activity className="w-4 h-4 text-violet-500" />
+                    <span className="text-sm font-medium text-violet-600 dark:text-violet-400">Both on track</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-cyan-50 to-cyan-100/50 dark:from-cyan-950/30 dark:to-cyan-900/20">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-cyan-600 dark:text-cyan-400">Average Velocity</p>
+                      <p className="text-3xl font-bold text-cyan-900 dark:text-cyan-100">47</p>
+                      <p className="text-sm text-cyan-600 dark:text-cyan-400 mt-1">Story points per sprint</p>
+                    </div>
+                    <div className="w-14 h-14 bg-cyan-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <TrendingUp className="w-7 h-7 text-white" />
+                    </div>
+                  </div>
+                  <div className="mt-4 flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-cyan-500" />
+                    <span className="text-sm font-medium text-cyan-600 dark:text-cyan-400">+8.3% improvement</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-950/30 dark:to-emerald-900/20">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Success Rate</p>
+                      <p className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">94%</p>
+                      <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-1">Goals achieved</p>
+                    </div>
+                    <div className="w-14 h-14 bg-emerald-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <CheckCircle className="w-7 h-7 text-white" />
+                    </div>
+                  </div>
+                  <div className="mt-4 flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-emerald-500" />
+                    <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">+2.1% from last quarter</span>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Sprint Velocity Trend</CardTitle>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Enhanced Sprint Velocity */}
+              <Card className="hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-background to-muted/20">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center gap-3 text-xl">
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-glow rounded-lg flex items-center justify-center">
+                      <TrendingUp className="h-5 w-5 text-primary-foreground" />
+                    </div>
+                    Sprint Velocity Trend
+                  </CardTitle>
+                  <p className="text-muted-foreground text-sm">Performance vs planned capacity over time</p>
                 </CardHeader>
                 <CardContent>
                   <SimpleAreaChart 
@@ -860,9 +1130,16 @@ const ProjectStatusReport = () => {
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Current Sprint Burndown</CardTitle>
+              {/* Enhanced Sprint Burndown */}
+              <Card className="hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-background to-muted/20">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center gap-3 text-xl">
+                    <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent/80 rounded-lg flex items-center justify-center">
+                      <Activity className="h-5 w-5 text-accent-foreground" />
+                    </div>
+                    Current Sprint Burndown
+                  </CardTitle>
+                  <p className="text-muted-foreground text-sm">Daily progress vs ideal burndown line</p>
                 </CardHeader>
                 <CardContent>
                   <SimpleAreaChart 
@@ -885,52 +1162,81 @@ const ProjectStatusReport = () => {
               </Card>
             </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Sprint Performance Details</CardTitle>
+            {/* Enhanced Sprint Performance Details */}
+            <Card className="hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-background to-muted/20">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-3 text-xl">
+                  <div className="w-10 h-10 bg-gradient-to-br from-secondary to-secondary/80 rounded-lg flex items-center justify-center">
+                    <BarChart3 className="h-5 w-5 text-secondary-foreground" />
+                  </div>
+                  Sprint Performance Overview
+                </CardTitle>
+                <p className="text-muted-foreground text-sm">Detailed metrics for recent sprints</p>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {[
-                    { name: 'Sprint 5 - UI Components', status: 'Active', progress: 85, velocity: 46, planned: 46 },
-                    { name: 'Sprint 4 - Backend API', status: 'Completed', progress: 100, velocity: 55, planned: 52 },
-                    { name: 'Sprint 3 - Database Design', status: 'Completed', progress: 100, velocity: 45, planned: 48 }
+                    { name: 'Sprint 5 - UI Components', status: 'Active', progress: 85, velocity: 46, planned: 46, daysLeft: 3 },
+                    { name: 'Sprint 4 - Backend API', status: 'Completed', progress: 100, velocity: 55, planned: 52, daysLeft: 0 },
+                    { name: 'Sprint 3 - Database Design', status: 'Completed', progress: 100, velocity: 45, planned: 48, daysLeft: 0 }
                   ].map((sprint, index) => (
-                    <div key={index} className="border rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium">{sprint.name}</h4>
-                        <Badge variant={sprint.status === 'Active' ? 'default' : 'secondary'}>
-                          {sprint.status}
-                        </Badge>
-                      </div>
-                      <div className="grid grid-cols-3 gap-4 mb-3 text-sm">
-                        <div>
-                          <span className="text-muted-foreground">Progress:</span>
-                          <span className="ml-2 font-medium">{sprint.progress}%</span>
+                    <Card key={index} className="group border border-border/50 bg-muted/20 hover:bg-muted/40 transition-all duration-300">
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-3 h-3 rounded-full ${sprint.status === 'Active' ? 'bg-green-500 animate-pulse' : 'bg-blue-500'}`}></div>
+                            <h4 className="font-semibold text-lg">{sprint.name}</h4>
+                          </div>
+                          <Badge 
+                            variant={sprint.status === 'Active' ? 'default' : 'secondary'}
+                            className={sprint.status === 'Active' ? 'bg-green-100 text-green-700 border-green-200' : ''}
+                          >
+                            {sprint.status}
+                          </Badge>
                         </div>
-                        <div>
-                          <span className="text-muted-foreground">Velocity:</span>
-                          <span className="ml-2 font-medium">{sprint.velocity}</span>
+                        
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                          <div className="text-center p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                            <div className="text-xl font-bold text-blue-600">{sprint.progress}%</div>
+                            <div className="text-xs text-blue-600 font-medium">Progress</div>
+                          </div>
+                          <div className="text-center p-3 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
+                            <div className="text-xl font-bold text-purple-600">{sprint.velocity}</div>
+                            <div className="text-xs text-purple-600 font-medium">Velocity</div>
+                          </div>
+                          <div className="text-center p-3 bg-gray-50 dark:bg-gray-950/20 rounded-lg">
+                            <div className="text-xl font-bold text-gray-600">{sprint.planned}</div>
+                            <div className="text-xs text-gray-600 font-medium">Planned</div>
+                          </div>
+                          <div className="text-center p-3 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
+                            <div className="text-xl font-bold text-orange-600">{sprint.daysLeft}</div>
+                            <div className="text-xs text-orange-600 font-medium">Days Left</div>
+                          </div>
                         </div>
-                        <div>
-                          <span className="text-muted-foreground">Planned:</span>
-                          <span className="ml-2 font-medium">{sprint.planned}</span>
+                        
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">Sprint Progress</span>
+                            <span className="font-medium">{sprint.progress}%</span>
+                          </div>
+                          <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
+                            <div 
+                              className={`h-3 rounded-full transition-all duration-1000 ${
+                                sprint.status === 'Active' 
+                                  ? 'bg-gradient-to-r from-green-400 to-green-600' 
+                                  : 'bg-gradient-to-r from-blue-400 to-blue-600'
+                              }`}
+                              style={{ width: `${sprint.progress}%` }}
+                            ></div>
+                          </div>
                         </div>
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div 
-                          className="bg-primary h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${sprint.progress}%` }}
-                        />
-                      </div>
-                    </div>
+                      </CardContent>
+                    </Card>
                   ))}
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
-
-
           <TabsContent value="insights" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
