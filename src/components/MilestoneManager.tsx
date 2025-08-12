@@ -125,19 +125,35 @@ export const MilestoneManager: React.FC<MilestoneManagerProps> = ({
   onMilestonesChange,
   presetMilestones: customPresets
 }) => {
-  const [selectedPresets, setSelectedPresets] = useState<string[]>([]);
   const [editingMilestone, setEditingMilestone] = useState<string | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const availablePresets = customPresets || presetMilestones;
 
+  // Calculate which presets are currently selected based on milestone names
+  const getSelectedPresets = () => {
+    return availablePresets
+      .filter(preset => milestones.some(milestone => milestone.name === preset.name))
+      .map(preset => preset.id);
+  };
+
+  const selectedPresets = getSelectedPresets();
+
   const addPresetMilestone = (preset: Milestone) => {
-    if (selectedPresets.includes(preset.id)) {
-      setSelectedPresets(prev => prev.filter(id => id !== preset.id));
-      onMilestonesChange(milestones.filter(m => m.id !== preset.id));
+    const isCurrentlySelected = selectedPresets.includes(preset.id);
+    
+    if (isCurrentlySelected) {
+      // Remove the milestone that matches this preset
+      onMilestonesChange(milestones.filter(m => m.name !== preset.name));
     } else {
-      setSelectedPresets(prev => [...prev, preset.id]);
-      onMilestonesChange([...milestones, { ...preset, id: `milestone-${Date.now()}` }]);
+      // Add the preset as a new milestone
+      const newMilestone = { 
+        ...preset, 
+        id: `milestone-${Date.now()}`,
+        startDate: new Date(),
+        endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 1 week from now
+      };
+      onMilestonesChange([...milestones, newMilestone]);
     }
   };
 
