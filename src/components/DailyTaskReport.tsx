@@ -641,9 +641,80 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
                                           </Button>
                                         </div>
                                       </div>
-                                    </CardContent>
-                                  </Card>
-                                </div>
+                                 </CardContent>
+                               </Card>
+
+                               {/* Sprint Assignment Section - Full Width */}
+                               <Card>
+                                 <CardHeader className="pb-3">
+                                   <CardTitle className="text-base flex items-center gap-2">
+                                     <Target className="w-4 h-4" />
+                                     Assign to Sprint
+                                   </CardTitle>
+                                 </CardHeader>
+                                 <CardContent className="pt-0">
+                                   <div className="space-y-3">
+                                     <div className="grid grid-cols-1 gap-2">
+                                       <Button
+                                         variant="outline"
+                                         className="h-12 justify-start text-left border-0 bg-muted/30 hover:bg-muted/60"
+                                         onClick={() => {
+                                           // Handle move to backlog
+                                           console.log('Move to backlog');
+                                         }}
+                                       >
+                                         <div className="flex items-center gap-3 w-full">
+                                           <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-400 text-white font-semibold text-sm">
+                                             📝
+                                           </div>
+                                           <div className="text-left flex-1">
+                                             <div className="font-medium">Backlog</div>
+                                             <div className="text-xs text-muted-foreground">No sprint assigned</div>
+                                           </div>
+                                         </div>
+                                       </Button>
+                                       <Button
+                                         variant="outline"
+                                         className="h-12 justify-start text-left border-0 bg-muted/30 hover:bg-muted/60"
+                                         onClick={() => {
+                                           // Handle current sprint assignment
+                                           console.log('Assign to current sprint');
+                                         }}
+                                       >
+                                         <div className="flex items-center gap-3 w-full">
+                                           <div className="w-10 h-10 rounded-full flex items-center justify-center bg-primary text-white font-semibold text-sm">
+                                             🎯
+                                           </div>
+                                           <div className="text-left flex-1">
+                                             <div className="font-medium">Sprint 1 - Foundation</div>
+                                             <div className="text-xs text-muted-foreground">Active sprint</div>
+                                           </div>
+                                           <Badge variant="default" className="text-xs">Current</Badge>
+                                         </div>
+                                       </Button>
+                                       <Button
+                                         variant="outline"
+                                         className="h-12 justify-start text-left border-0 bg-muted/30 hover:bg-muted/60"
+                                         onClick={() => {
+                                           // Handle next sprint assignment
+                                           console.log('Assign to next sprint');
+                                         }}
+                                       >
+                                         <div className="flex items-center gap-3 w-full">
+                                           <div className="w-10 h-10 rounded-full flex items-center justify-center bg-blue-500 text-white font-semibold text-sm">
+                                             ⏭️
+                                           </div>
+                                           <div className="text-left flex-1">
+                                             <div className="font-medium">Sprint 2 - Core Features</div>
+                                             <div className="text-xs text-muted-foreground">Planned sprint</div>
+                                           </div>
+                                         </div>
+                                       </Button>
+                                     </div>
+                                   </div>
+                                 </CardContent>
+                               </Card>
+                             </div>
                               </SheetContent>
                             </Sheet>
                           </div>

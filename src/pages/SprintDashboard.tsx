@@ -15,7 +15,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/h
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import SprintTaskManager from '@/components/SprintTaskManager';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Calendar as CalendarIcon, List, CalendarRange,Calendar1, Users, Filter, Plus, Edit, BarChart3, Target, Clock, TrendingUp, CheckCircle, MoreVertical, Settings, User, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Calendar as CalendarIcon, List, CalendarRange,Calendar1, Users, Filter, Plus, Edit, BarChart3, Target, Clock, TrendingUp, CheckCircle, MoreVertical, Settings, User, CalendarDays, ChevronLeft, ChevronRight, Ban } from 'lucide-react';
 import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, addDays, differenceInDays } from 'date-fns';
 
 const SprintDashboard = () => {
@@ -1039,7 +1039,7 @@ const SprintDashboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {/* To Do Column */}
                   <div className="space-y-4">
                     <div className="flex items-center gap-2">
@@ -1170,6 +1170,48 @@ const SprintDashboard = () => {
                                 </div>
                                 <Badge variant="outline" className="text-xs bg-green-50 text-green-700">
                                   Completed
+                                </Badge>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Blocked Column */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                      <Ban className="h-4 w-4 mr-2 text-blocked" />
+                      <h3 className="font-semibold">Blocked</h3>
+                      <Badge variant="secondary">{sprintTasks.filter(t => t.status === 'blocked').length}</Badge>
+                    </div>
+                    <div className="space-y-3">
+                      {getFilteredTasks().filter(task => task.status === 'blocked').map(task => {
+                        const assignee = getAssignee(task.assigneeId);
+                        return (
+                          <Card 
+                            key={task.id} 
+                            className="cursor-pointer hover:shadow-md transition-shadow bg-blocked-bg/60 border-blocked-border"
+                            onClick={() => navigate(`/task/${task.id}`)}
+                          >
+                            <CardContent className="p-4">
+                              <div className="flex items-start justify-between mb-2">
+                                <h4 className="font-medium text-sm">{task.title}</h4>
+                                <Badge variant="outline" className="text-xs">{task.storyPoints}pt</Badge>
+                              </div>
+                              <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{task.description}</p>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <Avatar className="h-6 w-6">
+                                    <AvatarFallback className="text-xs" style={{ backgroundColor: assignee?.color }}>
+                                      {assignee?.name.split(' ').map(n => n[0]).join('')}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <span className="text-xs">{assignee?.name}</span>
+                                </div>
+                                <Badge variant="destructive" className="text-xs">
+                                  🚫 Blocked
                                 </Badge>
                               </div>
                             </CardContent>
