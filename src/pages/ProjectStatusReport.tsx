@@ -124,7 +124,7 @@ const ProjectStatusReport = () => {
     { name: 'Completed', value: 35, color: '#10b981' },
     { name: 'In Progress', value: 8, color: '#3b82f6' },
     { name: 'Pending', value: 2, color: '#f59e0b' },
-    { name: 'Blocked', value: 0, color: '#ef4444' }
+    { name: 'Blocked', value: 3, color: '#ef4444' }
   ];
 
   const teamPerformanceData = [

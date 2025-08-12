@@ -25,7 +25,7 @@ const Dashboard = () => {
   const stats = [
     {
       title: "Total Tasks",
-      value: "24",
+      value: "27",
       description: "4 completed today",
       icon: CheckSquare,
       trend: { value: 12, positive: true }
@@ -44,11 +44,11 @@ const Dashboard = () => {
       icon: Users
     },
     {
-      title: "Overdue Tasks",
-      value: "3",
-      description: "Needs attention",
+      title: "Blocked Tasks",
+      value: "2",
+      description: "Need attention",
       icon: Clock,
-      trend: { value: 2, positive: false }
+      trend: { value: 1, positive: false }
     }
   ];
 

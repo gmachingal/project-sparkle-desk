@@ -27,7 +27,7 @@ const UserDashboard = () => {
   const userStats = [
     {
       title: "My Tasks",
-      value: "12",
+      value: "13",
       description: "3 due today",
       icon: CheckSquare,
       trend: { value: 8, positive: true }

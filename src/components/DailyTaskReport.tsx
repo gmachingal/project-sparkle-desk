@@ -84,6 +84,32 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
       assignee: { name: "Alex Johnson", avatar: "AJ" },
       completedAt: "4:45 PM",
       tags: ["design", "ui/ux", "wireframes"]
+    },
+    {
+      id: "4",
+      title: "Deploy staging environment",
+      description: "Server deployment blocked due to infrastructure maintenance",
+      status: "blocked" as const,
+      priority: "high" as const,
+      timeSpent: "1h",
+      project: "Website Redesign",
+      sprint: "Sprint 3",
+      assignee: { name: "Alex Johnson", avatar: "AJ" },
+      blockedSince: "9:00 AM",
+      tags: ["deployment", "infrastructure", "staging"]
+    },
+    {
+      id: "5",
+      title: "Payment gateway integration",
+      description: "API integration blocked pending vendor approval",
+      status: "blocked" as const,
+      priority: "medium" as const,
+      timeSpent: "0.5h",
+      project: "Mobile App",
+      sprint: "Sprint 2",
+      assignee: { name: "Alex Johnson", avatar: "AJ" },
+      blockedSince: "11:30 AM",
+      tags: ["payment", "api", "integration"]
     }
   ];
 
