@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { Textarea } from '@/components/ui/textarea';
 import {
   CheckCircle,
   Clock,
@@ -20,7 +21,8 @@ import {
   Target,
   Flag,
   Tag,
-  CalendarDays
+  CalendarDays,
+  MessageSquare
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
@@ -81,6 +83,7 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
   const [pendingAssigneeChange, setPendingAssigneeChange] = useState<string | null>(null);
   const [showStatusConfirm, setShowStatusConfirm] = useState(false);
   const [showAssigneeConfirm, setShowAssigneeConfirm] = useState(false);
+  const [comment, setComment] = useState('');
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -112,7 +115,7 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
     'todo': 'border-l-gray-400',
     'in-progress': 'border-l-blue-500',
     'completed': 'border-l-green-500',
-    'blocked': 'border-l-red-500'
+    'blocked': 'border-l-red-500 bg-red-50/50'
   };
 
   const getProgressPercentage = () => {
@@ -510,6 +513,46 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
                           )}
                         </CardContent>
                       </Card>
+
+                      {/* Add Comment */}
+                      <Card>
+                        <CardContent className="p-4">
+                          <h3 className="font-semibold mb-3 flex items-center gap-2">
+                            <MessageSquare className="w-4 h-4" />
+                            Add Comment
+                          </h3>
+                          <div className="space-y-3">
+                            <Textarea
+                              placeholder="Add a comment about this task..."
+                              value={comment}
+                              onChange={(e) => setComment(e.target.value)}
+                              rows={3}
+                              className="resize-none"
+                            />
+                            <div className="flex gap-2">
+                              <Button 
+                                size="sm" 
+                                className="flex-1"
+                                disabled={!comment.trim()}
+                                onClick={() => {
+                                  // Handle comment submission here
+                                  console.log('Comment added:', comment);
+                                  setComment('');
+                                }}
+                              >
+                                Add Comment
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => setComment('')}
+                              >
+                                Clear
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
                     </div>
                   </SheetContent>
                 </Sheet>
@@ -729,8 +772,48 @@ const EnhancedTaskCard: React.FC<EnhancedTaskCardProps> = ({
                           </div>
                         )}
                       </CardContent>
-                    </Card>
-                  </div>
+                      </Card>
+
+                      {/* Add Comment */}
+                      <Card>
+                        <CardContent className="p-4">
+                          <h3 className="font-semibold mb-3 flex items-center gap-2">
+                            <MessageSquare className="w-4 h-4" />
+                            Add Comment
+                          </h3>
+                          <div className="space-y-3">
+                            <Textarea
+                              placeholder="Add a comment about this task..."
+                              value={comment}
+                              onChange={(e) => setComment(e.target.value)}
+                              rows={3}
+                              className="resize-none"
+                            />
+                            <div className="flex gap-2">
+                              <Button 
+                                size="sm" 
+                                className="flex-1"
+                                disabled={!comment.trim()}
+                                onClick={() => {
+                                  // Handle comment submission here
+                                  console.log('Comment added:', comment);
+                                  setComment('');
+                                }}
+                              >
+                                Add Comment
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => setComment('')}
+                              >
+                                Clear
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
                 </SheetContent>
               </Sheet>
             </div>

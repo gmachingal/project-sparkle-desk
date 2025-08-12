@@ -45,7 +45,7 @@ const TaskCard = ({ task, className, size = 'default' }: TaskCardProps) => {
     'todo': 'border-l-gray-400',
     'in-progress': 'border-l-blue-500',
     'completed': 'border-l-green-500',
-    'blocked': 'border-l-red-500'
+    'blocked': 'border-l-red-500 bg-red-50/50'
   };
 
   const getStatusIcon = (status: string) => {

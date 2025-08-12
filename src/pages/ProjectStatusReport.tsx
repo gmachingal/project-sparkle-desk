@@ -31,7 +31,9 @@ import {
   Play,
   AlertCircle as AlertCircleIcon,
   Circle,
-  Edit
+  Edit,
+  Ban,
+  MessageSquare
 } from 'lucide-react';
 import StatsCard from '@/components/StatsCard';
 import { SimpleBarChart, SimpleAreaChart, SimplePieChart, generateMockData } from '@/components/SimpleCharts';
@@ -179,7 +181,7 @@ const ProjectStatusReport = () => {
       case 'in-progress':
         return <Play className="w-3 h-3 text-blue-500" />;
       case 'blocked':
-        return <AlertCircleIcon className="w-3 h-3 text-red-500" />;
+        return <Ban className="w-3 h-3 text-red-500" />;
       default:
         return <Circle className="w-3 h-3 text-gray-400" />;
     }
@@ -769,18 +771,18 @@ const ProjectStatusReport = () => {
                   tasksPlanned: 1,
                   currentTasks: [
                     { id: '1', name: 'Homepage UI Components', status: 'in-progress', hours: 8.5, priority: 'high', estimatedHours: 12, project: 'Website Redesign', dueDate: '2024-12-01', milestone: 'Frontend Development' },
-                    { id: '2', name: 'Responsive Design', status: 'in-progress', hours: 3.5, priority: 'medium', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-12-05', milestone: 'Frontend Development' },
+                    { id: '2', name: 'Responsive Design', status: 'blocked', hours: 3.5, priority: 'medium', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-12-05', milestone: 'Frontend Development' },
                     { id: '3', name: 'Component Testing', status: 'completed', hours: 6, priority: 'low', estimatedHours: 6, project: 'Website Redesign', dueDate: '2024-11-28', milestone: 'Testing & QA' },
                     { id: '4', name: 'Design System Setup', status: 'completed', hours: 14, priority: 'high', estimatedHours: 16, project: 'Website Redesign', dueDate: '2024-11-25', milestone: 'Design Phase' }
                   ],
                   allTasks: [
                     { id: '1', name: 'Homepage UI Components', status: 'in-progress', hours: 8.5, priority: 'high', estimatedHours: 12, project: 'Website Redesign', dueDate: '2024-12-01', milestone: 'Frontend Development' },
-                    { id: '2', name: 'Responsive Design', status: 'in-progress', hours: 3.5, priority: 'medium', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-12-05', milestone: 'Frontend Development' },
+                    { id: '2', name: 'Responsive Design', status: 'blocked', hours: 3.5, priority: 'medium', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-12-05', milestone: 'Frontend Development' },
                     { id: '3', name: 'Component Testing', status: 'completed', hours: 6, priority: 'low', estimatedHours: 6, project: 'Website Redesign', dueDate: '2024-11-28', milestone: 'Testing & QA' },
                     { id: '4', name: 'Design System Setup', status: 'completed', hours: 14, priority: 'high', estimatedHours: 16, project: 'Website Redesign', dueDate: '2024-11-25', milestone: 'Design Phase' },
                     { id: '5', name: 'User Interface Wireframes', status: 'completed', hours: 12, priority: 'high', estimatedHours: 10, project: 'Website Redesign', dueDate: '2024-11-20', milestone: 'Design Phase' },
                     { id: '6', name: 'Navigation Menu Implementation', status: 'completed', hours: 8, priority: 'medium', estimatedHours: 8, project: 'Website Redesign', dueDate: '2024-11-22', milestone: 'Frontend Development' },
-                    { id: '7', name: 'Form Validation System', status: 'completed', hours: 10, priority: 'medium', estimatedHours: 12, project: 'Website Redesign', dueDate: '2024-11-26', milestone: 'Frontend Development' },
+                    { id: '7', name: 'Form Validation System', status: 'blocked', hours: 10, priority: 'medium', estimatedHours: 12, project: 'Website Redesign', dueDate: '2024-11-26', milestone: 'Frontend Development' },
                     { id: '8', name: 'Performance Optimization', status: 'planned', hours: 0, priority: 'low', estimatedHours: 6, project: 'Website Redesign', dueDate: '2024-12-10', milestone: 'Testing & QA' }
                   ]
                 },

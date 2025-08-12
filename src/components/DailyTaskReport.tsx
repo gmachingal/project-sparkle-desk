@@ -8,7 +8,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Calendar } from "@/components/ui/calendar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CalendarIcon, ChevronLeft, ChevronRight, Send, Eye, CheckSquare, Clock, Target, Flag, User, CalendarDays, Tag, BarChart3, ChevronDown, Edit } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { CalendarIcon, ChevronLeft, ChevronRight, Send, Eye, CheckSquare, Clock, Target, Flag, User, CalendarDays, Tag, BarChart3, ChevronDown, Edit, MessageSquare } from "lucide-react";
 import { format, addDays, subDays, parseISO } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -29,6 +30,7 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
   const [pendingAssigneeChange, setPendingAssigneeChange] = useState<string | null>(null);
   const [showStatusConfirm, setShowStatusConfirm] = useState(false);
   const [showAssigneeConfirm, setShowAssigneeConfirm] = useState(false);
+  const [comment, setComment] = useState('');
 
   // Mock data
   const projects = [
@@ -548,6 +550,46 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
                                           </div>
                                         </div>
                                       )}
+                                    </CardContent>
+                                  </Card>
+
+                                  {/* Add Comment */}
+                                  <Card>
+                                    <CardContent className="p-4">
+                                      <h3 className="font-semibold mb-3 flex items-center gap-2">
+                                        <MessageSquare className="w-4 h-4" />
+                                        Add Comment
+                                      </h3>
+                                      <div className="space-y-3">
+                                        <Textarea
+                                          placeholder="Add a comment about this task..."
+                                          value={comment}
+                                          onChange={(e) => setComment(e.target.value)}
+                                          rows={3}
+                                          className="resize-none"
+                                        />
+                                        <div className="flex gap-2">
+                                          <Button 
+                                            size="sm" 
+                                            className="flex-1"
+                                            disabled={!comment.trim()}
+                                            onClick={() => {
+                                              // Handle comment submission here
+                                              console.log('Comment added:', comment);
+                                              setComment('');
+                                            }}
+                                          >
+                                            Add Comment
+                                          </Button>
+                                          <Button 
+                                            variant="outline" 
+                                            size="sm"
+                                            onClick={() => setComment('')}
+                                          >
+                                            Clear
+                                          </Button>
+                                        </div>
+                                      </div>
                                     </CardContent>
                                   </Card>
                                 </div>
