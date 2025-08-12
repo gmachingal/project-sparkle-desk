@@ -36,8 +36,8 @@ const EditProject = () => {
 
   const [selectedMembers, setSelectedMembers] = useState(['1', '2', '3']);
   const [milestones, setMilestones] = useState([
-    { id: '1', name: 'Design Phase Complete', description: 'Complete all UI/UX designs and prototypes', dueDate: new Date('2024-02-15'), isCustom: true },
-    { id: '2', name: 'Backend Development', description: 'Complete API development and database setup', dueDate: new Date('2024-03-01'), isCustom: true }
+    { id: '1', name: 'Design Phase Complete', description: 'Complete all UI/UX designs and prototypes', startDate: new Date('2024-01-15'), dueDate: new Date('2024-02-15'), isCustom: true },
+    { id: '2', name: 'Backend Development', description: 'Complete API development and database setup', startDate: new Date('2024-02-16'), dueDate: new Date('2024-03-01'), isCustom: true }
   ]);
   const [selectedExistingMilestones, setSelectedExistingMilestones] = useState<string[]>(['1', '3']);
 
@@ -120,6 +120,7 @@ const EditProject = () => {
       id: Date.now().toString(), 
       name: '', 
       description: '', 
+      startDate: undefined,
       dueDate: undefined, 
       isCustom: true 
     }]);
@@ -369,7 +370,7 @@ const EditProject = () => {
                         </Button>
                       )}
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
                         <Label htmlFor={`milestone-name-${index}`}>Milestone Name</Label>
                         <Input
@@ -384,7 +385,37 @@ const EditProject = () => {
                         />
                       </div>
                       <div>
-                        <Label htmlFor={`milestone-date-${index}`}>Due Date</Label>
+                        <Label htmlFor={`milestone-start-date-${index}`}>Start Date</Label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                "w-full justify-start text-left font-normal",
+                                !milestone.startDate && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {milestone.startDate ? format(milestone.startDate, "PPP") : "Start date"}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={milestone.startDate}
+                              onSelect={(date) => {
+                                const newMilestones = [...milestones];
+                                newMilestones[index].startDate = date;
+                                setMilestones(newMilestones);
+                              }}
+                              initialFocus
+                              className="p-3 pointer-events-auto"
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                      <div>
+                        <Label htmlFor={`milestone-due-date-${index}`}>Due Date</Label>
                         <Popover>
                           <PopoverTrigger asChild>
                             <Button
@@ -395,7 +426,7 @@ const EditProject = () => {
                               )}
                             >
                               <CalendarIcon className="mr-2 h-4 w-4" />
-                              {milestone.dueDate ? format(milestone.dueDate, "PPP") : "Pick a date"}
+                              {milestone.dueDate ? format(milestone.dueDate, "PPP") : "Due date"}
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0" align="start">
@@ -406,6 +437,13 @@ const EditProject = () => {
                                 const newMilestones = [...milestones];
                                 newMilestones[index].dueDate = date;
                                 setMilestones(newMilestones);
+                              }}
+                              disabled={(date) => {
+                                // Disable dates before start date if start date is set
+                                if (milestone.startDate) {
+                                  return date < milestone.startDate;
+                                }
+                                return false;
                               }}
                               initialFocus
                               className="p-3 pointer-events-auto"

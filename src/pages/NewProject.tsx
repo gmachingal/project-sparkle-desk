@@ -29,7 +29,7 @@ const NewProject = () => {
   });
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [milestones, setMilestones] = useState([
-    { id: Date.now().toString(), name: '', description: '', dueDate: undefined as Date | undefined, isCustom: true }
+    { id: Date.now().toString(), name: '', description: '', startDate: undefined as Date | undefined, dueDate: undefined as Date | undefined, isCustom: true }
   ]);
   const [selectedExistingMilestones, setSelectedExistingMilestones] = useState<string[]>([]);
 
@@ -94,6 +94,7 @@ const NewProject = () => {
       id: Date.now().toString(), 
       name: '', 
       description: '', 
+      startDate: undefined,
       dueDate: undefined, 
       isCustom: true 
     }]);
@@ -402,7 +403,7 @@ const NewProject = () => {
                           </Button>
                         )}
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                           <Label htmlFor={`milestone-name-${index}`}>Milestone Name</Label>
                           <Input
@@ -417,7 +418,37 @@ const NewProject = () => {
                           />
                         </div>
                         <div>
-                          <Label htmlFor={`milestone-date-${index}`}>Due Date</Label>
+                          <Label htmlFor={`milestone-start-date-${index}`}>Start Date</Label>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "w-full justify-start text-left font-normal",
+                                  !milestone.startDate && "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {milestone.startDate ? format(milestone.startDate, "PPP") : "Start date"}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={milestone.startDate}
+                                onSelect={(date) => {
+                                  const newMilestones = [...milestones];
+                                  newMilestones[index].startDate = date;
+                                  setMilestones(newMilestones);
+                                }}
+                                initialFocus
+                                className="p-3 pointer-events-auto"
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                        <div>
+                          <Label htmlFor={`milestone-due-date-${index}`}>Due Date</Label>
                           <Popover>
                             <PopoverTrigger asChild>
                               <Button
@@ -428,7 +459,7 @@ const NewProject = () => {
                                 )}
                               >
                                 <CalendarIcon className="mr-2 h-4 w-4" />
-                                {milestone.dueDate ? format(milestone.dueDate, "PPP") : "Pick a date"}
+                                {milestone.dueDate ? format(milestone.dueDate, "PPP") : "Due date"}
                               </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-0" align="start">
@@ -439,6 +470,13 @@ const NewProject = () => {
                                   const newMilestones = [...milestones];
                                   newMilestones[index].dueDate = date;
                                   setMilestones(newMilestones);
+                                }}
+                                disabled={(date) => {
+                                  // Disable dates before start date if start date is set
+                                  if (milestone.startDate) {
+                                    return date < milestone.startDate;
+                                  }
+                                  return false;
                                 }}
                                 initialFocus
                                 className="p-3 pointer-events-auto"
