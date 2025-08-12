@@ -317,6 +317,97 @@ const AdminAttendance = () => {
           </div>
 
           <TabsContent value="overview" className="space-y-6 animate-fade-in">
+            {/* Today's Date Header */}
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">Today's Attendance</h2>
+                <p className="text-muted-foreground flex items-center gap-2">
+                  <CalendarIcon className="w-4 h-4" />
+                  {format(new Date(), 'EEEE, MMMM dd, yyyy')}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="text-xs">
+                  Last updated: {format(new Date(), 'HH:mm')}
+                </Badge>
+                <Button size="sm" className="gap-2 bg-gradient-to-r from-primary to-primary-glow">
+                  <Coffee className="w-4 h-4" />
+                  Refresh
+                </Button>
+              </div>
+            </div>
+
+            {/* Real-time Summary Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-950/20 dark:to-green-900/10">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-green-100 dark:bg-green-900/50 rounded-lg">
+                      <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Present</p>
+                      <div className="flex items-baseline gap-1">
+                        <p className="text-2xl font-bold text-green-600 dark:text-green-400">134</p>
+                        <p className="text-xs text-muted-foreground">/ {attendanceStats.totalEmployees}</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-yellow-50 to-yellow-100/50 dark:from-yellow-950/20 dark:to-yellow-900/10">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-yellow-100 dark:bg-yellow-900/50 rounded-lg">
+                      <Clock className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Late Arrivals</p>
+                      <div className="flex items-baseline gap-1">
+                        <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">8</p>
+                        <p className="text-xs text-green-500">-2 vs yesterday</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/20 dark:to-blue-900/10">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
+                      <Home className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Work From Home</p>
+                      <div className="flex items-baseline gap-1">
+                        <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">28</p>
+                        <p className="text-xs text-blue-500">+5 vs yesterday</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-red-50 to-red-100/50 dark:from-red-950/20 dark:to-red-900/10">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-red-100 dark:bg-red-900/50 rounded-lg">
+                      <XCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Absent</p>
+                      <div className="flex items-baseline gap-1">
+                        <p className="text-2xl font-bold text-red-600 dark:text-red-400">14</p>
+                        <p className="text-xs text-red-500">+3 vs yesterday</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
             {/* Enhanced Filters */}
             <Card className="border-0 shadow-sm bg-gradient-to-r from-card to-card/80">
               <CardContent className="p-6">
@@ -347,112 +438,135 @@ const AdminAttendance = () => {
                       </SelectContent>
                     </Select>
                     
-                    <Input
-                      type="date"
-                      value={selectedDate}
-                      onChange={(e) => setSelectedDate(e.target.value)}
-                      className="w-[140px] bg-background/50"
-                    />
+                    <Select defaultValue="all">
+                      <SelectTrigger className="w-[140px] bg-background/50">
+                        <SelectValue placeholder="Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value="present">Present</SelectItem>
+                        <SelectItem value="late">Late</SelectItem>
+                        <SelectItem value="wfh">Remote</SelectItem>
+                        <SelectItem value="absent">Absent</SelectItem>
+                      </SelectContent>
+                    </Select>
                     
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" className="gap-2 hover:bg-primary/10">
-                        <Download className="w-4 h-4" />
-                        Export
-                      </Button>
-                      <Button size="sm" className="gap-2 bg-gradient-to-r from-primary to-primary-glow">
-                        <Coffee className="w-4 h-4" />
-                        Refresh
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Quick Stats Row */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 pt-4 border-t border-border/50">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                    <span className="text-sm text-muted-foreground">On Time:</span>
-                    <span className="font-medium">134</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
-                    <span className="text-sm text-muted-foreground">Late:</span>
-                    <span className="font-medium">8</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                    <span className="text-sm text-muted-foreground">Remote:</span>
-                    <span className="font-medium">28</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-red-500"></div>
-                    <span className="text-sm text-muted-foreground">Absent:</span>
-                    <span className="font-medium">14</span>
+                    <Button variant="outline" size="sm" className="gap-2 hover:bg-primary/10">
+                      <Download className="w-4 h-4" />
+                      Export
+                    </Button>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Enhanced Employee Grid */}
+            {/* Enhanced Employee Grid with Sorting */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-semibold">Employee Status</h3>
+                <Badge variant="secondary" className="text-xs">
+                  {musterRollData.filter(emp => 
+                    selectedDepartment === 'all' || emp.department.toLowerCase() === selectedDepartment.toLowerCase()
+                  ).filter(emp =>
+                    emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    emp.employeeId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    emp.department.toLowerCase().includes(searchQuery.toLowerCase())
+                  ).length} employees
+                </Badge>
+              </div>
+              <div className="flex items-center gap-2">
+                <Select defaultValue="name">
+                  <SelectTrigger className="w-[120px] h-8">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="name">Name</SelectItem>
+                    <SelectItem value="department">Department</SelectItem>
+                    <SelectItem value="status">Status</SelectItem>
+                    <SelectItem value="hours">Hours</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                  <TrendingUp className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {musterRollData
-                .filter(employee => 
-                  selectedDepartment === 'all' || employee.department.toLowerCase() === selectedDepartment.toLowerCase()
-                )
-                .filter(employee =>
-                  employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                  employee.employeeId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                  employee.department.toLowerCase().includes(searchQuery.toLowerCase())
-                )
-                .map((employee) => (
-                  <Card 
-                    key={employee.id} 
-                    className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-0 shadow-sm bg-gradient-to-br from-card to-card/50"
-                  >
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-3">
-                          <Avatar className="w-10 h-10 border-2 border-background shadow-sm">
-                            <AvatarImage src="" />
-                            <AvatarFallback className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground font-semibold text-sm">
-                              {employee.name.split(' ').map(n => n[0]).join('')}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <h4 className="font-semibold text-sm text-foreground">{employee.name}</h4>
-                            <p className="text-xs text-muted-foreground">{employee.employeeId}</p>
-                            <p className="text-xs text-muted-foreground">{employee.department}</p>
-                          </div>
-                        </div>
-                        <Badge 
-                          variant="outline"
-                          className={
-                            employee.status === 'present' ? "bg-green-100 text-green-700 border-green-200" :
-                            employee.status === 'wfh' ? "bg-blue-100 text-blue-700 border-blue-200" :
-                            employee.status === 'absent' ? "bg-red-100 text-red-700 border-red-200" :
-                            "bg-yellow-100 text-yellow-700 border-yellow-200"
-                          }
+               {musterRollData
+                 .filter(employee => 
+                   selectedDepartment === 'all' || employee.department.toLowerCase() === selectedDepartment.toLowerCase()
+                 )
+                 .filter(employee =>
+                   employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                   employee.employeeId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                   employee.department.toLowerCase().includes(searchQuery.toLowerCase())
+                 )
+                 .map((employee) => (
+                   <Card 
+                     key={employee.id} 
+                     className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0 shadow-sm bg-gradient-to-br from-card to-card/50 cursor-pointer"
+                   >
+                     <CardContent className="p-4">
+                       <div className="flex items-start justify-between mb-3">
+                         <div className="flex items-center gap-3">
+                           <div className="relative">
+                             <Avatar className="w-10 h-10 border-2 border-background shadow-sm">
+                               <AvatarImage src="" />
+                               <AvatarFallback className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground font-semibold text-sm">
+                                 {employee.name.split(' ').map(n => n[0]).join('')}
+                               </AvatarFallback>
+                             </Avatar>
+                             {/* Online Status Indicator */}
+                             <div className={`absolute -bottom-0 -right-0 w-3 h-3 rounded-full border-2 border-background ${
+                               employee.status === 'present' ? 'bg-green-500' :
+                               employee.status === 'wfh' ? 'bg-blue-500' :
+                               employee.status === 'late' ? 'bg-yellow-500' : 'bg-red-500'
+                             }`}></div>
+                           </div>
+                           <div>
+                             <h4 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors">{employee.name}</h4>
+                             <p className="text-xs text-muted-foreground">{employee.employeeId}</p>
+                             <p className="text-xs text-muted-foreground">{employee.department}</p>
+                           </div>
+                         </div>
+                         <Badge 
+                           variant="outline"
+                           className={
+                             employee.status === 'present' ? "bg-green-100 text-green-700 border-green-200" :
+                             employee.status === 'wfh' ? "bg-blue-100 text-blue-700 border-blue-200" :
+                             employee.status === 'absent' ? "bg-red-100 text-red-700 border-red-200" :
+                             "bg-yellow-100 text-yellow-700 border-yellow-200"
+                           }
                         >
                           {employee.status === 'wfh' ? 'Remote' : 
                            employee.status === 'present' ? 'Present' :
                            employee.status === 'absent' ? 'Absent' : 'Late'}
                         </Badge>
                       </div>
-                      
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="text-muted-foreground flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            Check In
-                          </span>
-                          <span className="font-medium">{employee.checkIn || 'Not yet'}</span>
-                        </div>
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="text-muted-foreground flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            Check Out
-                          </span>
-                          <span className="font-medium">{employee.checkOut || 'Not yet'}</span>
+                       
+                       <div className="space-y-2">
+                         <div className="flex items-center justify-between text-xs">
+                           <span className="text-muted-foreground flex items-center gap-1">
+                             <Clock className="w-3 h-3" />
+                             Check In
+                           </span>
+                           <span className={`font-medium ${
+                             employee.checkIn ? 'text-green-600' : 'text-muted-foreground'
+                           }`}>
+                             {employee.checkIn || 'Not yet'}
+                           </span>
+                         </div>
+                         <div className="flex items-center justify-between text-xs">
+                           <span className="text-muted-foreground flex items-center gap-1">
+                             <Clock className="w-3 h-3" />
+                             Check Out
+                           </span>
+                           <span className={`font-medium ${
+                             employee.checkOut ? 'text-blue-600' : 'text-muted-foreground'
+                           }`}>
+                             {employee.checkOut || 'Not yet'}
+                           </span>
                         </div>
                         {employee.status !== 'absent' && (
                           <div className="flex items-center justify-between text-xs">
