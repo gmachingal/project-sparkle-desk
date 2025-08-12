@@ -12,7 +12,6 @@ import { Calendar } from "@/components/ui/calendar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import TaskCard from "@/components/TaskCard";
 import Header from "@/components/Header";
-import Breadcrumb from "@/components/Breadcrumb";
 import { 
   CheckSquare, 
   Clock, 
@@ -258,7 +257,6 @@ const MyTasks = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <div className="p-6 space-y-6">
-        <Breadcrumb />
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
