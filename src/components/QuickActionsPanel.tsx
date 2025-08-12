@@ -174,18 +174,22 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[600px] overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle className="flex items-center gap-2">
+      <SheetContent 
+        className="w-[600px] overflow-y-auto bg-background border-l shadow-2xl z-50" 
+        side="right"
+        style={{ backgroundColor: 'hsl(var(--background))' }}
+      >
+        <SheetHeader className="border-b pb-4">
+          <SheetTitle className="flex items-center gap-2 text-foreground">
             <Activity className="w-5 h-5" />
             Quick Task Actions
           </SheetTitle>
         </SheetHeader>
         
-        <div className="mt-6 space-y-6">
+        <div className="mt-6 space-y-6 bg-background">
           {/* Task Info Card */}
-          <Card className="bg-gradient-to-r from-primary/5 to-primary-glow/5 border-primary/20">
-            <CardContent className="p-6">
+          <Card className="bg-gradient-to-r from-primary/5 to-primary-glow/5 border-primary/20 shadow-sm">
+            <CardContent className="p-6 bg-card">
               <div className="space-y-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -223,14 +227,14 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
             {/* Status Management */}
-            <Card className="h-fit">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base flex items-center gap-2">
+            <Card className="h-fit bg-card shadow-sm">
+              <CardHeader className="pb-3 bg-card">
+                <CardTitle className="text-base flex items-center gap-2 text-foreground">
                   <Activity className="w-4 h-4" />
                   Change Status
                 </CardTitle>
               </CardHeader>
-              <CardContent className="pt-0">
+              <CardContent className="pt-0 bg-card">
                 {!showStatusConfirm ? (
                   <div className="space-y-3">
                     <div className="grid grid-cols-1 gap-2">
@@ -277,14 +281,14 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
             </Card>
 
             {/* Assignment Management */}
-            <Card className="h-fit">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base flex items-center gap-2">
+            <Card className="h-fit bg-card shadow-sm">
+              <CardHeader className="pb-3 bg-card">
+                <CardTitle className="text-base flex items-center gap-2 text-foreground">
                   <User className="w-4 h-4" />
                   Reassign Task
                 </CardTitle>
               </CardHeader>
-              <CardContent className="pt-0">
+              <CardContent className="pt-0 bg-card">
                 {!showAssigneeConfirm ? (
                   <div className="space-y-3">
                     <div className="grid grid-cols-1 gap-2">
@@ -336,14 +340,14 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
             </Card>
 
             {/* Sprint Assignment */}
-            <Card className="h-fit">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base flex items-center gap-2">
+            <Card className="h-fit bg-card shadow-sm">
+              <CardHeader className="pb-3 bg-card">
+                <CardTitle className="text-base flex items-center gap-2 text-foreground">
                   <Target className="w-4 h-4" />
                   Assign to Sprint
                 </CardTitle>
               </CardHeader>
-              <CardContent className="pt-0">
+              <CardContent className="pt-0 bg-card">
                 {!showSprintConfirm ? (
                   <div className="space-y-3">
                     <div className="grid grid-cols-1 gap-2">
@@ -395,14 +399,14 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
             </Card>
 
             {/* Due Date */}
-            <Card className="h-fit">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base flex items-center gap-2">
+            <Card className="h-fit bg-card shadow-sm">
+              <CardHeader className="pb-3 bg-card">
+                <CardTitle className="text-base flex items-center gap-2 text-foreground">
                   <Calendar className="w-4 h-4" />
                   Update Due Date
                 </CardTitle>
               </CardHeader>
-              <CardContent className="pt-0">
+              <CardContent className="pt-0 bg-card">
                 <div className="space-y-3">
                   <p className="text-sm text-muted-foreground">Due date management coming soon</p>
                   <Button variant="outline" className="w-full" disabled>
@@ -415,14 +419,14 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
           </div>
 
           {/* Comments Section */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base flex items-center gap-2">
+          <Card className="bg-card shadow-sm">
+            <CardHeader className="pb-3 bg-card">
+              <CardTitle className="text-base flex items-center gap-2 text-foreground">
                 <MessageSquare className="w-4 h-4" />
                 Add Comment
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-0">
+            <CardContent className="pt-0 bg-card">
               <div className="space-y-3">
                 <Textarea
                   placeholder="Add a comment about this task change..."
