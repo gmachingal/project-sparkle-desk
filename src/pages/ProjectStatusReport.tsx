@@ -23,7 +23,7 @@ import {
   FileText
 } from 'lucide-react';
 import StatsCard from '@/components/StatsCard';
-import { SimpleBarChart, SimpleAreaChart, SimplePieChart } from '@/components/SimpleCharts';
+import { SimpleBarChart, SimpleAreaChart, SimplePieChart, generateMockData } from '@/components/SimpleCharts';
 
 const ProjectStatusReport = () => {
   const { id } = useParams();
@@ -230,7 +230,7 @@ const ProjectStatusReport = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <SimplePieChart data={taskStatusData} height={250} />
+                  <SimplePieChart data={generateMockData.taskStatus} height={280} />
                 </CardContent>
               </Card>
             </div>
@@ -245,12 +245,13 @@ const ProjectStatusReport = () => {
               </CardHeader>
               <CardContent>
                 <SimpleAreaChart 
-                  data={progressData}
+                  data={generateMockData.sprintVelocity}
                   dataKeys={[
                     { key: 'planned', color: '#94a3b8' },
-                    { key: 'actual', color: '#3b82f6' }
+                    { key: 'completed', color: '#3b82f6' }
                   ]}
-                  height={300}
+                  height={350}
+                  xAxisKey="sprint"
                 />
               </CardContent>
             </Card>

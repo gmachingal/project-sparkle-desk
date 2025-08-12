@@ -44,7 +44,7 @@ import {
   Coffee
 } from 'lucide-react';
 import StatsCard from '@/components/StatsCard';
-import { SimpleBarChart, SimpleAreaChart, SimplePieChart, SimpleComposedChart } from '@/components/SimpleCharts';
+import { SimpleBarChart, SimpleAreaChart, SimplePieChart, SimpleComposedChart, generateMockData } from '@/components/SimpleCharts';
 import { format } from 'date-fns';
 
 const AdminAttendance = () => {
@@ -1419,12 +1419,14 @@ const AdminAttendance = () => {
                 </CardHeader>
                 <CardContent>
                   <SimpleAreaChart 
-                    data={attendanceTrendData}
+                    data={generateMockData.attendanceTrend}
                     dataKeys={[
                       { key: 'present', color: '#10b981' },
                       { key: 'wfh', color: '#3b82f6' },
                       { key: 'absent', color: '#ef4444' }
                     ]}
+                    height={350}
+                    xAxisKey="month"
                   />
                 </CardContent>
               </Card>
@@ -1438,7 +1440,7 @@ const AdminAttendance = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <SimplePieChart data={attendanceStatusData} />
+                  <SimplePieChart data={generateMockData.taskStatus} height={280} />
                   <div className="grid grid-cols-2 gap-4 mt-4">
                     {attendanceStatusData.map((item) => (
                       <div key={item.name} className="flex items-center gap-2">
@@ -1463,12 +1465,13 @@ const AdminAttendance = () => {
                 </CardHeader>
                 <CardContent>
                   <SimpleBarChart 
-                    data={departmentAttendanceData}
+                    data={generateMockData.departmentPerformance}
                     dataKeys={[
-                      { key: 'present', color: '#10b981', name: 'Present' },
-                      { key: 'wfh', color: '#3b82f6', name: 'WFH' },
-                      { key: 'absent', color: '#ef4444', name: 'Absent' }
+                      { key: 'completed', color: '#10b981', name: 'Completed' },
+                      { key: 'pending', color: '#3b82f6', name: 'Pending' },
+                      { key: 'blocked', color: '#ef4444', name: 'Blocked' }
                     ]}
+                    height={350}
                   />
                 </CardContent>
               </Card>
@@ -1482,7 +1485,7 @@ const AdminAttendance = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <SimpleComposedChart data={weeklyProductivityData} />
+                  <SimpleComposedChart data={generateMockData.weeklyProductivity} height={350} />
                 </CardContent>
               </Card>
             </div>
