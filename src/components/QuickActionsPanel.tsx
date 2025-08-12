@@ -43,7 +43,7 @@ interface Task {
 interface QuickActionsPanelProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  task: Task;
+  task: Task | null;
   onStatusChange?: (taskId: string, newStatus: string) => void;
   onAssigneeChange?: (taskId: string, newAssignee: string) => void;
   onSprintChange?: (taskId: string, newSprint: string) => void;
@@ -64,6 +64,11 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
   const [showAssigneeConfirm, setShowAssigneeConfirm] = useState(false);
   const [showSprintConfirm, setShowSprintConfirm] = useState(false);
   const [comment, setComment] = useState('');
+
+  // Early return if no task is provided
+  if (!task) {
+    return null;
+  }
 
   const taskTitle = task.title || task.name || 'Untitled Task';
 
