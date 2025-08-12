@@ -222,7 +222,7 @@ const AdminDashboard = () => {
             <BarChart3 className="w-4 h-4" />
             Reports
           </Button>
-          <Button variant="hero" className="gap-2" onClick={() => navigate("/new-project")}>
+          <Button variant="default" className="gap-2" onClick={() => navigate("/new-project")}>
             <Plus className="w-4 h-4" />
             New Project
           </Button>

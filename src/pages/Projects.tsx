@@ -165,7 +165,7 @@ const Projects = () => {
               Manage and track all your projects
             </p>
           </div>
-          <Button variant="hero" className="gap-2" onClick={() => navigate("/new-project")}>
+          <Button variant="default" className="gap-2" onClick={() => navigate("/new-project")}>
             <Plus className="w-4 h-4" />
             New Project
           </Button>
@@ -296,7 +296,7 @@ const Projects = () => {
                       : "Get started by creating your first project"
                     }
                   </p>
-                  <Button variant="hero" onClick={() => navigate("/new-project")}>
+                  <Button variant="default" onClick={() => navigate("/new-project")}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create Project
                   </Button>

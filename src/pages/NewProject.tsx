@@ -135,7 +135,7 @@ const NewProject = () => {
             </Button>
             <h1 className="text-2xl font-bold">Create New Project</h1>
           </div>
-          <Button variant="hero" onClick={handleSubmit} className="gap-2">
+          <Button variant="default" onClick={handleSubmit} className="gap-2">
             <Save className="w-4 h-4" />
             Create Project
           </Button>
@@ -508,7 +508,7 @@ const NewProject = () => {
               <Button variant="outline" type="button" onClick={() => navigate("/")}>
                 Cancel
               </Button>
-              <Button variant="hero" type="submit" className="gap-2">
+              <Button variant="default" type="submit" className="gap-2">
                 <Plus className="w-4 h-4" />
                 Create Project
               </Button>

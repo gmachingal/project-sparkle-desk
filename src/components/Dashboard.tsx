@@ -153,7 +153,7 @@ const Dashboard = () => {
             <Timer className="w-4 h-4" />
             Log Time
           </Button>
-          <Button variant="hero" className="gap-2" onClick={() => navigate("/new-project")}>
+          <Button variant="default" className="gap-2" onClick={() => navigate("/new-project")}>
             <Plus className="w-4 h-4" />
             New Project
           </Button>
@@ -217,7 +217,7 @@ const Dashboard = () => {
                 <Filter className="w-4 h-4 mr-2" />
                 Filter
               </Button>
-              <Button variant="hero" size="sm" onClick={() => navigate("/new-project")}>
+              <Button variant="default" size="sm" onClick={() => navigate("/new-project")}>
                 <Plus className="w-4 h-4 mr-2" />
                 New Project
               </Button>
