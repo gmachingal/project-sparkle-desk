@@ -317,90 +317,115 @@ const DailyTaskReport = ({ isAdmin = false, selectedUser, onUserChange }: DailyT
                           </div>
                         </div>
                       </HoverCardTrigger>
-                      <HoverCardContent className="w-80 p-4" side="top">
-                        <div className="space-y-3">
+                      <HoverCardContent className="w-72 p-3" side="top">
+                        <div className="space-y-2">
                           <div className="flex items-center justify-between">
-                            <h4 className="font-semibold text-lg">{task.title}</h4>
+                            <h4 className="font-semibold text-sm">{task.title}</h4>
                             <Badge 
                               variant="outline" 
                               className={cn("text-xs", priorityColors[task.priority])}
                             >
-                              <Flag className="w-3 h-3 mr-1" />
                               {task.priority}
                             </Badge>
                           </div>
                           
                           {task.description && (
-                            <p className="text-sm text-muted-foreground leading-relaxed">
+                            <p className="text-xs text-muted-foreground line-clamp-2">
                               {task.description}
                             </p>
                           )}
                           
-                          <div className="space-y-2">
+                          <div className="grid grid-cols-2 gap-2 text-xs">
                             <div className="flex items-center justify-between">
-                              <span className="text-sm font-medium">Status</span>
-                              <Badge variant="secondary">{task.status.replace('-', ' ')}</Badge>
+                              <span className="text-muted-foreground">Status</span>
+                              <Badge variant="secondary" className="text-xs">{task.status.replace('-', ' ')}</Badge>
                             </div>
                             <div className="flex items-center justify-between">
-                              <span className="text-sm font-medium">Project</span>
-                              <span className="text-sm">{task.project}</span>
-                            </div>
-                            {task.sprint && (
-                              <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium">Sprint</span>
-                                <span className="text-sm">{task.sprint}</span>
-                              </div>
-                            )}
-                            {task.assignee && (
-                              <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium">Assignee</span>
-                                <div className="flex items-center gap-2">
-                                  <Avatar className="w-5 h-5">
-                                    <AvatarImage src={task.assignee.avatar} />
-                                    <AvatarFallback className="text-xs">
-                                      {task.assignee.name.charAt(0)}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                  <span className="text-sm">{task.assignee.name}</span>
-                                </div>
-                              </div>
-                            )}
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-medium">Time Spent</span>
+                              <span className="text-muted-foreground">Time</span>
                               <div className="flex items-center gap-1">
-                                <Clock className="w-4 h-4 text-muted-foreground" />
-                                <span className="text-sm">{task.timeSpent}</span>
+                                <Clock className="w-3 h-3" />
+                                <span className="text-xs">{task.timeSpent}</span>
                               </div>
                             </div>
                           </div>
                           
-                          {task.tags && task.tags.length > 0 && (
-                            <div className="pt-2 border-t">
-                              <div className="flex flex-wrap gap-1">
-                                {task.tags.map((tag, index) => (
-                                  <Badge 
-                                    key={index} 
-                                    variant="outline" 
-                                    className="text-xs px-2 py-1 bg-primary/10 text-primary border-primary/20"
+                          {/* Quick Actions Section */}
+                          <div className="pt-2 border-t space-y-2">
+                            {/* Status Change */}
+                            <div>
+                              <h4 className="text-xs font-medium mb-1">Change Status</h4>
+                              <div className="grid grid-cols-2 gap-1">
+                                {[
+                                  { status: 'todo', label: 'To Do', color: 'bg-gray-100 text-gray-700 hover:bg-gray-200' },
+                                  { status: 'in-progress', label: 'In Progress', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200' },
+                                  { status: 'completed', label: 'Completed', color: 'bg-green-100 text-green-700 hover:bg-green-200' },
+                                  { status: 'blocked', label: 'Blocked', color: 'bg-red-100 text-red-700 hover:bg-red-200' }
+                                ].map((statusOption) => (
+                                  <Button
+                                    key={statusOption.status}
+                                    variant="outline"
+                                    size="sm"
+                                    className={`text-xs h-6 ${statusOption.color} border-0 ${
+                                      task.status === statusOption.status ? 'ring-1 ring-primary' : ''
+                                    }`}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      // Handle status change logic here
+                                    }}
                                   >
-                                    <Tag className="w-2 h-2 mr-1" />
-                                    {tag}
-                                  </Badge>
+                                    {statusOption.label}
+                                  </Button>
                                 ))}
                               </div>
                             </div>
-                          )}
-                          
+
+                            {/* Quick Assign */}
+                            <div>
+                              <h4 className="text-xs font-medium mb-1">Quick Assign</h4>
+                              <div className="space-y-1 max-h-20 overflow-y-auto">
+                                {[
+                                  { id: '1', name: 'John Doe', active: true },
+                                  { id: '2', name: 'Jane Smith', active: true }
+                                ].map((teamMember) => (
+                                  <Button
+                                    key={teamMember.id}
+                                    variant="outline"
+                                    size="sm"
+                                    className={`w-full justify-start h-6 text-xs ${
+                                      !teamMember.active ? 'opacity-50' : ''
+                                    } ${
+                                      task.assignee?.name === teamMember.name ? 'ring-1 ring-primary bg-primary/5' : ''
+                                    }`}
+                                    disabled={!teamMember.active}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      // Handle assignee change logic here
+                                    }}
+                                  >
+                                    <div className="flex items-center gap-1">
+                                      <div className={`w-4 h-4 rounded-full flex items-center justify-center text-white font-semibold text-xs ${
+                                        teamMember.active ? 'bg-primary' : 'bg-gray-400'
+                                      }`}>
+                                        {teamMember.name.split(' ').map(n => n[0]).join('')}
+                                      </div>
+                                      <span className="truncate">{teamMember.name}</span>
+                                    </div>
+                                  </Button>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
                           <div className="pt-2 border-t">
                             <Button 
                               size="sm" 
-                              className="w-full"
+                              className="w-full h-6 text-xs"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 navigate(`/task/${task.id}`);
                               }}
                             >
-                              <Eye className="w-4 h-4 mr-2" />
+                              <Eye className="w-3 h-3 mr-1" />
                               View Task
                             </Button>
                           </div>
