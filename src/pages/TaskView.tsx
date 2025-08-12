@@ -1,8 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import { 
   ArrowLeft, 
@@ -24,13 +28,29 @@ import {
   Image,
   File,
   Download,
-  Eye
+  Eye,
+  Settings,
+  UserPlus
 } from "lucide-react";
 import { format } from "date-fns";
 
 const TaskView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toast } = useToast();
+  
+  // Local state for quick actions
+  const [taskStatus, setTaskStatus] = useState("");
+  const [assignedUser, setAssignedUser] = useState("");
+
+  // Mock data for team members
+  const teamMembers = [
+    { id: "1", name: "John Smith", avatar: "", role: "Frontend Developer" },
+    { id: "2", name: "Sarah Johnson", avatar: "", role: "UI/UX Designer" },
+    { id: "3", name: "Mike Chen", avatar: "", role: "Backend Developer" },
+    { id: "4", name: "Emily Davis", avatar: "", role: "Product Manager" },
+    { id: "5", name: "Alex Wilson", avatar: "", role: "QA Engineer" },
+  ];
 
   // Mock task data - in real app this would come from API
   const currentDate = new Date();
@@ -277,6 +297,31 @@ const TaskView = () => {
 
   const task = mockTasks.find(t => t.id === id);
 
+  // Initialize local state with task data
+  useState(() => {
+    if (task) {
+      setTaskStatus(task.status);
+      setAssignedUser(task.assignee.name);
+    }
+  });
+
+  // Quick action handlers
+  const handleStatusChange = (newStatus: string) => {
+    setTaskStatus(newStatus);
+    toast({
+      title: "Status Updated",
+      description: `Task status changed to ${newStatus.replace('-', ' ')}`,
+    });
+  };
+
+  const handleAssigneeChange = (newAssignee: string) => {
+    setAssignedUser(newAssignee);
+    toast({
+      title: "Assignee Updated", 
+      description: `Task assigned to ${newAssignee}`,
+    });
+  };
+
   if (!task) {
     return (
       <div className="min-h-screen bg-background">
@@ -348,39 +393,99 @@ const TaskView = () => {
       <Header />
       
       <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Navigation Header */}
+        {/* Navigation & Quick Actions Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <Button variant="back" onClick={() => navigate('/my-tasks')}>
+            <Button variant="outline" onClick={() => navigate('/my-tasks')}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to My Tasks
             </Button>
           </div>
-          <Button onClick={() => navigate(`/edit-task/${task.id}`)}>
-            <Edit className="h-4 w-4 mr-2" />
-            Edit Task
-          </Button>
+          
+          {/* Quick Actions */}
+          <div className="flex items-center gap-3">
+            {/* Quick Status Change */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Quick Actions
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80" align="end">
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-medium mb-2">Change Status</h4>
+                    <Select value={taskStatus} onValueChange={handleStatusChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="todo">To Do</SelectItem>
+                        <SelectItem value="in-progress">In Progress</SelectItem>
+                        <SelectItem value="completed">Completed</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-medium mb-2">Assign to Team Member</h4>
+                    <Select value={assignedUser} onValueChange={handleAssigneeChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {teamMembers.map((member) => (
+                          <SelectItem key={member.id} value={member.name}>
+                            <div className="flex items-center gap-2">
+                              <Avatar className="w-5 h-5">
+                                <AvatarImage src={member.avatar} />
+                                <AvatarFallback className="text-xs">
+                                  {member.name.split(' ').map(n => n[0]).join('')}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span>{member.name}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+            
+            <Button onClick={() => navigate(`/edit-task/${task.id}`)}>
+              <Edit className="h-4 w-4 mr-2" />
+              Edit Task
+            </Button>
+          </div>
         </div>
 
-        {/* Task Header Card */}
-        <Card className="mb-8">
-          <CardHeader className="pb-4">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1">
-                <CardTitle className="text-3xl mb-3">{task.title}</CardTitle>
-                <div className="flex items-center gap-3 flex-wrap">
-                  <Badge className={getStatusColor(task.status)}>
-                    {getStatusIcon(task.status)}
-                    <span className="ml-1 capitalize">{task.status.replace('-', ' ')}</span>
-                  </Badge>
-                  <Badge className={getPriorityColor(task.priority)}>
-                    <Flag className="w-3 h-3 mr-1" />
-                    {task.priority} priority
-                  </Badge>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
+        {/* Enhanced Task Header Card */}
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 mb-8">
+          {/* Main Task Info */}
+          <Card className="xl:col-span-3">
+            <CardHeader className="pb-4">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <CardTitle className="text-3xl mb-4 leading-tight">{task.title}</CardTitle>
+                  <div className="flex items-center gap-3 flex-wrap mb-4">
+                    <Badge className={getStatusColor(taskStatus)} variant="secondary">
+                      {getStatusIcon(taskStatus)}
+                      <span className="ml-1 capitalize">{taskStatus.replace('-', ' ')}</span>
+                    </Badge>
+                    <Badge className={getPriorityColor(task.priority)} variant="outline">
+                      <Flag className="w-3 h-3 mr-1" />
+                      {task.priority} priority
+                    </Badge>
+                  </div>
+                  
+                  {/* Project & Milestone Info */}
+                  <div className="flex items-center gap-6 text-sm text-muted-foreground flex-wrap">
                     <div className="flex items-center gap-2">
                       <FolderOpen className="w-4 h-4" />
-                      {task.project}
+                      <span className="font-medium">{task.project}</span>
                     </div>
                     {task.milestone && (
                       <div className="flex items-center gap-2">
@@ -397,42 +502,94 @@ const TaskView = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Avatar className="w-10 h-10">
+            </CardHeader>
+            <CardContent>
+              <div className="mb-6">
+                <h3 className="font-semibold mb-3">Description</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  {task.description}
+                </p>
+              </div>
+              
+              {task.tags && task.tags.length > 0 && (
+                <div>
+                  <h3 className="font-semibold mb-3">Tags</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {task.tags.map((tag) => (
+                      <Badge key={tag} variant="secondary" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+          
+          {/* Task Stats & Assignee Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Task Overview</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Current Assignee */}
+              <div className="text-center">
+                <Avatar className="w-16 h-16 mx-auto mb-3">
                   <AvatarImage src={task.assignee.avatar} />
-                  <AvatarFallback className="bg-primary text-primary-foreground">
-                    {task.assignee.name.charAt(0)}
+                  <AvatarFallback className="bg-primary text-primary-foreground text-lg">
+                    {assignedUser.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
-                <div className="text-sm">
-                  <div className="font-medium">{task.assignee.name}</div>
-                  <div className="text-muted-foreground">Assignee</div>
+                <div className="font-medium">{assignedUser}</div>
+                <div className="text-sm text-muted-foreground">Current Assignee</div>
+              </div>
+              
+              {/* Quick Stats */}
+              <div className="space-y-3 pt-4 border-t">
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Progress</span>
+                  <span className="font-medium">{progressPercentage}%</span>
+                </div>
+                <div className="w-full bg-muted rounded-full h-2">
+                  <div 
+                    className="bg-primary h-2 rounded-full transition-all duration-300" 
+                    style={{ width: `${Math.min(progressPercentage, 100)}%` }}
+                  />
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Time Spent</span>
+                  <span className="font-medium">{task.actualHours}h / {task.estimatedHours}h</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Due Date</span>
+                  <span className="font-medium text-sm">{format(task.dueDate, 'MMM dd')}</span>
                 </div>
               </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="mb-6">
-              <h3 className="font-semibold mb-3">Description</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                {task.description}
-              </p>
-            </div>
-            
-            {task.tags && task.tags.length > 0 && (
-              <div>
-                <h3 className="font-semibold mb-3">Tags</h3>
-                <div className="flex flex-wrap gap-2">
-                  {task.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
+              
+              {/* Quick Action Buttons */}
+              <div className="space-y-2 pt-4 border-t">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full"
+                  onClick={() => navigate('/time-logging')}
+                >
+                  <Clock className="w-4 h-4 mr-2" />
+                  Log Time
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full"
+                  onClick={() => navigate(`/edit-task/${task.id}`)}
+                >
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit Details
+                </Button>
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Assignee History Section */}
         {task.assigneeHistory && task.assigneeHistory.length > 0 && (
