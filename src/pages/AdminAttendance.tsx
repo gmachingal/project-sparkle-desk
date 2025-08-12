@@ -817,56 +817,58 @@ const AdminAttendance = () => {
                 </CardTitle>
                 
                 {/* Date Navigation Controls */}
-                <div className="flex items-center justify-between pt-4">
-                  <div className="flex items-center gap-2">
+                <div className="border-t pt-4 mt-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={navigatePrevious}
+                        className="gap-1"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                        Previous {getNavigationLabel()}
+                      </Button>
+                      
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" className="gap-2 min-w-[200px]">
+                            <CalendarIcon className="w-4 h-4" />
+                            {getDateDisplayText()}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={currentDate}
+                            onSelect={(date) => date && setCurrentDate(date)}
+                            initialFocus
+                            className="p-3 pointer-events-auto"
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={navigateNext}
+                        className="gap-1"
+                      >
+                        Next {getNavigationLabel()}
+                        <ChevronRight className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    
                     <Button
-                      variant="outline"
+                      variant="ghost"
                       size="sm"
-                      onClick={navigatePrevious}
+                      onClick={navigateToday}
                       className="gap-1"
                     >
-                      <ChevronLeft className="w-4 h-4" />
-                      Previous {getNavigationLabel()}
-                    </Button>
-                    
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" className="gap-2 min-w-[200px]">
-                          <CalendarIcon className="w-4 h-4" />
-                          {getDateDisplayText()}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={currentDate}
-                          onSelect={(date) => date && setCurrentDate(date)}
-                          initialFocus
-                          className="p-3 pointer-events-auto"
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={navigateNext}
-                      className="gap-1"
-                    >
-                      Next {getNavigationLabel()}
-                      <ChevronRight className="w-4 h-4" />
+                      <Target className="w-4 h-4" />
+                      Today
                     </Button>
                   </div>
-                  
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={navigateToday}
-                    className="gap-1"
-                  >
-                    <Target className="w-4 h-4" />
-                    Today
-                  </Button>
                 </div>
               </CardHeader>
               <CardContent>
