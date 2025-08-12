@@ -860,10 +860,10 @@ const AdminAttendance = () => {
                     </div>
                     
                     <Button
-                      variant="ghost"
+                      variant="outline"
                       size="sm"
                       onClick={navigateToday}
-                      className="gap-1"
+                      className="gap-1 bg-primary/5 hover:bg-primary/10 border-primary/20"
                     >
                       <Target className="w-4 h-4" />
                       Today
