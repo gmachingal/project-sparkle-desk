@@ -713,9 +713,9 @@ const AdminAttendance = () => {
                       </div>
                       
                       {/* Action Buttons */}
-                      <div className="flex flex-col gap-2">
+                      <div className="flex gap-2">
                         <Button 
-                          className="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                          className="flex-1"
                           size="sm"
                         >
                           <CheckCircle className="w-3 h-3 mr-1" />
@@ -723,7 +723,7 @@ const AdminAttendance = () => {
                         </Button>
                         <Button 
                           variant="outline" 
-                          className="flex-1 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 shadow-lg hover:shadow-xl transition-all duration-300"
+                          className="flex-1"
                           size="sm"
                         >
                           <XCircle className="w-3 h-3 mr-1" />
