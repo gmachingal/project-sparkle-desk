@@ -175,69 +175,81 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetContent 
-        className="w-[600px] overflow-y-auto bg-background border-l shadow-2xl z-50" 
+        className="w-full sm:w-[800px] lg:w-[900px] overflow-y-auto bg-background border-l shadow-2xl z-50" 
         side="right"
         style={{ backgroundColor: 'hsl(var(--background))' }}
       >
-        <SheetHeader className="border-b pb-4">
-          <SheetTitle className="flex items-center gap-2 text-foreground">
-            <Activity className="w-5 h-5" />
+        <SheetHeader className="border-b pb-6 mb-6">
+          <SheetTitle className="flex items-center gap-3 text-foreground text-xl">
+            <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-glow rounded-lg flex items-center justify-center">
+              <Activity className="w-5 h-5 text-primary-foreground" />
+            </div>
             Quick Task Actions
           </SheetTitle>
         </SheetHeader>
         
-        <div className="mt-6 space-y-6 bg-background">
+        <div className="space-y-8 bg-background">
           {/* Task Info Card */}
           <Card className="bg-gradient-to-r from-primary/5 to-primary-glow/5 border-primary/20 shadow-sm">
-            <CardContent className="p-6 bg-card">
-              <div className="space-y-4">
+            <CardContent className="p-8 bg-card">
+              <div className="space-y-6">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <h4 className="font-semibold text-lg text-foreground">{taskTitle}</h4>
+                    <h4 className="font-semibold text-2xl text-foreground mb-3">{taskTitle}</h4>
                     {task.description && (
-                      <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{task.description}</p>
+                      <p className="text-base text-muted-foreground leading-relaxed">{task.description}</p>
                     )}
                   </div>
                   <Badge 
                     variant="outline" 
-                    className={cn("text-xs ml-4 flex-shrink-0", getPriorityColor(task.priority))}
+                    className={cn("text-sm px-3 py-1 ml-6 flex-shrink-0", getPriorityColor(task.priority))}
                   >
-                    <Flag className="w-3 h-3 mr-1" />
+                    <Flag className="w-4 h-4 mr-2" />
                     {task.priority} Priority
                   </Badge>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4 pt-2 border-t border-primary/10">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Clock className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Progress:</span>
-                    <span className="font-medium">{task.loggedHours || task.hours || 0}h / {task.estimatedHours || 0}h</span>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-primary/10">
+                  <div className="flex items-center gap-3 text-base">
+                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <Clock className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Progress:</span>
+                      <span className="font-semibold ml-2">{task.loggedHours || task.hours || 0}h / {task.estimatedHours || 0}h</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <User className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Assigned:</span>
-                    <span className="font-medium">{getAssigneeName()}</span>
+                  <div className="flex items-center gap-3 text-base">
+                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <User className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Assigned:</span>
+                      <span className="font-semibold ml-2">{getAssigneeName()}</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Actions Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Actions Section - Single Column Layout */}
+          <div className="space-y-8">
             
             {/* Status Management */}
-            <Card className="h-fit bg-card shadow-sm">
-              <CardHeader className="pb-3 bg-card">
-                <CardTitle className="text-base flex items-center gap-2 text-foreground">
-                  <Activity className="w-4 h-4" />
+            <Card className="bg-card shadow-sm">
+              <CardHeader className="pb-4 bg-card">
+                <CardTitle className="text-xl flex items-center gap-3 text-foreground">
+                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <Activity className="w-5 h-5 text-primary" />
+                  </div>
                   Change Status
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0 bg-card">
                 {!showStatusConfirm ? (
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-1 gap-2">
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
                       {[
                         { status: 'todo', label: 'To Do', icon: CircleDot, color: 'bg-muted text-muted-foreground hover:bg-muted/80' },
                         { status: 'in-progress', label: 'In Progress', icon: CirclePlay, color: 'bg-primary/10 text-primary hover:bg-primary/20' },
@@ -247,31 +259,31 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
                         <Button
                           key={status}
                           variant="outline"
-                          className={cn("justify-start gap-2 h-10 text-sm w-full overflow-hidden", color)}
+                          className={cn("justify-start gap-3 h-14 text-base w-full", color)}
                           onClick={() => handleStatusChangeRequest(status)}
                           disabled={task.status === status}
                         >
-                          <Icon className="w-4 h-4 flex-shrink-0" />
-                          <span className="truncate flex-1 text-left">{label}</span>
-                          {task.status === status && <span className="text-xs opacity-60 flex-shrink-0">(Current)</span>}
+                          <Icon className="w-5 h-5 flex-shrink-0" />
+                          <span className="flex-1 text-left">{label}</span>
+                          {task.status === status && <span className="text-sm opacity-60 flex-shrink-0">(Current)</span>}
                         </Button>
                       ))}
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    <div className="p-3 bg-accent/50 rounded-lg border border-accent">
-                      <p className="text-sm font-medium">Confirm Status Change</p>
-                      <p className="text-xs text-muted-foreground mt-1">
+                  <div className="space-y-6">
+                    <div className="p-4 bg-accent/50 rounded-lg border border-accent">
+                      <p className="text-base font-medium">Confirm Status Change</p>
+                      <p className="text-sm text-muted-foreground mt-2">
                         Change status from <span className="font-medium">{task.status.replace('-', ' ')}</span> to{' '}
                         <span className="font-medium">{pendingStatusChange?.replace('-', ' ')}</span>?
                       </p>
                     </div>
-                    <div className="flex gap-2">
-                      <Button size="sm" onClick={confirmStatusChange} className="flex-1">
+                    <div className="flex gap-3">
+                      <Button size="lg" onClick={confirmStatusChange} className="flex-1">
                         Confirm
                       </Button>
-                      <Button size="sm" variant="outline" onClick={cancelStatusChange} className="flex-1">
+                      <Button size="lg" variant="outline" onClick={cancelStatusChange} className="flex-1">
                         Cancel
                       </Button>
                     </div>
@@ -281,56 +293,58 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
             </Card>
 
             {/* Assignment Management */}
-            <Card className="h-fit bg-card shadow-sm">
-              <CardHeader className="pb-3 bg-card">
-                <CardTitle className="text-base flex items-center gap-2 text-foreground">
-                  <User className="w-4 h-4" />
+            <Card className="bg-card shadow-sm">
+              <CardHeader className="pb-4 bg-card">
+                <CardTitle className="text-xl flex items-center gap-3 text-foreground">
+                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <User className="w-5 h-5 text-primary" />
+                  </div>
                   Reassign Task
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0 bg-card">
                 {!showAssigneeConfirm ? (
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-1 gap-2">
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 gap-3">
                       {teamMembers.map((member) => (
                         <Button
                           key={member.id}
                           variant="outline"
-                          className="justify-start gap-2 h-12 text-sm w-full overflow-hidden p-3"
+                          className="justify-start gap-4 h-16 text-base w-full p-4"
                           onClick={() => handleAssigneeChangeRequest(member.name)}
                           disabled={getAssigneeName() === member.name}
                         >
-                          <div className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs flex items-center justify-center flex-shrink-0">
+                          <div className="w-10 h-10 rounded-full bg-primary/10 text-primary text-sm flex items-center justify-center flex-shrink-0 font-semibold">
                             {member.name.charAt(0)}
                           </div>
                           <div className="flex-1 text-left min-w-0">
-                            <div className="font-medium text-sm truncate">{member.name}</div>
-                            <div className="text-xs text-muted-foreground truncate">{member.role}</div>
+                            <div className="font-semibold text-base truncate">{member.name}</div>
+                            <div className="text-sm text-muted-foreground truncate">{member.role}</div>
                           </div>
                           {!member.active && (
-                            <Badge variant="outline" className="text-xs flex-shrink-0">Offline</Badge>
+                            <Badge variant="outline" className="text-sm flex-shrink-0">Offline</Badge>
                           )}
                           {getAssigneeName() === member.name && (
-                            <span className="text-xs text-muted-foreground flex-shrink-0">(Current)</span>
+                            <span className="text-sm text-muted-foreground flex-shrink-0 font-medium">(Current)</span>
                           )}
                         </Button>
                       ))}
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    <div className="p-3 bg-accent/50 rounded-lg border border-accent">
-                      <p className="text-sm font-medium">Confirm Assignment</p>
-                      <p className="text-xs text-muted-foreground mt-1">
+                  <div className="space-y-6">
+                    <div className="p-4 bg-accent/50 rounded-lg border border-accent">
+                      <p className="text-base font-medium">Confirm Assignment</p>
+                      <p className="text-sm text-muted-foreground mt-2">
                         Assign task from <span className="font-medium">{getAssigneeName()}</span> to{' '}
                         <span className="font-medium">{pendingAssigneeChange}</span>?
                       </p>
                     </div>
-                    <div className="flex gap-2">
-                      <Button size="sm" onClick={confirmAssigneeChange} className="flex-1">
+                    <div className="flex gap-3">
+                      <Button size="lg" onClick={confirmAssigneeChange} className="flex-1">
                         Confirm
                       </Button>
-                      <Button size="sm" variant="outline" onClick={cancelAssigneeChange} className="flex-1">
+                      <Button size="lg" variant="outline" onClick={cancelAssigneeChange} className="flex-1">
                         Cancel
                       </Button>
                     </div>
@@ -340,56 +354,58 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
             </Card>
 
             {/* Sprint Assignment */}
-            <Card className="h-fit bg-card shadow-sm">
-              <CardHeader className="pb-3 bg-card">
-                <CardTitle className="text-base flex items-center gap-2 text-foreground">
-                  <Target className="w-4 h-4" />
+            <Card className="bg-card shadow-sm">
+              <CardHeader className="pb-4 bg-card">
+                <CardTitle className="text-xl flex items-center gap-3 text-foreground">
+                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <Target className="w-5 h-5 text-primary" />
+                  </div>
                   Assign to Sprint
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0 bg-card">
                 {!showSprintConfirm ? (
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-1 gap-2">
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 gap-3">
                       {sprints.map((sprint) => (
                         <Button
                           key={sprint.id}
                           variant="outline"
-                          className="justify-start gap-2 h-12 text-sm w-full overflow-hidden p-3"
+                          className="justify-start gap-4 h-16 text-base w-full p-4"
                           onClick={() => handleSprintChangeRequest(sprint.name)}
                           disabled={task.sprint === sprint.name}
                         >
-                          <Target className="w-4 h-4 flex-shrink-0" />
+                          <Target className="w-6 h-6 flex-shrink-0 text-primary" />
                           <div className="flex-1 text-left min-w-0">
-                            <div className="font-medium text-sm truncate">{sprint.name}</div>
+                            <div className="font-semibold text-base truncate">{sprint.name}</div>
                           </div>
                           <Badge 
                             variant={sprint.status === 'active' ? 'default' : 'secondary'} 
-                            className="text-xs flex-shrink-0"
+                            className="text-sm flex-shrink-0 px-3 py-1"
                           >
                             {sprint.status}
                           </Badge>
                           {task.sprint === sprint.name && (
-                            <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">(Current)</span>
+                            <span className="text-sm text-muted-foreground flex-shrink-0 ml-3 font-medium">(Current)</span>
                           )}
                         </Button>
                       ))}
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    <div className="p-3 bg-accent/50 rounded-lg border border-accent">
-                      <p className="text-sm font-medium">Confirm Sprint Assignment</p>
-                      <p className="text-xs text-muted-foreground mt-1">
+                  <div className="space-y-6">
+                    <div className="p-4 bg-accent/50 rounded-lg border border-accent">
+                      <p className="text-base font-medium">Confirm Sprint Assignment</p>
+                      <p className="text-sm text-muted-foreground mt-2">
                         Move task from <span className="font-medium">{task.sprint || 'Unassigned'}</span> to{' '}
                         <span className="font-medium">{pendingSprintChange}</span>?
                       </p>
                     </div>
-                    <div className="flex gap-2">
-                      <Button size="sm" onClick={confirmSprintChange} className="flex-1">
+                    <div className="flex gap-3">
+                      <Button size="lg" onClick={confirmSprintChange} className="flex-1">
                         Confirm
                       </Button>
-                      <Button size="sm" variant="outline" onClick={cancelSprintChange} className="flex-1">
+                      <Button size="lg" variant="outline" onClick={cancelSprintChange} className="flex-1">
                         Cancel
                       </Button>
                     </div>
@@ -399,18 +415,20 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
             </Card>
 
             {/* Due Date */}
-            <Card className="h-fit bg-card shadow-sm">
-              <CardHeader className="pb-3 bg-card">
-                <CardTitle className="text-base flex items-center gap-2 text-foreground">
-                  <Calendar className="w-4 h-4" />
+            <Card className="bg-card shadow-sm">
+              <CardHeader className="pb-4 bg-card">
+                <CardTitle className="text-xl flex items-center gap-3 text-foreground">
+                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <Calendar className="w-5 h-5 text-primary" />
+                  </div>
                   Update Due Date
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0 bg-card">
-                <div className="space-y-3">
-                  <p className="text-sm text-muted-foreground">Due date management coming soon</p>
-                  <Button variant="outline" className="w-full h-10 overflow-hidden" disabled>
-                    <Calendar className="w-4 h-4 mr-2 flex-shrink-0" />
+                <div className="space-y-4">
+                  <p className="text-base text-muted-foreground">Due date management coming soon</p>
+                  <Button variant="outline" className="w-full h-14 text-base" disabled>
+                    <Calendar className="w-5 h-5 mr-3 flex-shrink-0" />
                     <span className="truncate">Set Due Date</span>
                   </Button>
                 </div>
@@ -420,31 +438,33 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
 
           {/* Comments Section */}
           <Card className="bg-card shadow-sm">
-            <CardHeader className="pb-3 bg-card">
-              <CardTitle className="text-base flex items-center gap-2 text-foreground">
-                <MessageSquare className="w-4 h-4" />
+            <CardHeader className="pb-4 bg-card">
+              <CardTitle className="text-xl flex items-center gap-3 text-foreground">
+                <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <MessageSquare className="w-5 h-5 text-primary" />
+                </div>
                 Add Comment
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-0 bg-card">
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <Textarea
                   placeholder="Add a comment about this task change..."
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  className="min-h-[80px] resize-none w-full"
+                  className="min-h-[120px] resize-none w-full text-base"
                 />
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground truncate">
+                  <span className="text-sm text-muted-foreground">
                     {comment.length}/500 characters
                   </span>
                   <Button 
-                    size="sm" 
+                    size="lg" 
                     onClick={handleSendComment}
                     disabled={!comment.trim()}
-                    className="gap-2 flex-shrink-0"
+                    className="gap-3 flex-shrink-0"
                   >
-                    <Send className="w-3 h-3" />
+                    <Send className="w-4 h-4" />
                     Send Comment
                   </Button>
                 </div>
