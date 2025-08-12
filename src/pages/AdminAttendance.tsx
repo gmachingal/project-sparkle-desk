@@ -44,7 +44,8 @@ import {
   Coffee,
   Eye,
   Star,
-  Zap
+  Zap,
+  MessageSquare
 } from 'lucide-react';
 import StatsCard from '@/components/StatsCard';
 import { SimpleBarChart, SimpleAreaChart, SimplePieChart, SimpleComposedChart, generateMockData } from '@/components/SimpleCharts';
@@ -132,7 +133,8 @@ const AdminAttendance = () => {
       checkIn: '10:30 AM',
       checkOut: '7:15 PM',
       location: 'office',
-      reason: 'Traffic jam due to heavy rain'
+      reason: 'Traffic jam due to heavy rain',
+      type: 'Late Entry'
     }
   ];
 
@@ -526,69 +528,250 @@ const AdminAttendance = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="requests" className="space-y-4">
+          <TabsContent value="requests" className="space-y-6">
+            {/* Enhanced Filters and Actions Bar */}
             <Card className="border-0 shadow-sm bg-gradient-to-br from-card to-card/80">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Bell className="h-5 w-5" />
-                  Pending Attendance Requests
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {pendingRequests.map((request) => (
-                    <Card key={request.id} className="border border-border/50 hover:shadow-md transition-shadow">
-                      <CardContent className="p-4">
-                        <div className="flex items-start justify-between mb-3">
-                          <div>
-                            <h4 className="font-medium">{request.employeeName}</h4>
-                            <p className="text-sm text-muted-foreground">{request.department}</p>
-                          </div>
-                          <Badge variant="outline" className="bg-yellow-100 text-yellow-700 border-yellow-200">
-                            Pending
-                          </Badge>
-                        </div>
-                        
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
-                          <div>
-                            <div className="text-xs text-muted-foreground">Date</div>
-                            <div className="text-sm font-medium">{format(new Date(request.requestDate), 'MMM dd, yyyy')}</div>
-                          </div>
-                          <div>
-                            <div className="text-xs text-muted-foreground">Check In</div>
-                            <div className="text-sm font-medium">{request.checkIn}</div>
-                          </div>
-                          <div>
-                            <div className="text-xs text-muted-foreground">Check Out</div>
-                            <div className="text-sm font-medium">{request.checkOut}</div>
-                          </div>
-                          <div>
-                            <div className="text-xs text-muted-foreground">Location</div>
-                            <div className="text-sm font-medium capitalize">{request.location}</div>
-                          </div>
-                        </div>
-                        
-                        <div className="mb-4">
-                          <div className="text-xs text-muted-foreground mb-1">Reason</div>
-                          <p className="text-sm">{request.reason}</p>
-                        </div>
-                        
-                        <div className="flex gap-2">
-                          <Button size="sm" className="flex-1">
-                            <CheckCircle className="w-4 h-4 mr-2" />
-                            Approve
-                          </Button>
-                          <Button variant="outline" size="sm" className="flex-1">
-                            <XCircle className="w-4 h-4 mr-2" />
-                            Reject
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+              <CardContent className="p-4">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <Filter className="w-4 h-4 text-muted-foreground" />
+                      <Select defaultValue="all">
+                        <SelectTrigger className="w-[140px]">
+                          <SelectValue placeholder="Filter by" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Requests</SelectItem>
+                          <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="leave">Leave Requests</SelectItem>
+                          <SelectItem value="late">Late Entry</SelectItem>
+                          <SelectItem value="adjustment">Time Adjustment</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-muted-foreground" />
+                      <Select defaultValue="today">
+                        <SelectTrigger className="w-[130px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="today">Today</SelectItem>
+                          <SelectItem value="week">This Week</SelectItem>
+                          <SelectItem value="month">This Month</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
+                      {pendingRequests.length} Pending
+                    </Badge>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <Download className="w-4 h-4" />
+                      Export
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
+
+            {/* Quick Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-yellow-50 to-yellow-100/50 dark:from-yellow-950/20 dark:to-yellow-900/10">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-yellow-100 dark:bg-yellow-900/50 rounded-lg">
+                      <Clock className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Pending</p>
+                      <p className="text-xl font-bold text-yellow-600 dark:text-yellow-400">{pendingRequests.length}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-950/20 dark:to-green-900/10">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-green-100 dark:bg-green-900/50 rounded-lg">
+                      <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Approved Today</p>
+                      <p className="text-xl font-bold text-green-600 dark:text-green-400">12</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-red-50 to-red-100/50 dark:from-red-950/20 dark:to-red-900/10">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-red-100 dark:bg-red-900/50 rounded-lg">
+                      <XCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Rejected Today</p>
+                      <p className="text-xl font-bold text-red-600 dark:text-red-400">3</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/20 dark:to-blue-900/10">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
+                      <Target className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Avg Response</p>
+                      <p className="text-xl font-bold text-blue-600 dark:text-blue-400">2.5h</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Enhanced Request Cards */}
+            <div className="space-y-4">
+              {pendingRequests.map((request, index) => (
+                <Card 
+                  key={request.id} 
+                  className="border border-border/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-card to-card/50 overflow-hidden"
+                >
+                  <CardContent className="p-0">
+                    {/* Priority Strip */}
+                    <div className={`h-1 w-full ${
+                      index === 0 ? 'bg-red-500' : 
+                      index === 1 ? 'bg-yellow-500' : 
+                      'bg-green-500'
+                    }`}></div>
+                    
+                    <div className="p-6">
+                      {/* Header Section */}
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center gap-4">
+                          <Avatar className="w-12 h-12 border-2 border-background shadow-sm">
+                            <AvatarFallback className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground font-semibold">
+                              {request.employeeName.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <h4 className="font-semibold text-lg">{request.employeeName}</h4>
+                            <p className="text-sm text-muted-foreground flex items-center gap-1">
+                              <Building className="w-3 h-3" />
+                              {request.department}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Submitted {format(new Date(request.requestDate), 'MMM dd, yyyy • HH:mm')}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge 
+                            variant="outline" 
+                            className={`
+                              ${index === 0 ? 'bg-red-50 text-red-700 border-red-200 animate-pulse' : 
+                                index === 1 ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 
+                                'bg-blue-50 text-blue-700 border-blue-200'}
+                            `}
+                          >
+                            {index === 0 ? 'Urgent' : index === 1 ? 'Pending' : 'Regular'}
+                          </Badge>
+                          <Badge variant="secondary" className="text-xs">
+                            {request.type || 'Attendance'}
+                          </Badge>
+                        </div>
+                      </div>
+                      
+                      {/* Request Details Grid */}
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 p-4 bg-muted/30 rounded-lg">
+                        <div className="text-center">
+                          <div className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">
+                            <Calendar className="w-3 h-3" />
+                            Date
+                          </div>
+                          <div className="text-sm font-semibold">{format(new Date(request.requestDate), 'MMM dd')}</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            Check In
+                          </div>
+                          <div className="text-sm font-semibold text-green-600">{request.checkIn}</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            Check Out
+                          </div>
+                          <div className="text-sm font-semibold text-blue-600">{request.checkOut}</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">
+                            <MapPin className="w-3 h-3" />
+                            Location
+                          </div>
+                          <div className="text-sm font-semibold capitalize">{request.location}</div>
+                        </div>
+                      </div>
+                      
+                      {/* Reason Section */}
+                      <div className="mb-6 p-4 bg-muted/20 rounded-lg border-l-4 border-primary">
+                        <div className="text-sm text-muted-foreground mb-2 flex items-center gap-1">
+                          <MessageSquare className="w-3 h-3" />
+                          Reason for Request
+                        </div>
+                        <p className="text-sm leading-relaxed">{request.reason}</p>
+                      </div>
+                      
+                      {/* Action Buttons */}
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <Button 
+                          className="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                          size="lg"
+                        >
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                          Approve Request
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="flex-1 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 shadow-lg hover:shadow-xl transition-all duration-300"
+                          size="lg"
+                        >
+                          <XCircle className="w-4 h-4 mr-2" />
+                          Reject Request
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="lg"
+                          className="hover:bg-muted/50"
+                        >
+                          <MessageSquare className="w-4 h-4 mr-2" />
+                          Comment
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Empty State (when no requests) */}
+            {pendingRequests.length === 0 && (
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-card to-card/80">
+                <CardContent className="p-12 text-center">
+                  <div className="w-16 h-16 mx-auto mb-4 p-4 bg-muted/50 rounded-full">
+                    <CheckCircle className="w-8 h-8 text-muted-foreground" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">All Caught Up!</h3>
+                  <p className="text-muted-foreground">No pending attendance requests at the moment.</p>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           <TabsContent value="muster" className="space-y-4">
