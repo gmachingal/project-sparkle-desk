@@ -10,13 +10,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Building2, Users, CreditCard, Settings, Plus, Edit, Trash2, ArrowLeft, Globe, Crown, RefreshCw, Copy, Check, Clock, UserPlus, UserCheck, UserX, Key } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Building2, Users, CreditCard, Settings, Plus, Edit, Trash2, ArrowLeft, Globe, Crown, RefreshCw, Copy, Check, Clock, UserPlus, UserCheck, UserX, Key, DollarSign, Calendar, AlertTriangle, TrendingUp, Shield, Target } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 
 const AdminOrganizations = () => {
   const navigate = useNavigate();
   const [selectedOrganization, setSelectedOrganization] = useState("ORG-001");
+  const [isBillingDialogOpen, setIsBillingDialogOpen] = useState(false);
+  const [selectedOrgForBilling, setSelectedOrgForBilling] = useState<any>(null);
+  
   const [organizations, setOrganizations] = useState([
     {
       id: "ORG-001",
@@ -27,6 +31,16 @@ const AdminOrganizations = () => {
       monthlyFee: 2500,
       status: "Active",
       domain: "techcorp.com",
+      billingCycle: "monthly",
+      nextBillingDate: "2024-02-15",
+      paymentMethod: "**** 4532",
+      billingEmail: "billing@techcorp.com",
+      address: "123 Tech Street, San Francisco, CA 94105",
+      taxId: "TAX-123456789",
+      discount: 10,
+      customPricing: false,
+      contractEndDate: "2024-12-31",
+      autoRenewal: true,
       features: {
         projectManagement: true,
         timeTracking: true,
@@ -45,6 +59,16 @@ const AdminOrganizations = () => {
       monthlyFee: 1250,
       status: "Active",
       domain: "startupxyz.com",
+      billingCycle: "monthly",
+      nextBillingDate: "2024-02-20",
+      paymentMethod: "**** 8765",
+      billingEmail: "admin@startupxyz.com",
+      address: "456 Startup Ave, Austin, TX 78701",
+      taxId: "TAX-987654321",
+      discount: 0,
+      customPricing: false,
+      contractEndDate: "2024-06-30",
+      autoRenewal: true,
       features: {
         projectManagement: true,
         timeTracking: true,
@@ -63,6 +87,16 @@ const AdminOrganizations = () => {
       monthlyFee: 500,
       status: "Suspended",
       domain: "enterprise-corp.com",
+      billingCycle: "monthly",
+      nextBillingDate: "2024-02-10",
+      paymentMethod: "**** 1234",
+      billingEmail: "finance@enterprise-corp.com",
+      address: "789 Enterprise Blvd, New York, NY 10001",
+      taxId: "TAX-456789123",
+      discount: 0,
+      customPricing: true,
+      contractEndDate: "2024-03-31",
+      autoRenewal: false,
       features: {
         projectManagement: true,
         timeTracking: false,
@@ -73,6 +107,20 @@ const AdminOrganizations = () => {
       }
     }
   ]);
+
+  // Billing form state
+  const [billingFormData, setBillingFormData] = useState({
+    plan: "",
+    licenses: 0,
+    billingCycle: "monthly",
+    billingEmail: "",
+    address: "",
+    taxId: "",
+    discount: 0,
+    customPricing: false,
+    autoRenewal: true,
+    paymentMethod: ""
+  });
   
   const [joinCodes, setJoinCodes] = useState([
     { id: "1", orgId: "ORG-001", code: "TECH24", createdBy: "admin@techcorp.com", createdAt: "2024-01-15", expiresAt: "2024-02-15", usageCount: 5, maxUsage: 10, isActive: true },
@@ -165,6 +213,67 @@ const AdminOrganizations = () => {
     toast({
       title: "Plan Updated",
       description: `Organization plan changed to ${newPlan}`,
+    });
+  };
+
+  const openBillingDialog = (org: any) => {
+    setSelectedOrgForBilling(org);
+    setBillingFormData({
+      plan: org.plan,
+      licenses: org.licenses,
+      billingCycle: org.billingCycle || "monthly",
+      billingEmail: org.billingEmail || "",
+      address: org.address || "",
+      taxId: org.taxId || "",
+      discount: org.discount || 0,
+      customPricing: org.customPricing || false,
+      autoRenewal: org.autoRenewal || true,
+      paymentMethod: org.paymentMethod || ""
+    });
+    setIsBillingDialogOpen(true);
+  };
+
+  const updateBillingInfo = () => {
+    if (!selectedOrgForBilling) return;
+
+    const planPricing = {
+      "Basic": 25,
+      "Professional": 50,
+      "Enterprise": 75
+    };
+
+    const basePrice = billingFormData.licenses * (planPricing[billingFormData.plan as keyof typeof planPricing] || 50);
+    const discountAmount = (basePrice * billingFormData.discount) / 100;
+    const finalPrice = billingFormData.billingCycle === "annual" 
+      ? (basePrice - discountAmount) * 10 // 2 months free for annual
+      : basePrice - discountAmount;
+
+    setOrganizations(orgs =>
+      orgs.map(org =>
+        org.id === selectedOrgForBilling.id
+          ? {
+              ...org,
+              plan: billingFormData.plan,
+              licenses: billingFormData.licenses,
+              monthlyFee: finalPrice,
+              billingCycle: billingFormData.billingCycle,
+              billingEmail: billingFormData.billingEmail,
+              address: billingFormData.address,
+              taxId: billingFormData.taxId,
+              discount: billingFormData.discount,
+              customPricing: billingFormData.customPricing,
+              autoRenewal: billingFormData.autoRenewal,
+              paymentMethod: billingFormData.paymentMethod
+            }
+          : org
+      )
+    );
+
+    setIsBillingDialogOpen(false);
+    setSelectedOrgForBilling(null);
+    toast({
+      title: "Billing Updated",
+      description: "Organization billing information has been updated successfully.",
     });
   };
 
@@ -719,7 +828,44 @@ const AdminOrganizations = () => {
                               {org.usedLicenses} of {org.licenses} licenses used
                             </p>
                           </div>
-                          <Button variant="outline">Update Billing</Button>
+                          <Button 
+                            variant="outline" 
+                            onClick={() => openBillingDialog(org)}
+                            className="gap-2"
+                          >
+                            <Settings className="w-4 h-4" />
+                            Manage Billing
+                          </Button>
+                        </div>
+                        
+                        {/* Billing Information Display */}
+                        <div className="mt-4 p-4 border rounded-lg bg-muted/30">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <div>
+                              <Label className="text-xs text-muted-foreground">Billing Cycle</Label>
+                              <p className="font-medium capitalize">{org.billingCycle || 'Monthly'}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs text-muted-foreground">Next Billing</Label>
+                              <p className="font-medium">{org.nextBillingDate || 'N/A'}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs text-muted-foreground">Payment Method</Label>
+                              <p className="font-medium">{org.paymentMethod || 'Not set'}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs text-muted-foreground">Billing Email</Label>
+                              <p className="font-medium">{org.billingEmail || 'Not set'}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs text-muted-foreground">Auto Renewal</Label>
+                              <p className="font-medium">{org.autoRenewal ? 'Enabled' : 'Disabled'}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs text-muted-foreground">Discount</Label>
+                              <p className="font-medium">{org.discount || 0}%</p>
+                            </div>
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
@@ -769,7 +915,7 @@ const AdminOrganizations = () => {
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select organization" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="bg-background z-50">
                                   {organizations.map((org) => (
                                     <SelectItem key={org.id} value={org.id}>
                                       {org.name}
@@ -784,7 +930,7 @@ const AdminOrganizations = () => {
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select role" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="bg-background z-50">
                                   <SelectItem value="admin">Admin</SelectItem>
                                   <SelectItem value="manager">Manager</SelectItem>
                                   <SelectItem value="user">User</SelectItem>
@@ -1179,6 +1325,273 @@ const AdminOrganizations = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Comprehensive Billing Management Dialog */}
+        <Dialog open={isBillingDialogOpen} onOpenChange={setIsBillingDialogOpen}>
+          <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <CreditCard className="w-5 h-5" />
+                Manage Billing & Plan - {selectedOrgForBilling?.name}
+              </DialogTitle>
+              <DialogDescription>
+                Update subscription plan, billing information, and payment settings
+              </DialogDescription>
+            </DialogHeader>
+
+            {selectedOrgForBilling && (
+              <div className="space-y-6">
+                {/* Plan & Pricing Section */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Crown className="w-4 h-4" />
+                      Subscription Plan
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="billing-plan">Plan Type</Label>
+                        <Select value={billingFormData.plan} onValueChange={(value) => setBillingFormData({...billingFormData, plan: value})}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="bg-background z-50">
+                            <SelectItem value="Basic">
+                              <div className="flex flex-col">
+                                <span className="font-medium">Basic Plan</span>
+                                <span className="text-xs text-muted-foreground">$25/user/month</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="Professional">
+                              <div className="flex flex-col">
+                                <span className="font-medium">Professional Plan</span>
+                                <span className="text-xs text-muted-foreground">$50/user/month</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="Enterprise">
+                              <div className="flex flex-col">
+                                <span className="font-medium">Enterprise Plan</span>
+                                <span className="text-xs text-muted-foreground">$75/user/month</span>
+                              </div>
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="billing-cycle">Billing Cycle</Label>
+                        <Select value={billingFormData.billingCycle} onValueChange={(value) => setBillingFormData({...billingFormData, billingCycle: value})}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="bg-background z-50">
+                            <SelectItem value="monthly">Monthly</SelectItem>
+                            <SelectItem value="annual">
+                              <div className="flex flex-col">
+                                <span>Annual</span>
+                                <span className="text-xs text-green-600">Save 2 months</span>
+                              </div>
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="billing-licenses">Number of Licenses</Label>
+                        <Input
+                          id="billing-licenses"
+                          type="number"
+                          value={billingFormData.licenses}
+                          onChange={(e) => setBillingFormData({...billingFormData, licenses: parseInt(e.target.value) || 0})}
+                          min="1"
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="billing-discount">Discount (%)</Label>
+                        <Input
+                          id="billing-discount"
+                          type="number"
+                          value={billingFormData.discount}
+                          onChange={(e) => setBillingFormData({...billingFormData, discount: parseInt(e.target.value) || 0})}
+                          min="0"
+                          max="100"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Pricing Preview */}
+                    <div className="p-4 border rounded-lg bg-muted/30">
+                      <Label className="text-sm font-medium">Pricing Preview</Label>
+                      <div className="mt-2 space-y-1">
+                        {(() => {
+                          const planPricing = { "Basic": 25, "Professional": 50, "Enterprise": 75 };
+                          const basePrice = billingFormData.licenses * (planPricing[billingFormData.plan as keyof typeof planPricing] || 50);
+                          const discountAmount = (basePrice * billingFormData.discount) / 100;
+                          const finalPrice = billingFormData.billingCycle === "annual" 
+                            ? (basePrice - discountAmount) * 10 
+                            : basePrice - discountAmount;
+                          
+                          return (
+                            <>
+                              <div className="flex justify-between text-sm">
+                                <span>Base Price ({billingFormData.licenses} licenses):</span>
+                                <span>${basePrice}/month</span>
+                              </div>
+                              {billingFormData.discount > 0 && (
+                                <div className="flex justify-between text-sm text-green-600">
+                                  <span>Discount ({billingFormData.discount}%):</span>
+                                  <span>-${discountAmount}/month</span>
+                                </div>
+                              )}
+                              {billingFormData.billingCycle === "annual" && (
+                                <div className="flex justify-between text-sm text-green-600">
+                                  <span>Annual Savings (2 months free):</span>
+                                  <span>-${(basePrice - discountAmount) * 2}/year</span>
+                                </div>
+                              )}
+                              <div className="flex justify-between font-semibold border-t pt-1">
+                                <span>Total:</span>
+                                <span>${finalPrice}{billingFormData.billingCycle === "annual" ? "/year" : "/month"}</span>
+                              </div>
+                            </>
+                          );
+                        })()}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Billing Information Section */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Building2 className="w-4 h-4" />
+                      Billing Information
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="billing-email">Billing Email</Label>
+                      <Input
+                        id="billing-email"
+                        type="email"
+                        value={billingFormData.billingEmail}
+                        onChange={(e) => setBillingFormData({...billingFormData, billingEmail: e.target.value})}
+                        placeholder="billing@company.com"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="billing-address">Billing Address</Label>
+                      <Textarea
+                        id="billing-address"
+                        value={billingFormData.address}
+                        onChange={(e) => setBillingFormData({...billingFormData, address: e.target.value})}
+                        placeholder="123 Business St, City, State, ZIP"
+                        rows={3}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="billing-tax-id">Tax ID / VAT Number</Label>
+                        <Input
+                          id="billing-tax-id"
+                          value={billingFormData.taxId}
+                          onChange={(e) => setBillingFormData({...billingFormData, taxId: e.target.value})}
+                          placeholder="TAX-123456789"
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="billing-payment">Payment Method</Label>
+                        <Select value={billingFormData.paymentMethod} onValueChange={(value) => setBillingFormData({...billingFormData, paymentMethod: value})}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select payment method" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-background z-50">
+                            <SelectItem value="**** 4532">**** 4532 (Visa)</SelectItem>
+                            <SelectItem value="**** 8765">**** 8765 (MasterCard)</SelectItem>
+                            <SelectItem value="**** 1234">**** 1234 (American Express)</SelectItem>
+                            <SelectItem value="bank-transfer">Bank Transfer</SelectItem>
+                            <SelectItem value="new-card">Add New Card</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Settings Section */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Settings className="w-4 h-4" />
+                      Billing Settings
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Auto Renewal</Label>
+                        <p className="text-sm text-muted-foreground">Automatically renew subscription</p>
+                      </div>
+                      <Switch
+                        checked={billingFormData.autoRenewal}
+                        onCheckedChange={(checked) => setBillingFormData({...billingFormData, autoRenewal: checked})}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Custom Pricing</Label>
+                        <p className="text-sm text-muted-foreground">Enable custom pricing for this organization</p>
+                      </div>
+                      <Switch
+                        checked={billingFormData.customPricing}
+                        onCheckedChange={(checked) => setBillingFormData({...billingFormData, customPricing: checked})}
+                      />
+                    </div>
+
+                    {/* Contract Information */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-lg bg-muted/20">
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Contract End Date</Label>
+                        <p className="font-medium">{selectedOrgForBilling.contractEndDate || 'N/A'}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Next Billing Date</Label>
+                        <p className="font-medium">{selectedOrgForBilling.nextBillingDate || 'N/A'}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Action Buttons */}
+                <div className="flex justify-end gap-3 pt-4 border-t">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setIsBillingDialogOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    onClick={updateBillingInfo}
+                    className="gap-2"
+                  >
+                    <Check className="w-4 h-4" />
+                    Update Billing
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
