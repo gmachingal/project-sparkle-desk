@@ -11,7 +11,10 @@ import {
   Flag,
   Calendar,
   Users,
-  TrendingUp
+  TrendingUp,
+  FileText,
+  Play,
+  Pause
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -27,6 +30,15 @@ interface Milestone {
   progress: number;
   estimatedDuration: string;
   assignee?: string;
+  tasks?: Array<{
+    id: string;
+    name: string;
+    status: 'todo' | 'in-progress' | 'completed' | 'blocked';
+    assignee: string;
+    priority: 'low' | 'medium' | 'high' | 'critical';
+    estimatedHours: number;
+    loggedHours: number;
+  }>;
 }
 
 interface MilestoneTimelineProps {
@@ -60,7 +72,12 @@ const defaultMilestones: Milestone[] = [
     estimatedDuration: '1 week',
     startDate: new Date('2024-01-01'),
     endDate: new Date('2024-01-07'),
-    assignee: 'John Doe'
+    assignee: 'John Doe',
+    tasks: [
+      { id: '1', name: 'Team Onboarding Session', status: 'completed', assignee: 'John Doe', priority: 'high', estimatedHours: 8, loggedHours: 8 },
+      { id: '2', name: 'Requirements Documentation', status: 'completed', assignee: 'Sarah Smith', priority: 'high', estimatedHours: 12, loggedHours: 11 },
+      { id: '3', name: 'Project Setup & Tools', status: 'completed', assignee: 'Mike Johnson', priority: 'medium', estimatedHours: 6, loggedHours: 7 }
+    ]
   },
   {
     id: '2',
@@ -72,7 +89,13 @@ const defaultMilestones: Milestone[] = [
     estimatedDuration: '3 weeks',
     startDate: new Date('2024-01-08'),
     endDate: new Date('2024-01-28'),
-    assignee: 'Jane Smith'
+    assignee: 'Jane Smith',
+    tasks: [
+      { id: '4', name: 'User Research & Analysis', status: 'completed', assignee: 'Jane Smith', priority: 'high', estimatedHours: 16, loggedHours: 18 },
+      { id: '5', name: 'Wireframe Creation', status: 'completed', assignee: 'Emily Davis', priority: 'high', estimatedHours: 20, loggedHours: 19 },
+      { id: '6', name: 'Design System Setup', status: 'completed', assignee: 'Jane Smith', priority: 'medium', estimatedHours: 14, loggedHours: 15 },
+      { id: '7', name: 'Prototype Development', status: 'completed', assignee: 'Alex Wilson', priority: 'medium', estimatedHours: 12, loggedHours: 13 }
+    ]
   },
   {
     id: '3',
@@ -84,7 +107,14 @@ const defaultMilestones: Milestone[] = [
     estimatedDuration: '4 weeks',
     startDate: new Date('2024-01-29'),
     endDate: new Date('2024-02-25'),
-    assignee: 'Mike Johnson'
+    assignee: 'Mike Johnson',
+    tasks: [
+      { id: '8', name: 'Component Library Setup', status: 'completed', assignee: 'Mike Johnson', priority: 'high', estimatedHours: 16, loggedHours: 14 },
+      { id: '9', name: 'Homepage Implementation', status: 'in-progress', assignee: 'Sarah Chen', priority: 'high', estimatedHours: 24, loggedHours: 18 },
+      { id: '10', name: 'Responsive Layout', status: 'in-progress', assignee: 'Mike Johnson', priority: 'medium', estimatedHours: 18, loggedHours: 12 },
+      { id: '11', name: 'User Dashboard', status: 'todo', assignee: 'David Liu', priority: 'medium', estimatedHours: 20, loggedHours: 0 },
+      { id: '12', name: 'Performance Optimization', status: 'todo', assignee: 'Sarah Chen', priority: 'low', estimatedHours: 10, loggedHours: 0 }
+    ]
   },
   {
     id: '4',
@@ -96,7 +126,13 @@ const defaultMilestones: Milestone[] = [
     estimatedDuration: '4 weeks',
     startDate: new Date('2024-02-05'),
     endDate: new Date('2024-03-03'),
-    assignee: 'Sarah Davis'
+    assignee: 'Sarah Davis',
+    tasks: [
+      { id: '13', name: 'Database Schema Design', status: 'completed', assignee: 'Sarah Davis', priority: 'critical', estimatedHours: 12, loggedHours: 11 },
+      { id: '14', name: 'API Endpoints Development', status: 'in-progress', assignee: 'Tom Wilson', priority: 'high', estimatedHours: 28, loggedHours: 20 },
+      { id: '15', name: 'Authentication System', status: 'in-progress', assignee: 'Sarah Davis', priority: 'high', estimatedHours: 16, loggedHours: 8 },
+      { id: '16', name: 'Data Migration Scripts', status: 'todo', assignee: 'Tom Wilson', priority: 'medium', estimatedHours: 14, loggedHours: 0 }
+    ]
   },
   {
     id: '5',
@@ -108,7 +144,13 @@ const defaultMilestones: Milestone[] = [
     estimatedDuration: '2 weeks',
     startDate: new Date('2024-03-04'),
     endDate: new Date('2024-03-17'),
-    assignee: 'Alex Wilson'
+    assignee: 'Alex Wilson',
+    tasks: [
+      { id: '17', name: 'Test Case Development', status: 'todo', assignee: 'Alex Wilson', priority: 'high', estimatedHours: 20, loggedHours: 0 },
+      { id: '18', name: 'Automated Testing Setup', status: 'todo', assignee: 'QA Team', priority: 'medium', estimatedHours: 16, loggedHours: 0 },
+      { id: '19', name: 'Integration Testing', status: 'todo', assignee: 'Alex Wilson', priority: 'high', estimatedHours: 18, loggedHours: 0 },
+      { id: '20', name: 'Performance Testing', status: 'todo', assignee: 'QA Team', priority: 'medium', estimatedHours: 12, loggedHours: 0 }
+    ]
   },
   {
     id: '6',
@@ -120,7 +162,12 @@ const defaultMilestones: Milestone[] = [
     estimatedDuration: '1 week',
     startDate: new Date('2024-03-18'),
     endDate: new Date('2024-03-24'),
-    assignee: 'Team Lead'
+    assignee: 'Team Lead',
+    tasks: [
+      { id: '21', name: 'Production Deployment', status: 'todo', assignee: 'DevOps Team', priority: 'critical', estimatedHours: 8, loggedHours: 0 },
+      { id: '22', name: 'User Acceptance Testing', status: 'todo', assignee: 'Product Team', priority: 'high', estimatedHours: 16, loggedHours: 0 },
+      { id: '23', name: 'Documentation Finalization', status: 'todo', assignee: 'Team Lead', priority: 'medium', estimatedHours: 10, loggedHours: 0 }
+    ]
   }
 ];
 
@@ -137,6 +184,32 @@ export const MilestoneTimeline: React.FC<MilestoneTimelineProps> = ({
   const inProgressMilestones = milestones.filter(m => m.status === 'in-progress').length;
   const upcomingMilestones = milestones.filter(m => m.status === 'planned').length;
   const delayedMilestones = milestones.filter(m => m.status === 'delayed').length;
+
+  const getTaskStatusIcon = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return <CheckCircle className="w-3 h-3 text-green-500" />;
+      case 'in-progress':
+        return <Play className="w-3 h-3 text-blue-500" />;
+      case 'blocked':
+        return <Pause className="w-3 h-3 text-red-500" />;
+      default:
+        return <Circle className="w-3 h-3 text-gray-400" />;
+    }
+  };
+
+  const getTaskPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'critical':
+        return 'text-red-600 bg-red-50 border-red-200';
+      case 'high':
+        return 'text-orange-600 bg-orange-50 border-orange-200';
+      case 'medium':
+        return 'text-blue-600 bg-blue-50 border-blue-200';
+      default:
+        return 'text-gray-600 bg-gray-50 border-gray-200';
+    }
+  };
 
   return (
     <Card className={cn("border-0 shadow-sm bg-gradient-to-br from-card to-card/80", className)}>
@@ -269,6 +342,94 @@ export const MilestoneTimeline: React.FC<MilestoneTimelineProps> = ({
                             value={milestone.progress} 
                             className="h-3 bg-background/50"
                           />
+                        </div>
+                      )}
+                      
+                      {/* Tasks Section */}
+                      {milestone.tasks && milestone.tasks.length > 0 && (
+                        <div className="mt-4 pt-4 border-t border-border/30">
+                          <div className="flex items-center justify-between mb-3">
+                            <h5 className="font-medium text-sm flex items-center gap-2">
+                              <FileText className="w-4 h-4" />
+                              Milestone Tasks ({milestone.tasks.length})
+                            </h5>
+                            <div className="text-xs text-muted-foreground">
+                              {milestone.tasks.filter(t => t.status === 'completed').length} / {milestone.tasks.length} completed
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            {milestone.tasks.map((task) => (
+                              <div key={task.id} className="flex items-center justify-between p-3 bg-background/50 rounded-lg border border-border/30">
+                                <div className="flex items-center gap-3 flex-1 min-w-0">
+                                  <div className="flex-shrink-0">
+                                    {getTaskStatusIcon(task.status)}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-sm font-medium truncate">{task.name}</span>
+                                      <Badge 
+                                        variant="outline" 
+                                        className={`text-xs px-1.5 py-0.5 ${getTaskPriorityColor(task.priority)}`}
+                                      >
+                                        {task.priority}
+                                      </Badge>
+                                    </div>
+                                    <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
+                                      <span className="flex items-center gap-1">
+                                        <Users className="w-3 h-3" />
+                                        {task.assignee}
+                                      </span>
+                                      <span className="flex items-center gap-1">
+                                        <Clock className="w-3 h-3" />
+                                        {task.loggedHours}h / {task.estimatedHours}h
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="flex-shrink-0 ml-2">
+                                  <div className="w-8 h-1.5 bg-muted rounded-full overflow-hidden">
+                                    <div 
+                                      className={`h-full rounded-full transition-all duration-300 ${
+                                        task.status === 'completed' ? 'bg-green-500' :
+                                        task.status === 'in-progress' ? 'bg-blue-500' :
+                                        task.status === 'blocked' ? 'bg-red-500' : 'bg-gray-300'
+                                      }`}
+                                      style={{ 
+                                        width: task.estimatedHours > 0 
+                                          ? `${Math.min((task.loggedHours / task.estimatedHours) * 100, 100)}%`
+                                          : '0%'
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          
+                          {/* Task Summary */}
+                          <div className="mt-3 p-2 bg-muted/20 rounded border border-border/20">
+                            <div className="grid grid-cols-3 gap-4 text-xs">
+                              <div className="text-center">
+                                <div className="font-medium text-green-600">
+                                  {milestone.tasks.filter(t => t.status === 'completed').length}
+                                </div>
+                                <div className="text-muted-foreground">Completed</div>
+                              </div>
+                              <div className="text-center">
+                                <div className="font-medium text-blue-600">
+                                  {milestone.tasks.filter(t => t.status === 'in-progress').length}
+                                </div>
+                                <div className="text-muted-foreground">In Progress</div>
+                              </div>
+                              <div className="text-center">
+                                <div className="font-medium text-orange-600">
+                                  {milestone.tasks.reduce((sum, t) => sum + t.loggedHours, 0)}h
+                                </div>
+                                <div className="text-muted-foreground">Total Hours</div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       )}
                     </CardContent>

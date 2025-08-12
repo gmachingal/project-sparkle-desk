@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -460,55 +461,187 @@ const ProjectStatusReport = () => {
           </TabsContent>
 
           <TabsContent value="team" className="space-y-6">
-            
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  Team Performance Overview
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <SimpleBarChart 
-                  data={teamPerformanceData}
-                  dataKeys={[
-                    { key: 'tasksCompleted', color: '#10b981', name: 'Tasks Completed' },
-                    { key: 'efficiency', color: '#3b82f6', name: 'Efficiency %' }
-                  ]}
-                />
-              </CardContent>
-            </Card>
+            {/* Team Overview Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-blue-50 to-blue-100/50">
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-blue-600">8</div>
+                  <div className="text-sm text-muted-foreground">Total Members</div>
+                </CardContent>
+              </Card>
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-green-50 to-green-100/50">
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-green-600">156h</div>
+                  <div className="text-sm text-muted-foreground">Total Logged Hours</div>
+                </CardContent>
+              </Card>
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-purple-50 to-purple-100/50">
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-purple-600">42</div>
+                  <div className="text-sm text-muted-foreground">Active Tasks</div>
+                </CardContent>
+              </Card>
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-orange-50 to-orange-100/50">
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-orange-600">89%</div>
+                  <div className="text-sm text-muted-foreground">Avg Efficiency</div>
+                </CardContent>
+              </Card>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {teamPerformanceData.map((member, index) => (
-                <Card key={index}>
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                        <span className="text-sm font-semibold text-primary">
-                          {member.member.split(' ').map(n => n[0]).join('')}
-                        </span>
+            {/* Enhanced Team Member Cards */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {[
+                {
+                  id: '1',
+                  name: 'Sarah Johnson',
+                  role: 'Frontend Developer',
+                  avatar: '',
+                  totalHours: 32,
+                  weeklyHours: 12,
+                  efficiency: 92,
+                  tasksAssigned: 6,
+                  tasksCompleted: 4,
+                  tasksInProgress: 2,
+                  currentTasks: [
+                    { id: '1', name: 'Homepage UI Components', status: 'in-progress', hours: 8.5, priority: 'high' },
+                    { id: '2', name: 'Responsive Design', status: 'in-progress', hours: 3.5, priority: 'medium' },
+                    { id: '3', name: 'Component Testing', status: 'completed', hours: 6, priority: 'low' },
+                    { id: '4', name: 'Design System Setup', status: 'completed', hours: 14, priority: 'high' }
+                  ]
+                },
+                {
+                  id: '2',
+                  name: 'Mike Chen',
+                  role: 'Backend Developer',
+                  avatar: '',
+                  totalHours: 28,
+                  weeklyHours: 10,
+                  efficiency: 87,
+                  tasksAssigned: 5,
+                  tasksCompleted: 3,
+                  tasksInProgress: 2,
+                  currentTasks: [
+                    { id: '5', name: 'API Development', status: 'in-progress', hours: 12, priority: 'high' },
+                    { id: '6', name: 'Database Schema', status: 'in-progress', hours: 8, priority: 'high' },
+                    { id: '7', name: 'Authentication System', status: 'completed', hours: 8, priority: 'critical' }
+                  ]
+                },
+                {
+                  id: '3',
+                  name: 'Emily Davis',
+                  role: 'UX Designer',
+                  avatar: '',
+                  totalHours: 24,
+                  weeklyHours: 8,
+                  efficiency: 95,
+                  tasksAssigned: 4,
+                  tasksCompleted: 3,
+                  tasksInProgress: 1,
+                  currentTasks: [
+                    { id: '8', name: 'User Journey Mapping', status: 'in-progress', hours: 6, priority: 'medium' },
+                    { id: '9', name: 'Wireframe Creation', status: 'completed', hours: 10, priority: 'high' },
+                    { id: '10', name: 'Usability Testing', status: 'completed', hours: 8, priority: 'medium' }
+                  ]
+                },
+                {
+                  id: '4',
+                  name: 'Alex Wilson',
+                  role: 'QA Engineer',
+                  avatar: '',
+                  totalHours: 20,
+                  weeklyHours: 15,
+                  efficiency: 88,
+                  tasksAssigned: 7,
+                  tasksCompleted: 5,
+                  tasksInProgress: 2,
+                  currentTasks: [
+                    { id: '11', name: 'Integration Testing', status: 'in-progress', hours: 4, priority: 'high' },
+                    { id: '12', name: 'Bug Verification', status: 'in-progress', hours: 3, priority: 'medium' },
+                    { id: '13', name: 'Test Case Creation', status: 'completed', hours: 13, priority: 'medium' }
+                  ]
+                }
+              ].map((member) => (
+                <Card key={member.id} className="border-0 shadow-sm bg-gradient-to-br from-card to-card/50">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center text-primary-foreground font-semibold">
+                        {member.name.split(' ').map(n => n[0]).join('')}
                       </div>
-                      <div>
-                        <h4 className="font-medium">{member.member}</h4>
-                        <p className="text-sm text-muted-foreground">Team Member</p>
+                      <div className="flex-1">
+                        <CardTitle className="text-lg">{member.name}</CardTitle>
+                        <p className="text-sm text-muted-foreground">{member.role}</p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-lg font-bold text-primary">{member.totalHours}h</div>
+                        <div className="text-xs text-muted-foreground">Total Logged</div>
                       </div>
                     </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {/* Stats Overview */}
+                    <div className="grid grid-cols-4 gap-4 p-3 bg-muted/30 rounded-lg">
+                      <div className="text-center">
+                        <div className="text-sm font-bold text-blue-600">{member.weeklyHours}h</div>
+                        <div className="text-xs text-muted-foreground">This Week</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-sm font-bold text-green-600">{member.tasksCompleted}</div>
+                        <div className="text-xs text-muted-foreground">Completed</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-sm font-bold text-orange-600">{member.tasksInProgress}</div>
+                        <div className="text-xs text-muted-foreground">In Progress</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-sm font-bold text-purple-600">{member.efficiency}%</div>
+                        <div className="text-xs text-muted-foreground">Efficiency</div>
+                      </div>
+                    </div>
+
+                    {/* Tasks Breakdown */}
+                    <div>
+                      <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
+                        <Clock className="w-4 h-4" />
+                        Recent Tasks & Hours
+                      </h4>
+                      <div className="space-y-2">
+                        {member.currentTasks.slice(0, 4).map((task) => (
+                          <div key={task.id} className="flex items-center justify-between p-2 bg-background rounded border">
+                            <div className="flex items-center gap-2 flex-1 min-w-0">
+                              <div className={`w-2 h-2 rounded-full ${
+                                task.status === 'completed' ? 'bg-green-500' :
+                                task.status === 'in-progress' ? 'bg-blue-500' : 'bg-gray-500'
+                              }`}></div>
+                              <span className="text-sm truncate">{task.name}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Badge 
+                                variant={task.priority === 'high' || task.priority === 'critical' ? 'destructive' : 
+                                        task.priority === 'medium' ? 'default' : 'secondary'} 
+                                className="text-xs px-1.5 py-0.5"
+                              >
+                                {task.priority}
+                              </Badge>
+                              <span className="text-xs font-medium text-primary min-w-0">
+                                {task.hours}h
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Progress Bar */}
                     <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-sm">Tasks Completed</span>
-                        <span className="text-sm font-semibold">{member.tasksCompleted}</span>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Task Completion Rate</span>
+                        <span className="font-medium">{Math.round((member.tasksCompleted / member.tasksAssigned) * 100)}%</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm">Efficiency</span>
-                        <span className="text-sm font-semibold">{member.efficiency}%</span>
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div 
-                          className="bg-primary h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${member.efficiency}%` }}
-                        />
-                      </div>
+                      <Progress 
+                        value={(member.tasksCompleted / member.tasksAssigned) * 100} 
+                        className="h-2"
+                      />
                     </div>
                   </CardContent>
                 </Card>
