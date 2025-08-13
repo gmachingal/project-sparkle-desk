@@ -63,7 +63,7 @@ const Header = () => {
   const getCurrentOrg = () => userOrganizations.find(org => org.id === currentOrganization);
 
   return (
-    <header className="border-b bg-gradient-to-r from-slate-900/95 via-slate-800/95 to-slate-900/95 backdrop-blur-sm sticky top-0 z-50 border-border/30">
+    <header className="border-b bg-gradient-to-r from-primary/20 via-primary/15 to-primary/20 backdrop-blur-sm sticky top-0 z-50 border-border/50">
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-4">
           <div className="flex items-center cursor-pointer" onClick={() => navigate("/dashboard")}>
