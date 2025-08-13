@@ -80,7 +80,7 @@ const Header = () => {
               variant="ghost" 
               size="sm" 
               onClick={() => navigate("/dashboard")} 
-              className={`gap-2 ${isActivePage("/dashboard") ? "bg-primary text-primary-foreground" : "hover:bg-primary/20 hover:text-primary"}`}
+              className={`gap-2 ${isActivePage("/dashboard") ? "bg-primary text-primary-foreground" : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
               <Home className="w-4 h-4" />
               <span className="hidden xl:inline">Home</span>
@@ -89,7 +89,7 @@ const Header = () => {
               variant="ghost" 
               size="sm" 
               onClick={() => navigate("/my-tasks")} 
-              className={`gap-2 ${isActivePage("/my-tasks") ? "bg-primary text-primary-foreground" : "hover:bg-primary/20 hover:text-primary"}`}
+              className={`gap-2 ${isActivePage("/my-tasks") ? "bg-primary text-primary-foreground" : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
               <FileText className="w-4 h-4" />
               <span className="hidden xl:inline">Tasks</span>
@@ -98,7 +98,7 @@ const Header = () => {
               variant="ghost" 
               size="sm" 
               onClick={() => navigate("/projects")} 
-              className={`gap-2 ${isActivePage("/projects") ? "bg-primary text-primary-foreground" : "hover:bg-primary/20 hover:text-primary"}`}
+              className={`gap-2 ${isActivePage("/projects") ? "bg-primary text-primary-foreground" : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
               <Briefcase className="w-4 h-4" />
               <span className="hidden xl:inline">Projects</span>
@@ -107,7 +107,7 @@ const Header = () => {
               variant="ghost" 
               size="sm" 
               onClick={() => navigate("/teams")} 
-              className={`gap-2 ${isActivePage("/teams") ? "bg-primary text-primary-foreground" : "hover:bg-primary/20 hover:text-primary"}`}
+              className={`gap-2 ${isActivePage("/teams") ? "bg-primary text-primary-foreground" : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
               <Users className="w-4 h-4" />
               <span className="hidden xl:inline">Teams</span>
@@ -116,7 +116,7 @@ const Header = () => {
               variant="ghost" 
               size="sm" 
               onClick={() => navigate("/attendance")} 
-              className={`gap-2 ${isActivePage("/attendance") ? "bg-primary text-primary-foreground" : "hover:bg-primary/20 hover:text-primary"}`}
+              className={`gap-2 ${isActivePage("/attendance") ? "bg-primary text-primary-foreground" : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
               <Clock className="w-4 h-4" />
               <span className="hidden xl:inline">Attendance</span>
@@ -125,7 +125,7 @@ const Header = () => {
               variant="ghost" 
               size="sm" 
               onClick={() => navigate("/leave-management")} 
-              className={`gap-2 ${isActivePage("/leave-management") ? "bg-primary text-primary-foreground" : "hover:bg-primary/20 hover:text-primary"}`}
+              className={`gap-2 ${isActivePage("/leave-management") ? "bg-primary text-primary-foreground" : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
               <Calendar className="w-4 h-4" />
               <span className="hidden xl:inline">Leave</span>
