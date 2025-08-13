@@ -203,26 +203,15 @@ const ProjectCard = ({ project, className }: ProjectCardProps) => {
                 Status Report
               </Button>
             </div>
-            <div className="flex gap-2">
-              <Button
-                variant="default"
-                size="sm"
-                onClick={() => navigate(`/project-calendar/${project.id}?view=sprints`)}
-                className="flex-1"
-              >
-                <Target className="h-3 w-3 mr-1" />
-                Sprint View
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate(`/project-calendar/${project.id}`)}
-                className="flex-1"
-              >
-                <Calendar className="h-3 w-3 mr-1" />
-                Calendar
-              </Button>
-            </div>
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => navigate(`/project-calendar/${project.id}?view=sprints`)}
+              className="w-full"
+            >
+              <Target className="h-3 w-3 mr-1" />
+              Sprint View
+            </Button>
           </div>
         </div>
       </HoverCardContent>
