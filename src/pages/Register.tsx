@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,12 +10,16 @@ import { Badge } from "@/components/ui/badge";
 import { Building2, Users, Mail, Lock, User, Globe, Phone, MapPin, ArrowRight, ArrowLeft, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("create");
   const [orgSearchQuery, setOrgSearchQuery] = useState("");
+  const [organizationSizes, setOrganizationSizes] = useState<Array<{id: string, name: string}>>([]);
+  const [industries, setIndustries] = useState<Array<{id: string, name: string}>>([]);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     // Personal Info
     firstName: "",
@@ -38,24 +42,44 @@ const Register = () => {
     selectedOrg: ""
   });
 
-  const organizationSizes = [
-    { value: "1-10", label: "1-10 employees" },
-    { value: "11-50", label: "11-50 employees" },
-    { value: "51-200", label: "51-200 employees" },
-    { value: "201-1000", label: "201-1000 employees" },
-    { value: "1000+", label: "1000+ employees" }
-  ];
+  // Fetch master data on component mount
+  useEffect(() => {
+    const fetchMasterData = async () => {
+      try {
+        // Fetch organization sizes
+        const { data: sizesData, error: sizesError } = await supabase
+          .from('organization_sizes')
+          .select('id, name')
+          .eq('is_active', true)
+          .order('display_order');
 
-  const industries = [
-    { value: "technology", label: "Technology" },
-    { value: "healthcare", label: "Healthcare" },
-    { value: "finance", label: "Finance" },
-    { value: "education", label: "Education" },
-    { value: "retail", label: "Retail" },
-    { value: "manufacturing", label: "Manufacturing" },
-    { value: "consulting", label: "Consulting" },
-    { value: "other", label: "Other" }
-  ];
+        if (sizesError) throw sizesError;
+
+        // Fetch industries
+        const { data: industriesData, error: industriesError } = await supabase
+          .from('industries')
+          .select('id, name')
+          .eq('is_active', true)
+          .order('display_order');
+
+        if (industriesError) throw industriesError;
+
+        setOrganizationSizes(sizesData || []);
+        setIndustries(industriesData || []);
+      } catch (error) {
+        console.error('Error fetching master data:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load form options. Please refresh the page.",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMasterData();
+  }, [toast]);
 
   // Mock existing organizations for joining
   const existingOrganizations = [
@@ -301,14 +325,18 @@ const Register = () => {
 
                           <div>
                             <Label htmlFor="orgSize">Organization Size</Label>
-                            <Select value={formData.orgSize} onValueChange={(value) => setFormData({ ...formData, orgSize: value })}>
+                            <Select 
+                              value={formData.orgSize} 
+                              onValueChange={(value) => setFormData({ ...formData, orgSize: value })}
+                              disabled={loading}
+                            >
                               <SelectTrigger>
-                                <SelectValue placeholder="Select size" />
+                                <SelectValue placeholder={loading ? "Loading..." : "Select size"} />
                               </SelectTrigger>
                               <SelectContent>
                                 {organizationSizes.map((size) => (
-                                  <SelectItem key={size.value} value={size.value}>
-                                    {size.label}
+                                  <SelectItem key={size.id} value={size.id}>
+                                    {size.name}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
@@ -317,14 +345,18 @@ const Register = () => {
 
                           <div>
                             <Label htmlFor="industry">Industry</Label>
-                            <Select value={formData.industry} onValueChange={(value) => setFormData({ ...formData, industry: value })}>
+                            <Select 
+                              value={formData.industry} 
+                              onValueChange={(value) => setFormData({ ...formData, industry: value })}
+                              disabled={loading}
+                            >
                               <SelectTrigger>
-                                <SelectValue placeholder="Select industry" />
+                                <SelectValue placeholder={loading ? "Loading..." : "Select industry"} />
                               </SelectTrigger>
                               <SelectContent>
                                 {industries.map((industry) => (
-                                  <SelectItem key={industry.value} value={industry.value}>
-                                    {industry.label}
+                                  <SelectItem key={industry.id} value={industry.id}>
+                                    {industry.name}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
