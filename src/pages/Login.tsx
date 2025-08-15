@@ -3,11 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, Lock, LogIn, ArrowLeft } from "lucide-react";
+import { Mail, Lock, LogIn, ArrowLeft, Building2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import reposeLogo from "@/assets/repose-logo-brain-readable.png";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -77,15 +76,15 @@ const Login = () => {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <img 
-                src={reposeLogo} 
-                alt="Repose Logo" 
-                className="h-12 w-auto"
-              />
+              <div className="p-3 bg-primary/10 rounded-full">
+                <Building2 className="w-8 h-8 text-primary" />
+              </div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                Repose
+              </h1>
             </div>
-            <h1 className="text-3xl font-bold">Welcome Back</h1>
             <p className="text-muted-foreground text-lg">
-              Sign in to your Repose account
+              Sign in to your account
             </p>
           </div>
 
