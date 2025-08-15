@@ -99,7 +99,7 @@ const Register = () => {
     org.industry.toLowerCase().includes(orgSearchQuery.toLowerCase())
   );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
@@ -139,17 +139,159 @@ const Register = () => {
       return;
     }
 
-    toast({
-      title: "Registration Successful!",
-      description: activeTab === "create" 
-        ? `Welcome! Your organization "${formData.orgName}" has been created.`
-        : "Welcome! You've been added to the organization.",
-      variant: "default"
-    });
+    setLoading(true);
 
-    setTimeout(() => {
-      navigate("/");
-    }, 2000);
+    try {
+      // Sign up the user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+          }
+        }
+      });
+
+      if (authError) {
+        toast({
+          title: "Registration Failed",
+          description: authError.message,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (!authData.user) {
+        toast({
+          title: "Registration Failed",
+          description: "Failed to create user account.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      let organizationId: string | null = null;
+
+      if (activeTab === "create") {
+        // Create new organization
+        const { data: orgData, error: orgError } = await supabase
+          .from('organizations')
+          .insert({
+            name: formData.orgName,
+            description: formData.orgDescription,
+            domain: formData.orgDomain,
+            address: formData.address,
+            organization_size_id: formData.orgSize || null,
+            industry_id: formData.industry || null,
+            join_code: Math.random().toString(36).substring(2, 8).toUpperCase()
+          })
+          .select()
+          .single();
+
+        if (orgError) {
+          toast({
+            title: "Organization Creation Failed",
+            description: orgError.message,
+            variant: "destructive"
+          });
+          return;
+        }
+
+        organizationId = orgData.id;
+
+        // Assign admin role to the organization creator
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert({
+            user_id: authData.user.id,
+            role: 'admin',
+            organization_id: organizationId
+          });
+
+        if (roleError) {
+          console.error('Error assigning admin role:', roleError);
+        }
+      } else {
+        // Join existing organization
+        if (formData.joinCode) {
+          // Find organization by join code
+          const { data: orgData, error: orgError } = await supabase
+            .from('organizations')
+            .select('id')
+            .eq('join_code', formData.joinCode)
+            .single();
+
+          if (orgError || !orgData) {
+            toast({
+              title: "Invalid Join Code",
+              description: "The join code you entered is not valid.",
+              variant: "destructive"
+            });
+            return;
+          }
+
+          organizationId = orgData.id;
+        } else if (formData.selectedOrg) {
+          organizationId = formData.selectedOrg;
+        }
+
+        if (organizationId) {
+          // Assign member role to joining user
+          const { error: roleError } = await supabase
+            .from('user_roles')
+            .insert({
+              user_id: authData.user.id,
+              role: 'member',
+              organization_id: organizationId
+            });
+
+          if (roleError) {
+            console.error('Error assigning member role:', roleError);
+          }
+        }
+      }
+
+      // Update user profile with organization and phone
+      if (organizationId) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({
+            phone: formData.phone,
+            organization_id: organizationId
+          })
+          .eq('user_id', authData.user.id);
+
+        if (profileError) {
+          console.error('Error updating profile:', profileError);
+        }
+      }
+
+      toast({
+        title: "Registration Successful!",
+        description: activeTab === "create" 
+          ? `Welcome! Your organization "${formData.orgName}" has been created.`
+          : "Welcome! You've been added to the organization.",
+        variant: "default"
+      });
+
+      // Redirect to dashboard
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+
+    } catch (error) {
+      console.error('Registration error:', error);
+      toast({
+        title: "Registration Failed",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
