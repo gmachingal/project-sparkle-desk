@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,12 +10,16 @@ import { Badge } from "@/components/ui/badge";
 import { Building2, Users, Mail, Lock, User, Globe, Phone, MapPin, ArrowRight, ArrowLeft, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("create");
   const [orgSearchQuery, setOrgSearchQuery] = useState("");
+  const [organizationSizes, setOrganizationSizes] = useState<Array<{id: string, name: string}>>([]);
+  const [industries, setIndustries] = useState<Array<{id: string, name: string}>>([]);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     // Personal Info
     firstName: "",
@@ -38,24 +42,44 @@ const Register = () => {
     selectedOrg: ""
   });
 
-  const organizationSizes = [
-    { value: "1-10", label: "1-10 employees" },
-    { value: "11-50", label: "11-50 employees" },
-    { value: "51-200", label: "51-200 employees" },
-    { value: "201-1000", label: "201-1000 employees" },
-    { value: "1000+", label: "1000+ employees" }
-  ];
+  // Fetch master data on component mount
+  useEffect(() => {
+    const fetchMasterData = async () => {
+      try {
+        // Fetch organization sizes
+        const { data: sizesData, error: sizesError } = await supabase
+          .from('organization_sizes')
+          .select('id, name')
+          .eq('is_active', true)
+          .order('display_order');
 
-  const industries = [
-    { value: "technology", label: "Technology" },
-    { value: "healthcare", label: "Healthcare" },
-    { value: "finance", label: "Finance" },
-    { value: "education", label: "Education" },
-    { value: "retail", label: "Retail" },
-    { value: "manufacturing", label: "Manufacturing" },
-    { value: "consulting", label: "Consulting" },
-    { value: "other", label: "Other" }
-  ];
+        if (sizesError) throw sizesError;
+
+        // Fetch industries
+        const { data: industriesData, error: industriesError } = await supabase
+          .from('industries')
+          .select('id, name')
+          .eq('is_active', true)
+          .order('display_order');
+
+        if (industriesError) throw industriesError;
+
+        setOrganizationSizes(sizesData || []);
+        setIndustries(industriesData || []);
+      } catch (error) {
+        console.error('Error fetching master data:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load form options. Please refresh the page.",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMasterData();
+  }, [toast]);
 
   // Mock existing organizations for joining
   const existingOrganizations = [
@@ -75,7 +99,7 @@ const Register = () => {
     org.industry.toLowerCase().includes(orgSearchQuery.toLowerCase())
   );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
@@ -115,17 +139,159 @@ const Register = () => {
       return;
     }
 
-    toast({
-      title: "Registration Successful!",
-      description: activeTab === "create" 
-        ? `Welcome! Your organization "${formData.orgName}" has been created.`
-        : "Welcome! You've been added to the organization.",
-      variant: "default"
-    });
+    setLoading(true);
 
-    setTimeout(() => {
-      navigate("/");
-    }, 2000);
+    try {
+      // Sign up the user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+          }
+        }
+      });
+
+      if (authError) {
+        toast({
+          title: "Registration Failed",
+          description: authError.message,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (!authData.user) {
+        toast({
+          title: "Registration Failed",
+          description: "Failed to create user account.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      let organizationId: string | null = null;
+
+      if (activeTab === "create") {
+        // Create new organization
+        const { data: orgData, error: orgError } = await supabase
+          .from('organizations')
+          .insert({
+            name: formData.orgName,
+            description: formData.orgDescription,
+            domain: formData.orgDomain,
+            address: formData.address,
+            organization_size_id: formData.orgSize || null,
+            industry_id: formData.industry || null,
+            join_code: Math.random().toString(36).substring(2, 8).toUpperCase()
+          })
+          .select()
+          .single();
+
+        if (orgError) {
+          toast({
+            title: "Organization Creation Failed",
+            description: orgError.message,
+            variant: "destructive"
+          });
+          return;
+        }
+
+        organizationId = orgData.id;
+
+        // Assign admin role to the organization creator
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert({
+            user_id: authData.user.id,
+            role: 'admin',
+            organization_id: organizationId
+          });
+
+        if (roleError) {
+          console.error('Error assigning admin role:', roleError);
+        }
+      } else {
+        // Join existing organization
+        if (formData.joinCode) {
+          // Find organization by join code
+          const { data: orgData, error: orgError } = await supabase
+            .from('organizations')
+            .select('id')
+            .eq('join_code', formData.joinCode)
+            .single();
+
+          if (orgError || !orgData) {
+            toast({
+              title: "Invalid Join Code",
+              description: "The join code you entered is not valid.",
+              variant: "destructive"
+            });
+            return;
+          }
+
+          organizationId = orgData.id;
+        } else if (formData.selectedOrg) {
+          organizationId = formData.selectedOrg;
+        }
+
+        if (organizationId) {
+          // Assign member role to joining user
+          const { error: roleError } = await supabase
+            .from('user_roles')
+            .insert({
+              user_id: authData.user.id,
+              role: 'member',
+              organization_id: organizationId
+            });
+
+          if (roleError) {
+            console.error('Error assigning member role:', roleError);
+          }
+        }
+      }
+
+      // Update user profile with organization and phone
+      if (organizationId) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({
+            phone: formData.phone,
+            organization_id: organizationId
+          })
+          .eq('user_id', authData.user.id);
+
+        if (profileError) {
+          console.error('Error updating profile:', profileError);
+        }
+      }
+
+      toast({
+        title: "Registration Successful!",
+        description: activeTab === "create" 
+          ? `Welcome! Your organization "${formData.orgName}" has been created.`
+          : "Welcome! You've been added to the organization.",
+        variant: "default"
+      });
+
+      // Redirect to dashboard
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+
+    } catch (error) {
+      console.error('Registration error:', error);
+      toast({
+        title: "Registration Failed",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -301,14 +467,18 @@ const Register = () => {
 
                           <div>
                             <Label htmlFor="orgSize">Organization Size</Label>
-                            <Select value={formData.orgSize} onValueChange={(value) => setFormData({ ...formData, orgSize: value })}>
+                            <Select 
+                              value={formData.orgSize} 
+                              onValueChange={(value) => setFormData({ ...formData, orgSize: value })}
+                              disabled={loading}
+                            >
                               <SelectTrigger>
-                                <SelectValue placeholder="Select size" />
+                                <SelectValue placeholder={loading ? "Loading..." : "Select size"} />
                               </SelectTrigger>
                               <SelectContent>
                                 {organizationSizes.map((size) => (
-                                  <SelectItem key={size.value} value={size.value}>
-                                    {size.label}
+                                  <SelectItem key={size.id} value={size.id}>
+                                    {size.name}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
@@ -317,14 +487,18 @@ const Register = () => {
 
                           <div>
                             <Label htmlFor="industry">Industry</Label>
-                            <Select value={formData.industry} onValueChange={(value) => setFormData({ ...formData, industry: value })}>
+                            <Select 
+                              value={formData.industry} 
+                              onValueChange={(value) => setFormData({ ...formData, industry: value })}
+                              disabled={loading}
+                            >
                               <SelectTrigger>
-                                <SelectValue placeholder="Select industry" />
+                                <SelectValue placeholder={loading ? "Loading..." : "Select industry"} />
                               </SelectTrigger>
                               <SelectContent>
                                 {industries.map((industry) => (
-                                  <SelectItem key={industry.value} value={industry.value}>
-                                    {industry.label}
+                                  <SelectItem key={industry.id} value={industry.id}>
+                                    {industry.name}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
