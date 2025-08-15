@@ -7,6 +7,7 @@ import { Mail, Lock, LogIn, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import reposeLogo from "@/assets/repose-logo-brain-readable.png";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -76,11 +77,13 @@ const Login = () => {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="p-3 bg-primary/10 rounded-full">
-                <LogIn className="w-8 h-8 text-primary" />
-              </div>
-              <h1 className="text-3xl font-bold">Welcome Back</h1>
+              <img 
+                src={reposeLogo} 
+                alt="Repose Logo" 
+                className="h-12 w-auto"
+              />
             </div>
+            <h1 className="text-3xl font-bold">Welcome Back</h1>
             <p className="text-muted-foreground text-lg">
               Sign in to your Repose account
             </p>
