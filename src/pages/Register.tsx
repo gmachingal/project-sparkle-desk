@@ -11,6 +11,7 @@ import { Building2, Users, Mail, Lock, User, Globe, Phone, MapPin, ArrowRight, A
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import reposeLogoNew from "@/assets/repose-logo-new.png";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -326,9 +327,11 @@ const Register = () => {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="p-3 bg-primary/10 rounded-full">
-                <Building2 className="w-8 h-8 text-primary" />
-              </div>
+              <img 
+                src={reposeLogoNew} 
+                alt="Repose Logo" 
+                className="w-12 h-12"
+              />
               <h1 className="text-3xl font-bold">Join Repose</h1>
             </div>
             <p className="text-muted-foreground text-lg">

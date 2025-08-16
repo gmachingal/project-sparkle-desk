@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Building2, Users, LogIn, UserPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
+import reposeLogoNew from "@/assets/repose-logo-new.png";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -83,9 +84,11 @@ const Index = () => {
             {/* Hero Section */}
             <div className="mb-16">
               <div className="flex items-center justify-center gap-3 mb-6">
-                <div className="p-4 bg-primary/10 rounded-full">
-                  <Building2 className="w-12 h-12 text-primary" />
-                </div>
+                <img 
+                  src={reposeLogoNew} 
+                  alt="Repose Logo" 
+                  className="w-16 h-16"
+                />
                 <h1 className="text-5xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
                   Repose
                 </h1>
