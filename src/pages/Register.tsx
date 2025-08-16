@@ -256,16 +256,41 @@ const Register = () => {
 
       // Update user profile with organization and phone
       if (organizationId) {
-        const { error: profileError } = await supabase
+        // First check if profile exists, if not create it
+        const { data: existingProfile } = await supabase
           .from('profiles')
-          .update({
-            phone: formData.phone,
-            organization_id: organizationId
-          })
-          .eq('user_id', authData.user.id);
+          .select('id')
+          .eq('user_id', authData.user.id)
+          .single();
 
-        if (profileError) {
-          console.error('Error updating profile:', profileError);
+        if (!existingProfile) {
+          // Create profile if it doesn't exist
+          const { error: createProfileError } = await supabase
+            .from('profiles')
+            .insert({
+              user_id: authData.user.id,
+              first_name: formData.firstName,
+              last_name: formData.lastName,
+              phone: formData.phone,
+              organization_id: organizationId
+            });
+
+          if (createProfileError) {
+            console.error('Error creating profile:', createProfileError);
+          }
+        } else {
+          // Update existing profile
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .update({
+              phone: formData.phone,
+              organization_id: organizationId
+            })
+            .eq('user_id', authData.user.id);
+
+          if (profileError) {
+            console.error('Error updating profile:', profileError);
+          }
         }
       }
 
