@@ -45,6 +45,10 @@ const Header = () => {
     return location.pathname === path || (path === "/dashboard" && location.pathname === "/");
   };
 
+  const isAdminView = () => {
+    return location.pathname.includes("/admin") || location.pathname.includes("admin-");
+  };
+
   const handleLogout = () => {
     // TODO: Implement actual logout logic
     navigate("/");
@@ -63,7 +67,11 @@ const Header = () => {
   const getCurrentOrg = () => userOrganizations.find(org => org.id === currentOrganization);
 
   return (
-    <header className="border-b bg-gradient-to-r from-primary/50 via-primary-glow/40 to-primary/50 backdrop-blur-sm sticky top-0 z-50 border-border/50 shadow-2xl shadow-black/30 drop-shadow-lg">
+    <header className={`border-b backdrop-blur-sm sticky top-0 z-50 border-border/50 shadow-2xl shadow-black/30 drop-shadow-lg ${
+      isAdminView() 
+        ? "bg-gradient-to-r from-orange-500/50 via-orange-400/40 to-orange-500/50" 
+        : "bg-gradient-to-r from-primary/50 via-primary-glow/40 to-primary/50"
+    }`}>
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-4">
           <div className="flex items-center cursor-pointer" onClick={() => navigate("/dashboard")}>
