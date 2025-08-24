@@ -66,7 +66,8 @@ const Header = () => {
   const isAdminPage = location.pathname.includes('/admin') || 
                      location.pathname.includes('admin-') || 
                      location.pathname === '/organization' ||
-                     (location.pathname === '/' && new URLSearchParams(window.location.search).get('view') === 'admin');
+                     (location.pathname === '/' && localStorage.getItem('preferredRole') === 'admin') ||
+                     (location.pathname === '/dashboard' && localStorage.getItem('preferredRole') === 'admin');
 
   return (
     <header className={`border-b backdrop-blur-sm sticky top-0 z-50 border-border/50 shadow-2xl shadow-black/30 drop-shadow-lg ${
