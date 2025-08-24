@@ -17,7 +17,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header userRole={userRole} />
       {userRole === 'admin' ? <AdminDashboard /> : <UserDashboard />}
     </div>
   );

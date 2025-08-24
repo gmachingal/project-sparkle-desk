@@ -10,7 +10,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import reposeLogo from "@/assets/repose-logo-bigger-font.png";
 
-const Header = () => {
+interface HeaderProps {
+  userRole?: 'admin' | 'user';
+}
+
+const Header = ({ userRole }: HeaderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -66,8 +70,7 @@ const Header = () => {
   const isAdminPage = location.pathname.includes('/admin') || 
                      location.pathname.includes('admin-') || 
                      location.pathname === '/organization' ||
-                     (location.pathname === '/' && localStorage.getItem('preferredRole') === 'admin') ||
-                     (location.pathname === '/dashboard' && localStorage.getItem('preferredRole') === 'admin');
+                     ((location.pathname === '/' || location.pathname === '/dashboard') && userRole === 'admin');
 
   return (
     <header className={`border-b backdrop-blur-sm sticky top-0 z-50 border-border/50 shadow-2xl shadow-black/30 drop-shadow-lg ${
