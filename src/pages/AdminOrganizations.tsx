@@ -356,7 +356,7 @@ const AdminOrganizations = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="border-b bg-card/50 backdrop-blur-sm">
+      <div className="border-b backdrop-blur-sm bg-gradient-to-r from-red-600/50 via-purple-500/40 to-red-600/50 shadow-2xl shadow-black/30 drop-shadow-lg">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")} className="gap-2">
