@@ -471,17 +471,23 @@ const TaskView = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <div className="border-b backdrop-blur-sm bg-gradient-to-r from-primary/50 via-primary-glow/40 to-primary/50 shadow-2xl shadow-black/30 drop-shadow-lg">
+        <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/my-tasks")} className="gap-2">
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+            <h1 className="text-2xl font-bold">View Task</h1>
+          </div>
+        </div>
+      </div>
+
+      
       
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Navigation & Quick Actions Header */}
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <Button variant="outline" onClick={() => navigate('/my-tasks')}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to My Tasks
-            </Button>
-          </div>
           
           {/* Quick Actions */}
           <div className="flex items-center gap-3">
