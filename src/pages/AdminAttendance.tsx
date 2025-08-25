@@ -225,6 +225,10 @@ const AdminAttendance = () => {
           </div>
           
           <div className="flex items-center gap-3">
+            <Button variant="outline" className="gap-2 hover:bg-primary/10" onClick={() => window.location.href = '/attendance'}>
+              <UserCheck className="w-4 h-4" />
+              Employee View
+            </Button>
             <Button variant="outline" className="gap-2 hover:bg-primary/10">
               <Bell className="w-4 h-4" />
               Notifications
