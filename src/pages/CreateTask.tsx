@@ -192,7 +192,7 @@ const CreateTask = () => {
   return (
     <div className="min-h-screen bg-background">
 
-     <div className="border-b backdrop-blur-sm bg-gradient-to-r from-primary/50 via-primary-glow/40 to-primary/50 shadow-2xl shadow-black/30 drop-shadow-lg">
+     <div className="border-b backdrop-blur-sm bg-gradient-to-r sticky from-primary/50 via-primary-glow/40 to-primary/50 shadow-2xl shadow-black/30 drop-shadow-lg">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="gap-2">
