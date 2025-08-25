@@ -73,10 +73,10 @@ const Header = ({ userRole }: HeaderProps) => {
                      ((location.pathname === '/' || location.pathname === '/dashboard') && userRole === 'admin');
 
   return (
-    <header className={`border-primary backdrop-blur-sm sticky top-0 z-50 border-border/50 shadow-2xl shadow-black/30 drop-shadow-lg ${
+    <header className={`backdrop-blur-sm sticky top-0 z-50 border-border/50 shadow-2xl shadow-black/30 drop-shadow-lg ${
       isAdminPage 
         ? 'bg-gradient-to-r from-red-600/30 via-red/45 to-red-600/60' 
-        : 'bg-gradient-to-r from-primary/30 via-primary-glow/45 to-primary/60'
+        : 'bg-gradient-to-r from-primary/35 via-primary-glow/45 to-primary/60'
     }`}>
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-4">
