@@ -198,18 +198,20 @@ const ProjectStatusReport = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+
+      <div className="border-b backdrop-blur-sm bg-gradient-to-l sticky top-0 z-50 from-primary to-primary/50 via-primary-glow/20  shadow-2xl shadow-black/30 drop-shadow-lg">
+        <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="gap-2">
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+            <h1 className="text-2xl font-bold from-primary">Analysis</h1>
+          </div>
+        </div>
+      </div>
       
       <div className="container mx-auto px-4 py-8">
-        {/* Back Button */}
-        <div className="flex items-center gap-4 mb-8">
-          <Button variant="back" onClick={() => navigate(-1)}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Projects
-          </Button>
-        </div>
-        
-        {/* Header */}
         <div className="mb-8">
           <div className="mb-6 flex items-center justify-between">
             <div>
