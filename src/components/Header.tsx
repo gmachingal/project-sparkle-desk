@@ -271,7 +271,7 @@ const Header = ({ userRole }: HeaderProps) => {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/admin/organizations")} className="gap-2">
                   <Building2 className="w-4 h-4" />
-                  Admin Organizations
+                  Organizations
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="gap-2 text-red-600">
