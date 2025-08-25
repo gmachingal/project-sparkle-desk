@@ -48,10 +48,16 @@ All colors MUST be HSL.
     --blocked-bg: 0 65% 94%;
     --blocked-border: 0 84% 85%;
 
+    /* Admin colors */
+    --admin-primary: 0 84% 60%;
+    --admin-secondary: 270 91% 65%;
+    --admin-accent: 345 83% 47%;
+
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(220 14% 98%));
     --gradient-hero: linear-gradient(135deg, hsl(262 83% 58%), hsl(252 100% 67%));
+    --gradient-admin: linear-gradient(135deg, hsl(var(--admin-primary) / 0.5), hsl(var(--admin-secondary) / 0.4), hsl(var(--admin-primary) / 0.5));
 
     /* Shadows */
     --shadow-elegant: 0 4px 20px -2px hsl(220 13% 91% / 0.3);

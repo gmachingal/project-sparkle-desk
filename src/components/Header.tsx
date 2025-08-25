@@ -75,7 +75,7 @@ const Header = ({ userRole }: HeaderProps) => {
   return (
     <header className={`border-b backdrop-blur-sm sticky top-0 z-50 border-border/50 shadow-2xl shadow-black/30 drop-shadow-lg ${
       isAdminPage 
-        ? 'bg-gradient-to-r from-orange-500/50 via-orange-400/40 to-orange-500/50' 
+        ? 'bg-gradient-to-r from-red-600/50 via-purple-500/40 to-red-600/50' 
         : 'bg-gradient-to-r from-primary/50 via-primary-glow/40 to-primary/50'
     }`}>
       <div className="flex items-center justify-between px-6 py-4">
