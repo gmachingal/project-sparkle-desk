@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Building2, Users, CreditCard, Settings, Plus, Edit, Trash2, ArrowLeft, Globe, Crown, RefreshCw, Copy, Check, Clock, UserPlus, UserCheck, UserX, Key, DollarSign, Calendar, AlertTriangle, TrendingUp, Shield, Target } from "lucide-react";
+import { Building2, Users, CreditCard, Settings, Plus, Edit, Trash2, ArrowLeft, Globe, Crown, RefreshCw, Copy, Check, Clock, UserPlus, UserCheck, UserX, Key, DollarSign, Calendar, AlertTriangle, TrendingUp, Shield, Target, ShieldCheck, User, MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 
@@ -20,6 +20,29 @@ const AdminOrganizations = () => {
   const [selectedOrganization, setSelectedOrganization] = useState("ORG-001");
   const [isBillingDialogOpen, setIsBillingDialogOpen] = useState(false);
   const [selectedOrgForBilling, setSelectedOrgForBilling] = useState<any>(null);
+  const [isAddUserOpen, setIsAddUserOpen] = useState(false);
+  const [isAddDepartmentOpen, setIsAddDepartmentOpen] = useState(false);
+  const [isEditDepartmentOpen, setIsEditDepartmentOpen] = useState(false);
+  const [selectedDepartment, setSelectedDepartment] = useState<any>(null);
+  
+  // Form states
+  const [userFormData, setUserFormData] = useState({
+    name: "",
+    email: "",
+    role: "",
+    department: "",
+    organization: "",
+    skills: "",
+    permissions: [] as string[]
+  });
+
+  const [departmentFormData, setDepartmentFormData] = useState({
+    name: "",
+    description: "",
+    managerId: "",
+    budget: "",
+    location: ""
+  });
   
   const [organizations, setOrganizations] = useState([
     {
@@ -214,6 +237,161 @@ const AdminOrganizations = () => {
       title: "Plan Updated",
       description: `Organization plan changed to ${newPlan}`,
     });
+  };
+
+  // Role and permission definitions
+  const systemRoles = [
+    { value: "admin", label: "Admin", icon: Crown, color: "text-yellow-500" },
+    { value: "manager", label: "Manager", icon: ShieldCheck, color: "text-blue-500" },
+    { value: "user", label: "User", icon: UserCheck, color: "text-green-500" },
+    { value: "viewer", label: "Viewer", icon: Shield, color: "text-gray-500" }
+  ];
+
+  const rolePermissions = {
+    admin: ["admin", "create_projects", "manage_team", "view_analytics", "delete_projects"],
+    manager: ["create_projects", "manage_team", "view_analytics"],
+    user: ["create_projects"],
+    viewer: ["view_analytics"]
+  };
+
+  // Sample departments data
+  const [departments, setDepartments] = useState([
+    {
+      id: "1",
+      name: "Engineering",
+      description: "Software development and technical architecture",
+      orgId: "ORG-001",
+      members: 12,
+      lead: "Alex Johnson",
+      leadId: "1",
+      budget: 500000,
+      location: "Building A, Floor 3"
+    },
+    {
+      id: "2", 
+      name: "Design",
+      description: "UI/UX design and creative direction",
+      orgId: "ORG-001",
+      members: 5,
+      lead: "Sarah Chen",
+      leadId: "2",
+      budget: 300000,
+      location: "Building A, Floor 2"
+    },
+    {
+      id: "3",
+      name: "Marketing",
+      description: "Brand management and customer acquisition", 
+      orgId: "ORG-002",
+      members: 8,
+      lead: "Emily Davis",
+      leadId: "4",
+      budget: 400000,
+      location: "Building B, Floor 1"
+    }
+  ]);
+
+  // Users data
+  const [users, setUsers] = useState([
+    {
+      id: "1",
+      name: "Alex Johnson",
+      email: "alex@techcorp.com",
+      role: "admin",
+      department: "Engineering",
+      orgId: "ORG-001",
+      status: "active",
+      joinDate: "2023-01-15"
+    },
+    {
+      id: "2", 
+      name: "Sarah Chen",
+      email: "sarah@techcorp.com",
+      role: "manager",
+      department: "Design",
+      orgId: "ORG-001",
+      status: "active",
+      joinDate: "2023-03-10"
+    }
+  ]);
+
+  // Handler functions
+  const handleAddUser = () => {
+    if (!userFormData.name || !userFormData.email || !userFormData.role || !userFormData.department || !userFormData.organization) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const newUser = {
+      id: Date.now().toString(),
+      name: userFormData.name,
+      email: userFormData.email,
+      role: userFormData.role,
+      department: userFormData.department,
+      orgId: userFormData.organization,
+      status: "active",
+      joinDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+    };
+
+    setUsers([...users, newUser]);
+    setUserFormData({
+      name: "",
+      email: "",
+      role: "",
+      department: "",
+      organization: "",
+      skills: "",
+      permissions: []
+    });
+    setIsAddUserOpen(false);
+    toast({
+      title: "Success",
+      description: "User added successfully"
+    });
+  };
+
+  const handleAddDepartment = () => {
+    if (!departmentFormData.name || !departmentFormData.managerId) {
+      toast({
+        title: "Error", 
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const manager = users.find(u => u.id === departmentFormData.managerId);
+    const newDepartment = {
+      id: Date.now().toString(),
+      name: departmentFormData.name,
+      description: departmentFormData.description,
+      orgId: selectedOrganization,
+      members: 0,
+      lead: manager?.name || "",
+      leadId: departmentFormData.managerId,
+      budget: parseInt(departmentFormData.budget) || 0,
+      location: departmentFormData.location
+    };
+
+    setDepartments([...departments, newDepartment]);
+    setDepartmentFormData({ name: "", description: "", managerId: "", budget: "", location: "" });
+    setIsAddDepartmentOpen(false);
+    toast({
+      title: "Success",
+      description: "Department created successfully"
+    });
+  };
+
+  const getOrgDepartments = (orgId: string) => {
+    return departments.filter(dept => dept.orgId === orgId);
+  };
+
+  const getOrgUsers = (orgId: string) => {
+    return users.filter(user => user.orgId === orgId);
   };
 
   const openBillingDialog = (org: any) => {
@@ -441,6 +619,7 @@ const AdminOrganizations = () => {
             <TabsTrigger value="features">Feature Management</TabsTrigger>
             <TabsTrigger value="billing">Plans & Billing</TabsTrigger>
             <TabsTrigger value="users">User Management</TabsTrigger>
+            <TabsTrigger value="departments">Departments</TabsTrigger>
             <TabsTrigger value="join-codes">Join Codes</TabsTrigger>
             <TabsTrigger value="registrations">Registration Requests</TabsTrigger>
           </TabsList>
@@ -884,61 +1063,134 @@ const AdminOrganizations = () => {
                 <div className="space-y-6">
                   <div className="flex justify-between items-center">
                     <h3 className="text-lg font-semibold">Organization Users</h3>
-                    <Dialog>
+                    <Dialog open={isAddUserOpen} onOpenChange={setIsAddUserOpen}>
                       <DialogTrigger asChild>
                         <Button className="flex items-center gap-2">
-                          <Plus className="h-4 w-4" />
+                          <UserPlus className="h-4 w-4" />
                           Add User
                         </Button>
                       </DialogTrigger>
-                      <DialogContent>
+                      <DialogContent className="sm:max-w-[600px]">
                         <DialogHeader>
-                          <DialogTitle>Create New User</DialogTitle>
-                          <DialogDescription>Add a new user and assign them to an organization</DialogDescription>
+                          <DialogTitle>Add New User</DialogTitle>
+                          <DialogDescription>Add a new user and assign them to the organization</DialogDescription>
                         </DialogHeader>
                         <div className="space-y-4">
                           <div className="grid grid-cols-2 gap-4">
                             <div>
-                              <Label htmlFor="userName">Full Name</Label>
-                              <Input id="userName" placeholder="Enter full name" />
+                              <Label htmlFor="userName">Full Name *</Label>
+                              <Input
+                                id="userName"
+                                value={userFormData.name}
+                                onChange={(e) => setUserFormData({...userFormData, name: e.target.value})}
+                                placeholder="Enter full name"
+                              />
                             </div>
                             <div>
-                              <Label htmlFor="userEmail">Email</Label>
-                              <Input id="userEmail" type="email" placeholder="Enter email" />
+                              <Label htmlFor="userEmail">Email *</Label>
+                              <Input
+                                id="userEmail"
+                                type="email"
+                                value={userFormData.email}
+                                onChange={(e) => setUserFormData({...userFormData, email: e.target.value})}
+                                placeholder="Enter email address"
+                              />
                             </div>
                           </div>
+                          
                           <div className="grid grid-cols-2 gap-4">
                             <div>
-                              <Label htmlFor="userOrg">Organization</Label>
-                              <Select>
+                              <Label htmlFor="userRole">System Role *</Label>
+                              <Select value={userFormData.role} onValueChange={(value) => {
+                                setUserFormData({
+                                  ...userFormData, 
+                                  role: value,
+                                  permissions: rolePermissions[value as keyof typeof rolePermissions] || []
+                                });
+                              }}>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Select organization" />
+                                  <SelectValue placeholder="Select role" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-background z-50">
-                                  {organizations.map((org) => (
-                                    <SelectItem key={org.id} value={org.id}>
-                                      {org.name}
+                                <SelectContent>
+                                  {systemRoles.map((role) => {
+                                    const Icon = role.icon;
+                                    return (
+                                      <SelectItem key={role.value} value={role.value}>
+                                        <div className="flex items-center gap-2">
+                                          <Icon className={`w-4 h-4 ${role.color}`} />
+                                          {role.label}
+                                        </div>
+                                      </SelectItem>
+                                    );
+                                  })}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div>
+                              <Label htmlFor="userDept">Department *</Label>
+                              <Select value={userFormData.department} onValueChange={(value) => setUserFormData({...userFormData, department: value})}>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select department" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {getOrgDepartments(selectedOrganization).map((dept) => (
+                                    <SelectItem key={dept.id} value={dept.name}>
+                                      {dept.name}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
                               </Select>
                             </div>
-                            <div>
-                              <Label htmlFor="userRole">Role</Label>
-                              <Select>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select role" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-background z-50">
-                                  <SelectItem value="admin">Admin</SelectItem>
-                                  <SelectItem value="manager">Manager</SelectItem>
-                                  <SelectItem value="user">User</SelectItem>
-                                  <SelectItem value="viewer">Viewer</SelectItem>
-                                </SelectContent>
-                              </Select>
+                          </div>
+
+                          <div>
+                            <Label htmlFor="userOrg">Organization *</Label>
+                            <Select value={userFormData.organization || selectedOrganization} onValueChange={(value) => setUserFormData({...userFormData, organization: value})}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select organization" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {organizations.map((org) => (
+                                  <SelectItem key={org.id} value={org.id}>
+                                    <div className="flex items-center gap-2">
+                                      <Building2 className="w-4 h-4" />
+                                      {org.name}
+                                    </div>
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div>
+                            <Label htmlFor="userSkills">Skills (comma-separated)</Label>
+                            <Input
+                              id="userSkills"
+                              value={userFormData.skills}
+                              onChange={(e) => setUserFormData({...userFormData, skills: e.target.value})}
+                              placeholder="React, TypeScript, Node.js"
+                            />
+                          </div>
+
+                          <div>
+                            <Label>Permissions</Label>
+                            <div className="grid grid-cols-2 gap-2 mt-2">
+                              {Object.entries(rolePermissions).map(([role, perms]) => (
+                                <div key={role} className="text-sm">
+                                  <strong className="capitalize">{role}:</strong> {perms.join(", ")}
+                                </div>
+                              ))}
                             </div>
                           </div>
-                          <Button className="w-full">Create User</Button>
+
+                          <div className="flex justify-end gap-2">
+                            <Button variant="outline" onClick={() => setIsAddUserOpen(false)}>
+                              Cancel
+                            </Button>
+                            <Button onClick={handleAddUser}>
+                              Add User
+                            </Button>
+                          </div>
                         </div>
                       </DialogContent>
                     </Dialog>
@@ -1034,6 +1286,155 @@ const AdminOrganizations = () => {
                       </TableRow>
                     </TableBody>
                   </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="departments">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Building2 className="w-5 h-5" />
+                  Department Management
+                </CardTitle>
+                <CardDescription>Manage departments within organizations</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-semibold">Departments</h3>
+                    <Dialog open={isAddDepartmentOpen} onOpenChange={setIsAddDepartmentOpen}>
+                      <DialogTrigger asChild>
+                        <Button className="flex items-center gap-2">
+                          <Plus className="h-4 w-4" />
+                          Add Department
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[500px]">
+                        <DialogHeader>
+                          <DialogTitle>Add New Department</DialogTitle>
+                          <DialogDescription>Create a new department for the organization</DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div>
+                            <Label htmlFor="deptName">Department Name *</Label>
+                            <Input
+                              id="deptName"
+                              value={departmentFormData.name}
+                              onChange={(e) => setDepartmentFormData({...departmentFormData, name: e.target.value})}
+                              placeholder="Enter department name"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="deptDesc">Description</Label>
+                            <Textarea
+                              id="deptDesc"
+                              value={departmentFormData.description}
+                              onChange={(e) => setDepartmentFormData({...departmentFormData, description: e.target.value})}
+                              placeholder="Department description"
+                            />
+                          </div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="deptManager">Department Manager *</Label>
+                              <Select value={departmentFormData.managerId} onValueChange={(value) => setDepartmentFormData({...departmentFormData, managerId: value})}>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select manager" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {getOrgUsers(selectedOrganization).filter(user => user.role !== 'viewer').map((user) => (
+                                    <SelectItem key={user.id} value={user.id}>
+                                      <div className="flex items-center gap-2">
+                                        <User className="w-4 h-4" />
+                                        {user.name}
+                                      </div>
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div>
+                              <Label htmlFor="deptBudget">Budget</Label>
+                              <Input
+                                id="deptBudget"
+                                type="number"
+                                value={departmentFormData.budget}
+                                onChange={(e) => setDepartmentFormData({...departmentFormData, budget: e.target.value})}
+                                placeholder="Annual budget"
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <Label htmlFor="deptLocation">Location</Label>
+                            <Input
+                              id="deptLocation"
+                              value={departmentFormData.location}
+                              onChange={(e) => setDepartmentFormData({...departmentFormData, location: e.target.value})}
+                              placeholder="Office location"
+                            />
+                          </div>
+                          <div className="flex justify-end gap-2">
+                            <Button variant="outline" onClick={() => setIsAddDepartmentOpen(false)}>
+                              Cancel
+                            </Button>
+                            <Button onClick={handleAddDepartment}>
+                              Create Department
+                            </Button>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {getOrgDepartments(selectedOrganization).map((dept) => (
+                      <Card key={dept.id} className="hover:shadow-lg transition-shadow">
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <CardTitle className="text-lg">{dept.name}</CardTitle>
+                              <p className="text-sm text-muted-foreground mt-1">{dept.description}</p>
+                            </div>
+                            <Button variant="ghost" size="sm">
+                              <MoreHorizontal className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                          <div className="flex items-center gap-2 text-sm">
+                            <User className="w-4 h-4 text-muted-foreground" />
+                            <span className="font-medium">{dept.lead}</span>
+                            <Badge variant="outline" className="text-xs">Manager</Badge>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm">
+                            <Users className="w-4 h-4 text-muted-foreground" />
+                            <span>{dept.members} members</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm">
+                            <DollarSign className="w-4 h-4 text-muted-foreground" />
+                            <span>${dept.budget.toLocaleString()} budget</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm">
+                            <Building2 className="w-4 h-4 text-muted-foreground" />
+                            <span>{dept.location}</span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+
+                  {getOrgDepartments(selectedOrganization).length === 0 && (
+                    <div className="text-center py-8">
+                      <Building2 className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold mb-2">No departments found</h3>
+                      <p className="text-muted-foreground mb-4">Create your first department to get started</p>
+                      <Button onClick={() => setIsAddDepartmentOpen(true)}>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Department
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
