@@ -471,14 +471,14 @@ const TaskView = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="border-b backdrop-blur-sm bg-gradient-to-r sticky top-0 z-50 from-primary/40 via-primary-glow/60 to-primary/80  shadow-2xl shadow-black/30 drop-shadow-lg">
+      <div className="backdrop-blur-sm bg-gradient-to-l sticky top-0 z-50 from-primary/40 via-primary-glow/60 to-primary/80  shadow-2xl shadow-black/30 drop-shadow-lg">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={() => navigate("/my-tasks")} className="gap-2">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/my-tasks")} className="gap-2 text-white">
               <ArrowLeft className="w-4 h-4" />
               Back
             </Button>
-            <h1 className="text-2xl font-bold">View Task</h1>
+            <h1 className="text-2xl font-bold text-white">View Task</h1>
           </div>
         </div>
       </div>
