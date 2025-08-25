@@ -199,7 +199,7 @@ const CreateTask = () => {
               <ArrowLeft className="w-4 h-4" />
               Back
             </Button>
-            <h1 className="text-2xl font-bold">Create Task</h1>
+            <h1 className="text-2xl font-bold bg-gradient-to-r">Create Task</h1>
           </div>
         </div>
       </div>
