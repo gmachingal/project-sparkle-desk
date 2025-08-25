@@ -374,18 +374,21 @@ const SprintDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <div className="border-b backdrop-blur-sm bg-gradient-to-r from-primary/50 via-primary-glow/40 to-primary/50 shadow-2xl shadow-black/30 drop-shadow-lg">
+        <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" onClick={() => navigate(`/project-calendar/${projectId}`)} className="gap-2">
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+            <h1 className="text-2xl font-bold">Sprint Dashboard</h1>
+          </div>
+        </div>
+      </div>
+
+      
       
       <div className="container mx-auto px-4 py-8">
-        {/* Back Button - Separate Section */}
-        <div className="pb-4 mb-6 border-b border-border">
-          <Button variant="back" onClick={() => navigate(`/project-calendar/${projectId}`)}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Project
-          </Button>
-        </div>
-        
-        {/* Header Section */}
         <div className="mb-8">
           {/* Title and Actions */}
           <div className="flex items-start justify-between gap-6">
