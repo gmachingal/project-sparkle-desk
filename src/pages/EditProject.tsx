@@ -193,10 +193,6 @@ const EditProject = () => {
             </Button>
             <h1 className="text-2xl font-bold">Edit Project</h1>
           </div>
-          <Button variant="destructive" onClick={handleDelete}>
-            <Trash2 className="h-4 w-4 mr-2" />
-            Delete Project
-          </Button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -444,6 +440,11 @@ const EditProject = () => {
             <Button type="submit" className="gap-2">
               Update Project
             </Button>
+            <Button variant="destructive" onClick={handleDelete}>
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete Project
+          </Button>
+
           </div>
         </form>
       </div>
