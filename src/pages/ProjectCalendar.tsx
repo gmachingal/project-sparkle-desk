@@ -339,10 +339,12 @@ const ProjectCalendar = () => {
       
       <div className="container mx-auto px-4 py-8">
         {/* Back Button - Separate Section */}
+        <div className="flex items-center gap-4">
           <Button variant="back" onClick={() => navigate('/projects')}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Projects
           </Button>
+        </div>
         
         {/* Header Section */}
         <div className="mb-8">
