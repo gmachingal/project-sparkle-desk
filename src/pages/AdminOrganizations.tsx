@@ -548,7 +548,6 @@ const AdminOrganizations = () => {
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <Label htmlFor="org-switcher" className="text-sm font-medium">Current Organization:</Label>
               <Select value={selectedOrganization} onValueChange={switchToOrganization}>
                 <SelectTrigger className="w-[200px]">
                   <SelectValue />
