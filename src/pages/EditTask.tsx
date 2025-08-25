@@ -256,22 +256,20 @@ const EditTask = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-      
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6 flex items-center justify-between">
+      <div className="border-b backdrop-blur-sm bg-gradient-to-r from-primary/50 via-primary-glow/40 to-primary/50 shadow-2xl shadow-black/30 drop-shadow-lg">
+        <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
-            <Button variant="back" onClick={() => navigate('/my-tasks')}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to My Tasks
+            <Button variant="ghost" size="sm" onClick={() => navigate("/my-tasks")} className="gap-2">
+              <ArrowLeft className="w-4 h-4" />
+              Back
             </Button>
             <h1 className="text-2xl font-bold">Edit Task</h1>
           </div>
-          <Button variant="destructive" onClick={handleDelete}>
-            <Trash2 className="h-4 w-4 mr-2" />
-            Delete Task
-          </Button>
         </div>
+      </div>
+      
+      
+      <div className="container mx-auto px-4 py-8">
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -768,6 +766,11 @@ const EditTask = () => {
               <Button variant="hero" type="submit" className="gap-2">
                 Update Task
               </Button>
+              <Button variant="destructive" onClick={handleDelete}>
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete Task
+              </Button>
+
           </div>
         </form>
       </div>
