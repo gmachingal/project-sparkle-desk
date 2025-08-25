@@ -340,10 +340,10 @@ const ProjectCalendar = () => {
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="sm" onClick={() => navigate("/projects")} className="gap-2 text-white">
-              <ArrowLeft className="w-4 h-4 text-white" />
+              <ArrowLeft className="w-4 h-4 " />
               Back
             </Button>
-            <h1 className="text-2xl font-bold">Project Calendar</h1>
+            <h1 className="text-2xl font-bold text-white">Project Calendar</h1>
           </div>
         </div>
       </div>
