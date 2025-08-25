@@ -296,7 +296,7 @@ const TimeLogging = () => {
               <ArrowLeft className="w-4 h-4" />
               Back
             </Button>
-            <h1 className="text-2xl font-bold">Logger</h1>
+            <h1 className="text-2xl font-bold">Time Logging</h1>
           </div>
         </div>
       </div>
@@ -307,7 +307,7 @@ const TimeLogging = () => {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-              Time Logging
+              Task Details
             </h1>
             <p className="text-muted-foreground mt-1">
               Log time spent on tasks for {format(selectedDate, 'EEEE, MMMM dd, yyyy')}
