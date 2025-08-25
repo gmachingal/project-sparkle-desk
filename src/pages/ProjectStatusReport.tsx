@@ -206,7 +206,7 @@ const ProjectStatusReport = () => {
               <ArrowLeft className="w-4 h-4" />
               Back
             </Button>
-            <h1 className="text-2xl font-bold from-primary">Analysis</h1>
+            <h1 className="text-2xl font-bold from-primary">Project Status Report</h1>
           </div>
         </div>
       </div>
@@ -216,10 +216,10 @@ const ProjectStatusReport = () => {
           <div className="mb-6 flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold">
-                Project Status Report
+                {project.name}
               </h1>
               <p className="text-muted-foreground mt-1">
-                {project.name} - Comprehensive Performance Analysis
+                Comprehensive Performance Analysis
               </p>
             </div>
             <div className="flex gap-2">
