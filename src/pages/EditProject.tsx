@@ -183,7 +183,6 @@ const EditProject = () => {
   return (
     <div className="min-h-screen bg-background">
       
-      <Header />
       <div className="border-b backdrop-blur-sm bg-gradient-to-r from-primary/50 via-primary-glow/40 to-primary/50 shadow-2xl shadow-black/30 drop-shadow-lg">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
@@ -191,21 +190,12 @@ const EditProject = () => {
               <ArrowLeft className="w-4 h-4" />
               Back
             </Button>
-            <h1 className="text-2xl font-bold">Create New Project</h1>
+            <h1 className="text-2xl font-bold">Edit Project</h1>
           </div>
         </div>
       </div>
       
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="outline" onClick={() => navigate('/projects')}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Projects
-            </Button>
-            <h1 className="text-2xl font-bold">Edit Project</h1>
-          </div>
-        </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
