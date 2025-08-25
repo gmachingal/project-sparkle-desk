@@ -288,15 +288,16 @@ const TimeLogging = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-
-      {/* Back Button Above Header */}
-      <div className="border-b border-border">
-        <div className="container mx-auto px-4 py-3">
-          <Button variant="back" onClick={() => navigate(-1)}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
+      
+     <div className="border-b backdrop-blur-sm bg-gradient-to-r from-primary/50 via-primary-glow/40 to-primary/50 shadow-2xl shadow-black/30 drop-shadow-lg">
+        <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="gap-2">
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+            <h1 className="text-2xl font-bold">Logger</h1>
+          </div>
         </div>
       </div>
       
