@@ -543,7 +543,7 @@ const AdminOrganizations = () => {
             </Button>
             <div>
               <h1 className="text-2xl font-bold">Organization Management</h1>
-              <p className="text-muted-foreground">Manage organizations, licenses, and features</p>
+              <p className="font-bold">Manage organizations, licenses, and features</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
