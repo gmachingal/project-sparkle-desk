@@ -25,7 +25,6 @@ export const DocumentView = ({ document, onBack, onEdit }: DocumentViewProps) =>
         <div className="container mx-auto px-4 py-3">
           <Button variant="back" onClick={onBack}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Documents
           </Button>
         </div>
       
