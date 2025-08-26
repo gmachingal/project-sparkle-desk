@@ -29,6 +29,13 @@ export default {
 					foreground: 'hsl(var(--primary-foreground))',
 					glow: 'hsl(var(--primary-glow))'
 				},
+				admin: {
+					DEFAULT: 'hsl(var(--admin-primary))',
+					foreground: 'hsl(var(--admin-primary-foreground))',
+					secondary: 'hsl(var(--admin-secondary))',
+					accent: 'hsl(var(--admin-accent))',
+					glow: 'hsl(var(--admin-glow))'
+				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
 					foreground: 'hsl(var(--secondary-foreground))'

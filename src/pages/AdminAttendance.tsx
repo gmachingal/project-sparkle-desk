@@ -216,7 +216,7 @@ const AdminAttendance = () => {
         {/* Enhanced Header */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-admin to-admin-glow bg-clip-text text-transparent">
               Attendance Management
             </h1>
             <p className="text-muted-foreground mt-1">
@@ -237,7 +237,7 @@ const AdminAttendance = () => {
               <Settings className="w-4 h-4" />
               Settings
             </Button>
-            <Button className="gap-2 bg-gradient-to-r from-primary to-primary-glow">
+            <Button className="gap-2 bg-gradient-to-r from-admin to-admin-glow">
               <Plus className="w-4 h-4" />
               Add Employee
             </Button>
@@ -301,7 +301,7 @@ const AdminAttendance = () => {
             <TabsList className="grid w-full grid-cols-5 bg-gradient-to-r from-card to-card/80 border shadow-sm h-12">
               <TabsTrigger 
                 value="overview" 
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium transition-all duration-200 hover:bg-muted/50"
+                className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium transition-all duration-200 hover:bg-muted/50"
               >
                 <div className="flex items-center gap-2">
                   <UserCheck className="w-4 h-4" />
@@ -310,7 +310,7 @@ const AdminAttendance = () => {
               </TabsTrigger>
               <TabsTrigger 
                 value="muster" 
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium transition-all duration-200 hover:bg-muted/50"
+                className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium transition-all duration-200 hover:bg-muted/50"
               >
                 <div className="flex items-center gap-2">
                   <FileText className="w-4 h-4" />
@@ -319,7 +319,7 @@ const AdminAttendance = () => {
               </TabsTrigger>
               <TabsTrigger 
                 value="requests" 
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium transition-all duration-200 hover:bg-muted/50"
+                className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium transition-all duration-200 hover:bg-muted/50"
               >
                 <div className="flex items-center gap-2">
                   <Bell className="w-4 h-4" />
@@ -333,7 +333,7 @@ const AdminAttendance = () => {
               </TabsTrigger>
               <TabsTrigger 
                 value="locations" 
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium transition-all duration-200 hover:bg-muted/50"
+                className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium transition-all duration-200 hover:bg-muted/50"
               >
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4" />
@@ -342,7 +342,7 @@ const AdminAttendance = () => {
               </TabsTrigger>
               <TabsTrigger 
                 value="reports" 
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium transition-all duration-200 hover:bg-muted/50"
+                className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium transition-all duration-200 hover:bg-muted/50"
               >
                 <div className="flex items-center gap-2">
                   <BarChart3 className="w-4 h-4" />
@@ -366,7 +366,7 @@ const AdminAttendance = () => {
                 <Badge variant="outline" className="text-xs">
                   Last updated: {format(new Date(), 'HH:mm')}
                 </Badge>
-                <Button size="sm" className="gap-2 bg-gradient-to-r from-primary to-primary-glow">
+                <Button size="sm" className="gap-2 bg-gradient-to-r from-admin to-admin-glow">
                   <Coffee className="w-4 h-4" />
                   Refresh
                 </Button>

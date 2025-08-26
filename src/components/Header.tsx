@@ -75,7 +75,7 @@ const Header = ({ userRole }: HeaderProps) => {
   return (
     <header className={`backdrop-blur-sm sticky top-0 z-50 border-border/50 shadow-2xl shadow-black/30 drop-shadow-lg ${
       isAdminPage 
-        ? 'bg-gradient-to-r from-red-600/30 via-red/45 to-red-600/60' 
+        ? 'bg-gradient-to-r from-admin/35 via-admin-glow/45 to-admin/60' 
         : 'bg-gradient-to-r from-primary/35 via-primary-glow/45 to-primary/60'
     }`}>
       <div className="flex items-center justify-between px-6 py-4">
@@ -94,7 +94,7 @@ const Header = ({ userRole }: HeaderProps) => {
               variant="ghost" 
               size="sm" 
               onClick={() => navigate("/dashboard")} 
-              className={`gap-2 ${isActivePage("/dashboard") ? "bg-primary text-primary-foreground" : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
+              className={`gap-2 ${isActivePage("/dashboard") ? (isAdminPage ? "bg-admin text-admin-foreground" : "bg-primary text-primary-foreground") : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
               <Home className="w-4 h-4" />
               <span className="hidden xl:inline">Home</span>
@@ -103,7 +103,7 @@ const Header = ({ userRole }: HeaderProps) => {
               variant="ghost" 
               size="sm" 
               onClick={() => navigate("/my-tasks")} 
-              className={`gap-2 ${isActivePage("/my-tasks") ? "bg-primary text-primary-foreground" : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
+              className={`gap-2 ${isActivePage("/my-tasks") ? (isAdminPage ? "bg-admin text-admin-foreground" : "bg-primary text-primary-foreground") : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
               <FileText className="w-4 h-4" />
               <span className="hidden xl:inline">Tasks</span>
@@ -112,7 +112,7 @@ const Header = ({ userRole }: HeaderProps) => {
               variant="ghost" 
               size="sm" 
               onClick={() => navigate("/projects")} 
-              className={`gap-2 ${isActivePage("/projects") ? "bg-primary text-primary-foreground" : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
+              className={`gap-2 ${isActivePage("/projects") ? (isAdminPage ? "bg-admin text-admin-foreground" : "bg-primary text-primary-foreground") : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
               <Briefcase className="w-4 h-4" />
               <span className="hidden xl:inline">Projects</span>
@@ -121,7 +121,7 @@ const Header = ({ userRole }: HeaderProps) => {
               variant="ghost" 
               size="sm" 
               onClick={() => navigate("/teams")} 
-              className={`gap-2 ${isActivePage("/teams") ? "bg-primary text-primary-foreground" : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
+              className={`gap-2 ${isActivePage("/teams") ? (isAdminPage ? "bg-admin text-admin-foreground" : "bg-primary text-primary-foreground") : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
               <Users className="w-4 h-4" />
               <span className="hidden xl:inline">Teams</span>
@@ -130,7 +130,7 @@ const Header = ({ userRole }: HeaderProps) => {
               variant="ghost" 
               size="sm" 
               onClick={() => navigate("/attendance")} 
-              className={`gap-2 ${isActivePage("/attendance") ? "bg-primary text-primary-foreground" : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
+              className={`gap-2 ${isActivePage("/attendance") ? (isAdminPage ? "bg-admin text-admin-foreground" : "bg-primary text-primary-foreground") : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
               <Clock className="w-4 h-4" />
               <span className="hidden xl:inline">Attendance</span>
@@ -139,7 +139,7 @@ const Header = ({ userRole }: HeaderProps) => {
               variant="ghost" 
               size="sm" 
               onClick={() => navigate("/leave-management")} 
-              className={`gap-2 ${isActivePage("/leave-management") ? "bg-primary text-primary-foreground" : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
+              className={`gap-2 ${isActivePage("/leave-management") ? (isAdminPage ? "bg-admin text-admin-foreground" : "bg-primary text-primary-foreground") : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
               <Calendar className="w-4 h-4" />
               <span className="hidden xl:inline">Leave</span>
@@ -245,7 +245,12 @@ const Header = ({ userRole }: HeaderProps) => {
           
           {/* Action Buttons Group */}
           <div className="flex items-center gap-1">
-            <Button variant="hero" size="sm" className="gap-2" onClick={() => navigate("/create-task")}>
+            <Button 
+              variant="hero" 
+              size="sm" 
+              className={`gap-2 ${isAdminPage ? 'bg-gradient-to-r from-admin to-admin-glow' : ''}`} 
+              onClick={() => navigate("/create-task")}
+            >
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">Create</span>
             </Button>

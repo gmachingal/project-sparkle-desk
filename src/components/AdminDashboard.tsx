@@ -199,7 +199,7 @@ const AdminDashboard = () => {
     <div className="p-6 space-y-6 min-h-screen bg-background">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-admin to-admin-glow bg-clip-text text-transparent">
             Admin Dashboard
           </h1>
           <p className="text-muted-foreground mt-1">
@@ -239,16 +239,16 @@ const AdminDashboard = () => {
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-4 lg:w-[500px] bg-muted">
-          <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">             
+          <TabsTrigger value="overview" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium gap-2">             
             <BarChart3 className="w-4 h-4" />
             Overview</TabsTrigger>
-          <TabsTrigger value="attendance" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
+          <TabsTrigger value="attendance" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium gap-2">
             <Calendar className="w-4 h-4" />
             Attendance</TabsTrigger>
-          <TabsTrigger value="task-reports" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
+          <TabsTrigger value="task-reports" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium gap-2">
             <CheckSquare className="w-4 h-4" />
             Task Reports</TabsTrigger>
-          <TabsTrigger value="projects" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
+          <TabsTrigger value="projects" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium gap-2">
             <Briefcase className="w-4 h-4" />
             Projects</TabsTrigger>
         </TabsList>
@@ -593,7 +593,7 @@ const AdminDashboard = () => {
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3 mb-3">
                         <Avatar className="h-12 w-12">
-                          <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+                          <AvatarFallback className="bg-admin text-admin-foreground font-semibold">
                             {employee.avatar}
                           </AvatarFallback>
                         </Avatar>

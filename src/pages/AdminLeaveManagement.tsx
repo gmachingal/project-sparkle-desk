@@ -165,7 +165,7 @@ const AdminLeaveManagement = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Admin Leave Management</h1>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-admin to-admin-glow bg-clip-text text-transparent">Admin Leave Management</h1>
             <p className="text-muted-foreground mt-2">Manage employee leave requests and approvals</p>
           </div>
           <div className="flex gap-2">
@@ -185,8 +185,8 @@ const AdminLeaveManagement = () => {
           <Card className="border border-border/50">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded-lg">
-                  <FileText className="h-6 w-6 text-primary" />
+                <div className="p-3 bg-admin/10 rounded-lg">
+                  <FileText className="h-6 w-6 text-admin" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-foreground">{leaveStats.totalRequests}</p>
@@ -241,9 +241,9 @@ const AdminLeaveManagement = () => {
 
         <Tabs defaultValue="pending" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3 bg-muted">
-            <TabsTrigger value="pending" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Pending Requests</TabsTrigger>
-            <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">All Requests</TabsTrigger>
-            <TabsTrigger value="balance" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">Leave Balance Management</TabsTrigger>
+            <TabsTrigger value="pending" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium">Pending Requests</TabsTrigger>
+            <TabsTrigger value="all" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium">All Requests</TabsTrigger>
+            <TabsTrigger value="balance" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium">Leave Balance Management</TabsTrigger>
           </TabsList>
 
           <TabsContent value="pending" className="space-y-6">
