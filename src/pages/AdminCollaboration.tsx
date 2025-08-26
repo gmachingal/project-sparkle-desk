@@ -66,6 +66,8 @@ const AdminCollaboration = () => {
   const [isBrowseLibraryOpen, setIsBrowseLibraryOpen] = useState(false);
   const [isViewCertificatesOpen, setIsViewCertificatesOpen] = useState(false);
   const [isCreateProgramOpen, setIsCreateProgramOpen] = useState(false);
+  const [isViewMemberOpen, setIsViewMemberOpen] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<any>(null);
   
   // Enhanced Program creation states with assessments
   const [programTitle, setProgramTitle] = useState("");
@@ -460,96 +462,81 @@ const AdminCollaboration = () => {
               </Select>
             </div>
 
-            {/* Team Members Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Team Members Grid - Compact Version */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {getFilteredMembers().map((member) => (
                 <Card key={member.id} className="hover:shadow-md transition-shadow">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center gap-3">
+                  <CardContent className="p-4">
+                    {/* Header - Compact */}
+                    <div className="flex items-center gap-3 mb-3">
                       <div className="relative">
-                        <Avatar className="w-12 h-12">
+                        <Avatar className="w-10 h-10">
                           <AvatarImage src={member.avatar} />
-                          <AvatarFallback className="bg-primary text-primary-foreground">
+                          <AvatarFallback className="bg-primary text-primary-foreground text-sm">
                             {member.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
                         <div className={cn(
-                          "absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-background",
+                          "absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-background",
                           getStatusColor(member.status)
                         )} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold truncate">{member.name}</h3>
-                        <p className="text-sm text-muted-foreground truncate">{member.role}</p>
-                        <Badge variant="outline" className="text-xs mt-1">
-                          {member.department}
-                        </Badge>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  
-                  <CardContent className="space-y-4">
-                    {/* Workload */}
-                    <div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>Workload</span>
-                        <span className={getWorkloadColor(member.workload)}>
-                          {member.workload}%
-                        </span>
-                      </div>
-                      <Progress value={member.workload} className="h-2" />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {member.currentCapacity}
-                      </p>
-                    </div>
-
-                    {/* Task Stats */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="text-center p-3 bg-green-50 rounded-lg">
-                        <div className="text-lg font-bold text-green-700">{member.tasksCompleted}</div>
-                        <div className="text-xs text-green-600">Completed</div>
-                      </div>
-                      <div className="text-center p-3 bg-blue-50 rounded-lg">
-                        <div className="text-lg font-bold text-blue-700">{member.tasksInProgress}</div>
-                        <div className="text-xs text-blue-600">In Progress</div>
+                        <h3 className="font-semibold text-sm truncate">{member.name}</h3>
+                        <p className="text-xs text-muted-foreground truncate">{member.role}</p>
                       </div>
                     </div>
 
-                    {/* Collaboration Score */}
-                    <div className="p-3 bg-purple-50 rounded-lg">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm text-purple-700">Collaboration Score</span>
-                        <span className="font-bold text-purple-800">{member.collaboration}%</span>
+                    {/* Quick Stats - Compact */}
+                    <div className="space-y-2 mb-3">
+                      {/* Workload */}
+                      <div>
+                        <div className="flex justify-between text-xs mb-1">
+                          <span>Workload</span>
+                          <span className={getWorkloadColor(member.workload)}>
+                            {member.workload}%
+                          </span>
+                        </div>
+                        <Progress value={member.workload} className="h-1.5" />
                       </div>
-                      <Progress value={member.collaboration} className="h-2" />
+
+                      {/* Task Stats - Horizontal */}
+                      <div className="flex justify-between text-xs">
+                        <div className="text-center">
+                          <div className="font-bold text-green-600">{member.tasksCompleted}</div>
+                          <div className="text-green-500">Done</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-bold text-blue-600">{member.tasksInProgress}</div>
+                          <div className="text-blue-500">Active</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-bold text-purple-600">{member.collaboration}%</div>
+                          <div className="text-purple-500">Collab</div>
+                        </div>
+                      </div>
+
+                      {/* Department Badge */}
+                      <Badge variant="outline" className="text-xs w-fit">
+                        {member.department}
+                      </Badge>
                     </div>
 
-                    {/* Skills */}
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs text-muted-foreground">Skills:</span>
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {member.skills.slice(0, 3).map((skill, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
-                            {skill}
-                          </Badge>
-                        ))}
-                        {member.skills.length > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{member.skills.length - 3}
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex gap-2 pt-2">
-                      <Button size="sm" variant="outline" className="flex-1">
+                    {/* Actions - Compact */}
+                    <div className="flex gap-1">
+                      <Button size="sm" variant="outline" className="flex-1 h-8 text-xs">
                         <MessageSquare className="w-3 h-3 mr-1" />
-                        Message
+                        Chat
                       </Button>
-                      <Button size="sm" variant="outline" className="flex-1">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="flex-1 h-8 text-xs"
+                        onClick={() => {
+                          setSelectedMember(member);
+                          setIsViewMemberOpen(true);
+                        }}
+                      >
                         <Eye className="w-3 h-3 mr-1" />
                         View
                       </Button>
@@ -2149,6 +2136,301 @@ const AdminCollaboration = () => {
                 </Button>
               </div>
             </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Member Detail View Dialog */}
+        <Dialog open={isViewMemberOpen} onOpenChange={setIsViewMemberOpen}>
+          <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Users className="w-5 h-5 text-admin" />
+                Team Member Details
+              </DialogTitle>
+            </DialogHeader>
+            
+            {selectedMember && (
+              <div className="space-y-6">
+                {/* Member Profile Header */}
+                <Card className="border-admin/20">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-6">
+                      {/* Avatar & Basic Info */}
+                      <div className="flex flex-col items-center">
+                        <div className="relative">
+                          <Avatar className="w-24 h-24">
+                            <AvatarImage src={selectedMember.avatar} />
+                            <AvatarFallback className="bg-gradient-to-r from-admin to-admin-glow text-white text-2xl">
+                              {selectedMember.name.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className={cn(
+                            "absolute -bottom-2 -right-2 w-6 h-6 rounded-full border-4 border-background flex items-center justify-center",
+                            getStatusColor(selectedMember.status)
+                          )}>
+                            <div className="w-2 h-2 rounded-full bg-white"></div>
+                          </div>
+                        </div>
+                        <Badge 
+                          variant={selectedMember.status === 'online' ? 'default' : 'secondary'} 
+                          className="mt-2 capitalize"
+                        >
+                          {selectedMember.status.replace('-', ' ')}
+                        </Badge>
+                      </div>
+
+                      {/* Personal Info */}
+                      <div className="flex-1 space-y-4">
+                        <div>
+                          <h2 className="text-2xl font-bold">{selectedMember.name}</h2>
+                          <p className="text-lg text-muted-foreground">{selectedMember.role}</p>
+                          <p className="text-sm text-muted-foreground">{selectedMember.email}</p>
+                        </div>
+
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          <div>
+                            <Label className="text-xs text-muted-foreground">Department</Label>
+                            <div className="font-medium">{selectedMember.department}</div>
+                          </div>
+                          <div>
+                            <Label className="text-xs text-muted-foreground">Last Activity</Label>
+                            <div className="font-medium">{selectedMember.lastActivity}</div>
+                          </div>
+                          <div>
+                            <Label className="text-xs text-muted-foreground">Join Date</Label>
+                            <div className="font-medium">Jan 2023</div>
+                          </div>
+                          <div>
+                            <Label className="text-xs text-muted-foreground">Employee ID</Label>
+                            <div className="font-medium">EMP-{selectedMember.id.padStart(4, '0')}</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex flex-col gap-2">
+                        <Button className="gap-2 bg-gradient-to-r from-admin to-admin-glow">
+                          <MessageSquare className="w-4 h-4" />
+                          Send Message
+                        </Button>
+                        <Button variant="outline" className="gap-2">
+                          <Calendar className="w-4 h-4" />
+                          Schedule Meeting
+                        </Button>
+                        <Button variant="outline" className="gap-2">
+                          <Settings className="w-4 h-4" />
+                          Edit Profile
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Performance Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card className="border-green-200 bg-green-50">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                          <CheckCircle className="w-6 h-6 text-green-600" />
+                        </div>
+                        <div>
+                          <div className="text-2xl font-bold text-green-700">{selectedMember.tasksCompleted}</div>
+                          <div className="text-sm text-green-600">Tasks Completed</div>
+                          <div className="text-xs text-muted-foreground">This month</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-blue-200 bg-blue-50">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                          <Activity className="w-6 h-6 text-blue-600" />
+                        </div>
+                        <div>
+                          <div className="text-2xl font-bold text-blue-700">{selectedMember.tasksInProgress}</div>
+                          <div className="text-sm text-blue-600">Active Tasks</div>
+                          <div className="text-xs text-muted-foreground">In progress</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-purple-200 bg-purple-50">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
+                          <TrendingUp className="w-6 h-6 text-purple-600" />
+                        </div>
+                        <div>
+                          <div className="text-2xl font-bold text-purple-700">{selectedMember.collaboration}%</div>
+                          <div className="text-sm text-purple-600">Collaboration</div>
+                          <div className="text-xs text-muted-foreground">Team engagement</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Detailed Information */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Workload & Capacity */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Target className="w-5 h-5 text-admin" />
+                        Workload & Capacity
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm font-medium">Current Workload</span>
+                          <span className={cn("text-sm font-bold", getWorkloadColor(selectedMember.workload))}>
+                            {selectedMember.workload}%
+                          </span>
+                        </div>
+                        <Progress value={selectedMember.workload} className="h-3" />
+                        <p className="text-xs text-muted-foreground mt-1">{selectedMember.currentCapacity}</p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="text-sm font-medium">Capacity Breakdown</div>
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-xs">
+                            <span>Regular Tasks</span>
+                            <span>28h</span>
+                          </div>
+                          <div className="flex justify-between text-xs">
+                            <span>Meetings</span>
+                            <span>6h</span>
+                          </div>
+                          <div className="flex justify-between text-xs">
+                            <span>Available</span>
+                            <span>6h</span>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Skills & Expertise */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Star className="w-5 h-5 text-admin" />
+                        Skills & Expertise
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {selectedMember.skills.map((skill, index) => (
+                          <div key={index} className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
+                            <span className="font-medium text-sm">{skill}</span>
+                            <div className="flex items-center gap-2">
+                              <div className="flex">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star 
+                                    key={i} 
+                                    className={cn(
+                                      "w-3 h-3",
+                                      i < (Math.floor(Math.random() * 2) + 3) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                                    )} 
+                                  />
+                                ))}
+                              </div>
+                              <span className="text-xs text-muted-foreground">
+                                {Math.floor(Math.random() * 3) + 2}y
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Active Projects */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Briefcase className="w-5 h-5 text-admin" />
+                        Active Projects
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {selectedMember.activeProjects.map((project, index) => (
+                          <div key={index} className="p-3 rounded-lg border border-border/50">
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="font-medium text-sm">{project}</h4>
+                              <Badge variant="outline" className="text-xs">Active</Badge>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Progress value={Math.floor(Math.random() * 40) + 40} className="flex-1 h-2" />
+                              <span className="text-xs text-muted-foreground">
+                                {Math.floor(Math.random() * 40) + 40}%
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Recent Activity */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Clock className="w-5 h-5 text-admin" />
+                        Recent Activity
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div className="flex items-start gap-3">
+                          <div className="w-2 h-2 rounded-full bg-green-500 mt-2"></div>
+                          <div>
+                            <div className="text-sm font-medium">Completed task review</div>
+                            <div className="text-xs text-muted-foreground">2 hours ago</div>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <div className="w-2 h-2 rounded-full bg-blue-500 mt-2"></div>
+                          <div>
+                            <div className="text-sm font-medium">Updated project status</div>
+                            <div className="text-xs text-muted-foreground">4 hours ago</div>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <div className="w-2 h-2 rounded-full bg-purple-500 mt-2"></div>
+                          <div>
+                            <div className="text-sm font-medium">Attended team meeting</div>
+                            <div className="text-xs text-muted-foreground">1 day ago</div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Action Footer */}
+                <div className="flex gap-3 pt-4 border-t">
+                  <Button className="flex-1 bg-gradient-to-r from-admin to-admin-glow">
+                    <Edit className="w-4 h-4 mr-2" />
+                    Edit Member Profile
+                  </Button>
+                  <Button variant="outline" className="gap-2">
+                    <Download className="w-4 h-4" />
+                    Export Report
+                  </Button>
+                  <Button variant="outline" onClick={() => setIsViewMemberOpen(false)}>
+                    Close
+                  </Button>
+                </div>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
       </div>
