@@ -77,7 +77,7 @@ const Collaboration = () => {
   // Dialog states
   const [isLogHoursOpen, setIsLogHoursOpen] = useState(false);
   const [isTeamChatOpen, setIsTeamChatOpen] = useState(false);
-  
+  const [isScheduleMeetingOpen, setIsScheduleMeetingOpen] = useState(false);
   const [isStartLearningOpen, setIsStartLearningOpen] = useState(false);
   const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
   const [isContinueLearningOpen, setIsContinueLearningOpen] = useState(false);
@@ -382,6 +382,40 @@ const Collaboration = () => {
     setChatMessage("");
   };
 
+  const handleScheduleMeeting = () => {
+    if (!meetingTitle || !meetingDate || !meetingTime || meetingAttendees.length === 0) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields and select at least one attendee",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const attendeeNames = meetingAttendees
+      .map(id => teamMembers.find(member => member.id === id)?.name)
+      .filter(Boolean)
+      .join(", ");
+
+    const roomName = meetingType === "in-person" && meetingRoom 
+      ? meetingRooms.find(room => room.id === meetingRoom)?.name 
+      : "";
+
+    toast({
+      title: "Meeting Scheduled Successfully! 🎉",
+      description: `"${meetingTitle}" on ${format(meetingDate, "PPP")} at ${meetingTime} (${meetingDuration}min) with ${attendeeNames}${roomName ? ` in ${roomName}` : ""}`,
+    });
+
+    setMeetingTitle("");
+    setMeetingDescription("");
+    setMeetingDate(undefined);
+    setMeetingTime("");
+    setMeetingDuration("60");
+    setMeetingType("video");
+    setMeetingRoom("");
+    setMeetingAttendees([]);
+    setIsScheduleMeetingOpen(false);
+  };
 
   const handleStartLearning = () => {
     if (!selectedLearningCourse) {
@@ -483,6 +517,16 @@ const Collaboration = () => {
               </Dialog>
             </Button>
             
+            <Button className="gap-2">
+              <Dialog open={isScheduleMeetingOpen} onOpenChange={setIsScheduleMeetingOpen}>
+                <DialogTrigger asChild>
+                  <span className="flex items-center gap-2 cursor-pointer">
+                    <CalendarIcon className="w-4 h-4" />
+                    Schedule Meeting
+                  </span>
+                </DialogTrigger>
+              </Dialog>
+            </Button>
           </div>
         </div>
 
@@ -1063,6 +1107,17 @@ const Collaboration = () => {
                     {/* Schedule Meeting Tool */}
                     <Card className="hover:shadow-md transition-all duration-200">
                       <CardContent className="p-4">
+                        <Dialog open={isScheduleMeetingOpen} onOpenChange={setIsScheduleMeetingOpen}>
+                          <DialogTrigger asChild>
+                            <div className="flex flex-col items-center gap-2 cursor-pointer mb-3">
+                              <div className="p-3 bg-primary/10 rounded-lg">
+                                <CalendarIcon className="w-6 h-6 text-primary" />
+                              </div>
+                              <h5 className="font-medium">Schedule Meeting</h5>
+                              <span className="text-xs text-muted-foreground">Next available: 2 PM</span>
+                            </div>
+                          </DialogTrigger>
+                        </Dialog>
                         
                         <div className="flex gap-2 mt-3 pt-3 border-t">
                           <Button 
@@ -1407,6 +1462,229 @@ const Collaboration = () => {
           </DialogContent>
         </Dialog>
 
+        {/* Enhanced Schedule Meeting Dialog */}
+        <Dialog open={isScheduleMeetingOpen} onOpenChange={setIsScheduleMeetingOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="text-xl">Schedule Meeting</DialogTitle>
+              <p className="text-muted-foreground">Create and schedule a new team meeting</p>
+            </DialogHeader>
+            <div className="space-y-6">
+              {/* Meeting Basic Info */}
+              <div className="grid grid-cols-1 gap-4">
+                <div>
+                  <Label htmlFor="meeting-title" className="text-sm font-medium">Meeting Title *</Label>
+                  <Input
+                    id="meeting-title"
+                    placeholder="Enter meeting title"
+                    value={meetingTitle}
+                    onChange={(e) => setMeetingTitle(e.target.value)}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="meeting-description" className="text-sm font-medium">Description</Label>
+                  <Textarea
+                    id="meeting-description"
+                    placeholder="Meeting agenda or description"
+                    value={meetingDescription}
+                    onChange={(e) => setMeetingDescription(e.target.value)}
+                    className="mt-1 min-h-[80px]"
+                  />
+                </div>
+              </div>
+
+              {/* Meeting Type Selection */}
+              <div>
+                <Label className="text-sm font-medium">Meeting Type *</Label>
+                <div className="grid grid-cols-3 gap-3 mt-2">
+                  <button
+                    onClick={() => setMeetingType("video")}
+                    className={`p-3 rounded-lg border-2 transition-all ${
+                      meetingType === "video" ? 'border-primary bg-primary/5' : 'border-muted hover:border-primary/50'
+                    }`}
+                  >
+                    <Video className="w-5 h-5 mx-auto mb-2 text-primary" />
+                    <div className="text-sm font-medium">Video Call</div>
+                    <div className="text-xs text-muted-foreground">Online meeting</div>
+                  </button>
+                  <button
+                    onClick={() => setMeetingType("audio")}
+                    className={`p-3 rounded-lg border-2 transition-all ${
+                      meetingType === "audio" ? 'border-primary bg-primary/5' : 'border-muted hover:border-primary/50'
+                    }`}
+                  >
+                    <Phone className="w-5 h-5 mx-auto mb-2 text-primary" />
+                    <div className="text-sm font-medium">Audio Call</div>
+                    <div className="text-xs text-muted-foreground">Voice only</div>
+                  </button>
+                  <button
+                    onClick={() => setMeetingType("in-person")}
+                    className={`p-3 rounded-lg border-2 transition-all ${
+                      meetingType === "in-person" ? 'border-primary bg-primary/5' : 'border-muted hover:border-primary/50'
+                    }`}
+                  >
+                    <MapPin className="w-5 h-5 mx-auto mb-2 text-primary" />
+                    <div className="text-sm font-medium">In Person</div>
+                    <div className="text-xs text-muted-foreground">Physical location</div>
+                  </button>
+                </div>
+              </div>
+
+              {/* Date, Time, and Duration */}
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Date *</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start text-left font-normal mt-1"
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {meetingDate ? format(meetingDate, "PPP") : "Select date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={meetingDate}
+                        onSelect={setMeetingDate}
+                        initialFocus
+                        className="p-3 pointer-events-auto"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div>
+                  <Label htmlFor="meeting-time" className="text-sm font-medium">Time *</Label>
+                  <Input
+                    id="meeting-time"
+                    type="time"
+                    value={meetingTime}
+                    onChange={(e) => setMeetingTime(e.target.value)}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Duration</Label>
+                  <Select value={meetingDuration} onValueChange={setMeetingDuration}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="15">15 minutes</SelectItem>
+                      <SelectItem value="30">30 minutes</SelectItem>
+                      <SelectItem value="60">1 hour</SelectItem>
+                      <SelectItem value="90">1.5 hours</SelectItem>
+                      <SelectItem value="120">2 hours</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Meeting Room Selection (for in-person meetings) */}
+              {meetingType === "in-person" && (
+                <div>
+                  <Label className="text-sm font-medium">Meeting Room</Label>
+                  <div className="grid grid-cols-2 gap-3 mt-2">
+                    {meetingRooms.map((room) => (
+                      <button
+                        key={room.id}
+                        onClick={() => setMeetingRoom(room.id)}
+                        disabled={!room.available}
+                        className={`p-3 rounded-lg border-2 text-left transition-all ${
+                          meetingRoom === room.id ? 'border-primary bg-primary/5' : 'border-muted hover:border-primary/50'
+                        } ${!room.available ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="font-medium text-sm">{room.name}</div>
+                          <div className={`w-2 h-2 rounded-full ${room.available ? 'bg-green-500' : 'bg-red-500'}`} />
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          Capacity: {room.capacity} people
+                        </div>
+                        {!room.available && (
+                          <div className="text-xs text-red-500">Unavailable</div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {/* Enhanced Attendees Selection */}
+              <div>
+                <Label className="text-sm font-medium">Attendees *</Label>
+                <div className="mt-2">
+                  <div className="grid grid-cols-1 gap-2 max-h-40 overflow-y-auto border rounded-lg p-3">
+                    {teamMembers.map((member) => (
+                      <div key={member.id} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50">
+                        <Checkbox
+                          id={`attendee-${member.id}`}
+                          checked={meetingAttendees.includes(member.id)}
+                          onCheckedChange={() => handleToggleAttendee(member.id)}
+                        />
+                        <Avatar className="w-8 h-8">
+                          <AvatarFallback className="text-xs bg-gradient-to-br from-orange-500 to-red-500 text-white">
+                            {member.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <div className="font-medium text-sm">{member.name}</div>
+                          <div className="text-xs text-muted-foreground flex items-center gap-2">
+                            <span>{member.role}</span>
+                            <div className="flex items-center gap-1">
+                              <div className={cn("w-2 h-2 rounded-full", getStatusColor(member.status))} />
+                              <span className="capitalize">{member.status}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {member.status === 'online' ? '✅ Available' : 
+                           member.status === 'in-meeting' ? '🔴 In Meeting' : 
+                           member.status === 'away' ? '🟡 Away' : '⚫ Offline'}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {meetingAttendees.length > 0 && (
+                    <div className="mt-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
+                      <div className="text-sm font-medium mb-2 text-primary">
+                        Selected Attendees ({meetingAttendees.length})
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {meetingAttendees.map((id) => {
+                          const member = teamMembers.find(m => m.id === id);
+                          return member ? (
+                            <div key={id} className="flex items-center gap-1 bg-background rounded-full px-2 py-1">
+                              <Avatar className="w-4 h-4">
+                                <AvatarFallback className="text-xs">
+                                  {member.name.split(' ').map(n => n[0]).join('')}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span className="text-xs font-medium">{member.name}</span>
+                            </div>
+                          ) : null;
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4">
+                <Button onClick={handleScheduleMeeting} className="flex-1 h-11">
+                  <CalendarIcon className="w-4 h-4 mr-2" />
+                  Schedule Meeting
+                </Button>
+                <Button variant="outline" onClick={() => setIsScheduleMeetingOpen(false)} className="flex-1 h-11">
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Start Learning Dialog */}
         <Dialog open={isStartLearningOpen} onOpenChange={setIsStartLearningOpen}>

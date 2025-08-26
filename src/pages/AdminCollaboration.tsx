@@ -60,7 +60,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-
+import { ScheduleMeetingDialog } from "@/components/ScheduleMeetingDialog";
 
 const AdminCollaboration = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -81,7 +81,7 @@ const AdminCollaboration = () => {
   const [isAnalyticsToolOpen, setIsAnalyticsToolOpen] = useState(false);
   const [isManageToolOpen, setIsManageToolOpen] = useState(false);
   const [selectedTool, setSelectedTool] = useState<any>(null);
-  
+  const [isScheduleMeetingOpen, setIsScheduleMeetingOpen] = useState(false);
   
   // Enhanced Program creation states with assessments
   const [programTitle, setProgramTitle] = useState("");
@@ -1214,6 +1214,15 @@ const AdminCollaboration = () => {
                       <Plus className="w-6 h-6" />
                       Create Team
                       <span className="text-xs text-muted-foreground">Set up new collaboration</span>
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="gap-2 h-auto py-4 flex-col"
+                      onClick={() => setIsScheduleMeetingOpen(true)}
+                    >
+                      <CalendarIcon className="w-6 h-6" />
+                      Schedule Meeting
+                      <span className="text-xs text-muted-foreground">Organize team sync</span>
                     </Button>
                     <Button variant="outline" className="gap-2 h-auto py-4 flex-col">
                       <Share2 className="w-6 h-6" />
@@ -2420,6 +2429,11 @@ const AdminCollaboration = () => {
           </DialogContent>
         </Dialog>
 
+        {/* Schedule Meeting Dialog */}
+        <ScheduleMeetingDialog 
+          open={isScheduleMeetingOpen} 
+          onOpenChange={setIsScheduleMeetingOpen} 
+        />
 
       </div>
     </div>
