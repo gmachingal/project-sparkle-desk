@@ -567,14 +567,14 @@ const DocumentMockup = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-6 py-10">
         {/* Page Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-              Documentation Hub
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
+          <div className="space-y-2">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
+              Knowledge Brain
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-lg text-muted-foreground">
               Create, collaborate, and share knowledge across your organization
             </p>
           </div>
@@ -582,7 +582,7 @@ const DocumentMockup = () => {
           <div className="flex items-center gap-3">
             <Dialog open={isTemplateDialogOpen} onOpenChange={setIsTemplateDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="gap-2">
+                <Button variant="outline" className="gap-2 h-11 px-6 border-2 hover:border-primary/50">
                   <BookOpen className="w-4 h-4" />
                   Templates
                 </Button>
@@ -591,14 +591,14 @@ const DocumentMockup = () => {
             
             <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
               <DialogTrigger asChild>
-                <Button className="gap-2 bg-gradient-to-r from-primary to-primary-glow">
+                <Button className="gap-2 h-11 px-6 bg-gradient-to-r from-primary to-primary-glow hover:from-primary-glow hover:to-primary shadow-lg shadow-primary/25">
                   <Plus className="w-4 h-4" />
                   Create Document
                 </Button>
               </DialogTrigger>
             </Dialog>
             
-            <Button variant="outline" onClick={handleEditDocument} className="gap-2">
+            <Button variant="outline" onClick={handleEditDocument} className="gap-2 h-11 px-6 border-2 hover:border-primary/50">
               <Edit className="w-4 h-4" />
               Open Editor
             </Button>
@@ -606,29 +606,29 @@ const DocumentMockup = () => {
         </div>
 
         {/* Search and Filters */}
-        <div className="flex flex-col lg:flex-row gap-4 mb-8">
+        <div className="flex flex-col lg:flex-row gap-6 mb-10">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
             <Input
               placeholder="Search documents, spaces, and content..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="pl-12 h-12 text-base border-2 focus:border-primary/50"
             />
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <Select value={selectedSpace} onValueChange={setSelectedSpace}>
-              <SelectTrigger className="w-48">
+              <SelectTrigger className="w-56 h-12 border-2">
                 <SelectValue placeholder="All Spaces" />
               </SelectTrigger>
-              <SelectContent className="bg-background border shadow-lg z-50">
+              <SelectContent className="bg-background border-2 shadow-xl z-50">
                 <SelectItem value="all">All Spaces</SelectItem>
                 {spaces.map((space) => (
                   <SelectItem key={space.id} value={space.id}>
-                    <div className="flex items-center gap-2">
-                      <span>{space.icon}</span>
-                      {space.name}
+                    <div className="flex items-center gap-3">
+                      <span className="text-lg">{space.icon}</span>
+                      <span className="font-medium">{space.name}</span>
                     </div>
                   </SelectItem>
                 ))}
@@ -637,40 +637,40 @@ const DocumentMockup = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-5 gap-10">
           {/* Main Content */}
-          <div className="lg:col-span-3">
-            <Tabs defaultValue="documents" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="documents" className="flex items-center gap-2">
-                  <FileText className="w-4 h-4" />
+          <div className="xl:col-span-4">
+            <Tabs defaultValue="documents" className="space-y-8">
+              <TabsList className="grid w-full grid-cols-4 h-14 p-1 bg-muted/50">
+                <TabsTrigger value="documents" className="flex items-center gap-3 h-12 text-base font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                  <FileText className="w-5 h-5" />
                   Documents
                 </TabsTrigger>
-                <TabsTrigger value="spaces" className="flex items-center gap-2">
-                  <FolderOpen className="w-4 h-4" />
+                <TabsTrigger value="spaces" className="flex items-center gap-3 h-12 text-base font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                  <FolderOpen className="w-5 h-5" />
                   Spaces
                 </TabsTrigger>
-                <TabsTrigger value="recent" className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
+                <TabsTrigger value="recent" className="flex items-center gap-3 h-12 text-base font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                  <Clock className="w-5 h-5" />
                   Recent
                 </TabsTrigger>
-                <TabsTrigger value="starred" className="flex items-center gap-2">
-                  <Star className="w-4 h-4" />
+                <TabsTrigger value="starred" className="flex items-center gap-3 h-12 text-base font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                  <Star className="w-5 h-5" />
                   Starred
                 </TabsTrigger>
               </TabsList>
 
               {/* Documents Tab */}
-              <TabsContent value="documents" className="space-y-4">
+              <TabsContent value="documents" className="space-y-6">
                 {/* View Mode Selector - Only for Documents Tab */}
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">All Documents</h3>
-                  <div className="flex items-center border rounded-lg">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-2xl font-bold text-foreground">All Documents</h3>
+                  <div className="flex items-center bg-muted/50 rounded-lg p-1">
                     <Button 
                       variant={viewMode === "grid" ? "default" : "ghost"} 
                       size="sm" 
                       onClick={() => setViewMode("grid")}
-                      className="rounded-r-none"
+                      className={`h-10 px-4 rounded-md ${viewMode === "grid" ? "bg-background shadow-sm" : ""}`}
                     >
                       Grid
                     </Button>
@@ -678,7 +678,7 @@ const DocumentMockup = () => {
                       variant={viewMode === "list" ? "default" : "ghost"} 
                       size="sm" 
                       onClick={() => setViewMode("list")}
-                      className="rounded-none"
+                      className={`h-10 px-4 rounded-md ${viewMode === "list" ? "bg-background shadow-sm" : ""}`}
                     >
                       List
                     </Button>
@@ -686,43 +686,43 @@ const DocumentMockup = () => {
                       variant={viewMode === "tree" ? "default" : "ghost"} 
                       size="sm" 
                       onClick={() => setViewMode("tree")}
-                      className="rounded-l-none"
+                      className={`h-10 px-4 rounded-md ${viewMode === "tree" ? "bg-background shadow-sm" : ""}`}
                     >
                       Tree
                     </Button>
                   </div>
                 </div>
                 {viewMode === "grid" && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {documents.map((doc) => (
-                      <Card key={doc.id} className="hover:shadow-lg transition-all duration-200 group cursor-pointer">
-                        <CardHeader className="pb-3">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">
+                      <Card key={doc.id} className="hover:shadow-xl transition-all duration-300 group cursor-pointer border-2 hover:border-primary/20 bg-gradient-to-br from-background to-muted/20">
+                        <CardHeader className="pb-4">
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex-1 min-w-0">
+                              <CardTitle className="text-xl line-clamp-2 group-hover:text-primary transition-colors duration-200 leading-tight">
                                 {doc.title}
                               </CardTitle>
-                              <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                              <p className="text-muted-foreground mt-3 line-clamp-3 leading-relaxed">
                                 {doc.content}
                               </p>
                             </div>
-                            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                              <MoreHorizontal className="w-4 h-4" />
+                            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-all duration-200 h-10 w-10 p-0 hover:bg-muted/50">
+                              <MoreHorizontal className="w-5 h-5" />
                             </Button>
                           </div>
                           
-                          <div className="flex items-center gap-2 mt-3">
-                            <Badge className={getStatusColor(doc.status)} variant="outline">
+                          <div className="flex items-center gap-3 mt-4">
+                            <Badge className={`${getStatusColor(doc.status)} border-2`} variant="outline">
                               {doc.status}
                             </Badge>
-                            <div className="flex gap-1">
+                            <div className="flex gap-2">
                               {doc.tags.slice(0, 2).map((tag) => (
-                                <Badge key={tag} variant="secondary" className="text-xs">
+                                <Badge key={tag} variant="secondary" className="text-xs px-2 py-1 bg-primary/10 text-primary border-primary/20">
                                   {tag}
                                 </Badge>
                               ))}
                               {doc.tags.length > 2 && (
-                                <Badge variant="secondary" className="text-xs">
+                                <Badge variant="secondary" className="text-xs px-2 py-1 bg-muted text-muted-foreground">
                                   +{doc.tags.length - 2}
                                 </Badge>
                               )}
@@ -730,47 +730,47 @@ const DocumentMockup = () => {
                           </div>
                         </CardHeader>
                         
-                        <CardContent className="pt-0">
-                          <div className="flex items-center justify-between text-sm text-muted-foreground">
-                            <div className="flex items-center gap-2">
-                              <Avatar className="w-6 h-6">
-                                <AvatarFallback className="text-xs">
+                        <CardContent className="pt-0 pb-6">
+                          <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+                            <div className="flex items-center gap-3">
+                              <Avatar className="w-8 h-8 border-2 border-background shadow-sm">
+                                <AvatarFallback className="text-sm font-medium bg-gradient-to-br from-primary/20 to-primary-glow/20 text-primary">
                                   {doc.author.split(' ').map(n => n[0]).join('')}
                                 </AvatarFallback>
                               </Avatar>
-                              <span>{doc.author}</span>
+                              <span className="font-medium">{doc.author}</span>
                             </div>
-                            <span>{doc.updatedAt}</span>
+                            <span className="text-xs bg-muted/50 px-2 py-1 rounded-md">{doc.updatedAt}</span>
                           </div>
                           
-                          <div className="flex items-center justify-between mt-3 pt-3 border-t">
-                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                              <div className="flex items-center gap-1">
-                                <Eye className="w-3 h-3" />
-                                {doc.views}
+                          <div className="flex items-center justify-between mt-4 pt-4 border-t border-muted/50">
+                            <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                              <div className="flex items-center gap-2">
+                                <Eye className="w-4 h-4" />
+                                <span className="font-medium">{doc.views}</span>
                               </div>
-                              <div className="flex items-center gap-1">
-                                <MessageSquare className="w-3 h-3" />
-                                {doc.comments}
+                              <div className="flex items-center gap-2">
+                                <MessageSquare className="w-4 h-4" />
+                                <span className="font-medium">{doc.comments}</span>
                               </div>
-                              <div className="flex items-center gap-1">
-                                <Heart className="w-3 h-3" />
-                                {doc.likes}
+                              <div className="flex items-center gap-2">
+                                <Heart className="w-4 h-4" />
+                                <span className="font-medium">{doc.likes}</span>
                               </div>
                             </div>
                             
-                            <div className="flex items-center gap-1">
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                <Star className="w-3 h-3" />
+                            <div className="flex items-center gap-2">
+                              <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-primary/10 hover:text-primary transition-colors duration-200">
+                                <Star className="w-4 h-4" />
                               </Button>
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                <Share className="w-3 h-3" />
+                              <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-primary/10 hover:text-primary transition-colors duration-200">
+                                <Share className="w-4 h-4" />
                               </Button>
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => handleViewDocument(doc.id)}>
-                                <Eye className="w-3 h-3" />
+                              <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-primary/10 hover:text-primary transition-colors duration-200" onClick={() => handleViewDocument(doc.id)}>
+                                <Eye className="w-4 h-4" />
                               </Button>
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={handleEditDocument}>
-                                <Edit className="w-3 h-3" />
+                              <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-primary/10 hover:text-primary transition-colors duration-200" onClick={handleEditDocument}>
+                                <Edit className="w-4 h-4" />
                               </Button>
                             </div>
                           </div>
@@ -1208,48 +1208,50 @@ const DocumentMockup = () => {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="xl:col-span-1 space-y-6">
             {/* Quick Actions */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Quick Actions</CardTitle>
+            <Card className="border-2 shadow-lg bg-gradient-to-br from-background to-muted/30">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl font-bold">Quick Actions</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
-                <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setIsCreateDialogOpen(true)}>
-                  <FilePlus className="w-4 h-4" />
-                  Create Page
+              <CardContent className="space-y-3">
+                <Button variant="outline" className="w-full justify-start gap-3 h-12 border-2 hover:border-primary/50 hover:bg-primary/5" onClick={() => setIsCreateDialogOpen(true)}>
+                  <FilePlus className="w-5 h-5" />
+                  <span className="font-medium">Create Page</span>
                 </Button>
-                <Button variant="outline" className="w-full justify-start gap-2">
-                  <Folder className="w-4 h-4" />
-                  New Space
+                <Button variant="outline" className="w-full justify-start gap-3 h-12 border-2 hover:border-primary/50 hover:bg-primary/5">
+                  <Folder className="w-5 h-5" />
+                  <span className="font-medium">New Space</span>
                 </Button>
-                <Button variant="outline" className="w-full justify-start gap-2">
-                  <Upload className="w-4 h-4" />
-                  Upload File
+                <Button variant="outline" className="w-full justify-start gap-3 h-12 border-2 hover:border-primary/50 hover:bg-primary/5">
+                  <Upload className="w-5 h-5" />
+                  <span className="font-medium">Upload File</span>
                 </Button>
-                <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setIsTemplateDialogOpen(true)}>
-                  <BookOpen className="w-4 h-4" />
-                  Browse Templates
+                <Button variant="outline" className="w-full justify-start gap-3 h-12 border-2 hover:border-primary/50 hover:bg-primary/5" onClick={() => setIsTemplateDialogOpen(true)}>
+                  <BookOpen className="w-5 h-5" />
+                  <span className="font-medium">Browse Templates</span>
                 </Button>
-                <Button variant="outline" className="w-full justify-start gap-2" onClick={handleEditDocument}>
-                  <Edit className="w-4 h-4" />
-                  Open Editor
+                <Button variant="outline" className="w-full justify-start gap-3 h-12 border-2 hover:border-primary/50 hover:bg-primary/5" onClick={handleEditDocument}>
+                  <Edit className="w-5 h-5" />
+                  <span className="font-medium">Open Editor</span>
                 </Button>
               </CardContent>
             </Card>
 
             {/* Popular Templates */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Popular Templates</CardTitle>
+            <Card className="border-2 shadow-lg bg-gradient-to-br from-background to-muted/30">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl font-bold">Popular Templates</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-4">
                 {templates.slice(0, 4).map((template) => (
-                  <div key={template.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
-                    <template.icon className="w-5 h-5 text-primary" />
-                    <div>
-                      <p className="font-medium text-sm">{template.name}</p>
-                      <p className="text-xs text-muted-foreground">{template.category}</p>
+                  <div key={template.id} className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer border border-transparent hover:border-primary/20">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <template.icon className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-sm">{template.name}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{template.category}</p>
                     </div>
                   </div>
                 ))}
@@ -1257,26 +1259,26 @@ const DocumentMockup = () => {
             </Card>
 
             {/* Analytics */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Your Stats</CardTitle>
+            <Card className="border-2 shadow-lg bg-gradient-to-br from-background to-muted/30">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl font-bold">Your Stats</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Documents Created</span>
-                  <span className="font-medium">12</span>
+                  <span className="text-muted-foreground font-medium">Documents Created</span>
+                  <span className="text-2xl font-bold text-primary">12</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Total Views</span>
-                  <span className="font-medium">1,234</span>
+                  <span className="text-muted-foreground font-medium">Total Views</span>
+                  <span className="text-2xl font-bold text-primary">1,234</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Comments</span>
-                  <span className="font-medium">56</span>
+                  <span className="text-muted-foreground font-medium">Comments</span>
+                  <span className="text-2xl font-bold text-primary">56</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Collaborations</span>
-                  <span className="font-medium">8</span>
+                  <span className="text-muted-foreground font-medium">Collaborations</span>
+                  <span className="text-2xl font-bold text-primary">8</span>
                 </div>
               </CardContent>
             </Card>
