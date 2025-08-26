@@ -313,7 +313,7 @@ const DocumentMockup = () => {
   };
 
   if (showEditor) {
-    return <DocumentEditor />;
+    return <DocumentEditor onClose={() => setShowEditor(false)} />;
   }
 
   return (

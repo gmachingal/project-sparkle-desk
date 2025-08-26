@@ -52,7 +52,8 @@ import {
   MessageCircle,
   Paperclip,
   Smile,
-  Circle
+  Circle,
+  ArrowLeft
 } from "lucide-react";
 
 interface Comment {
@@ -76,7 +77,7 @@ interface Collaborator {
   cursor?: { position: number; color: string };
 }
 
-export function DocumentEditor() {
+export function DocumentEditor({ onClose }: { onClose?: () => void }) {
   const [title, setTitle] = useState("Product Requirements Document - Mobile App V2.0");
   const [content, setContent] = useState(`# Product Requirements Document
 
@@ -243,6 +244,13 @@ This document outlines the requirements for version 2.0 of our mobile applicatio
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
+              {onClose && (
+                <Button variant="outline" size="sm" onClick={onClose} className="gap-2">
+                  <ArrowLeft className="w-4 h-4" />
+                  Back to Hub
+                </Button>
+              )}
+              <div className="flex items-center gap-2">
               <Input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -251,8 +259,8 @@ This document outlines the requirements for version 2.0 of our mobile applicatio
               <Badge variant="outline" className="bg-green-100 text-green-800">
                 Published
               </Badge>
+              </div>
             </div>
-            
             <div className="flex items-center gap-2">
               {/* Collaborators */}
               <div className="flex items-center -space-x-2">
