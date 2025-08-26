@@ -21,15 +21,14 @@ export const DocumentView = ({ document, onBack, onEdit }: DocumentViewProps) =>
   return (
     <>
       {/* Back Button Above Header */}
-      <div className="border-b backdrop-blur-sm bg-gradient-to-r from-primary/50 via-primary-glow/40 to-primary/50 shadow-lg shadow-black/20">
+      
         <div className="container mx-auto px-4 py-3">
           <Button variant="back" onClick={onBack}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Documents
           </Button>
         </div>
-      </div>
-
+      
       <div className="container mx-auto px-4 py-8">
         {/* Document View Header */}
         <div className="flex items-center justify-between mb-8">
