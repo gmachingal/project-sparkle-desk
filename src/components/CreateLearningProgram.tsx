@@ -566,9 +566,9 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Progress Header */}
-      <div className="space-y-4">
+      <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold">Create Learning Program</h2>
@@ -584,7 +584,7 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
         <Progress value={progress} className="h-2" />
         
         {/* Step Navigation */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-center gap-2">
           {steps.map((step, index) => (
             <div key={step.id} className="flex items-center">
               <div className={`flex items-center gap-2 ${
@@ -604,13 +604,13 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
                   {step.id < currentStep ? (
                     <CheckCircle className="w-4 h-4" />
                   ) : (
-                    <step.icon className="w-4 h-4" />
+                    React.createElement(step.icon, { className: "w-4 h-4" })
                   )}
                 </div>
                 <span className="text-sm font-medium hidden md:block">{step.title}</span>
               </div>
               {index < steps.length - 1 && (
-                <div className={`w-12 h-px mx-2 ${
+                <div className={`w-8 h-px mx-2 ${
                   step.id < currentStep ? "bg-success" : "bg-muted-foreground/30"
                 }`} />
               )}
@@ -620,20 +620,20 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
       </div>
 
       {/* Step Content */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+      <Card className="border-none shadow-sm">
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center gap-2 text-lg">
             {React.createElement(steps[currentStep - 1].icon, { className: "w-5 h-5 text-primary" })}
             {steps[currentStep - 1].title}
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-0">
           {renderStepContent()}
         </CardContent>
       </Card>
 
       {/* Navigation */}
-      <div className="flex items-center justify-between pt-4">
+      <div className="flex items-center justify-between pt-2 border-t bg-muted/30 -mx-6 px-6 py-4 mt-6">
         <Button
           variant="outline"
           onClick={prevStep}
@@ -645,17 +645,17 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
         </Button>
         
         <div className="flex gap-2">
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="ghost" onClick={onClose} className="text-muted-foreground">
             Cancel
           </Button>
           
           {currentStep === steps.length ? (
-            <Button onClick={handleSubmit} className="gap-2">
+            <Button onClick={handleSubmit} className="gap-2 bg-primary hover:bg-primary/90">
               <CheckCircle className="w-4 h-4" />
               Create Program
             </Button>
           ) : (
-            <Button onClick={nextStep} className="gap-2">
+            <Button onClick={nextStep} className="gap-2 bg-primary hover:bg-primary/90">
               Next
               <ChevronRight className="w-4 h-4" />
             </Button>

@@ -1641,20 +1641,22 @@ const AdminCollaboration = () => {
 
         {/* Create Learning Program Dialog */}
         <Dialog open={isCreateProgramOpen} onOpenChange={setIsCreateProgramOpen}>
-          <DialogContent className="sm:max-w-5xl max-h-[95vh] overflow-hidden">
-            <CreateLearningProgram 
-              onClose={() => setIsCreateProgramOpen(false)}
-              onSuccess={() => {
-                // Reset any form states if needed
-                setProgramTitle("");
-                setProgramDescription("");
-                setProgramCategory("");
-                setProgramType("");
-                setProgramDuration("");
-                setProgramLevel("");
-                setProgramCapacity("");
-              }}
-            />
+          <DialogContent className="sm:max-w-6xl max-h-[95vh] overflow-hidden p-0">
+            <div className="p-6 overflow-y-auto max-h-[95vh]">
+              <CreateLearningProgram 
+                onClose={() => setIsCreateProgramOpen(false)}
+                onSuccess={() => {
+                  // Reset any form states if needed
+                  setProgramTitle("");
+                  setProgramDescription("");
+                  setProgramCategory("");
+                  setProgramType("");
+                  setProgramDuration("");
+                  setProgramLevel("");
+                  setProgramCapacity("");
+                }}
+              />
+            </div>
             
             <div className="space-y-6">
               {/* Program Basic Info */}
