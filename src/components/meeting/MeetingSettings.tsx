@@ -31,100 +31,84 @@ export function MeetingSettings({ settings, onChange }: MeetingSettingsProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6 max-h-full overflow-y-auto">
       {/* Communication Settings */}
       <div>
-        <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+        <h4 className="text-sm font-medium mb-3 flex items-center gap-2 text-primary">
           <Mail className="w-4 h-4" />
-          Communication
+          Communication Settings
         </h4>
-        <div className="space-y-3">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <Label className="text-sm font-medium">Send Calendar Invitation</Label>
-                  <p className="text-xs text-muted-foreground">
-                    Email calendar invites to all attendees with meeting details
-                  </p>
-                </div>
-                <Switch
-                  checked={settings.sendCalendarInvite}
-                  onCheckedChange={(checked) => updateSetting('sendCalendarInvite', checked)}
-                />
-              </div>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 gap-3">
+          <div className="flex items-center justify-between p-3 rounded-lg border bg-card/50">
+            <div className="flex-1">
+              <Label className="text-sm font-medium">Calendar Invitation</Label>
+              <p className="text-xs text-muted-foreground mt-1">
+                Send email invites to attendees
+              </p>
+            </div>
+            <Switch
+              checked={settings.sendCalendarInvite}
+              onCheckedChange={(checked) => updateSetting('sendCalendarInvite', checked)}
+            />
+          </div>
 
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <Label className="text-sm font-medium">Send Reminder</Label>
-                  <p className="text-xs text-muted-foreground">
-                    Send reminder notifications before the meeting
-                  </p>
-                </div>
-                <Switch
-                  checked={settings.sendReminder}
-                  onCheckedChange={(checked) => updateSetting('sendReminder', checked)}
-                />
-              </div>
-            </CardContent>
-          </Card>
+          <div className="flex items-center justify-between p-3 rounded-lg border bg-card/50">
+            <div className="flex-1">
+              <Label className="text-sm font-medium">Meeting Reminders</Label>
+              <p className="text-xs text-muted-foreground mt-1">
+                Send notifications before meeting
+              </p>
+            </div>
+            <Switch
+              checked={settings.sendReminder}
+              onCheckedChange={(checked) => updateSetting('sendReminder', checked)}
+            />
+          </div>
         </div>
       </div>
 
       {/* Meeting Controls */}
       <div>
-        <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+        <h4 className="text-sm font-medium mb-3 flex items-center gap-2 text-primary">
           <Video className="w-4 h-4" />
           Meeting Controls
         </h4>
-        <div className="space-y-3">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <Label className="text-sm font-medium">Enable Recording</Label>
-                  <p className="text-xs text-muted-foreground">
-                    Record the meeting for later review and sharing
-                  </p>
-                </div>
-                <Switch
-                  checked={settings.enableRecording}
-                  onCheckedChange={(checked) => updateSetting('enableRecording', checked)}
-                />
-              </div>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 gap-3">
+          <div className="flex items-center justify-between p-3 rounded-lg border bg-card/50">
+            <div className="flex-1">
+              <Label className="text-sm font-medium">Recording</Label>
+              <p className="text-xs text-muted-foreground mt-1">
+                Record meeting for later review
+              </p>
+            </div>
+            <Switch
+              checked={settings.enableRecording}
+              onCheckedChange={(checked) => updateSetting('enableRecording', checked)}
+            />
+          </div>
 
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <Label className="text-sm font-medium">Require Approval</Label>
-                  <p className="text-xs text-muted-foreground">
-                    Attendees must confirm attendance before joining
-                  </p>
-                </div>
-                <Switch
-                  checked={settings.requireApproval}
-                  onCheckedChange={(checked) => updateSetting('requireApproval', checked)}
-                />
-              </div>
-            </CardContent>
-          </Card>
+          <div className="flex items-center justify-between p-3 rounded-lg border bg-card/50">
+            <div className="flex-1">
+              <Label className="text-sm font-medium">Approval Required</Label>
+              <p className="text-xs text-muted-foreground mt-1">
+                Attendees must confirm attendance
+              </p>
+            </div>
+            <Switch
+              checked={settings.requireApproval}
+              onCheckedChange={(checked) => updateSetting('requireApproval', checked)}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Additional Options */}
+      {/* Quick Settings Grid */}
       <div>
-        <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+        <h4 className="text-sm font-medium mb-3 flex items-center gap-2 text-primary">
           <Shield className="w-4 h-4" />
-          Additional Options
+          Meeting Preferences
         </h4>
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label className="text-sm font-medium">Reminder Timing</Label>
             <Select defaultValue="15">
@@ -148,15 +132,15 @@ export function MeetingSettings({ settings, onChange }: MeetingSettingsProps) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-background border shadow-lg z-50">
-                <SelectItem value="low">Low</SelectItem>
-                <SelectItem value="normal">Normal</SelectItem>
-                <SelectItem value="high">High</SelectItem>
+                <SelectItem value="low">Low Priority</SelectItem>
+                <SelectItem value="normal">Normal Priority</SelectItem>
+                <SelectItem value="high">High Priority</SelectItem>
                 <SelectItem value="urgent">Urgent</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <div>
+          <div className="md:col-span-2">
             <Label className="text-sm font-medium">Time Zone</Label>
             <Select defaultValue="local">
               <SelectTrigger className="mt-2">
@@ -164,10 +148,11 @@ export function MeetingSettings({ settings, onChange }: MeetingSettingsProps) {
               </SelectTrigger>
               <SelectContent className="bg-background border shadow-lg z-50">
                 <SelectItem value="local">Local Time</SelectItem>
-                <SelectItem value="utc">UTC</SelectItem>
-                <SelectItem value="est">Eastern Time</SelectItem>
-                <SelectItem value="pst">Pacific Time</SelectItem>
-                <SelectItem value="cst">Central Time</SelectItem>
+                <SelectItem value="utc">UTC (Coordinated Universal Time)</SelectItem>
+                <SelectItem value="est">Eastern Time (EST/EDT)</SelectItem>
+                <SelectItem value="pst">Pacific Time (PST/PDT)</SelectItem>
+                <SelectItem value="cst">Central Time (CST/CDT)</SelectItem>
+                <SelectItem value="mst">Mountain Time (MST/MDT)</SelectItem>
               </SelectContent>
             </Select>
           </div>
