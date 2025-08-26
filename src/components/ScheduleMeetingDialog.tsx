@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CalendarIcon, ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { CalendarIcon, ChevronLeft, ChevronRight, Check, Users, MapPin, Settings, Eye } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -61,11 +61,11 @@ const initialMeetingData: MeetingData = {
 };
 
 const WIZARD_STEPS = [
-  { id: 1, title: "Meeting Details", description: "Basic meeting information" },
-  { id: 2, title: "Select Attendees", description: "Choose meeting participants" },
-  { id: 3, title: "Choose Location", description: "Set meeting location" },
-  { id: 4, title: "Configure Settings", description: "Meeting preferences" },
-  { id: 5, title: "Review & Schedule", description: "Confirm meeting details" }
+  { id: 1, title: "Meeting Details", description: "Basic meeting information", icon: CalendarIcon },
+  { id: 2, title: "Select Attendees", description: "Choose meeting participants", icon: Users },
+  { id: 3, title: "Choose Location", description: "Set meeting location", icon: MapPin },
+  { id: 4, title: "Configure Settings", description: "Meeting preferences", icon: Settings },
+  { id: 5, title: "Review & Schedule", description: "Confirm meeting details", icon: Eye }
 ];
 
 export function ScheduleMeetingDialog({ open, onOpenChange }: ScheduleMeetingDialogProps) {
@@ -227,17 +227,78 @@ export function ScheduleMeetingDialog({ open, onOpenChange }: ScheduleMeetingDia
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl w-[95vw] max-h-[90vh] flex flex-col p-0">
-        <DialogHeader className="p-6 pb-4 border-b shrink-0">
-          <DialogTitle className="flex items-center gap-2">
-            <CalendarIcon className="w-5 h-5" />
-            Schedule Meeting - Step {currentStep} of {WIZARD_STEPS.length}
-          </DialogTitle>
+        {/* Enhanced Header */}
+        <div className="relative overflow-hidden">
+          {/* Background Gradient */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
           
-          {/* Progress Bar */}
-          <div className="mt-4">
-            <Progress value={(currentStep / WIZARD_STEPS.length) * 100} className="h-2" />
-          </div>
-        </DialogHeader>
+          <DialogHeader className="relative p-6 pb-4 border-b shrink-0">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
+                  <CalendarIcon className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <DialogTitle className="text-xl font-semibold text-foreground">
+                    Schedule Meeting
+                  </DialogTitle>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Create and configure your meeting in {WIZARD_STEPS.length} simple steps
+                  </p>
+                </div>
+              </div>
+              
+              {/* Current Step Badge */}
+              <div className="hidden sm:flex items-center gap-3">
+                <Badge variant="outline" className="px-3 py-1 bg-background/80 backdrop-blur">
+                  Step {currentStep} of {WIZARD_STEPS.length}
+                </Badge>
+              </div>
+            </div>
+            
+            {/* Current Step Info */}
+            <div className="mt-4 flex items-center gap-3">
+              {(() => {
+                const currentStepData = WIZARD_STEPS.find(s => s.id === currentStep);
+                const IconComponent = currentStepData?.icon || CalendarIcon;
+                return (
+                  <>
+                    <div className="p-2 rounded-lg bg-primary text-primary-foreground">
+                      <IconComponent className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-medium text-foreground">{currentStepData?.title}</h3>
+                      <p className="text-xs text-muted-foreground">{currentStepData?.description}</p>
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
+            
+            {/* Enhanced Progress Bar */}
+            <div className="mt-4 space-y-2">
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Progress</span>
+                <span>{Math.round((currentStep / WIZARD_STEPS.length) * 100)}% Complete</span>
+              </div>
+              <div className="relative">
+                <Progress 
+                  value={(currentStep / WIZARD_STEPS.length) * 100} 
+                  className="h-2 bg-muted"
+                />
+                {/* Progress segments */}
+                <div className="absolute top-0 left-0 w-full h-2 flex">
+                  {WIZARD_STEPS.map((_, index) => (
+                    <div 
+                      key={index}
+                      className="flex-1 border-r border-background last:border-r-0"
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </DialogHeader>
+        </div>
         
         {/* Step Indicators */}
         <div className="px-6 py-3 border-b bg-muted/20 shrink-0">
