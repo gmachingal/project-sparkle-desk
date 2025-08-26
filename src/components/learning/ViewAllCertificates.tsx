@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Award, Download, Share2, Calendar, CheckCircle, Trophy, Star, Eye, Filter, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ const ViewAllCertificates = () => {
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCertificate, setSelectedCertificate] = useState<any>(null);
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const certificates = [
@@ -192,6 +193,7 @@ const ViewAllCertificates = () => {
 
   const handleViewDetails = (certificate: any) => {
     setSelectedCertificate(certificate);
+    setIsDetailDialogOpen(true);
   };
 
   const stats = {
@@ -275,193 +277,83 @@ const ViewAllCertificates = () => {
       {/* Certificates Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredCertificates.map((certificate) => (
-          <Dialog key={certificate.id}>
-            <DialogTrigger asChild>
-              <Card 
-                className="group transition-all duration-200 hover:shadow-md cursor-pointer hover:scale-[1.02]"
-                onClick={() => handleViewDetails(certificate)}
-              >
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <Award className="w-8 h-8 text-primary" />
-                    <div className="flex flex-col gap-1">
-                      <Badge className={getStatusColor(certificate.status)}>
-                        {certificate.status}
-                      </Badge>
-                      <Badge className={getLevelColor(certificate.level)}>
-                        {certificate.level}
-                      </Badge>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <CardTitle className="text-lg line-clamp-2">{certificate.title}</CardTitle>
-                    <p className="text-sm text-muted-foreground">{certificate.course}</p>
-                    <p className="text-sm text-primary font-medium">By {certificate.instructor}</p>
-                  </div>
-                </CardHeader>
-                
-                <CardContent className="space-y-4">
-                  {/* Employee Information - Admin Context */}
-                  <div className="p-3 bg-muted/50 rounded-lg border">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium text-sm">{certificate.employee}</p>
-                        <p className="text-xs text-muted-foreground">{certificate.employeeRole}</p>
-                      </div>
-                      <Badge variant="outline" className="text-xs">
-                        {certificate.department}
-                      </Badge>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Score</span>
-                      <div className="flex items-center gap-1">
-                        <Star className="w-3 h-3 fill-current text-yellow-500" />
-                        <span className="font-medium">{certificate.score}%</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Issued</span>
-                      <span>{new Date(certificate.issueDate).toLocaleDateString()}</span>
-                    </div>
-                    {certificate.expiryDate && (
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Expires</span>
-                        <span>{new Date(certificate.expiryDate).toLocaleDateString()}</span>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="flex flex-wrap gap-1">
-                    {certificate.skills.slice(0, 3).map(skill => (
-                      <Badge key={skill} variant="secondary" className="text-xs">
-                        {skill}
-                      </Badge>
-                    ))}
-                    {certificate.skills.length > 3 && (
-                      <Badge variant="secondary" className="text-xs">
-                        +{certificate.skills.length - 3}
-                      </Badge>
-                    )}
-                  </div>
-                  
-                  {/* Click hint */}
-                  <div className="text-xs text-muted-foreground text-center py-2 opacity-60 group-hover:opacity-100 transition-opacity">
-                    Click to view certificate details
-                  </div>
-                </CardContent>
-              </Card>
-            </DialogTrigger>
+          <Card 
+            key={certificate.id}
+            className="group transition-all duration-200 hover:shadow-md cursor-pointer hover:scale-[1.02]"
+            onClick={() => handleViewDetails(certificate)}
+          >
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <Award className="w-8 h-8 text-primary" />
+                <div className="flex flex-col gap-1">
+                  <Badge className={getStatusColor(certificate.status)}>
+                    {certificate.status}
+                  </Badge>
+                  <Badge className={getLevelColor(certificate.level)}>
+                    {certificate.level}
+                  </Badge>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <CardTitle className="text-lg line-clamp-2">{certificate.title}</CardTitle>
+                <p className="text-sm text-muted-foreground">{certificate.course}</p>
+                <p className="text-sm text-primary font-medium">By {certificate.instructor}</p>
+              </div>
+            </CardHeader>
             
-            <DialogContent className="max-w-3xl">
-              <DialogHeader>
-                <DialogTitle className="flex items-center gap-2">
-                  <Award className="w-5 h-5 text-primary" />
-                  Certificate Details
-                </DialogTitle>
-              </DialogHeader>
-              {selectedCertificate && (
-                <div className="space-y-6">
-                  <div className="text-center border-2 border-primary/20 rounded-lg p-6 bg-gradient-to-br from-primary/5 to-primary-glow/10">
-                    <Award className="w-16 h-16 text-primary mx-auto mb-4" />
-                    <h3 className="text-xl font-bold mb-2">{selectedCertificate.title}</h3>
-                    <p className="text-muted-foreground mb-4">{selectedCertificate.description}</p>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="text-muted-foreground">Credential ID:</span>
-                        <p className="font-mono font-medium">{selectedCertificate.credentialId}</p>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Score:</span>
-                        <p className="font-medium">{selectedCertificate.score}%</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Employee Information in Detail View */}
-                  <Card className="border-l-4 border-l-primary">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-base flex items-center gap-2">
-                        <Badge variant="outline" className="gap-1">
-                          Employee Information
-                        </Badge>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="grid gap-2 md:grid-cols-3 text-sm">
-                        <div>
-                          <span className="text-muted-foreground">Name:</span>
-                          <p className="font-medium">{selectedCertificate.employee}</p>
-                        </div>
-                        <div>
-                          <span className="text-muted-foreground">Role:</span>
-                          <p className="font-medium">{selectedCertificate.employeeRole}</p>
-                        </div>
-                        <div>
-                          <span className="text-muted-foreground">Department:</span>
-                          <p className="font-medium">{selectedCertificate.department}</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div>
-                      <h4 className="font-medium mb-2">Course Information</h4>
-                      <div className="space-y-1 text-sm">
-                        <p><span className="text-muted-foreground">Course:</span> {selectedCertificate.course}</p>
-                        <p><span className="text-muted-foreground">Instructor:</span> {selectedCertificate.instructor}</p>
-                        <p><span className="text-muted-foreground">Category:</span> {selectedCertificate.category}</p>
-                        <p><span className="text-muted-foreground">Level:</span> {selectedCertificate.level}</p>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <h4 className="font-medium mb-2">Certification Details</h4>
-                      <div className="space-y-1 text-sm">
-                        <p><span className="text-muted-foreground">Issue Date:</span> {new Date(selectedCertificate.issueDate).toLocaleDateString()}</p>
-                        {selectedCertificate.expiryDate ? (
-                          <p><span className="text-muted-foreground">Expiry Date:</span> {new Date(selectedCertificate.expiryDate).toLocaleDateString()}</p>
-                        ) : (
-                          <p><span className="text-muted-foreground">Validity:</span> Lifetime</p>
-                        )}
-                        <p><span className="text-muted-foreground">Status:</span> <Badge className={getStatusColor(selectedCertificate.status)}>{selectedCertificate.status}</Badge></p>
-                      </div>
-                    </div>
-                  </div>
-                  
+            <CardContent className="space-y-4">
+              {/* Employee Information - Admin Context */}
+              <div className="p-3 bg-muted/50 rounded-lg border">
+                <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="font-medium mb-2">Skills Validated</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedCertificate.skills.map((skill: string) => (
-                        <Badge key={skill} variant="secondary">{skill}</Badge>
-                      ))}
-                    </div>
+                    <p className="font-medium text-sm">{certificate.employee}</p>
+                    <p className="text-xs text-muted-foreground">{certificate.employeeRole}</p>
                   </div>
-                  
-                  <div className="flex gap-2">
-                    <Button 
-                      className="flex-1 gap-2"
-                      onClick={() => handleDownload(selectedCertificate.credentialId, selectedCertificate.title)}
-                    >
-                      <Download className="w-4 h-4" />
-                      Download PDF
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="flex-1 gap-2"
-                      onClick={() => handleShare(selectedCertificate.credentialId, selectedCertificate.title)}
-                    >
-                      <Share2 className="w-4 h-4" />
-                      Share Link
-                    </Button>
+                  <Badge variant="outline" className="text-xs">
+                    {certificate.department}
+                  </Badge>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Score</span>
+                  <div className="flex items-center gap-1">
+                    <Star className="w-3 h-3 fill-current text-yellow-500" />
+                    <span className="font-medium">{certificate.score}%</span>
                   </div>
                 </div>
-              )}
-            </DialogContent>
-          </Dialog>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Issued</span>
+                  <span>{new Date(certificate.issueDate).toLocaleDateString()}</span>
+                </div>
+                {certificate.expiryDate && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Expires</span>
+                    <span>{new Date(certificate.expiryDate).toLocaleDateString()}</span>
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex flex-wrap gap-1">
+                {certificate.skills.slice(0, 3).map(skill => (
+                  <Badge key={skill} variant="secondary" className="text-xs">
+                    {skill}
+                  </Badge>
+                ))}
+                {certificate.skills.length > 3 && (
+                  <Badge variant="secondary" className="text-xs">
+                    +{certificate.skills.length - 3}
+                  </Badge>
+                )}
+              </div>
+              
+              {/* Click hint */}
+              <div className="text-xs text-muted-foreground text-center py-2 opacity-60 group-hover:opacity-100 transition-opacity">
+                Click to view certificate details
+              </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
 
@@ -481,6 +373,116 @@ const ViewAllCertificates = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* Certificate Detail Dialog */}
+      <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Award className="w-5 h-5 text-primary" />
+              Certificate Details
+            </DialogTitle>
+          </DialogHeader>
+          {selectedCertificate && (
+            <div className="space-y-6">
+              <div className="text-center border-2 border-primary/20 rounded-lg p-6 bg-gradient-to-br from-primary/5 to-primary-glow/10">
+                <Award className="w-16 h-16 text-primary mx-auto mb-4" />
+                <h3 className="text-xl font-bold mb-2">{selectedCertificate.title}</h3>
+                <p className="text-muted-foreground mb-4">{selectedCertificate.description}</p>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-muted-foreground">Credential ID:</span>
+                    <p className="font-mono font-medium">{selectedCertificate.credentialId}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Score:</span>
+                    <p className="font-medium">{selectedCertificate.score}%</p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Employee Information in Detail View */}
+              <Card className="border-l-4 border-l-primary">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Badge variant="outline" className="gap-1">
+                      Employee Information
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="grid gap-2 md:grid-cols-3 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">Name:</span>
+                      <p className="font-medium">{selectedCertificate.employee}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Role:</span>
+                      <p className="font-medium">{selectedCertificate.employeeRole}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Department:</span>
+                      <p className="font-medium">{selectedCertificate.department}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <h4 className="font-medium mb-2">Course Information</h4>
+                  <div className="space-y-1 text-sm">
+                    <p><span className="text-muted-foreground">Course:</span> {selectedCertificate.course}</p>
+                    <p><span className="text-muted-foreground">Instructor:</span> {selectedCertificate.instructor}</p>
+                    <p><span className="text-muted-foreground">Category:</span> {selectedCertificate.category}</p>
+                    <p><span className="text-muted-foreground">Level:</span> {selectedCertificate.level}</p>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="font-medium mb-2">Certification Details</h4>
+                  <div className="space-y-1 text-sm">
+                    <p><span className="text-muted-foreground">Issue Date:</span> {new Date(selectedCertificate.issueDate).toLocaleDateString()}</p>
+                    {selectedCertificate.expiryDate ? (
+                      <p><span className="text-muted-foreground">Expiry Date:</span> {new Date(selectedCertificate.expiryDate).toLocaleDateString()}</p>
+                    ) : (
+                      <p><span className="text-muted-foreground">Validity:</span> Lifetime</p>
+                    )}
+                    <p><span className="text-muted-foreground">Status:</span> <Badge className={getStatusColor(selectedCertificate.status)}>{selectedCertificate.status}</Badge></p>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="font-medium mb-2">Skills Validated</h4>
+                <div className="flex flex-wrap gap-2">
+                  {selectedCertificate.skills.map((skill: string) => (
+                    <Badge key={skill} variant="secondary">{skill}</Badge>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="flex gap-2">
+                <Button 
+                  className="flex-1 gap-2"
+                  onClick={() => handleDownload(selectedCertificate.credentialId, selectedCertificate.title)}
+                >
+                  <Download className="w-4 h-4" />
+                  Download PDF
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="flex-1 gap-2"
+                  onClick={() => handleShare(selectedCertificate.credentialId, selectedCertificate.title)}
+                >
+                  <Share2 className="w-4 h-4" />
+                  Share Link
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
