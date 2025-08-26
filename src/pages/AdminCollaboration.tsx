@@ -1562,7 +1562,34 @@ const AdminCollaboration = () => {
                       certificateId: "PMG-INT-2024-006"
                     }
                   ].map((cert) => (
-                    <Card key={cert.id} className="hover:shadow-lg transition-all duration-200">
+                    <Card 
+                      key={cert.id} 
+                      className="group hover:shadow-lg transition-all duration-200 cursor-pointer relative"
+                      onClick={() => {
+                        toast({
+                          title: "Certificate Details",
+                          description: `Viewing ${cert.employee}'s ${cert.course} certificate...`,
+                        });
+                      }}
+                    >
+                      {/* Hover Actions */}
+                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          className="h-6 w-6 p-0 bg-background/80 hover:bg-background"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toast({
+                              title: "Download Certificate",
+                              description: `Downloading ${cert.employee}'s certificate...`,
+                            });
+                          }}
+                        >
+                          <Download className="w-3 h-3" />
+                        </Button>
+                      </div>
+
                       <CardContent className="p-5">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-center gap-3">
@@ -1597,15 +1624,9 @@ const AdminCollaboration = () => {
                           </div>
                         </div>
                         
-                        <div className="flex gap-2 mt-4">
-                          <Button size="sm" variant="outline" className="flex-1 text-xs">
-                            <Eye className="w-3 h-3 mr-1" />
-                            View
-                          </Button>
-                          <Button size="sm" variant="outline" className="flex-1 text-xs">
-                            <Download className="w-3 h-3 mr-1" />
-                            Download
-                          </Button>
+                        {/* Click to view hint */}
+                        <div className="text-xs text-muted-foreground text-center py-2 opacity-60 group-hover:opacity-100 transition-opacity">
+                          Click to view certificate details
                         </div>
                       </CardContent>
                     </Card>

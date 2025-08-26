@@ -2509,7 +2509,48 @@ const Collaboration = () => {
                       validUntil: "2027-07-20"
                     }
                   ].map((cert) => (
-                    <Card key={cert.id} className="hover:shadow-lg transition-all duration-200 border-l-4 border-l-primary">
+                    <Card 
+                      key={cert.id} 
+                      className="group hover:shadow-lg transition-all duration-200 border-l-4 border-l-primary cursor-pointer relative"
+                      onClick={() => {
+                        toast({
+                          title: "Certificate Viewer",
+                          description: `Opening ${cert.title} certificate details...`,
+                        });
+                      }}
+                    >
+                      {/* Hover Actions */}
+                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          className="h-6 w-6 p-0 bg-background/80 hover:bg-background"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toast({
+                              title: "Download Started",
+                              description: `Downloading ${cert.title} certificate...`,
+                            });
+                          }}
+                        >
+                          <Download className="w-3 h-3" />
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          className="h-6 w-6 p-0 bg-background/80 hover:bg-background"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toast({
+                              title: "Share Certificate",
+                              description: `Sharing ${cert.title} certificate...`,
+                            });
+                          }}
+                        >
+                          <Share2 className="w-3 h-3" />
+                        </Button>
+                      </div>
+
                       <CardContent className="p-5">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-center gap-2">
@@ -2552,19 +2593,9 @@ const Collaboration = () => {
                           </div>
                         </div>
                         
-                        <div className="flex gap-2">
-                          <Button size="sm" variant="outline" className="flex-1 text-xs">
-                            <Eye className="w-3 h-3 mr-1" />
-                            View
-                          </Button>
-                          <Button size="sm" variant="outline" className="flex-1 text-xs">
-                            <Download className="w-3 h-3 mr-1" />
-                            Download
-                          </Button>
-                          <Button size="sm" variant="outline" className="flex-1 text-xs">
-                            <Share2 className="w-3 h-3 mr-1" />
-                            Share
-                          </Button>
+                        {/* Click to view hint */}
+                        <div className="text-xs text-muted-foreground text-center py-2 opacity-60 group-hover:opacity-100 transition-opacity">
+                          Click to view certificate details
                         </div>
                       </CardContent>
                     </Card>
