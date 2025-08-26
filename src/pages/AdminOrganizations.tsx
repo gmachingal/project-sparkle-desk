@@ -873,10 +873,10 @@ const AdminOrganizations = () => {
                         <TableCell>${org.monthlyFee}</TableCell>
                         <TableCell>
                           <div className="flex gap-2">
-                            <Button variant="outline" size="sm">
+                            <Button variant="outline" size="sm" className="border-admin/30 hover:bg-admin/10 hover:text-admin">
                               <Edit className="h-3 w-3" />
                             </Button>
-                            <Button variant="outline" size="sm">
+                            <Button variant="outline" size="sm" className="border-admin/30 hover:bg-admin/10 hover:text-admin">
                               <Trash2 className="h-3 w-3" />
                             </Button>
                           </div>
@@ -1194,10 +1194,10 @@ const AdminOrganizations = () => {
                           </div>
 
                           <div className="flex justify-end gap-2">
-                            <Button variant="outline" onClick={() => setIsAddUserOpen(false)}>
+                            <Button variant="outline" onClick={() => setIsAddUserOpen(false)} className="border-admin/30 hover:bg-admin/10 hover:text-admin">
                               Cancel
                             </Button>
-                            <Button onClick={handleAddUser}>
+                            <Button onClick={handleAddUser} className="bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90">
                               Add User
                             </Button>
                           </div>
@@ -1385,10 +1385,10 @@ const AdminOrganizations = () => {
                             />
                           </div>
                           <div className="flex justify-end gap-2">
-                            <Button variant="outline" onClick={() => setIsAddDepartmentOpen(false)}>
+                            <Button variant="outline" onClick={() => setIsAddDepartmentOpen(false)} className="border-admin/30 hover:bg-admin/10 hover:text-admin">
                               Cancel
                             </Button>
-                            <Button onClick={handleAddDepartment}>
+                            <Button onClick={handleAddDepartment} className="bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90">
                               Create Department
                             </Button>
                           </div>
@@ -1406,7 +1406,7 @@ const AdminOrganizations = () => {
                               <CardTitle className="text-lg">{dept.name}</CardTitle>
                               <p className="text-sm text-muted-foreground mt-1">{dept.description}</p>
                             </div>
-                            <Button variant="ghost" size="sm">
+                            <Button variant="ghost" size="sm" className="hover:bg-admin/10 hover:text-admin">
                               <MoreHorizontal className="w-4 h-4" />
                             </Button>
                           </div>
@@ -2069,7 +2069,7 @@ const AdminOrganizations = () => {
                     <h3 className="text-lg font-semibold">Active Join Codes</h3>
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button className="gap-2">
+                        <Button className="gap-2 bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90">
                           <Plus className="w-4 h-4" />
                           Generate Join Code
                         </Button>
@@ -2106,7 +2106,7 @@ const AdminOrganizations = () => {
                             </div>
                           </div>
                           <Button 
-                            className="w-full" 
+                            className="w-full bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90" 
                             onClick={() => generateJoinCode(selectedOrganization)}
                           >
                             Generate Code
@@ -2185,11 +2185,12 @@ const AdminOrganizations = () => {
                                     variant="outline" 
                                     size="sm"
                                     onClick={() => deactivateJoinCode(code.id)}
+                                    className="border-admin/30 hover:bg-admin/10 hover:text-admin"
                                   >
                                     <Clock className="w-3 h-3" />
                                   </Button>
                                 )}
-                                <Button variant="outline" size="sm">
+                                <Button variant="outline" size="sm" className="border-admin/30 hover:bg-admin/10 hover:text-admin">
                                   <Trash2 className="w-3 h-3" />
                                 </Button>
                               </div>
@@ -2313,7 +2314,7 @@ const AdminOrganizations = () => {
                                   variant="outline" 
                                   size="sm" 
                                   onClick={() => approveRegistration(request.id)}
-                                  className="gap-1"
+                                  className="gap-1 border-admin/30 hover:bg-admin/10 hover:text-admin"
                                 >
                                   <UserCheck className="w-3 h-3" />
                                   Approve
@@ -2322,7 +2323,7 @@ const AdminOrganizations = () => {
                                   variant="outline" 
                                   size="sm"
                                   onClick={() => rejectRegistration(request.id)}
-                                  className="gap-1"
+                                  className="gap-1 border-admin/30 hover:bg-admin/10 hover:text-admin"
                                 >
                                   <UserX className="w-3 h-3" />
                                   Reject
@@ -2591,12 +2592,13 @@ const AdminOrganizations = () => {
                   <Button 
                     variant="outline" 
                     onClick={() => setIsBillingDialogOpen(false)}
+                    className="border-admin/30 hover:bg-admin/10 hover:text-admin"
                   >
                     Cancel
                   </Button>
                   <Button 
                     onClick={updateBillingInfo}
-                    className="gap-2"
+                    className="gap-2 bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90"
                   >
                     <Check className="w-4 h-4" />
                     Update Billing
