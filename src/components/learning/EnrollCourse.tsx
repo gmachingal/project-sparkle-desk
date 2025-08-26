@@ -25,7 +25,7 @@ interface EnrollCourseProps {
 }
 
 const EnrollCourse = ({ course, onBack }: EnrollCourseProps) => {
-  const [selectedPlan, setSelectedPlan] = useState("premium");
+  const [selectedType, setSelectedType] = useState("mandatory");
   const { toast } = useToast();
 
   const curriculum = [
@@ -64,26 +64,34 @@ const EnrollCourse = ({ course, onBack }: EnrollCourseProps) => {
     { icon: Download, text: "Offline viewing" },
   ];
 
-  const plans = [
+  const courseTypes = [
     {
-      id: "basic",
-      name: "Basic Access",
-      price: "$49",
-      features: ["Course videos", "Basic support", "Certificate"]
+      id: "mandatory",
+      name: "Mandatory Training",
+      description: "Required for all employees in this role",
+      features: ["Compliance tracking", "Completion deadlines", "Manager notifications"],
+      required: true
     },
     {
-      id: "premium",
-      name: "Premium",
-      price: "$99",
-      features: ["Everything in Basic", "1-on-1 mentoring", "Project reviews", "Priority support"],
+      id: "optional",
+      name: "Professional Development",
+      description: "Enhance your skills and advance your career",
+      features: ["Self-paced learning", "Skill certificates", "Performance reviews"],
       popular: true
+    },
+    {
+      id: "certification",
+      name: "Certification Track",
+      description: "Industry-recognized certification pathway",
+      features: ["Industry certification", "Expert mentoring", "Exam preparation"]
     }
   ];
 
   const handleEnroll = () => {
+    const selectedCourseType = courseTypes.find(t => t.id === selectedType);
     toast({
       title: "Enrollment Successful!",
-      description: `You've enrolled in ${course.title} with ${selectedPlan} plan`,
+      description: `You've enrolled in ${course.title} as ${selectedCourseType?.name}`,
     });
   };
 
@@ -246,33 +254,36 @@ const EnrollCourse = ({ course, onBack }: EnrollCourseProps) => {
             </CardContent>
           </Card>
 
-          {/* Pricing Plans */}
+          {/* Course Types */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Choose Your Plan</CardTitle>
+              <CardTitle className="text-base">Course Type</CardTitle>
             </CardHeader>
             <CardContent className="pt-0 space-y-3">
-              {plans.map((plan) => (
+              {courseTypes.map((type) => (
                 <div 
-                  key={plan.id}
+                  key={type.id}
                   className={`p-3 border-2 rounded-lg cursor-pointer transition-all ${
-                    selectedPlan === plan.id 
+                    selectedType === type.id 
                       ? "border-primary bg-primary/5" 
                       : "border-border hover:border-primary/50"
                   }`}
-                  onClick={() => setSelectedPlan(plan.id)}
+                  onClick={() => setSelectedType(type.id)}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-sm">{plan.name}</span>
-                      {plan.popular && (
-                        <Badge variant="default" className="text-xs">Popular</Badge>
+                      <span className="font-medium text-sm">{type.name}</span>
+                      {type.popular && (
+                        <Badge variant="default" className="text-xs">Recommended</Badge>
+                      )}
+                      {type.required && (
+                        <Badge variant="destructive" className="text-xs">Required</Badge>
                       )}
                     </div>
-                    <span className="font-bold text-primary">{plan.price}</span>
                   </div>
+                  <p className="text-xs text-muted-foreground mb-2">{type.description}</p>
                   <div className="space-y-1">
-                    {plan.features.map((feature, index) => (
+                    {type.features.map((feature, index) => (
                       <div key={index} className="flex items-center gap-2">
                         <CheckCircle className="w-3 h-3 text-success" />
                         <span className="text-xs text-muted-foreground">{feature}</span>
@@ -288,7 +299,7 @@ const EnrollCourse = ({ course, onBack }: EnrollCourseProps) => {
               </Button>
               
               <p className="text-xs text-center text-muted-foreground">
-                30-day money-back guarantee
+                Course progress will be tracked automatically
               </p>
             </CardContent>
           </Card>
