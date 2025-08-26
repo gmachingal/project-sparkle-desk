@@ -65,7 +65,8 @@ import {
   Filter,
   Badge as BadgeIcon,
   Trophy,
-  Medal
+  Medal,
+  Upload
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -1057,33 +1058,85 @@ const Collaboration = () => {
                 <div className="mt-6">
                   <h4 className="font-semibold mb-4">Communication & Tools</h4>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Button variant="outline" className="gap-2 h-auto py-4 flex-col">
-                      <Dialog open={isTeamChatOpen} onOpenChange={setIsTeamChatOpen}>
-                        <DialogTrigger asChild>
-                          <div className="flex flex-col items-center gap-2 cursor-pointer">
-                            <MessageSquare className="w-6 h-6" />
-                            Team Chat
-                            <span className="text-xs text-muted-foreground">3 unread messages</span>
+                    {/* Team Chat Tool */}
+                    <Card className="hover:shadow-md transition-all duration-200">
+                      <CardContent className="p-4">
+                        <Dialog open={isTeamChatOpen} onOpenChange={setIsTeamChatOpen}>
+                          <DialogTrigger asChild>
+                            <div className="flex flex-col items-center gap-2 cursor-pointer mb-3">
+                              <div className="p-3 bg-primary/10 rounded-lg">
+                                <MessageSquare className="w-6 h-6 text-primary" />
+                              </div>
+                              <h5 className="font-medium">Team Chat</h5>
+                              <span className="text-xs text-muted-foreground">3 unread messages</span>
+                            </div>
+                          </DialogTrigger>
+                        </Dialog>
+                        
+                        <div className="flex gap-2 mt-3 pt-3 border-t">
+                          <Button size="sm" variant="outline" className="flex-1 text-xs">
+                            <Users className="w-3 h-3 mr-1" />
+                            Rooms
+                          </Button>
+                          <Button size="sm" variant="outline" className="flex-1 text-xs">
+                            <Plus className="w-3 h-3 mr-1" />
+                            New Chat
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Schedule Meeting Tool */}
+                    <Card className="hover:shadow-md transition-all duration-200">
+                      <CardContent className="p-4">
+                        <Dialog open={isScheduleMeetingOpen} onOpenChange={setIsScheduleMeetingOpen}>
+                          <DialogTrigger asChild>
+                            <div className="flex flex-col items-center gap-2 cursor-pointer mb-3">
+                              <div className="p-3 bg-primary/10 rounded-lg">
+                                <CalendarIcon className="w-6 h-6 text-primary" />
+                              </div>
+                              <h5 className="font-medium">Schedule Meeting</h5>
+                              <span className="text-xs text-muted-foreground">Next available: 2 PM</span>
+                            </div>
+                          </DialogTrigger>
+                        </Dialog>
+                        
+                        <div className="flex gap-2 mt-3 pt-3 border-t">
+                          <Button size="sm" variant="outline" className="flex-1 text-xs">
+                            <Video className="w-3 h-3 mr-1" />
+                            Video Call
+                          </Button>
+                          <Button size="sm" variant="outline" className="flex-1 text-xs">
+                            <MapPin className="w-3 h-3 mr-1" />
+                            Book Room
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* File Sharing Tool */}
+                    <Card className="hover:shadow-md transition-all duration-200">
+                      <CardContent className="p-4">
+                        <div className="flex flex-col items-center gap-2 cursor-pointer mb-3">
+                          <div className="p-3 bg-primary/10 rounded-lg">
+                            <Share2 className="w-6 h-6 text-primary" />
                           </div>
-                        </DialogTrigger>
-                      </Dialog>
-                    </Button>
-                    <Button variant="outline" className="gap-2 h-auto py-4 flex-col">
-                      <Dialog open={isScheduleMeetingOpen} onOpenChange={setIsScheduleMeetingOpen}>
-                        <DialogTrigger asChild>
-                          <div className="flex flex-col items-center gap-2 cursor-pointer">
-                            <CalendarIcon className="w-6 h-6" />
-                            Schedule Meeting
-                            <span className="text-xs text-muted-foreground">Next available: 2 PM</span>
-                          </div>
-                        </DialogTrigger>
-                      </Dialog>
-                    </Button>
-                    <Button variant="outline" className="gap-2 h-auto py-4 flex-col">
-                      <Share2 className="w-6 h-6" />
-                      Share Files
-                      <span className="text-xs text-muted-foreground">5 recent files</span>
-                    </Button>
+                          <h5 className="font-medium">Share Files</h5>
+                          <span className="text-xs text-muted-foreground">5 recent files</span>
+                        </div>
+                        
+                        <div className="flex gap-2 mt-3 pt-3 border-t">
+                          <Button size="sm" variant="outline" className="flex-1 text-xs">
+                            <Upload className="w-3 h-3 mr-1" />
+                            Upload
+                          </Button>
+                          <Button size="sm" variant="outline" className="flex-1 text-xs">
+                            <Eye className="w-3 h-3 mr-1" />
+                            Browse
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
                   </div>
                 </div>
               </CardContent>

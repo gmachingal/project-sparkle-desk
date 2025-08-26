@@ -1081,6 +1081,22 @@ const AdminCollaboration = () => {
                                 <span>{tool.usage}%</span>
                               </div>
                               <Progress value={tool.usage} className="h-2" />
+                              
+                              {/* Sub-buttons for each tool */}
+                              <div className="flex gap-2 mt-3 pt-2 border-t">
+                                <Button size="sm" variant="outline" className="flex-1 text-xs border-admin/30 hover:bg-admin/10 hover:text-admin">
+                                  <Settings className="w-3 h-3 mr-1" />
+                                  Configure
+                                </Button>
+                                <Button size="sm" variant="outline" className="flex-1 text-xs border-admin/30 hover:bg-admin/10 hover:text-admin">
+                                  <BarChart3 className="w-3 h-3 mr-1" />
+                                  Analytics
+                                </Button>
+                                <Button size="sm" variant="outline" className="flex-1 text-xs border-admin/30 hover:bg-admin/10 hover:text-admin">
+                                  <Users className="w-3 h-3 mr-1" />
+                                  Manage
+                                </Button>
+                              </div>
                             </div>
                           </CardContent>
                         </Card>
