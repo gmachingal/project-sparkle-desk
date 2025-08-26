@@ -92,6 +92,8 @@ const DocumentMockup = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list" | "tree">("grid");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
+  const [isCreateSpaceDialogOpen, setIsCreateSpaceDialogOpen] = useState(false);
+  const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [selectedSpaceDetails, setSelectedSpaceDetails] = useState<string | null>(null);
   const [selectedDocumentView, setSelectedDocumentView] = useState<string | null>(null);
@@ -338,6 +340,22 @@ const DocumentMockup = () => {
       description: `Document created using ${templates.find(t => t.id === templateId)?.name} template`
     });
     setIsTemplateDialogOpen(false);
+  };
+
+  const handleCreateSpace = () => {
+    toast({
+      title: "Space Created",
+      description: "New workspace has been created successfully"
+    });
+    setIsCreateSpaceDialogOpen(false);
+  };
+
+  const handleUploadFile = () => {
+    toast({
+      title: "Files Uploaded",
+      description: "Files have been uploaded successfully"
+    });
+    setIsUploadDialogOpen(false);
   };
 
   const handleEditDocument = () => {
@@ -633,14 +651,136 @@ const DocumentMockup = () => {
               </Dialog>
               
               <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" className="justify-start gap-2 h-9 text-sm hover:bg-primary/5">
-                  <Folder className="w-3 h-3" />
-                  New Space
-                </Button>
-                <Button variant="outline" className="justify-start gap-2 h-9 text-sm hover:bg-primary/5">
-                  <Upload className="w-3 h-3" />
-                  Upload File
-                </Button>
+                <Dialog open={isCreateSpaceDialogOpen} onOpenChange={setIsCreateSpaceDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="justify-start gap-2 h-9 text-sm hover:bg-primary/5">
+                      <Folder className="w-3 h-3" />
+                      New Space
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Create New Space</DialogTitle>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid gap-2">
+                        <Label htmlFor="space-name">Space Name</Label>
+                        <Input
+                          id="space-name"
+                          placeholder="e.g., Marketing Hub"
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="space-description">Description</Label>
+                        <Textarea
+                          id="space-description"
+                          placeholder="Brief description of this space..."
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="space-icon">Icon</Label>
+                        <Input
+                          id="space-icon"
+                          placeholder="📁"
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="space-visibility">Visibility</Label>
+                        <Select defaultValue="team">
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select visibility" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="public">
+                              <div className="flex items-center gap-2">
+                                <Globe className="w-4 h-4" />
+                                Public - Anyone can view
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="team">
+                              <div className="flex items-center gap-2">
+                                <Users className="w-4 h-4" />
+                                Team - Team members only
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="private">
+                              <div className="flex items-center gap-2">
+                                <Lock className="w-4 h-4" />
+                                Private - Only you
+                              </div>
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div className="flex justify-end gap-3">
+                      <Button variant="outline" onClick={() => setIsCreateSpaceDialogOpen(false)}>
+                        Cancel
+                      </Button>
+                      <Button onClick={handleCreateSpace}>
+                        Create Space
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
+                <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="justify-start gap-2 h-9 text-sm hover:bg-primary/5">
+                      <Upload className="w-3 h-3" />
+                      Upload File
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Upload Files</DialogTitle>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center hover:border-primary/50 transition-colors">
+                        <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Drag and drop files here, or click to browse
+                        </p>
+                        <Button variant="outline" size="sm">
+                          Browse Files
+                        </Button>
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="upload-space">Upload to Space</Label>
+                        <Select defaultValue="all">
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select space" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Documents</SelectItem>
+                            {spaces.map((space) => (
+                              <SelectItem key={space.id} value={space.id}>
+                                <div className="flex items-center gap-2">
+                                  <span>{space.icon}</span>
+                                  <span>{space.name}</span>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        Supported formats: PDF, DOC, DOCX, TXT, MD, Images
+                      </div>
+                    </div>
+                    <div className="flex justify-end gap-3">
+                      <Button variant="outline" onClick={() => setIsUploadDialogOpen(false)}>
+                        Cancel
+                      </Button>
+                      <Button onClick={handleUploadFile}>
+                        Upload Files
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </CardContent>
           </Card>
