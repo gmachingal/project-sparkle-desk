@@ -645,8 +645,8 @@ const DocumentMockup = () => {
             <CardContent className="space-y-1.5 px-2.5 pb-1.5">
               <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="w-full justify-start gap-2 h-7 text-xs bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-md hover:shadow-lg transition-all duration-200 font-medium">
-                    <FilePlus className="w-3 h-3" />
+                  <Button className="w-full justify-start gap-2 h-9 text-sm bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-md hover:shadow-lg transition-all duration-200 font-medium">
+                    <FilePlus className="w-4 h-4" />
                     New Document
                   </Button>
                 </DialogTrigger>
