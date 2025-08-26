@@ -1641,53 +1641,206 @@ const Collaboration = () => {
 
         {/* Start Learning Dialog */}
         <Dialog open={isStartLearningOpen} onOpenChange={setIsStartLearningOpen}>
-          <DialogContent>
+          <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Start Learning</DialogTitle>
+              <DialogTitle className="flex items-center gap-2">
+                <GraduationCap className="w-5 h-5 text-primary" />
+                Learning Hub
+              </DialogTitle>
             </DialogHeader>
-            <div className="space-y-4">
+            
+            {/* Learning Dashboard */}
+            <div className="space-y-6">
+              {/* Learning Progress Overview */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className="border-success/20 bg-gradient-to-br from-success/5 to-success-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center">
+                        <Award className="w-5 h-5 text-success" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Courses Completed</div>
+                        <div className="text-xl font-bold text-success">12</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-warning/20 bg-gradient-to-br from-warning/5 to-warning-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-warning/20 flex items-center justify-center">
+                        <Clock className="w-5 h-5 text-warning" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Learning Hours</div>
+                        <div className="text-xl font-bold text-warning">48</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-info/20 bg-gradient-to-br from-info/5 to-info-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-info/20 flex items-center justify-center">
+                        <Star className="w-5 h-5 text-info" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Skill Level</div>
+                        <div className="text-xl font-bold text-info">Expert</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Available Courses */}
               <div>
-                <Label>Select Course</Label>
-                <Select value={selectedLearningCourse} onValueChange={setSelectedLearningCourse}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choose a course to start" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="react-patterns">Advanced React Patterns</SelectItem>
-                    <SelectItem value="leadership">Leadership Fundamentals</SelectItem>
-                    <SelectItem value="typescript">TypeScript Mastery</SelectItem>
-                    <SelectItem value="project-mgmt">Project Management</SelectItem>
-                    <SelectItem value="design-systems">Design Systems</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="text-center p-3 bg-blue-50 rounded-lg">
-                  <div className="text-lg font-bold text-blue-700">8</div>
-                  <div className="text-xs text-blue-600">Modules</div>
+                <h3 className="text-lg font-semibold mb-4">Available Courses</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[
+                    {
+                      id: "react-patterns",
+                      title: "Advanced React Patterns",
+                      description: "Master the advanced React patterns including hooks, context, and performance optimization",
+                      level: "Advanced",
+                      duration: "12 hours",
+                      progress: 75,
+                      icon: "⚛️",
+                      color: "primary",
+                      enrolled: true
+                    },
+                    {
+                      id: "leadership",
+                      title: "Leadership Fundamentals",
+                      description: "Develop essential leadership skills for managing teams and projects effectively",
+                      level: "Beginner",
+                      duration: "8 hours",
+                      progress: 30,
+                      icon: "👑",
+                      color: "warning",
+                      enrolled: true
+                    },
+                    {
+                      id: "typescript",
+                      title: "TypeScript Mastery",
+                      description: "Complete guide to TypeScript with advanced types and real-world applications",
+                      level: "Intermediate",
+                      duration: "16 hours",
+                      progress: 100,
+                      icon: "🔷",
+                      color: "info",
+                      enrolled: true
+                    },
+                    {
+                      id: "project-mgmt",
+                      title: "Agile Project Management",
+                      description: "Learn Scrum, Kanban, and modern project management methodologies",
+                      level: "Intermediate",
+                      duration: "10 hours",
+                      progress: 0,
+                      icon: "📊",
+                      color: "accent",
+                      enrolled: false
+                    },
+                    {
+                      id: "design-systems",
+                      title: "Design Systems",
+                      description: "Build scalable and consistent design systems for modern applications",
+                      level: "Advanced",
+                      duration: "14 hours",
+                      progress: 0,
+                      icon: "🎨",
+                      color: "success",
+                      enrolled: false
+                    },
+                    {
+                      id: "devops-basics",
+                      title: "DevOps Fundamentals",
+                      description: "CI/CD, containerization, and deployment strategies for modern applications",
+                      level: "Advanced",
+                      duration: "18 hours",
+                      progress: 0,
+                      icon: "⚙️",
+                      color: "primary",
+                      enrolled: false
+                    }
+                  ].map((course) => (
+                    <Card
+                      key={course.id}
+                      className={cn(
+                        "cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-[1.02]",
+                        selectedLearningCourse === course.id 
+                          ? "border-primary bg-primary/5 shadow-md" 
+                          : "border-muted hover:border-primary/40"
+                      )}
+                      onClick={() => setSelectedLearningCourse(course.id)}
+                    >
+                      <CardContent className="p-5">
+                        <div className="flex items-start gap-4">
+                          <div className="text-3xl">{course.icon}</div>
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between mb-2">
+                              <h4 className="font-semibold text-sm">{course.title}</h4>
+                              {course.enrolled && (
+                                <Badge variant="secondary" className="text-xs">
+                                  Enrolled
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-3">
+                              {course.description}
+                            </p>
+                            
+                            <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3">
+                              <span className="px-2 py-1 rounded-full bg-primary/10 text-primary">
+                                {course.level}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                {course.duration}
+                              </span>
+                            </div>
+                            
+                            {course.enrolled && (
+                              <div>
+                                <div className="flex justify-between text-xs mb-1">
+                                  <span>Progress</span>
+                                  <span>{course.progress}%</span>
+                                </div>
+                                <Progress value={course.progress} className="h-2" />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
-                <div className="text-center p-3 bg-green-50 rounded-lg">
-                  <div className="text-lg font-bold text-green-700">12h</div>
-                  <div className="text-xs text-green-600">Duration</div>
-                </div>
-                <div className="text-center p-3 bg-purple-50 rounded-lg">
-                  <div className="text-lg font-bold text-purple-700">Beginner</div>
-                  <div className="text-xs text-purple-600">Level</div>
-                </div>
               </div>
-              <div className="p-3 bg-muted rounded-lg">
-                <h4 className="font-medium mb-2">Course Overview</h4>
-                <p className="text-sm text-muted-foreground">
-                  This comprehensive course will teach you advanced patterns and best practices. 
-                  Perfect for developers looking to enhance their skills and build better applications.
-                </p>
-              </div>
-              <div className="flex gap-3">
-                <Button onClick={handleStartLearning} className="flex-1">
-                  Start Learning
+
+              {/* Action Buttons */}
+              <div className="flex gap-2 pt-4">
+                <Button 
+                  onClick={handleStartLearning} 
+                  className="flex-1" 
+                  disabled={!selectedLearningCourse}
+                >
+                  <GraduationCap className="w-4 h-4 mr-2" />
+                  {selectedLearningCourse ? "Start Course" : "Select a Course"}
                 </Button>
-                <Button variant="outline" onClick={() => setIsStartLearningOpen(false)} className="flex-1">
-                  Cancel
+                <Button 
+                  variant="outline" 
+                  onClick={() => handleStartAssessment("Quick Assessment")}
+                  className="min-w-fit"
+                >
+                  <Award className="w-4 h-4 mr-2" />
+                  Take Assessment
+                </Button>
+                <Button variant="outline" onClick={() => setIsStartLearningOpen(false)}>
+                  Close
                 </Button>
               </div>
             </div>
@@ -1696,46 +1849,112 @@ const Collaboration = () => {
 
         {/* Assessment Dialog */}
         <Dialog open={isAssessmentOpen} onOpenChange={setIsAssessmentOpen}>
-          <DialogContent>
+          <DialogContent className="sm:max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Assessment - {assessmentCourse}</DialogTitle>
+              <DialogTitle className="flex items-center gap-2">
+                <Award className="w-5 h-5 text-primary" />
+                Skill Assessment: {assessmentCourse}
+              </DialogTitle>
             </DialogHeader>
-            <div className="space-y-4">
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Question {currentQuestion + 1} of {assessmentQuestions.length}</span>
-                <span>Time: 5:00</span>
+            
+            <div className="space-y-6">
+              {/* Assessment Header */}
+              <div className="bg-gradient-to-r from-primary/5 to-primary-glow/10 rounded-lg p-4 border border-primary/20">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                      <span className="text-sm font-bold text-primary">{currentQuestion + 1}</span>
+                    </div>
+                    <span className="text-sm text-muted-foreground">
+                      Question {currentQuestion + 1} of {assessmentQuestions.length}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <Badge variant="outline" className="bg-background">
+                      {Math.round(((currentQuestion + 1) / assessmentQuestions.length) * 100)}% Complete
+                    </Badge>
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                      <Clock className="w-4 h-4" />
+                      <span>5:00</span>
+                    </div>
+                  </div>
+                </div>
+                <Progress value={((currentQuestion + 1) / assessmentQuestions.length) * 100} className="h-2" />
               </div>
-              <Progress value={((currentQuestion + 1) / assessmentQuestions.length) * 100} />
               
-              <div className="space-y-4">
-                <h3 className="font-medium">{assessmentQuestions[currentQuestion]?.question}</h3>
-                <div className="space-y-2">
-                  {assessmentQuestions[currentQuestion]?.options.map((option, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleAnswerQuestion(index)}
-                      className={`w-full p-3 text-left border rounded-lg hover:bg-muted transition-colors ${
-                        assessmentAnswers[currentQuestion] === index.toString() 
-                          ? 'bg-primary text-primary-foreground' 
-                          : 'bg-background'
-                      }`}
-                    >
-                      {String.fromCharCode(65 + index)}. {option}
-                    </button>
-                  ))}
+              {/* Question Card */}
+              <Card className="border-muted">
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold mb-6 leading-relaxed">
+                    {assessmentQuestions[currentQuestion]?.question}
+                  </h3>
+                  
+                  <div className="space-y-3">
+                    {assessmentQuestions[currentQuestion]?.options.map((option, index) => (
+                      <Button
+                        key={index}
+                        variant={assessmentAnswers[currentQuestion] === index.toString() ? "default" : "outline"}
+                        className="w-full justify-start text-left h-auto p-4 transition-all duration-200 hover:scale-[1.01]"
+                        onClick={() => handleAnswerQuestion(index)}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={cn(
+                            "w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-medium transition-colors",
+                            assessmentAnswers[currentQuestion] === index.toString()
+                              ? "border-primary-foreground bg-primary-foreground text-primary"
+                              : "border-muted-foreground"
+                          )}>
+                            {String.fromCharCode(65 + index)}
+                          </div>
+                          <span className="flex-1">{option}</span>
+                        </div>
+                      </Button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* Assessment Info */}
+              <div className="bg-muted/30 rounded-lg p-4 border border-muted">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <AlertCircle className="w-4 h-4" />
+                  <span>
+                    Take your time to read each question carefully. You can change your answer before moving to the next question.
+                  </span>
                 </div>
               </div>
               
-              <div className="flex gap-3">
+              {/* Actions */}
+              <div className="flex gap-3 pt-2">
                 <Button 
                   onClick={handleNextQuestion} 
                   className="flex-1"
                   disabled={!assessmentAnswers[currentQuestion]}
                 >
-                  {currentQuestion === assessmentQuestions.length - 1 ? 'Submit Assessment' : 'Next Question'}
+                  {currentQuestion === assessmentQuestions.length - 1 ? (
+                    <>
+                      <Award className="w-4 h-4 mr-2" />
+                      Complete Assessment
+                    </>
+                  ) : (
+                    <>
+                      Next Question
+                      <span className="ml-2">→</span>
+                    </>
+                  )}
                 </Button>
-                <Button variant="outline" onClick={() => setIsAssessmentOpen(false)} className="flex-1">
-                  Exit Assessment
+                
+                {currentQuestion > 0 && (
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setCurrentQuestion(prev => prev - 1)}
+                  >
+                    ← Back
+                  </Button>
+                )}
+                
+                <Button variant="outline" onClick={() => setIsAssessmentOpen(false)}>
+                  Exit
                 </Button>
               </div>
             </div>
