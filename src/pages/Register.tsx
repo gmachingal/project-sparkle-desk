@@ -149,7 +149,7 @@ const Register = () => {
           <Card className="shadow-lg">
             <CardHeader className="pb-4">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-2 rounded-t-lg">
+                <TabsList className="grid w-full grid-cols-2 lg:w-[300px] rounded-t-lg h-12">
                   <TabsTrigger value="create" className="gap-2">
                     <Building2 className="w-4 h-4" />
                     Create Organization

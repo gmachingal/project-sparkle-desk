@@ -260,7 +260,7 @@ const Projects = () => {
 
         {/* Projects Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4 bg-muted rounded-t-lg">
+          <TabsList className="grid w-full grid-cols-4 lg:w-[500px] bg-muted rounded-t-lg h-12">
             <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
               <FileText className="h-4 w-4 mr-2" />
               All ({projectStats.total})</TabsTrigger>
