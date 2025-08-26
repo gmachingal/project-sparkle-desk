@@ -92,14 +92,14 @@ const BrowseLearning = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Browse Courses</h2>
-          <p className="text-muted-foreground">Discover new courses and expand your skills</p>
+          <h2 className="text-xl font-bold">Browse Courses</h2>
+          <p className="text-sm text-muted-foreground">Discover new courses and expand your skills</p>
         </div>
-        <Badge variant="outline" className="gap-1">
+        <Badge variant="outline" className="gap-1 text-xs">
           <BookOpen className="w-3 h-3" />
           {courses.length} Available
         </Badge>
@@ -107,19 +107,19 @@ const BrowseLearning = () => {
 
       {/* Search and Filter */}
       <Card>
-        <CardContent className="p-4">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center">
+        <CardContent className="p-3">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-3 h-3" />
               <Input
                 placeholder="Search courses or topics..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-9 h-8 text-sm"
               />
             </div>
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[140px] h-8 text-sm">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
@@ -135,30 +135,30 @@ const BrowseLearning = () => {
       </Card>
 
       {/* Course Grid */}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-3 md:grid-cols-2">
         {filteredCourses.map((course) => (
           <Card key={course.id} className="group transition-all duration-200 hover:shadow-md">
             <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary-glow/30 rounded-t-lg flex items-center justify-center">
-              <Play className="w-12 h-12 text-primary" />
+              <Play className="w-8 h-8 text-primary" />
             </div>
             
-            <CardHeader className="space-y-2">
+            <CardHeader className="space-y-2 pb-3">
               <div className="flex items-start justify-between">
-                <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">
+                <CardTitle className="text-sm line-clamp-2 group-hover:text-primary transition-colors leading-tight">
                   {course.title}
                 </CardTitle>
-                <Badge variant="outline">{course.price}</Badge>
+                <Badge variant="outline" className="text-xs">{course.price}</Badge>
               </div>
-              <p className="text-sm text-muted-foreground line-clamp-2">
+              <p className="text-xs text-muted-foreground line-clamp-2">
                 {course.description}
               </p>
-              <p className="text-sm font-medium text-primary">
+              <p className="text-xs font-medium text-primary">
                 By {course.instructor}
               </p>
             </CardHeader>
             
-            <CardContent className="space-y-4">
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <CardContent className="space-y-3 pt-0">
+              <div className="flex items-center gap-3 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <Star className="w-3 h-3 fill-current text-yellow-500" />
                   {course.rating}
@@ -175,17 +175,18 @@ const BrowseLearning = () => {
               
               <div className="flex flex-wrap gap-1">
                 {course.tags.slice(0, 3).map(tag => (
-                  <Badge key={tag} variant="secondary" className="text-xs">
+                  <Badge key={tag} variant="secondary" className="text-xs px-1.5 py-0.5">
                     {tag}
                   </Badge>
                 ))}
               </div>
               
               <Button 
-                className="w-full gap-2"
+                size="sm"
+                className="w-full gap-2 h-7"
                 onClick={() => handleEnrollCourse(course.id, course.title)}
               >
-                <Plus className="w-4 h-4" />
+                <Plus className="w-3 h-3" />
                 Enroll Now
               </Button>
             </CardContent>
@@ -195,13 +196,13 @@ const BrowseLearning = () => {
 
       {filteredCourses.length === 0 && (
         <Card>
-          <CardContent className="p-8 text-center">
-            <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-medium mb-2">No courses found</h3>
-            <p className="text-muted-foreground mb-4">
+          <CardContent className="p-6 text-center">
+            <BookOpen className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+            <h3 className="text-base font-medium mb-2">No courses found</h3>
+            <p className="text-sm text-muted-foreground mb-3">
               Try adjusting your search or browse all courses
             </p>
-            <Button onClick={() => {
+            <Button size="sm" onClick={() => {
               setSearchTerm("");
               setSelectedCategory("all");
             }}>

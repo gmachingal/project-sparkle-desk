@@ -122,80 +122,77 @@ const ContinueLearning = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">My Learning Dashboard</h2>
-          <p className="text-muted-foreground">Track your progress and continue your learning journey</p>
+          <h2 className="text-xl font-bold">My Learning Dashboard</h2>
+          <p className="text-sm text-muted-foreground">Track your progress and continue your learning journey</p>
         </div>
-        <Badge variant="outline" className="gap-1">
+        <Badge variant="outline" className="gap-1 text-xs">
           <TrendingUp className="w-3 h-3" />
-          {inProgressCourses.length} Active Courses
+          {inProgressCourses.length} Active
         </Badge>
       </div>
 
       {/* Current Courses */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Continue Learning</h3>
-        <div className="grid gap-4">
+      <div className="space-y-3">
+        <h3 className="text-base font-semibold">Continue Learning</h3>
+        <div className="grid gap-3">
           {inProgressCourses.map((course) => (
             <Card key={course.id} className="transition-all duration-200 hover:shadow-md">
-              <CardHeader>
+              <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <CardTitle className="text-lg">{course.title}</CardTitle>
-                    <p className="text-sm text-muted-foreground">{course.description}</p>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <div className="space-y-1 flex-1 min-w-0">
+                    <CardTitle className="text-base leading-tight">{course.title}</CardTitle>
+                    <p className="text-xs text-muted-foreground line-clamp-1">{course.description}</p>
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
                       <span>By {course.instructor}</span>
                       <span className="flex items-center gap-1">
                         <Star className="w-3 h-3 fill-current text-yellow-500" />
                         {course.rating}
                       </span>
-                      <span>Last accessed {course.lastAccessed}</span>
+                      <span>{course.lastAccessed}</span>
                     </div>
                   </div>
                   <Button
                     onClick={() => handlePlayPause(course.id)}
                     variant={playingCourse === course.id ? "secondary" : "default"}
-                    className="gap-2"
+                    size="sm"
+                    className="gap-1 ml-3"
                   >
                     {playingCourse === course.id ? (
                       <>
-                        <Pause className="w-4 h-4" />
+                        <Pause className="w-3 h-3" />
                         Pause
                       </>
                     ) : (
                       <>
-                        <Play className="w-4 h-4" />
+                        <Play className="w-3 h-3" />
                         Continue
                       </>
                     )}
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
+              <CardContent className="space-y-3 pt-0">
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between text-xs">
                     <span className="text-muted-foreground">Progress</span>
                     <span className="font-medium">{course.progress}% complete</span>
                   </div>
-                  <Progress value={course.progress} className="h-2" />
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
-                    <span>{course.currentLesson}</span>
-                    <span>{course.estimatedTime}</span>
-                  </div>
+                  <Progress value={course.progress} className="h-1.5" />
                 </div>
                 
-                <div className="bg-muted/50 rounded-lg p-3">
-                  <p className="text-sm font-medium">Next: {course.nextLesson}</p>
-                  <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                <div className="bg-muted/50 rounded-md p-2">
+                  <p className="text-xs font-medium">Next: {course.nextLesson}</p>
+                  <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <BookOpen className="w-3 h-3" />
-                      Lesson {Math.floor(course.progress / 100 * course.totalLessons) + 1} of {course.totalLessons}
+                      Lesson {Math.floor(course.progress / 100 * course.totalLessons) + 1}/{course.totalLessons}
                     </span>
                     <span className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
-                      {course.timeSpent} completed
+                      {course.timeSpent} done
                     </span>
                   </div>
                 </div>
@@ -206,29 +203,29 @@ const ContinueLearning = () => {
       </div>
 
       {/* Quick Stats & Certificates */}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2">
         {/* Learning Stats */}
         <Card>
-          <CardHeader>
-            <CardTitle>Learning Stats</CardTitle>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Learning Stats</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center p-3 bg-primary/5 rounded-lg">
-                <div className="text-2xl font-bold text-primary">12</div>
-                <div className="text-sm text-muted-foreground">Courses</div>
+          <CardContent className="pt-0">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="text-center p-2 bg-primary/5 rounded-md">
+                <div className="text-lg font-bold text-primary">12</div>
+                <div className="text-xs text-muted-foreground">Courses</div>
               </div>
-              <div className="text-center p-3 bg-success/5 rounded-lg">
-                <div className="text-2xl font-bold text-success">47.5h</div>
-                <div className="text-sm text-muted-foreground">Hours</div>
+              <div className="text-center p-2 bg-success/5 rounded-md">
+                <div className="text-lg font-bold text-success">47.5h</div>
+                <div className="text-xs text-muted-foreground">Hours</div>
               </div>
-              <div className="text-center p-3 bg-warning/5 rounded-lg">
-                <div className="text-2xl font-bold text-warning">{certificates.length}</div>
-                <div className="text-sm text-muted-foreground">Certificates</div>
+              <div className="text-center p-2 bg-warning/5 rounded-md">
+                <div className="text-lg font-bold text-warning">{certificates.length}</div>
+                <div className="text-xs text-muted-foreground">Certificates</div>
               </div>
-              <div className="text-center p-3 bg-info/5 rounded-lg">
-                <div className="text-2xl font-bold text-info">95%</div>
-                <div className="text-sm text-muted-foreground">Avg Score</div>
+              <div className="text-center p-2 bg-info/5 rounded-md">
+                <div className="text-lg font-bold text-info">95%</div>
+                <div className="text-xs text-muted-foreground">Avg Score</div>
               </div>
             </div>
           </CardContent>
@@ -236,30 +233,30 @@ const ContinueLearning = () => {
 
         {/* Recent Certificates */}
         <Card>
-          <CardHeader>
+          <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle>My Certificates</CardTitle>
-              <Badge variant="outline" className="gap-1">
+              <CardTitle className="text-base">My Certificates</CardTitle>
+              <Badge variant="outline" className="gap-1 text-xs">
                 <Trophy className="w-3 h-3" />
-                {certificates.length} Earned
+                {certificates.length}
               </Badge>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
+          <CardContent className="pt-0">
+            <div className="space-y-2">
               {certificates.slice(0, 3).map((cert) => (
-                <div key={cert.id} className="flex items-center justify-between p-2 border rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <Award className="w-5 h-5 text-primary" />
+                <div key={cert.id} className="flex items-center justify-between p-2 border rounded-md">
+                  <div className="flex items-center gap-2">
+                    <Award className="w-4 h-4 text-primary" />
                     <div>
-                      <p className="font-medium text-sm">{cert.title}</p>
+                      <p className="font-medium text-xs">{cert.title}</p>
                       <p className="text-xs text-muted-foreground">{new Date(cert.issueDate).toLocaleDateString()}</p>
                     </div>
                   </div>
                   <div className="flex gap-1">
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button variant="ghost" size="sm" onClick={() => setSelectedCertificate(cert)}>
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => setSelectedCertificate(cert)}>
                           <Eye className="w-3 h-3" />
                         </Button>
                       </DialogTrigger>
@@ -271,13 +268,13 @@ const ContinueLearning = () => {
                           </DialogTitle>
                         </DialogHeader>
                         <div className="space-y-4">
-                          <div className="text-center p-6 border-2 border-primary/20 rounded-lg bg-gradient-to-br from-primary/5 to-primary-glow/10">
-                            <Award className="w-12 h-12 text-primary mx-auto mb-4" />
-                            <h3 className="text-lg font-bold mb-2">{cert.title}</h3>
-                            <div className="grid grid-cols-2 gap-4 text-sm">
+                          <div className="text-center p-4 border-2 border-primary/20 rounded-lg bg-gradient-to-br from-primary/5 to-primary-glow/10">
+                            <Award className="w-10 h-10 text-primary mx-auto mb-3" />
+                            <h3 className="text-base font-bold mb-2">{cert.title}</h3>
+                            <div className="grid grid-cols-2 gap-3 text-sm">
                               <div>
                                 <span className="text-muted-foreground">ID:</span>
-                                <p className="font-mono font-medium">{cert.credentialId}</p>
+                                <p className="font-mono font-medium text-xs">{cert.credentialId}</p>
                               </div>
                               <div>
                                 <span className="text-muted-foreground">Score:</span>
@@ -286,19 +283,19 @@ const ContinueLearning = () => {
                             </div>
                           </div>
                           <div className="flex gap-2">
-                            <Button className="flex-1 gap-2" onClick={() => handleDownload(cert.credentialId, cert.title)}>
-                              <Download className="w-4 h-4" />
+                            <Button className="flex-1 gap-2" size="sm" onClick={() => handleDownload(cert.credentialId, cert.title)}>
+                              <Download className="w-3 h-3" />
                               Download
                             </Button>
-                            <Button variant="outline" className="flex-1 gap-2" onClick={() => handleShare(cert.credentialId, cert.title)}>
-                              <Share2 className="w-4 h-4" />
+                            <Button variant="outline" className="flex-1 gap-2" size="sm" onClick={() => handleShare(cert.credentialId, cert.title)}>
+                              <Share2 className="w-3 h-3" />
                               Share
                             </Button>
                           </div>
                         </div>
                       </DialogContent>
                     </Dialog>
-                    <Button variant="ghost" size="sm" onClick={() => handleDownload(cert.credentialId, cert.title)}>
+                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleDownload(cert.credentialId, cert.title)}>
                       <Download className="w-3 h-3" />
                     </Button>
                   </div>

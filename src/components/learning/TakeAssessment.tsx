@@ -129,32 +129,32 @@ const TakeAssessment = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Take Assessment</h2>
-          <p className="text-muted-foreground">Test your knowledge and earn certifications</p>
+          <h2 className="text-xl font-bold">Take Assessment</h2>
+          <p className="text-sm text-muted-foreground">Test your knowledge and earn certifications</p>
         </div>
-        <Badge variant="outline" className="gap-1">
+        <Badge variant="outline" className="gap-1 text-xs">
           <Trophy className="w-3 h-3" />
-          {assessments.filter(a => a.status === "completed").length} Completed
+          {assessments.filter(a => a.status === "completed").length} Done
         </Badge>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid gap-3">
         {assessments.map((assessment) => (
           <Card key={assessment.id} className={`transition-all duration-200 hover:shadow-md ${getStatusColor(assessment.status)}`}>
-            <CardHeader>
+            <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
-                <div className="space-y-2">
+                <div className="space-y-1 flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <CardTitle className="text-lg">{assessment.title}</CardTitle>
-                    <Badge className={getDifficultyColor(assessment.difficulty)}>
+                    <CardTitle className="text-base">{assessment.title}</CardTitle>
+                    <Badge className={getDifficultyColor(assessment.difficulty)} variant="outline">
                       {assessment.difficulty}
                     </Badge>
                   </div>
-                  <p className="text-sm text-muted-foreground">{assessment.description}</p>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <p className="text-xs text-muted-foreground line-clamp-1">{assessment.description}</p>
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       {assessment.duration}
@@ -163,17 +163,17 @@ const TakeAssessment = () => {
                       <BookOpen className="w-3 h-3" />
                       {assessment.questions} questions
                     </span>
-                    <span>Category: {assessment.category}</span>
+                    <span>{assessment.category}</span>
                   </div>
                 </div>
                 {assessment.status === "completed" && (
-                  <Trophy className="w-5 h-5 text-success" />
+                  <Trophy className="w-4 h-4 text-success ml-3" />
                 )}
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
               <div className="flex items-center justify-between">
-                <div className="text-sm">
+                <div className="text-xs">
                   <p className="text-muted-foreground">
                     Attempts: {assessment.attempts}/{assessment.maxAttempts}
                   </p>
@@ -181,11 +181,12 @@ const TakeAssessment = () => {
                 <Button 
                   onClick={() => handleStartAssessment(assessment.id)}
                   disabled={assessment.status === "completed"}
-                  className="gap-2"
+                  size="sm"
+                  className="gap-1"
                 >
-                  <Play className="w-4 h-4" />
+                  <Play className="w-3 h-3" />
                   {assessment.status === "completed" ? "Completed" : 
-                   assessment.status === "in-progress" ? "Continue" : "Start Assessment"}
+                   assessment.status === "in-progress" ? "Continue" : "Start"}
                 </Button>
               </div>
             </CardContent>
