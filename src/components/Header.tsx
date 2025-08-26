@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Search, Bell, Plus, Settings, User, Clock, Users, Briefcase, FileText, Calendar, Home, LogOut, Building2, ChevronDown, Check, Cog } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import reposeLogo from "@/assets/repose-logo-bigger-font.png";
@@ -304,14 +305,21 @@ const Header = ({ userRole }: HeaderProps) => {
           {/* Expandable Search */}
           <div className="relative hidden md:block">
             {!isSearchExpanded ? (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleSearchClick}
-                className="w-10 h-8 p-0"
-              >
-                <Search className="w-4 h-4 text-muted-foreground" />
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleSearchClick}
+                    className="w-10 h-9 p-0 hover:bg-background/90 hover:shadow-sm"
+                  >
+                    <Search className="w-5 h-5 text-foreground/70 hover:text-foreground transition-colors" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Search</p>
+                </TooltipContent>
+              </Tooltip>
             ) : (
               <>
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 z-10" />
