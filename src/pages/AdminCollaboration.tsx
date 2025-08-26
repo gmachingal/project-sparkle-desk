@@ -1672,93 +1672,122 @@ const AdminCollaboration = () => {
 
         {/* Certificate Detail Dialog */}
         <Dialog open={isCertificateDetailOpen} onOpenChange={setIsCertificateDetailOpen}>
-          <DialogContent className="max-w-3xl">
+          <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <Award className="w-5 h-5 text-primary" />
-                Certificate Details
+                {selectedCertificate?.title}
               </DialogTitle>
             </DialogHeader>
             {selectedCertificate && (
               <div className="space-y-6">
-                <div className="text-center border-2 border-primary/20 rounded-lg p-6 bg-gradient-to-br from-primary/5 to-primary-glow/10">
+                {/* Certificate Display - Similar to User View */}
+                <div className="text-center p-6 border-2 border-primary/20 rounded-lg bg-gradient-to-br from-primary/5 to-primary-glow/10">
                   <Award className="w-16 h-16 text-primary mx-auto mb-4" />
                   <h3 className="text-xl font-bold mb-2">{selectedCertificate.title}</h3>
-                  <p className="text-muted-foreground mb-4">{selectedCertificate.description}</p>
-                  <div className="grid grid-cols-2 gap-4 text-sm">
+                  <p className="text-sm text-muted-foreground mb-4">{selectedCertificate.course}</p>
+                  <p className="text-sm text-primary font-medium mb-4">By {selectedCertificate.instructor}</p>
+                  
+                  <div className="grid grid-cols-3 gap-4 text-sm">
                     <div>
                       <span className="text-muted-foreground">Credential ID:</span>
-                      <p className="font-mono font-medium">{selectedCertificate.credentialId}</p>
+                      <p className="font-mono font-medium text-xs">{selectedCertificate.credentialId}</p>
                     </div>
                     <div>
                       <span className="text-muted-foreground">Score:</span>
                       <p className="font-medium">{selectedCertificate.score}%</p>
                     </div>
+                    <div>
+                      <span className="text-muted-foreground">Level:</span>
+                      <p className="font-medium">{selectedCertificate.level}</p>
+                    </div>
                   </div>
                 </div>
                 
-                {/* Employee Information in Detail View */}
-                <Card className="border-l-4 border-l-primary">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-base flex items-center gap-2">
-                      <Badge variant="outline" className="gap-1">
-                        Employee Information
+                {/* Employee Information - Admin Context */}
+                <Card className="border-l-4 border-l-primary bg-muted/20">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium text-sm text-muted-foreground mb-1">Employee</h4>
+                        <p className="font-semibold">{selectedCertificate.employee}</p>
+                        <p className="text-sm text-muted-foreground">{selectedCertificate.employeeRole}</p>
+                      </div>
+                      <Badge variant="outline" className="text-sm">
+                        {selectedCertificate.department}
                       </Badge>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="grid gap-2 md:grid-cols-3 text-sm">
-                      <div>
-                        <span className="text-muted-foreground">Name:</span>
-                        <p className="font-medium">{selectedCertificate.employee}</p>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Role:</span>
-                        <p className="font-medium">{selectedCertificate.employeeRole}</p>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Department:</span>
-                        <p className="font-medium">{selectedCertificate.department}</p>
-                      </div>
                     </div>
                   </CardContent>
                 </Card>
                 
+                {/* Certificate Information Grid */}
                 <div className="grid gap-4 md:grid-cols-2">
-                  <div>
-                    <h4 className="font-medium mb-2">Course Information</h4>
-                    <div className="space-y-1 text-sm">
-                      <p><span className="text-muted-foreground">Course:</span> {selectedCertificate.course}</p>
-                      <p><span className="text-muted-foreground">Instructor:</span> {selectedCertificate.instructor}</p>
-                      <p><span className="text-muted-foreground">Category:</span> {selectedCertificate.category}</p>
-                      <p><span className="text-muted-foreground">Level:</span> {selectedCertificate.level}</p>
+                  <div className="space-y-3">
+                    <h4 className="font-medium text-sm text-muted-foreground">Course Details</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Category:</span>
+                        <span className="font-medium">{selectedCertificate.category}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Issue Date:</span>
+                        <span>{new Date(selectedCertificate.issueDate).toLocaleDateString()}</span>
+                      </div>
+                      {selectedCertificate.expiryDate ? (
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Expires:</span>
+                          <span>{new Date(selectedCertificate.expiryDate).toLocaleDateString()}</span>
+                        </div>
+                      ) : (
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Validity:</span>
+                          <span className="text-primary font-medium">Lifetime</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                   
-                  <div>
-                    <h4 className="font-medium mb-2">Certification Details</h4>
-                    <div className="space-y-1 text-sm">
-                      <p><span className="text-muted-foreground">Issue Date:</span> {new Date(selectedCertificate.issueDate).toLocaleDateString()}</p>
-                      {selectedCertificate.expiryDate ? (
-                        <p><span className="text-muted-foreground">Expiry Date:</span> {new Date(selectedCertificate.expiryDate).toLocaleDateString()}</p>
-                      ) : (
-                        <p><span className="text-muted-foreground">Validity:</span> Lifetime</p>
-                      )}
-                      <p><span className="text-muted-foreground">Status:</span> <Badge variant="outline">{selectedCertificate.status}</Badge></p>
+                  <div className="space-y-3">
+                    <h4 className="font-medium text-sm text-muted-foreground">Status & Performance</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Status:</span>
+                        <Badge 
+                          variant={selectedCertificate.status === 'active' ? 'default' : 'secondary'}
+                          className="text-xs"
+                        >
+                          {selectedCertificate.status}
+                        </Badge>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Score:</span>
+                        <div className="flex items-center gap-1">
+                          <Star className="w-3 h-3 fill-current text-yellow-500" />
+                          <span className="font-medium">{selectedCertificate.score}%</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Level:</span>
+                        <span className="font-medium">{selectedCertificate.level}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
                 
-                <div>
-                  <h4 className="font-medium mb-2">Skills Validated</h4>
+                {/* Skills Validated */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-sm text-muted-foreground">Skills Validated</h4>
                   <div className="flex flex-wrap gap-2">
                     {selectedCertificate.skills?.map((skill: string) => (
-                      <Badge key={skill} variant="secondary">{skill}</Badge>
+                      <Badge key={skill} variant="secondary" className="text-xs">
+                        {skill}
+                      </Badge>
                     ))}
                   </div>
                 </div>
                 
-                <div className="flex gap-2">
+                {/* Action Buttons - Similar to User View */}
+                <div className="flex gap-2 pt-2">
                   <Button 
                     className="flex-1 gap-2"
                     onClick={() => {
