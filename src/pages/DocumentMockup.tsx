@@ -52,7 +52,8 @@ import {
   Folder,
   Home,
   ArrowLeft,
-  Upload
+  Upload,
+  UserPlus
 } from "lucide-react";
 
 interface Document {
@@ -92,6 +93,7 @@ const DocumentMockup = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
+  const [selectedSpaceDetails, setSelectedSpaceDetails] = useState<string | null>(null);
   const { toast } = useToast();
 
   // Mock data
@@ -137,6 +139,35 @@ const DocumentMockup = () => {
       visibility: "team"
     }
   ];
+
+  // Mock space members data
+  const spaceMembers = {
+    product: [
+      { id: "1", name: "Sarah Chen", email: "sarah@company.com", role: "Admin", avatar: "", status: "online", lastSeen: "now" },
+      { id: "2", name: "Mike Rodriguez", email: "mike@company.com", role: "Editor", avatar: "", status: "online", lastSeen: "2 min ago" },
+      { id: "3", name: "Emily Davis", email: "emily@company.com", role: "Editor", avatar: "", status: "offline", lastSeen: "1 hour ago" },
+      { id: "4", name: "Alex Johnson", email: "alex@company.com", role: "Viewer", avatar: "", status: "offline", lastSeen: "3 hours ago" }
+    ],
+    engineering: [
+      { id: "5", name: "David Park", email: "david@company.com", role: "Admin", avatar: "", status: "online", lastSeen: "now" },
+      { id: "6", name: "Lisa Wang", email: "lisa@company.com", role: "Editor", avatar: "", status: "online", lastSeen: "5 min ago" }
+    ],
+    marketing: [
+      { id: "7", name: "John Smith", email: "john@company.com", role: "Admin", avatar: "", status: "online", lastSeen: "now" },
+      { id: "8", name: "Anna Brown", email: "anna@company.com", role: "Editor", avatar: "", status: "offline", lastSeen: "30 min ago" }
+    ],
+    hr: [
+      { id: "9", name: "Linda Brown", email: "linda@company.com", role: "Admin", avatar: "", status: "online", lastSeen: "now" }
+    ]
+  };
+
+  // Mock space analytics
+  const spaceAnalytics = {
+    product: { views: 1420, edits: 89, comments: 156, growth: "+12%" },
+    engineering: { views: 891, edits: 134, comments: 98, growth: "+8%" },
+    marketing: { views: 2103, edits: 67, comments: 203, growth: "+24%" },
+    hr: { views: 567, edits: 23, comments: 45, growth: "+3%" }
+  };
 
   const documents: Document[] = [
     {
@@ -310,6 +341,14 @@ const DocumentMockup = () => {
 
   const handleEditDocument = () => {
     setShowEditor(true);
+  };
+
+  const handleSpaceClick = (spaceId: string) => {
+    setSelectedSpaceDetails(spaceId);
+  };
+
+  const handleBackToSpaces = () => {
+    setSelectedSpaceDetails(null);
   };
 
   if (showEditor) {
@@ -605,41 +644,299 @@ const DocumentMockup = () => {
 
               {/* Spaces Tab */}
               <TabsContent value="spaces" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {spaces.map((space) => (
-                    <Card key={space.id} className="hover:shadow-lg transition-all duration-200 group cursor-pointer">
-                      <CardContent className="p-6">
-                        <div className="flex items-start gap-4">
-                          <div className={`w-12 h-12 rounded-lg ${space.color} flex items-center justify-center text-2xl`}>
-                            {space.icon}
-                          </div>
-                          <div className="flex-1">
-                            <h3 className="font-semibold group-hover:text-primary transition-colors">
-                              {space.name}
-                            </h3>
-                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                              {space.description}
-                            </p>
-                            <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground">
-                              <div className="flex items-center gap-1">
-                                <Users className="w-4 h-4" />
-                                {space.members} members
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <FileText className="w-4 h-4" />
-                                {space.documents} docs
-                              </div>
-                              <div className="flex items-center gap-1">
-                                {getVisibilityIcon(space.visibility)}
-                                {space.visibility}
+                {selectedSpaceDetails ? (
+                  // Space Details View
+                  <div className="space-y-6">
+                    {(() => {
+                      const space = spaces.find(s => s.id === selectedSpaceDetails);
+                      const members = spaceMembers[selectedSpaceDetails as keyof typeof spaceMembers] || [];
+                      const analytics = spaceAnalytics[selectedSpaceDetails as keyof typeof spaceAnalytics];
+                      const spaceDocuments = documents.filter(doc => 
+                        selectedSpaceDetails === 'product' ? doc.tags.includes('Product') || doc.tags.includes('PRD') :
+                        selectedSpaceDetails === 'engineering' ? doc.tags.includes('API') || doc.tags.includes('Backend') :
+                        selectedSpaceDetails === 'marketing' ? doc.tags.includes('Brand') || doc.tags.includes('Design') :
+                        selectedSpaceDetails === 'hr' ? doc.tags.includes('HR') || doc.tags.includes('Policy') :
+                        false
+                      );
+
+                      return (
+                        <>
+                          {/* Space Header */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                              <Button variant="outline" size="sm" onClick={handleBackToSpaces} className="gap-2">
+                                <ArrowLeft className="w-4 h-4" />
+                                Back to Spaces
+                              </Button>
+                              <div className="flex items-center gap-3">
+                                <div className={`w-12 h-12 rounded-lg ${space?.color} flex items-center justify-center text-2xl`}>
+                                  {space?.icon}
+                                </div>
+                                <div>
+                                  <h2 className="text-2xl font-bold">{space?.name}</h2>
+                                  <p className="text-muted-foreground">{space?.description}</p>
+                                </div>
                               </div>
                             </div>
+                            <div className="flex items-center gap-2">
+                              <Button variant="outline" className="gap-2">
+                                <Settings className="w-4 h-4" />
+                                Settings
+                              </Button>
+                              <Button className="gap-2">
+                                <Plus className="w-4 h-4" />
+                                Add Document
+                              </Button>
+                            </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+
+                          {/* Space Stats */}
+                          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <Card>
+                              <CardContent className="p-4">
+                                <div className="flex items-center gap-2">
+                                  <FileText className="w-5 h-5 text-primary" />
+                                  <div>
+                                    <p className="text-2xl font-bold">{spaceDocuments.length}</p>
+                                    <p className="text-sm text-muted-foreground">Documents</p>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                            <Card>
+                              <CardContent className="p-4">
+                                <div className="flex items-center gap-2">
+                                  <Users className="w-5 h-5 text-primary" />
+                                  <div>
+                                    <p className="text-2xl font-bold">{members.length}</p>
+                                    <p className="text-sm text-muted-foreground">Members</p>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                            <Card>
+                              <CardContent className="p-4">
+                                <div className="flex items-center gap-2">
+                                  <Eye className="w-5 h-5 text-primary" />
+                                  <div>
+                                    <p className="text-2xl font-bold">{analytics?.views || 0}</p>
+                                    <p className="text-sm text-muted-foreground">Total Views</p>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                            <Card>
+                              <CardContent className="p-4">
+                                <div className="flex items-center gap-2">
+                                  <TrendingUp className="w-5 h-5 text-green-500" />
+                                  <div>
+                                    <p className="text-2xl font-bold">{analytics?.growth || "+0%"}</p>
+                                    <p className="text-sm text-muted-foreground">Growth</p>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+
+                          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            {/* Documents in Space */}
+                            <div className="lg:col-span-2 space-y-4">
+                              <div className="flex items-center justify-between">
+                                <h3 className="text-lg font-semibold">Documents</h3>
+                                <Button variant="outline" size="sm" className="gap-2">
+                                  <Filter className="w-4 h-4" />
+                                  Filter
+                                </Button>
+                              </div>
+                              <div className="space-y-3">
+                                {spaceDocuments.map((doc) => (
+                                  <Card key={doc.id} className="hover:shadow-md transition-all duration-200 group cursor-pointer">
+                                    <CardContent className="p-4">
+                                      <div className="flex items-start justify-between">
+                                        <div className="flex items-start gap-3 flex-1">
+                                          <FileText className="w-5 h-5 text-muted-foreground mt-0.5" />
+                                          <div className="flex-1 min-w-0">
+                                            <h4 className="font-medium group-hover:text-primary transition-colors">
+                                              {doc.title}
+                                            </h4>
+                                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                                              {doc.content}
+                                            </p>
+                                            <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                                              <div className="flex items-center gap-1">
+                                                <Avatar className="w-4 h-4">
+                                                  <AvatarFallback className="text-xs">
+                                                    {doc.author.split(' ').map(n => n[0]).join('')}
+                                                  </AvatarFallback>
+                                                </Avatar>
+                                                {doc.author}
+                                              </div>
+                                              <span>{doc.updatedAt}</span>
+                                              <Badge className={getStatusColor(doc.status)} variant="outline">
+                                                {doc.status}
+                                              </Badge>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                            <Star className="w-4 h-4" />
+                                          </Button>
+                                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                            <Share className="w-4 h-4" />
+                                          </Button>
+                                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                            <MoreHorizontal className="w-4 h-4" />
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    </CardContent>
+                                  </Card>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Space Sidebar */}
+                            <div className="space-y-6">
+                              {/* Members */}
+                              <Card>
+                                <CardHeader>
+                                  <div className="flex items-center justify-between">
+                                    <CardTitle className="text-lg">Members</CardTitle>
+                                    <Button variant="outline" size="sm" className="gap-2">
+                                      <UserPlus className="w-4 h-4" />
+                                      Invite
+                                    </Button>
+                                  </div>
+                                </CardHeader>
+                                <CardContent className="space-y-3">
+                                  {members.map((member) => (
+                                    <div key={member.id} className="flex items-center gap-3">
+                                      <div className="relative">
+                                        <Avatar className="w-8 h-8">
+                                          <AvatarFallback className="text-xs">
+                                            {member.name.split(' ').map(n => n[0]).join('')}
+                                          </AvatarFallback>
+                                        </Avatar>
+                                        <div className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-background ${
+                                          member.status === 'online' ? 'bg-green-500' : 'bg-gray-400'
+                                        }`} />
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium truncate">{member.name}</p>
+                                        <div className="flex items-center gap-2">
+                                          <Badge variant="outline" className="text-xs h-4">
+                                            {member.role}
+                                          </Badge>
+                                          <span className="text-xs text-muted-foreground">
+                                            {member.status === 'online' ? 'Online' : member.lastSeen}
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                        <MoreHorizontal className="w-4 h-4" />
+                                      </Button>
+                                    </div>
+                                  ))}
+                                </CardContent>
+                              </Card>
+
+                              {/* Analytics */}
+                              <Card>
+                                <CardHeader>
+                                  <CardTitle className="text-lg">Analytics</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-sm text-muted-foreground">Total Views</span>
+                                    <span className="font-medium">{analytics?.views || 0}</span>
+                                  </div>
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-sm text-muted-foreground">Edits</span>
+                                    <span className="font-medium">{analytics?.edits || 0}</span>
+                                  </div>
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-sm text-muted-foreground">Comments</span>
+                                    <span className="font-medium">{analytics?.comments || 0}</span>
+                                  </div>
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-sm text-muted-foreground">Growth</span>
+                                    <span className="font-medium text-green-600">{analytics?.growth || "+0%"}</span>
+                                  </div>
+                                </CardContent>
+                              </Card>
+
+                              {/* Quick Actions */}
+                              <Card>
+                                <CardHeader>
+                                  <CardTitle className="text-lg">Quick Actions</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-2">
+                                  <Button variant="outline" className="w-full justify-start gap-2">
+                                    <FilePlus className="w-4 h-4" />
+                                    Create Document
+                                  </Button>
+                                  <Button variant="outline" className="w-full justify-start gap-2">
+                                    <UserPlus className="w-4 h-4" />
+                                    Invite Member
+                                  </Button>
+                                  <Button variant="outline" className="w-full justify-start gap-2">
+                                    <Archive className="w-4 h-4" />
+                                    Archive Space
+                                  </Button>
+                                  <Button variant="outline" className="w-full justify-start gap-2">
+                                    <Settings className="w-4 h-4" />
+                                    Space Settings
+                                  </Button>
+                                </CardContent>
+                              </Card>
+                            </div>
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </div>
+                ) : (
+                  // Spaces Grid View
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {spaces.map((space) => (
+                      <Card key={space.id} className="hover:shadow-lg transition-all duration-200 group cursor-pointer" onClick={() => handleSpaceClick(space.id)}>
+                        <CardContent className="p-6">
+                          <div className="flex items-start gap-4">
+                            <div className={`w-12 h-12 rounded-lg ${space.color} flex items-center justify-center text-2xl`}>
+                              {space.icon}
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-semibold group-hover:text-primary transition-colors">
+                                {space.name}
+                              </h3>
+                              <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                                {space.description}
+                              </p>
+                              <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground">
+                                <div className="flex items-center gap-1">
+                                  <Users className="w-4 h-4" />
+                                  {space.members} members
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <FileText className="w-4 h-4" />
+                                  {space.documents} docs
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  {getVisibilityIcon(space.visibility)}
+                                  {space.visibility}
+                                </div>
+                              </div>
+                            </div>
+                            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                              <ChevronRight className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
               </TabsContent>
 
               {/* Recent Tab */}
