@@ -638,31 +638,31 @@ const DocumentMockup = () => {
         </div>
 
         {/* Quick Actions Bar */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
           {/* Quick Actions */}
-          <Card className="border-2 shadow-lg bg-gradient-to-br from-background to-muted/30">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg font-bold flex items-center gap-2">
-                <Plus className="w-5 h-5 text-primary" />
+          <Card className="border shadow-sm">
+            <CardHeader className="pb-2 px-3 pt-3">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Plus className="w-4 h-4 text-primary" />
                 Quick Actions
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" className="justify-start gap-2 h-10 text-sm border hover:border-primary/50" onClick={() => setIsCreateDialogOpen(true)}>
-                  <FilePlus className="w-4 h-4" />
+            <CardContent className="px-3 pb-3">
+              <div className="grid grid-cols-2 gap-1.5">
+                <Button variant="outline" className="justify-start gap-1.5 h-8 text-xs border hover:border-primary/50" onClick={() => setIsCreateDialogOpen(true)}>
+                  <FilePlus className="w-3 h-3" />
                   Create
                 </Button>
-                <Button variant="outline" className="justify-start gap-2 h-10 text-sm border hover:border-primary/50">
-                  <Folder className="w-4 h-4" />
-                  New Space
+                <Button variant="outline" className="justify-start gap-1.5 h-8 text-xs border hover:border-primary/50">
+                  <Folder className="w-3 h-3" />
+                  Space
                 </Button>
-                <Button variant="outline" className="justify-start gap-2 h-10 text-sm border hover:border-primary/50">
-                  <Upload className="w-4 h-4" />
+                <Button variant="outline" className="justify-start gap-1.5 h-8 text-xs border hover:border-primary/50">
+                  <Upload className="w-3 h-3" />
                   Upload
                 </Button>
-                <Button variant="outline" className="justify-start gap-2 h-10 text-sm border hover:border-primary/50" onClick={handleEditDocument}>
-                  <Edit className="w-4 h-4" />
+                <Button variant="outline" className="justify-start gap-1.5 h-8 text-xs border hover:border-primary/50" onClick={handleEditDocument}>
+                  <Edit className="w-3 h-3" />
                   Editor
                 </Button>
               </div>
@@ -670,20 +670,20 @@ const DocumentMockup = () => {
           </Card>
 
           {/* Popular Templates */}
-          <Card className="border-2 shadow-lg bg-gradient-to-br from-background to-muted/30">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg font-bold flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-primary" />
-                Popular Templates
+          <Card className="border shadow-sm">
+            <CardHeader className="pb-2 px-3 pt-3">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-primary" />
+                Templates
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-2">
+            <CardContent className="px-3 pb-3">
+              <div className="grid grid-cols-2 gap-1.5">
                 {templates.slice(0, 4).map((template) => (
-                  <div key={template.id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer border border-transparent hover:border-primary/20">
-                    <template.icon className="w-4 h-4 text-primary flex-shrink-0" />
-                    <div className="min-w-0">
-                      <p className="font-medium text-xs truncate">{template.name}</p>
+                  <div key={template.id} className="flex items-center gap-1.5 p-1.5 rounded hover:bg-muted/50 transition-colors cursor-pointer">
+                    <template.icon className="w-3 h-3 text-primary flex-shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-xs truncate leading-tight">{template.name}</p>
                       <p className="text-xs text-muted-foreground truncate">{template.category}</p>
                     </div>
                   </div>
@@ -693,29 +693,29 @@ const DocumentMockup = () => {
           </Card>
 
           {/* Your Stats */}
-          <Card className="border-2 shadow-lg bg-gradient-to-br from-background to-muted/30">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg font-bold flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-primary" />
+          <Card className="border shadow-sm">
+            <CardHeader className="pb-2 px-3 pt-3">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-primary" />
                 Your Stats
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
+            <CardContent className="px-3 pb-3">
+              <div className="grid grid-cols-2 gap-2">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">12</div>
-                  <div className="text-xs text-muted-foreground">Documents</div>
+                  <div className="text-lg font-bold text-primary leading-none">12</div>
+                  <div className="text-xs text-muted-foreground">Docs</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">1.2K</div>
+                  <div className="text-lg font-bold text-primary leading-none">1.2K</div>
                   <div className="text-xs text-muted-foreground">Views</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">56</div>
+                  <div className="text-lg font-bold text-primary leading-none">56</div>
                   <div className="text-xs text-muted-foreground">Comments</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">8</div>
+                  <div className="text-lg font-bold text-primary leading-none">8</div>
                   <div className="text-xs text-muted-foreground">Collabs</div>
                 </div>
               </div>
