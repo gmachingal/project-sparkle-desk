@@ -246,17 +246,17 @@ const AdminDashboard = () => {
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4 lg:w-[500px] bg-gradient-to-r from-admin/10 to-admin-glow/10 border border-admin/20">
-          <TabsTrigger value="overview" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin font-medium gap-2 hover:bg-admin/10 text-admin/70 hover:text-admin">             
+        <TabsList className="grid w-full grid-cols-4 lg:w-[500px] bg-gradient-to-r from-admin/10 to-admin-glow/10">
+          <TabsTrigger value="overview" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin font-medium gap-2 hover:bg-admin/10 text-admin/70 hover:text-admin py-3 pb-3">             
             <BarChart3 className="w-4 h-4" />
             Overview</TabsTrigger>
-          <TabsTrigger value="attendance" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin font-medium gap-2 hover:bg-admin/10 text-admin/70 hover:text-admin">
+          <TabsTrigger value="attendance" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin font-medium gap-2 hover:bg-admin/10 text-admin/70 hover:text-admin py-3 pb-3">
             <Calendar className="w-4 h-4" />
             Attendance</TabsTrigger>
-          <TabsTrigger value="task-reports" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin font-medium gap-2 hover:bg-admin/10 text-admin/70 hover:text-admin">
+          <TabsTrigger value="task-reports" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin font-medium gap-2 hover:bg-admin/10 text-admin/70 hover:text-admin py-3 pb-3">
             <CheckSquare className="w-4 h-4" />
             Task Reports</TabsTrigger>
-          <TabsTrigger value="projects" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin font-medium gap-2 hover:bg-admin/10 text-admin/70 hover:text-admin">
+          <TabsTrigger value="projects" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin font-medium gap-2 hover:bg-admin/10 text-admin/70 hover:text-admin py-3 pb-3">
             <Briefcase className="w-4 h-4" />
             Projects</TabsTrigger>
         </TabsList>
