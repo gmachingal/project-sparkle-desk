@@ -471,26 +471,24 @@ const Collaboration = () => {
           </div>
           
           <div className="flex items-center gap-3">
-            {/* Admin Switch - Same pattern as Attendance */}
-            {currentUser.role === 'admin' && (
-              <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-primary/20 bg-gradient-to-r from-primary/5 to-primary-glow/10 hover:from-primary/10 hover:to-primary-glow/20 transition-all duration-200">
-                <div className="flex items-center gap-2">
-                  <Settings className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium text-primary">Employee</span>
-                </div>
-                <Switch 
-                  checked={false}
-                  onCheckedChange={(checked) => {
-                    if (checked) {
-                      localStorage.setItem('preferredRole', 'admin');
-                      window.location.href = '/admin-collaboration';
-                    }
-                  }}
-                  className="data-[state=checked]:bg-admin scale-75"
-                />
-                <span className="text-sm text-muted-foreground">Admin</span>
+            {/* Admin Switch - Available to all users */}
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-primary/20 bg-gradient-to-r from-primary/5 to-primary-glow/10 hover:from-primary/10 hover:to-primary-glow/20 transition-all duration-200">
+              <div className="flex items-center gap-2">
+                <Settings className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium text-primary">Employee</span>
               </div>
-            )}
+              <Switch 
+                checked={false}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    localStorage.setItem('preferredRole', 'admin');
+                    window.location.href = '/admin-collaboration';
+                  }
+                }}
+                className="data-[state=checked]:bg-admin scale-75"
+              />
+              <span className="text-sm text-muted-foreground">Admin</span>
+            </div>
             
             <Button variant="outline" className="gap-2">
               <Dialog open={isTeamChatOpen} onOpenChange={setIsTeamChatOpen}>
