@@ -78,6 +78,9 @@ const Collaboration = () => {
     id: '1',
     role: 'admin' // Change to 'member' for regular users
   };
+  
+  // State to track if admin is viewing as admin or employee
+  const [isAdminView, setIsAdminView] = useState(false);
 
   // Mock team data - now focused on collaboration and workload
   const teamMembers = [
@@ -238,8 +241,8 @@ const Collaboration = () => {
   const getFilteredMembers = () => {
     let filtered = teamMembers;
     
-    // If user view, show only current user's data
-    if (currentUser.role !== 'admin') {
+    // If user view OR admin viewing as employee, show only current user's data
+    if (currentUser.role !== 'admin' || !isAdminView) {
       filtered = teamMembers.filter(member => member.id === currentUser.id);
     }
     
@@ -287,7 +290,7 @@ const Collaboration = () => {
     }
   };
 
-  const teamStats = currentUser.role === 'admin' ? {
+  const teamStats = (currentUser.role === 'admin' && isAdminView) ? {
     total: teamMembers.length,
     online: teamMembers.filter(m => m.status === "online").length,
     avgWorkload: Math.round(teamMembers.reduce((acc, m) => acc + m.workload, 0) / teamMembers.length),
@@ -295,7 +298,7 @@ const Collaboration = () => {
     completedTasks: teamMembers.reduce((acc, m) => acc + m.tasksCompleted, 0),
     inProgressTasks: teamMembers.reduce((acc, m) => acc + m.tasksInProgress, 0)
   } : {
-    // User-specific stats
+    // User-specific stats (for regular users OR admin viewing as employee)
     total: 1,
     online: teamMembers.find(m => m.id === currentUser.id)?.status === "online" ? 1 : 0,
     avgWorkload: teamMembers.find(m => m.id === currentUser.id)?.workload || 0,
@@ -328,10 +331,10 @@ const Collaboration = () => {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-              {currentUser.role === 'admin' ? 'Organization Collaboration' : 'My Collaboration'}
+              {(currentUser.role === 'admin' && isAdminView) ? 'Organization Collaboration' : 'My Collaboration'}
             </h1>
             <p className="text-muted-foreground mt-1">
-              {currentUser.role === 'admin' 
+              {(currentUser.role === 'admin' && isAdminView)
                 ? 'Manage organization-wide collaboration, workloads, and team performance'
                 : 'Track your progress, collaborate with team members, and manage your workload'
               }
@@ -347,15 +350,13 @@ const Collaboration = () => {
                   <span className="text-sm font-medium text-primary">Employee</span>
                 </div>
                 <Switch 
-                  checked={false}
+                  checked={isAdminView}
                   onCheckedChange={(checked) => {
-                    if (checked) {
-                      // Navigate to admin collaboration view (could be separate page or state change)
-                      toast({
-                        title: "Admin View",
-                        description: "Switching to admin collaboration view...",
-                      });
-                    }
+                    setIsAdminView(checked);
+                    toast({
+                      title: checked ? "Admin View" : "Employee View",
+                      description: `Switched to ${checked ? 'admin' : 'employee'} collaboration view`,
+                    });
                   }}
                   className="data-[state=checked]:bg-admin scale-75"
                 />
@@ -396,7 +397,7 @@ const Collaboration = () => {
                 <div>
                   <div className="text-2xl font-bold">{teamStats.total}</div>
                   <div className="text-xs text-muted-foreground">
-                    {currentUser.role === 'admin' ? 'Team Members' : 'Your Profile'}
+                    {(currentUser.role === 'admin' && isAdminView) ? 'Team Members' : 'Your Profile'}
                   </div>
                 </div>
               </div>
@@ -410,7 +411,7 @@ const Collaboration = () => {
                 <div>
                   <div className="text-2xl font-bold">{teamStats.online}</div>
                   <div className="text-xs text-muted-foreground">
-                    {currentUser.role === 'admin' ? 'Online Now' : 'Status'}
+                    {(currentUser.role === 'admin' && isAdminView) ? 'Online Now' : 'Status'}
                   </div>
                 </div>
               </div>
@@ -424,7 +425,7 @@ const Collaboration = () => {
                 <div>
                   <div className="text-2xl font-bold">{teamStats.avgWorkload}%</div>
                   <div className="text-xs text-muted-foreground">
-                    {currentUser.role === 'admin' ? 'Avg Workload' : 'My Workload'}
+                    {(currentUser.role === 'admin' && isAdminView) ? 'Avg Workload' : 'My Workload'}
                   </div>
                 </div>
               </div>
@@ -438,7 +439,7 @@ const Collaboration = () => {
                 <div>
                   <div className="text-2xl font-bold">{teamStats.totalProjects}</div>
                   <div className="text-xs text-muted-foreground">
-                    {currentUser.role === 'admin' ? 'Active Projects' : 'My Projects'}
+                    {(currentUser.role === 'admin' && isAdminView) ? 'Active Projects' : 'My Projects'}
                   </div>
                 </div>
               </div>
@@ -452,7 +453,7 @@ const Collaboration = () => {
                 <div>
                   <div className="text-2xl font-bold">{teamStats.completedTasks}</div>
                   <div className="text-xs text-muted-foreground">
-                    {currentUser.role === 'admin' ? 'Completed' : 'My Completed'}
+                    {(currentUser.role === 'admin' && isAdminView) ? 'Completed' : 'My Completed'}
                   </div>
                 </div>
               </div>
@@ -466,7 +467,7 @@ const Collaboration = () => {
                 <div>
                   <div className="text-2xl font-bold">{teamStats.inProgressTasks}</div>
                   <div className="text-xs text-muted-foreground">
-                    {currentUser.role === 'admin' ? 'In Progress' : 'My Progress'}
+                    {(currentUser.role === 'admin' && isAdminView) ? 'In Progress' : 'My Progress'}
                   </div>
                 </div>
               </div>
@@ -479,30 +480,30 @@ const Collaboration = () => {
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
-              {currentUser.role === 'admin' ? 'Team Overview' : 'My Overview'}
+              {(currentUser.role === 'admin' && isAdminView) ? 'Team Overview' : 'My Overview'}
             </TabsTrigger>
             <TabsTrigger value="workload" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
-              {currentUser.role === 'admin' ? 'Team Workload' : 'My Workload'}
+              {(currentUser.role === 'admin' && isAdminView) ? 'Team Workload' : 'My Workload'}
             </TabsTrigger>
             <TabsTrigger value="departments" className="flex items-center gap-2">
               <Briefcase className="h-4 w-4" />
-              {currentUser.role === 'admin' ? 'Departments' : 'My Team'}
+              {(currentUser.role === 'admin' && isAdminView) ? 'Departments' : 'My Team'}
             </TabsTrigger>
             <TabsTrigger value="learning" className="flex items-center gap-2">
               <GraduationCap className="h-4 w-4" />
-              {currentUser.role === 'admin' ? 'Learning Management' : 'My Learning'}
+              {(currentUser.role === 'admin' && isAdminView) ? 'Learning Management' : 'My Learning'}
             </TabsTrigger>
             <TabsTrigger value="collaboration" className="flex items-center gap-2">
               <Share2 className="h-4 w-4" />
-              {currentUser.role === 'admin' ? 'Team Collaboration' : 'My Collaboration'}
+              {(currentUser.role === 'admin' && isAdminView) ? 'Team Collaboration' : 'My Collaboration'}
             </TabsTrigger>
           </TabsList>
 
           {/* Team Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
             {/* Search and Filters - Admin Only */}
-            {currentUser.role === 'admin' && (
+            {(currentUser.role === 'admin' && isAdminView) && (
               <div className="flex items-center gap-4">
                 <div className="relative flex-1 max-w-md">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -530,7 +531,7 @@ const Collaboration = () => {
             )}
             
             {/* User View - My Profile Card */}
-            {currentUser.role === 'user' && (
+            {(currentUser.role !== 'admin' || !isAdminView) && (
               <Card className="mb-6 border-primary/20 bg-gradient-to-r from-primary/5 to-primary-glow/5">
                 <CardHeader>
                   <CardTitle className="text-2xl">My Profile & Progress</CardTitle>
