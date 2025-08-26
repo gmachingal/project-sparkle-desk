@@ -47,7 +47,17 @@ import {
   MoreHorizontal,
   Search,
   MapPin,
-  Eye
+  Eye,
+  TrendingUp,
+  Target,
+  Download,
+  ChevronRight,
+  Pause,
+  RotateCcw,
+  Filter,
+  Badge as BadgeIcon,
+  Trophy,
+  Medal
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -61,6 +71,8 @@ const Collaboration = () => {
   const [isScheduleMeetingOpen, setIsScheduleMeetingOpen] = useState(false);
   const [isStartLearningOpen, setIsStartLearningOpen] = useState(false);
   const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
+  const [isContinueLearningOpen, setIsContinueLearningOpen] = useState(false);
+  const [isViewCertificatesOpen, setIsViewCertificatesOpen] = useState(false);
   
   // Form states
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
@@ -586,31 +598,31 @@ const Collaboration = () => {
                 </DialogTrigger>
               </Dialog>
 
-              {/* Browse Learning Library Button */}
-              <Button
-                variant="outline"
-                className="h-20 flex-col gap-2 border-success/20 hover:border-success/40 hover:bg-success/5 group transition-all duration-300"
-                onClick={() => toast({
-                  title: "Learning Library",
-                  description: "Browsing comprehensive learning resources and courses"
-                })}
-              >
-                <BookOpen className="w-6 h-6 text-success group-hover:scale-110 transition-transform" />
-                <span className="text-sm font-medium">Browse Library</span>
-              </Button>
+              {/* Continue Learning Button */}
+              <Dialog open={isContinueLearningOpen} onOpenChange={setIsContinueLearningOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="h-20 flex-col gap-2 border-success/20 hover:border-success/40 hover:bg-success/5 group transition-all duration-300"
+                  >
+                    <RotateCcw className="w-6 h-6 text-success group-hover:scale-110 transition-transform" />
+                    <span className="text-sm font-medium">Continue Learning</span>
+                  </Button>
+                </DialogTrigger>
+              </Dialog>
 
               {/* View All Certificates Button */}
-              <Button
-                variant="outline"
-                className="h-20 flex-col gap-2 border-warning/20 hover:border-warning/40 hover:bg-warning/5 group transition-all duration-300"
-                onClick={() => toast({
-                  title: "Certificates",
-                  description: "Viewing all earned certificates and achievements"
-                })}
-              >
-                <Award className="w-6 h-6 text-warning group-hover:scale-110 transition-transform" />
-                <span className="text-sm font-medium">View Certificates</span>
-              </Button>
+              <Dialog open={isViewCertificatesOpen} onOpenChange={setIsViewCertificatesOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="h-20 flex-col gap-2 border-warning/20 hover:border-warning/40 hover:bg-warning/5 group transition-all duration-300"
+                  >
+                    <Award className="w-6 h-6 text-warning group-hover:scale-110 transition-transform" />
+                    <span className="text-sm font-medium">View Certificates</span>
+                  </Button>
+                </DialogTrigger>
+              </Dialog>
 
               {/* Create Learning Program Button */}
               <Button
@@ -2076,6 +2088,514 @@ const Collaboration = () => {
                 
                 <Button variant="outline" onClick={() => setIsAssessmentOpen(false)}>
                   Exit
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Continue Learning Dialog */}
+        <Dialog open={isContinueLearningOpen} onOpenChange={setIsContinueLearningOpen}>
+          <DialogContent className="sm:max-w-5xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <RotateCcw className="w-5 h-5 text-primary" />
+                Continue Your Learning Journey
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-6">
+              {/* Learning Progress Overview */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                        <BookOpen className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">In Progress</div>
+                        <div className="text-xl font-bold text-primary">3</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-success/20 bg-gradient-to-br from-success/5 to-success-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center">
+                        <Target className="w-5 h-5 text-success" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Completion Rate</div>
+                        <div className="text-xl font-bold text-success">78%</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-warning/20 bg-gradient-to-br from-warning/5 to-warning-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-warning/20 flex items-center justify-center">
+                        <Clock className="w-5 h-5 text-warning" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Hours Logged</div>
+                        <div className="text-xl font-bold text-warning">24</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-info/20 bg-gradient-to-br from-info/5 to-info-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-info/20 flex items-center justify-center">
+                        <TrendingUp className="w-5 h-5 text-info" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Weekly Goal</div>
+                        <div className="text-xl font-bold text-info">8h</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Current Courses */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Courses in Progress</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[
+                    {
+                      id: "react-advanced",
+                      title: "Advanced React Development",
+                      instructor: "Sarah Johnson",
+                      progress: 75,
+                      timeSpent: "12h 30m",
+                      timeRemaining: "4h 15m",
+                      nextLesson: "Context API and State Management",
+                      lastAccessed: "2 hours ago",
+                      difficulty: "Advanced",
+                      completedLessons: 9,
+                      totalLessons: 12
+                    },
+                    {
+                      id: "typescript-pro",
+                      title: "TypeScript for Professionals",
+                      instructor: "Mike Chen",
+                      progress: 60,
+                      timeSpent: "8h 45m",
+                      timeRemaining: "6h 20m",
+                      nextLesson: "Advanced Types and Generics",
+                      lastAccessed: "1 day ago",
+                      difficulty: "Intermediate",
+                      completedLessons: 6,
+                      totalLessons: 10
+                    },
+                    {
+                      id: "nodejs-scaling",
+                      title: "Scaling Node.js Applications",
+                      instructor: "Alex Rodriguez",
+                      progress: 90,
+                      timeSpent: "18h 15m",
+                      timeRemaining: "2h 45m",
+                      nextLesson: "Performance Monitoring",
+                      lastAccessed: "3 hours ago",
+                      difficulty: "Advanced",
+                      completedLessons: 18,
+                      totalLessons: 20
+                    }
+                  ].map((course) => (
+                    <Card key={course.id} className="hover:shadow-lg transition-all duration-200">
+                      <CardContent className="p-5">
+                        <div className="flex items-start justify-between mb-3">
+                          <div>
+                            <h4 className="font-semibold text-sm mb-1">{course.title}</h4>
+                            <p className="text-xs text-muted-foreground">by {course.instructor}</p>
+                          </div>
+                          <Badge variant="outline" className="text-xs">
+                            {course.difficulty}
+                          </Badge>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          <div>
+                            <div className="flex justify-between text-sm mb-1">
+                              <span>Progress</span>
+                              <span className="font-medium">{course.progress}%</span>
+                            </div>
+                            <Progress value={course.progress} className="h-2" />
+                            <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                              <span>{course.completedLessons}/{course.totalLessons} lessons</span>
+                              <span>{course.timeRemaining} remaining</span>
+                            </div>
+                          </div>
+                          
+                          <div className="bg-muted/30 rounded-lg p-3">
+                            <div className="text-xs text-muted-foreground mb-1">Next Lesson</div>
+                            <div className="font-medium text-sm">{course.nextLesson}</div>
+                          </div>
+                          
+                          <div className="flex items-center justify-between text-xs text-muted-foreground">
+                            <span>Time spent: {course.timeSpent}</span>
+                            <span>Last accessed: {course.lastAccessed}</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex gap-2 mt-4">
+                          <Button size="sm" className="flex-1">
+                            <Play className="w-3 h-3 mr-1" />
+                            Continue
+                          </Button>
+                          <Button size="sm" variant="outline">
+                            <Pause className="w-3 h-3 mr-1" />
+                            Pause
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+
+              {/* Recent Activity */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Recent Learning Activity</h3>
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="space-y-3">
+                      {[
+                        {
+                          action: "Completed lesson",
+                          course: "Advanced React Development",
+                          lesson: "useState and useEffect Hooks",
+                          time: "2 hours ago",
+                          type: "completion"
+                        },
+                        {
+                          action: "Started new course",
+                          course: "TypeScript for Professionals",
+                          lesson: "Introduction to TypeScript",
+                          time: "1 day ago",
+                          type: "start"
+                        },
+                        {
+                          action: "Earned certificate",
+                          course: "JavaScript Fundamentals",
+                          lesson: "Final Assessment",
+                          time: "3 days ago",
+                          type: "certificate"
+                        },
+                        {
+                          action: "Logged learning hours",
+                          course: "Node.js Scaling",
+                          lesson: "2.5 hours of practice",
+                          time: "1 week ago",
+                          type: "hours"
+                        }
+                      ].map((activity, index) => (
+                        <div key={index} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                            activity.type === 'completion' ? 'bg-success/20' :
+                            activity.type === 'start' ? 'bg-primary/20' :
+                            activity.type === 'certificate' ? 'bg-warning/20' :
+                            'bg-info/20'
+                          }`}>
+                            {activity.type === 'completion' && <CheckCircle className="w-4 h-4 text-success" />}
+                            {activity.type === 'start' && <Play className="w-4 h-4 text-primary" />}
+                            {activity.type === 'certificate' && <Award className="w-4 h-4 text-warning" />}
+                            {activity.type === 'hours' && <Clock className="w-4 h-4 text-info" />}
+                          </div>
+                          <div className="flex-1">
+                            <div className="text-sm font-medium">{activity.action}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {activity.course} - {activity.lesson}
+                            </div>
+                          </div>
+                          <div className="text-xs text-muted-foreground">{activity.time}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3 pt-4">
+                <Button className="flex-1">
+                  <Play className="w-4 h-4 mr-2" />
+                  Resume Last Course
+                </Button>
+                <Button variant="outline" onClick={() => setIsStartLearningOpen(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Browse More Courses
+                </Button>
+                <Button variant="outline" onClick={() => setIsContinueLearningOpen(false)}>
+                  Close
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* View All Certificates Dialog */}
+        <Dialog open={isViewCertificatesOpen} onOpenChange={setIsViewCertificatesOpen}>
+          <DialogContent className="sm:max-w-5xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Award className="w-5 h-5 text-primary" />
+                My Certificates & Achievements
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-6">
+              {/* Achievement Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                        <Award className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Total Certificates</div>
+                        <div className="text-xl font-bold text-primary">12</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-success/20 bg-gradient-to-br from-success/5 to-success-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center">
+                        <Trophy className="w-5 h-5 text-success" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">This Month</div>
+                        <div className="text-xl font-bold text-success">3</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-warning/20 bg-gradient-to-br from-warning/5 to-warning-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-warning/20 flex items-center justify-center">
+                        <Medal className="w-5 h-5 text-warning" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Average Score</div>
+                        <div className="text-xl font-bold text-warning">94%</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-info/20 bg-gradient-to-br from-info/5 to-info-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-info/20 flex items-center justify-center">
+                        <Star className="w-5 h-5 text-info" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Skill Rank</div>
+                        <div className="text-xl font-bold text-info">Expert</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Search and Filter */}
+              <div className="flex items-center gap-4">
+                <div className="relative flex-1 max-w-md">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                  <Input
+                    placeholder="Search certificates..."
+                    className="pl-10"
+                  />
+                </div>
+                
+                <Select defaultValue="all">
+                  <SelectTrigger className="w-48">
+                    <Filter className="w-4 h-4 mr-2" />
+                    <SelectValue placeholder="Filter by category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Categories</SelectItem>
+                    <SelectItem value="technical">Technical Skills</SelectItem>
+                    <SelectItem value="leadership">Leadership</SelectItem>
+                    <SelectItem value="soft-skills">Soft Skills</SelectItem>
+                    <SelectItem value="compliance">Compliance</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                <Button variant="outline" className="gap-2">
+                  <Download className="w-4 h-4" />
+                  Export All
+                </Button>
+              </div>
+
+              {/* Certificates Grid */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">My Certificates</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {[
+                    {
+                      id: "cert-001",
+                      title: "Advanced React Development",
+                      issuer: "TechSkills Academy",
+                      completedDate: "2024-08-20",
+                      score: 96,
+                      level: "Advanced",
+                      category: "Technical Skills",
+                      certificateId: "RCT-ADV-2024-001",
+                      skills: ["React", "Hooks", "Context API", "Performance"],
+                      validUntil: "2026-08-20"
+                    },
+                    {
+                      id: "cert-002",
+                      title: "TypeScript for Professionals",
+                      issuer: "CodeMaster Institute",
+                      completedDate: "2024-08-15",
+                      score: 94,
+                      level: "Intermediate",
+                      category: "Technical Skills",
+                      certificateId: "TS-PRO-2024-002",
+                      skills: ["TypeScript", "Advanced Types", "Generics"],
+                      validUntil: "2026-08-15"
+                    },
+                    {
+                      id: "cert-003",
+                      title: "Leadership Fundamentals",
+                      issuer: "Leadership Academy",
+                      completedDate: "2024-08-10",
+                      score: 92,
+                      level: "Beginner",
+                      category: "Leadership",
+                      certificateId: "LDR-FND-2024-003",
+                      skills: ["Team Management", "Communication", "Decision Making"],
+                      validUntil: "2027-08-10"
+                    },
+                    {
+                      id: "cert-004",
+                      title: "Node.js Application Scaling",
+                      issuer: "Backend Masters",
+                      completedDate: "2024-08-05",
+                      score: 98,
+                      level: "Advanced",
+                      category: "Technical Skills",
+                      certificateId: "NJS-SCL-2024-004",
+                      skills: ["Node.js", "Microservices", "Performance", "Scaling"],
+                      validUntil: "2026-08-05"
+                    },
+                    {
+                      id: "cert-005",
+                      title: "JavaScript Fundamentals",
+                      issuer: "Web Dev Institute",
+                      completedDate: "2024-07-28",
+                      score: 95,
+                      level: "Beginner",
+                      category: "Technical Skills",
+                      certificateId: "JS-FND-2024-005",
+                      skills: ["JavaScript", "ES6+", "DOM", "Async Programming"],
+                      validUntil: "2026-07-28"
+                    },
+                    {
+                      id: "cert-006",
+                      title: "Project Management Essentials",
+                      issuer: "PM Academy",
+                      completedDate: "2024-07-20",
+                      score: 91,
+                      level: "Intermediate",
+                      category: "Leadership",
+                      certificateId: "PMG-ESS-2024-006",
+                      skills: ["Agile", "Scrum", "Planning", "Risk Management"],
+                      validUntil: "2027-07-20"
+                    }
+                  ].map((cert) => (
+                    <Card key={cert.id} className="hover:shadow-lg transition-all duration-200 border-l-4 border-l-primary">
+                      <CardContent className="p-5">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center gap-2">
+                            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                              <Award className="w-5 h-5 text-primary" />
+                            </div>
+                            <div>
+                              <div className="text-sm font-semibold">{cert.title}</div>
+                              <div className="text-xs text-muted-foreground">{cert.issuer}</div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-lg font-bold text-green-600">{cert.score}%</div>
+                            <Badge variant="secondary" className="text-xs">
+                              {cert.level}
+                            </Badge>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2 mb-4">
+                          <div className="text-xs text-muted-foreground">
+                            Certificate ID: {cert.certificateId}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Completed: {new Date(cert.completedDate).toLocaleDateString()}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Valid until: {new Date(cert.validUntil).toLocaleDateString()}
+                          </div>
+                          
+                          <div className="pt-2">
+                            <div className="text-xs text-muted-foreground mb-1">Skills Earned:</div>
+                            <div className="flex flex-wrap gap-1">
+                              {cert.skills.map((skill, index) => (
+                                <Badge key={index} variant="outline" className="text-xs">
+                                  {skill}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="outline" className="flex-1 text-xs">
+                            <Eye className="w-3 h-3 mr-1" />
+                            View
+                          </Button>
+                          <Button size="sm" variant="outline" className="flex-1 text-xs">
+                            <Download className="w-3 h-3 mr-1" />
+                            Download
+                          </Button>
+                          <Button size="sm" variant="outline" className="flex-1 text-xs">
+                            <Share2 className="w-3 h-3 mr-1" />
+                            Share
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3 pt-4">
+                <Button 
+                  className="flex-1"
+                  onClick={() => {
+                    setIsViewCertificatesOpen(false);
+                    setIsStartLearningOpen(true);
+                  }}
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Earn More Certificates
+                </Button>
+                <Button variant="outline" onClick={() => setIsViewCertificatesOpen(false)}>
+                  Close
                 </Button>
               </div>
             </div>
