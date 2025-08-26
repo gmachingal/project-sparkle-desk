@@ -136,9 +136,16 @@ const TakeAssessment = () => {
               <div className="space-y-2">
                 <div className="flex items-start justify-between">
                   <CardTitle className="text-sm leading-tight line-clamp-2">{assessment.title}</CardTitle>
-                  {assessment.status === "completed" && (
-                    <Trophy className="w-4 h-4 text-success shrink-0 ml-2" />
-                  )}
+                  <Button 
+                    onClick={() => handleStartAssessment(assessment.id)}
+                    disabled={assessment.status === "completed"}
+                    size="sm"
+                    className="gap-1 h-7 shrink-0 ml-2"
+                  >
+                    <Play className="w-3 h-3" />
+                    {assessment.status === "completed" ? "Done" : 
+                     assessment.status === "in-progress" ? "Continue" : "Start"}
+                  </Button>
                 </div>
                 <Badge className={getDifficultyColor(assessment.difficulty)} variant="outline">
                   {assessment.difficulty}
@@ -165,17 +172,6 @@ const TakeAssessment = () => {
                   Attempts: {assessment.attempts}/{assessment.maxAttempts}
                 </div>
               </div>
-              
-              <Button 
-                onClick={() => handleStartAssessment(assessment.id)}
-                disabled={assessment.status === "completed"}
-                size="sm"
-                className="w-full gap-1 h-7"
-              >
-                <Play className="w-3 h-3" />
-                {assessment.status === "completed" ? "Done" : 
-                 assessment.status === "in-progress" ? "Continue" : "Start"}
-              </Button>
             </CardContent>
           </Card>
         ))}

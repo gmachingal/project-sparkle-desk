@@ -152,18 +152,28 @@ const BrowseLearning = () => {
         {filteredCourses.map((course) => (
           <Card key={course.id} className="group transition-all duration-200 hover:shadow-md">
             <CardHeader className="space-y-2 pb-3">
-              <div className="flex items-start justify-between">
-                <CardTitle className="text-sm line-clamp-2 group-hover:text-primary transition-colors leading-tight">
-                  {course.title}
-                </CardTitle>
-                <Badge variant="outline" className="text-xs shrink-0 ml-2">{course.price}</Badge>
+              <div className="space-y-2">
+                <div className="flex items-start justify-between">
+                  <CardTitle className="text-sm line-clamp-2 group-hover:text-primary transition-colors leading-tight">
+                    {course.title}
+                  </CardTitle>
+                  <Button 
+                    size="sm"
+                    className="gap-1 h-7 shrink-0 ml-2"
+                    onClick={() => handleEnrollCourse(course)}
+                  >
+                    <Plus className="w-3 h-3" />
+                    Enroll
+                  </Button>
+                </div>
+                <Badge variant="outline" className="text-xs w-fit">{course.price}</Badge>
+                <p className="text-xs text-muted-foreground line-clamp-2">
+                  {course.description}
+                </p>
+                <p className="text-xs font-medium text-primary">
+                  By {course.instructor}
+                </p>
               </div>
-              <p className="text-xs text-muted-foreground line-clamp-2">
-                {course.description}
-              </p>
-              <p className="text-xs font-medium text-primary">
-                By {course.instructor}
-              </p>
             </CardHeader>
             
             <CardContent className="space-y-3 pt-0">
@@ -197,15 +207,6 @@ const BrowseLearning = () => {
                   </Badge>
                 )}
               </div>
-              
-              <Button 
-                size="sm"
-                className="w-full gap-1 h-7"
-                onClick={() => handleEnrollCourse(course)}
-              >
-                <Plus className="w-3 h-3" />
-                Enroll
-              </Button>
             </CardContent>
           </Card>
         ))}
