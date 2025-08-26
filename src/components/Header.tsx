@@ -363,33 +363,37 @@ const Header = ({ userRole }: HeaderProps) => {
 
           {/* Expandable Search */}
           <div className="relative hidden md:block">
-            {!isSearchExpanded ? (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleSearchClick}
-                    className="w-10 h-9 p-0 border-muted-foreground/20 hover:border-muted-foreground/40 hover:bg-background/90 hover:shadow-sm transition-all duration-200 hover:scale-105 active:scale-95"
-                  >
-                    <Search className="w-5 h-5 text-foreground/70 hover:text-foreground transition-colors duration-200" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Search</p>
-                </TooltipContent>
-              </Tooltip>
-            ) : (
-              <div className="animate-fade-in">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 z-10" />
-                <Input
-                  ref={searchInputRef}
-                  placeholder="Search..."
-                  className="pl-10 w-64 bg-muted/50 transition-all duration-300 animate-scale-in"
-                  onBlur={handleSearchBlur}
-                />
-              </div>
-            )}
+            <div className={`relative transition-all duration-300 ease-out ${
+              isSearchExpanded ? 'w-64' : 'w-10'
+            }`}>
+              {!isSearchExpanded ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleSearchClick}
+                      className="w-full h-9 p-0 border-muted-foreground/20 hover:border-muted-foreground/40 hover:bg-background/90 hover:shadow-sm transition-all duration-200 hover:scale-105 active:scale-95"
+                    >
+                      <Search className="w-5 h-5 text-foreground/70 hover:text-foreground transition-colors duration-200" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Search</p>
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <div className="relative w-full">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 z-10" />
+                  <Input
+                    ref={searchInputRef}
+                    placeholder="Search..."
+                    className="pl-10 w-full bg-muted/50 border-muted-foreground/20 hover:border-muted-foreground/40"
+                    onBlur={handleSearchBlur}
+                  />
+                </div>
+              )}
+            </div>
           </div>
           
           {/* Action Buttons Group */}
