@@ -11,7 +11,6 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import Header from "@/components/Header";
 import { 
-  ArrowLeft, 
   Edit, 
   Calendar,
   Flag,
@@ -34,7 +33,8 @@ import {
   Settings,
   UserPlus,
   Plus,
-  Minus
+  Minus,
+  Edit3
 } from "lucide-react";
 import { format } from "date-fns";
 

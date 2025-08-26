@@ -10,7 +10,7 @@ import { EnhancedCalendar } from "@/components/ui/enhanced-calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Header from "@/components/Header";
-import { CalendarIcon, User, ArrowLeft, Save, Plus, Target, Tag, X, Upload, FileText, Image, File, Trash2 } from "lucide-react";
+import { CalendarIcon, User, Save, Plus, Target, Tag, X, Upload, FileText, Image, File, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -163,8 +163,8 @@ const CreateTask = () => {
     setUploadedDocuments(uploadedDocuments.filter(doc => doc.id !== docId));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     
     // Basic validation
     if (!formData.title || !formData.project) {
@@ -191,26 +191,17 @@ const CreateTask = () => {
 
   return (
     <div className="min-h-screen bg-background">
-
-      {/* Header */}
-      <div className="backdrop-blur-sm bg-gradient-to-l sticky top-0 z-50 from-primary/40 via-primary-glow/60 to-primary/80 shadow-2xl shadow-black/30 drop-shadow-lg">
-        <div className="flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" onClick={() => navigate(-1)} className="gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </Button>
-            <div>
-              <h1 className="text-2xl font-bold text-white">Create Task</h1>
-              <p className="text-white/80 text-sm">Add a new task to your project</p>
-            </div>
-          </div>
-          <Button variant="default" onClick={handleSubmit} className="gap-2 bg-white text-primary hover:bg-white/90">
-            <Save className="w-4 h-4" />
-            Create Task
-          </Button>
-        </div>
-      </div>
+      <Header
+        title="Create Task"
+        subtitle="Add a new task to your project"
+        backButton={true}
+        actionButton={{
+          label: "Create Task",
+          icon: Save,
+          onClick: handleSubmit,
+          variant: "default"
+        }}
+      />
       
       <div className="container mx-auto px-4 py-8">
 
@@ -680,10 +671,6 @@ const CreateTask = () => {
           <div className="flex justify-end gap-3 pt-6 border-t">
             <Button variant="outline" type="button" onClick={() => navigate("/my-tasks")}>
               Cancel
-            </Button>
-            <Button type="submit" className="gap-2">
-              <Plus className="w-4 h-4" />
-              Create Task
             </Button>
           </div>
         </form>

@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { CalendarIcon, ArrowLeft, Trash2, Clock, Plus, Target, Upload, FileText, Image, File, Save } from 'lucide-react';
+import { CalendarIcon, Trash2, Clock, Plus, Target, Upload, FileText, Image, File, Save } from 'lucide-react';
 import { format } from 'date-fns';
 
 const EditTask = () => {
@@ -166,8 +166,8 @@ const EditTask = () => {
     }
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     toast({
       title: "Task Updated",
       description: "Task has been successfully updated.",
@@ -256,31 +256,17 @@ const EditTask = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="backdrop-blur-sm bg-gradient-to-l sticky top-0 z-50 from-primary/40 via-primary-glow/60 to-primary/80 shadow-2xl shadow-black/30 drop-shadow-lg">
-        <div className="flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" onClick={() => navigate("/my-tasks")} className="gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </Button>
-            <div>
-              <h1 className="text-2xl font-bold text-white">Edit Task</h1>
-              <p className="text-white/80 text-sm">Modify task details and settings</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="destructive" onClick={handleDelete} className="gap-2">
-              <Trash2 className="w-4 h-4" />
-              Delete
-            </Button>
-            <Button variant="default" onClick={handleSubmit} className="gap-2 bg-white text-primary hover:bg-white/90">
-              <Save className="w-4 h-4" />
-              Save Changes
-            </Button>
-          </div>
-        </div>
-      </div>
+      <Header
+        title="Edit Task"
+        subtitle="Modify task details and properties"
+        backButton={true}
+        actionButton={{
+          label: "Save Changes",
+          icon: Save,
+          onClick: handleSubmit,
+          variant: "default"
+        }}
+      />
       
       
       <div className="container mx-auto px-4 py-8">
@@ -777,14 +763,10 @@ const EditTask = () => {
               <Button variant="outline" type="button" onClick={() => navigate("/my-tasks")}>
                 Cancel
               </Button>
-              <Button variant="hero" type="submit" className="gap-2">
-                Update Task
-              </Button>
               <Button variant="destructive" onClick={handleDelete}>
                 <Trash2 className="h-4 w-4 mr-2" />
                 Delete Task
               </Button>
-
           </div>
         </form>
       </div>

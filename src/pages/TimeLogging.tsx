@@ -17,7 +17,6 @@ import {
   Save, 
   Plus,
   Flag,
-  ArrowLeft,
   Timer,
   ChevronLeft,
   ChevronRight,
@@ -198,7 +197,7 @@ const TimeLogging = () => {
     }));
   };
 
-  const handleSaveAllEntries = () => {
+  const handleSaveAll = () => {
     const validEntries = Object.entries(timeEntries).filter(([_, entry]) => 
       entry.hours && parseFloat(entry.hours) > 0
     );
@@ -288,25 +287,17 @@ const TimeLogging = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="backdrop-blur-sm bg-gradient-to-l sticky top-0 z-50 from-primary/40 via-primary-glow/60 to-primary/80 shadow-2xl shadow-black/30 drop-shadow-lg">
-        <div className="flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" onClick={() => navigate(-1)} className="gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </Button>
-            <div>
-              <h1 className="text-2xl font-bold text-white">Time Logging</h1>
-              <p className="text-white/80 text-sm">Track time spent on tasks and projects</p>
-            </div>
-          </div>
-          <Button variant="default" onClick={handleSaveAllEntries} className="gap-2 bg-white text-primary hover:bg-white/90">
-            <Save className="w-4 h-4" />
-            Save All
-          </Button>
-        </div>
-      </div>
+      <Header
+        title="Time Logging"
+        subtitle="Track time spent on tasks and projects"
+        backButton={true}
+        actionButton={{
+          label: "Save All",
+          icon: Save,
+          onClick: handleSaveAll,
+          variant: "default"
+        }}
+      />
       
       
       <div className="container mx-auto px-4 py-8">
@@ -326,7 +317,7 @@ const TimeLogging = () => {
               <div className="text-sm text-muted-foreground">Total Hours Today</div>
               <div className="text-2xl font-bold text-primary">{getTotalHoursForDay()}h</div>
             </div>
-            <Button onClick={handleSaveAllEntries} className="gap-2">
+            <Button onClick={handleSaveAll} className="gap-2">
               <Save className="w-4 h-4" />
               Save All
             </Button>

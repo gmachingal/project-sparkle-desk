@@ -9,7 +9,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, ArrowLeft, Save, Plus, Users, Target, Palette, X, Building2, Upload, FileText, Image, File, Trash2 } from "lucide-react";
+import Header from "@/components/Header";
+import { CalendarIcon, Save, Plus, Users, Target, Palette, X, Building2, Upload, FileText, Image, File, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -110,8 +111,8 @@ const NewProject = () => {
     setUploadedDocuments(uploadedDocuments.filter(doc => doc.id !== docId));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     
     if (!formData.name || !formData.template) {
       toast({
@@ -135,25 +136,17 @@ const NewProject = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="backdrop-blur-sm bg-gradient-to-l sticky top-0 z-50 from-primary/40 via-primary-glow/60 to-primary/80 shadow-2xl shadow-black/30 drop-shadow-lg">
-        <div className="flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" onClick={() => navigate("/projects")} className="gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </Button>
-            <div>
-              <h1 className="text-2xl font-bold text-white">Create New Project</h1>
-              <p className="text-white/80 text-sm">Set up a new project with team and milestones</p>
-            </div>
-          </div>
-          <Button variant="default" onClick={handleSubmit} className="gap-2 bg-white text-primary hover:bg-white/90">
-            <Save className="w-4 h-4" />
-            Create Project
-          </Button>
-        </div>
-      </div>
+      <Header
+        title="Create Project"
+        subtitle="Start a new project and organize your team"
+        backButton={true}
+        actionButton={{
+          label: "Create Project",
+          icon: Save,
+          onClick: handleSubmit,
+          variant: "default"
+        }}
+      />
 
       <div className="p-6">
         <div className="max-w-6xl mx-auto">
@@ -434,10 +427,6 @@ const NewProject = () => {
             <div className="flex justify-end gap-3">
               <Button variant="outline" type="button" onClick={() => navigate("/")}>
                 Cancel
-              </Button>
-              <Button variant="default" type="submit" className="gap-2">
-                <Plus className="w-4 h-4" />
-                Create Project
               </Button>
             </div>
           </form>

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Search, Bell, Plus, Settings, User, Clock, Users, Briefcase, FileText, Calendar, Home, LogOut, Building2, ChevronDown, Check, Cog } from "lucide-react";
+import { Search, Bell, Plus, Settings, User, Clock, Users, Briefcase, FileText, Calendar, Home, LogOut, Building2, ChevronDown, Check, Cog, ArrowLeft } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -15,9 +15,18 @@ import reposeLogo from "@/assets/repose-logo-bigger-font.png";
 
 interface HeaderProps {
   userRole?: 'admin' | 'user';
+  title?: string;
+  subtitle?: string;
+  backButton?: boolean;
+  actionButton?: {
+    label: string;
+    icon: React.ComponentType<any>;
+    onClick: () => void;
+    variant?: 'default' | 'secondary' | 'outline';
+  };
 }
 
-const Header = ({ userRole }: HeaderProps) => {
+const Header = ({ userRole, title, subtitle, backButton, actionButton }: HeaderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -200,15 +209,32 @@ const Header = ({ userRole }: HeaderProps) => {
     }`}>
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-4">
-          <div className="flex items-center cursor-pointer" onClick={() => navigate("/dashboard")}>
-            <img 
-              src={reposeLogo} 
-              alt="Repose" 
-              className="w-10 h-10 object-contain shadow-lg border border-white/20 rounded-lg"
-            />
-          </div>
+          {/* Logo or Back Button + Page Title */}
+          {title ? (
+            <div className="flex items-center gap-4">
+              {backButton && (
+                <Button variant="outline" size="sm" onClick={() => navigate(-1)} className="gap-2">
+                  <ArrowLeft className="w-4 h-4" />
+                  Back
+                </Button>
+              )}
+              <div>
+                <h1 className="text-2xl font-bold text-white">{title}</h1>
+                {subtitle && <p className="text-white/80 text-sm">{subtitle}</p>}
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center cursor-pointer" onClick={() => navigate("/dashboard")}>
+              <img 
+                src={reposeLogo} 
+                alt="Repose" 
+                className="w-10 h-10 object-contain shadow-lg border border-white/20 rounded-lg"
+              />
+            </div>
+          )}
           
-          {/* Primary Navigation - Show more items on larger screens */}
+          {/* Primary Navigation - Hide when showing page title */}
+          {!title && (
           <nav className="hidden lg:flex items-center gap-1">
             <Button 
               variant="ghost" 
@@ -265,8 +291,10 @@ const Header = ({ userRole }: HeaderProps) => {
               <span className="hidden xl:inline">Leave</span>
             </Button>
           </nav>
+          )}
 
-          {/* Mobile Navigation Menu */}
+          {/* Mobile Navigation Menu - Hide when showing page title */}
+          {!title && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className="lg:hidden">
@@ -300,9 +328,21 @@ const Header = ({ userRole }: HeaderProps) => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Action Button */}
+          {actionButton && (
+            <Button 
+              variant={actionButton.variant || "default"} 
+              onClick={actionButton.onClick} 
+              className="gap-2 bg-white text-primary hover:bg-white/90"
+            >
+              <actionButton.icon className="w-4 h-4" />
+              {actionButton.label}
+            </Button>
+          )}
           {/* Compact Organization Switcher */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
