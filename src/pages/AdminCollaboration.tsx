@@ -1795,6 +1795,280 @@ const AdminCollaboration = () => {
                 </Card>
               </div>
 
+              {/* Enhanced Assessment Builder */}
+              <Card className="border-accent/20">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Award className="w-5 h-5 text-accent" />
+                    Program Assessments
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Create assessments to evaluate learner progress and knowledge retention
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Assessment Builder */}
+                  <div className="border rounded-lg p-4 bg-muted/20">
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <Label htmlFor="assessment-title">Assessment Title</Label>
+                          <Input
+                            id="assessment-title"
+                            value={currentAssessment.title}
+                            onChange={(e) => setCurrentAssessment(prev => ({
+                              ...prev,
+                              title: e.target.value
+                            }))}
+                            placeholder="e.g., React Fundamentals Quiz"
+                            className="bg-background"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="passing-score">Passing Score (%)</Label>
+                          <Input
+                            id="passing-score"
+                            type="number"
+                            min="0"
+                            max="100"
+                            value={currentAssessment.passingScore}
+                            onChange={(e) => setCurrentAssessment(prev => ({
+                              ...prev,
+                              passingScore: parseInt(e.target.value) || 70
+                            }))}
+                            className="bg-background"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="time-limit">Time Limit (minutes)</Label>
+                          <Input
+                            id="time-limit"
+                            type="number"
+                            min="5"
+                            max="180"
+                            value={currentAssessment.timeLimit}
+                            onChange={(e) => setCurrentAssessment(prev => ({
+                              ...prev,
+                              timeLimit: parseInt(e.target.value) || 30
+                            }))}
+                            className="bg-background"
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Questions Builder */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-base font-semibold">Questions</Label>
+                          <Badge variant="outline">{currentAssessment.questions.length} questions</Badge>
+                        </div>
+                        
+                        {currentAssessment.questions.map((question, questionIndex) => (
+                          <Card key={questionIndex} className="border-border/50">
+                            <CardContent className="p-4">
+                              <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <Badge variant="outline">Question {questionIndex + 1}</Badge>
+                                  {currentAssessment.questions.length > 1 && (
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => {
+                                        const newQuestions = currentAssessment.questions.filter((_, i) => i !== questionIndex);
+                                        setCurrentAssessment(prev => ({
+                                          ...prev,
+                                          questions: newQuestions
+                                        }));
+                                      }}
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                  )}
+                                </div>
+                                
+                                <div>
+                                  <Label>Question Text</Label>
+                                  <Textarea
+                                    value={question.question}
+                                    onChange={(e) => {
+                                      const newQuestions = [...currentAssessment.questions];
+                                      newQuestions[questionIndex].question = e.target.value;
+                                      setCurrentAssessment(prev => ({
+                                        ...prev,
+                                        questions: newQuestions
+                                      }));
+                                    }}
+                                    placeholder="Enter your question..."
+                                    className="bg-background"
+                                  />
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label>Answer Options</Label>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    {question.options.map((option, optionIndex) => (
+                                      <div key={optionIndex} className="flex items-center gap-2">
+                                        <Input
+                                          value={option}
+                                          onChange={(e) => {
+                                            const newQuestions = [...currentAssessment.questions];
+                                            newQuestions[questionIndex].options[optionIndex] = e.target.value;
+                                            setCurrentAssessment(prev => ({
+                                              ...prev,
+                                              questions: newQuestions
+                                            }));
+                                          }}
+                                          placeholder={`Option ${optionIndex + 1}`}
+                                          className="bg-background"
+                                        />
+                                        <Checkbox
+                                          checked={question.correct === optionIndex}
+                                          onCheckedChange={(checked) => {
+                                            if (checked) {
+                                              const newQuestions = [...currentAssessment.questions];
+                                              newQuestions[questionIndex].correct = optionIndex;
+                                              setCurrentAssessment(prev => ({
+                                                ...prev,
+                                                questions: newQuestions
+                                              }));
+                                            }
+                                          }}
+                                        />
+                                        <Label className="text-xs whitespace-nowrap">Correct</Label>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                                
+                                <div>
+                                  <Label>Explanation (Optional)</Label>
+                                  <Textarea
+                                    value={question.explanation || ""}
+                                    onChange={(e) => {
+                                      const newQuestions = [...currentAssessment.questions];
+                                      newQuestions[questionIndex].explanation = e.target.value;
+                                      setCurrentAssessment(prev => ({
+                                        ...prev,
+                                        questions: newQuestions
+                                      }));
+                                    }}
+                                    placeholder="Explain why this is the correct answer..."
+                                    className="bg-background"
+                                    rows={2}
+                                  />
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                        
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setCurrentAssessment(prev => ({
+                              ...prev,
+                              questions: [
+                                ...prev.questions,
+                                { question: "", options: ["", "", "", ""], correct: 0, explanation: "" }
+                              ]
+                            }));
+                          }}
+                          className="w-full"
+                        >
+                          <Plus className="w-4 h-4 mr-2" />
+                          Add Question
+                        </Button>
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={() => {
+                            if (currentAssessment.title && currentAssessment.questions[0].question) {
+                              setProgramAssessments(prev => [...prev, { 
+                                ...currentAssessment, 
+                                id: Date.now(),
+                                createdAt: new Date().toISOString()
+                              }]);
+                              setCurrentAssessment({
+                                title: "",
+                                passingScore: 70,
+                                timeLimit: 30,
+                                questions: [{ question: "", options: ["", "", "", ""], correct: 0, explanation: "" }]
+                              });
+                              toast({
+                                title: "Assessment Added",
+                                description: "Assessment has been added to the program",
+                              });
+                            }
+                          }}
+                          disabled={!currentAssessment.title || !currentAssessment.questions[0].question}
+                          className="bg-gradient-to-r from-admin to-admin-glow"
+                        >
+                          <Plus className="w-4 h-4 mr-2" />
+                          Add Assessment
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Added Assessments List */}
+                  {programAssessments.length > 0 && (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-base font-semibold">Program Assessments</Label>
+                        <Badge variant="secondary">{programAssessments.length} assessment{programAssessments.length !== 1 ? 's' : ''}</Badge>
+                      </div>
+                      
+                      {programAssessments.map((assessment, index) => (
+                        <Card key={assessment.id} className="border-success/20">
+                          <CardContent className="p-4">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <h4 className="font-medium">{assessment.title}</h4>
+                                  <Badge variant="outline" className="text-xs">
+                                    {assessment.questions.length} questions
+                                  </Badge>
+                                </div>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm text-muted-foreground">
+                                  <div>
+                                    <span className="font-medium">Passing Score:</span> {assessment.passingScore}%
+                                  </div>
+                                  <div>
+                                    <span className="font-medium">Time Limit:</span> {assessment.timeLimit} min
+                                  </div>
+                                  <div>
+                                    <span className="font-medium">Questions:</span> {assessment.questions.length}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex gap-2">
+                                <Button variant="ghost" size="sm">
+                                  <Eye className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    setProgramAssessments(prev => prev.filter(a => a.id !== assessment.id));
+                                    toast({
+                                      title: "Assessment Removed",
+                                      description: "Assessment has been removed from the program",
+                                    });
+                                  }}
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
               {/* Program Settings */}
               <div className="space-y-4">
                 <h4 className="font-medium">Program Settings</h4>
