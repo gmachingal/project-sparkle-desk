@@ -394,15 +394,6 @@ const Header = ({ userRole }: HeaderProps) => {
           
           {/* Action Buttons Group */}
           <div className="flex items-center gap-2">
-            <Button 
-              variant="hero" 
-              size="sm" 
-              className={`gap-2 ${isAdminPage ? 'bg-gradient-to-r from-admin to-admin-glow' : ''}`} 
-              onClick={() => navigate("/create-task")}
-            >
-              <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">Create</span>
-            </Button>
             
             <Sheet>
               <SheetTrigger asChild>
