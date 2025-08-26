@@ -156,7 +156,7 @@ const DocumentMockup = () => {
         </div>
 
         <Tabs defaultValue="project" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 max-w-md">
+          <TabsList className="grid w-full grid-cols-2 max-w-md rounded-t-lg">
             <TabsTrigger value="project">Project Documents</TabsTrigger>
             <TabsTrigger value="task">Task Documents</TabsTrigger>
           </TabsList>

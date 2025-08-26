@@ -612,7 +612,7 @@ const AdminOrganizations = () => {
 
       <div className="max-w-7xl mx-auto p-6 space-y-6">
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="bg-gradient-to-r from-admin/10 to-admin-glow/10">
+          <TabsList className="bg-gradient-to-r from-admin/10 to-admin-glow/10 rounded-t-lg">
             <TabsTrigger value="overview" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin hover:bg-admin/10 text-admin/70 hover:text-admin">Overview</TabsTrigger>
             <TabsTrigger value="organizations" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin hover:bg-admin/10 text-admin/70 hover:text-admin">Organizations</TabsTrigger>
             <TabsTrigger value="features" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin hover:bg-admin/10 text-admin/70 hover:text-admin">Feature Management</TabsTrigger>

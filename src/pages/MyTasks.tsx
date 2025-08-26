@@ -467,7 +467,7 @@ const MyTasks = () => {
 
         {/* Tasks Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-6 bg-muted">
+          <TabsList className="grid w-full grid-cols-6 bg-muted rounded-t-lg">
             <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
               <FileText className="h-4 w-4 mr-2" />
               All ({taskStats.total})</TabsTrigger>

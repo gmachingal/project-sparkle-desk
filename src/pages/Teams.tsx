@@ -707,7 +707,7 @@ const Teams = () => {
 
         {/* Teams Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2 bg-muted">
+          <TabsList className="grid w-full grid-cols-2 bg-muted rounded-t-lg">
             <TabsTrigger value="members" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
               <Users className="h-4 w-4 mr-2" />
               Team Members</TabsTrigger>

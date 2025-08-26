@@ -328,7 +328,7 @@ const TimeLogging = () => {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="log" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-3 rounded-t-lg">
             <TabsTrigger value="log" className="flex items-center gap-2">
               <Timer className="h-4 w-4" />
               Log Time
