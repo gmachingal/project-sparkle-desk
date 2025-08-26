@@ -11,7 +11,7 @@ import { CreateDocumentDialog } from "@/components/documents/CreateDocumentDialo
 import { SpacesList } from "@/components/spaces/SpacesList";
 import { SpaceDetails } from "@/components/spaces/SpaceDetails";
 import { CreateSpaceDialog } from "@/components/spaces/CreateSpaceDialog";
-import { TemplateSelector } from "@/components/templates/TemplateSelector";
+
 import { ActivityFeed } from "@/components/common/ActivityFeed";
 import { UploadDialog } from "@/components/common/UploadDialog";
 import { SearchAndFilters } from "@/components/common/SearchAndFilters";
@@ -24,7 +24,7 @@ const DocumentMockup = () => {
   const [selectedSpace, setSelectedSpace] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list" | "tree">("grid");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
+  
   const [isCreateSpaceDialogOpen, setIsCreateSpaceDialogOpen] = useState(false);
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
@@ -40,13 +40,6 @@ const DocumentMockup = () => {
     setIsCreateDialogOpen(false);
   };
 
-  const handleUseTemplate = (templateId: string) => {
-    toast({
-      title: "Template Applied",
-      description: `Document created using ${templates.find(t => t.id === templateId)?.name} template`
-    });
-    setIsTemplateDialogOpen(false);
-  };
 
   const handleCreateSpace = () => {
     toast({
@@ -130,12 +123,6 @@ const DocumentMockup = () => {
               open={isCreateDialogOpen}
               onOpenChange={setIsCreateDialogOpen}
               onSubmit={handleCreateDocument}
-            />
-            <TemplateSelector
-              templates={templates}
-              open={isTemplateDialogOpen}
-              onOpenChange={setIsTemplateDialogOpen}
-              onSelectTemplate={handleUseTemplate}
             />
             <CreateSpaceDialog
               open={isCreateSpaceDialogOpen}
