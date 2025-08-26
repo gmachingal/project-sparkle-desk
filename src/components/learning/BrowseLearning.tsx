@@ -135,19 +135,15 @@ const BrowseLearning = () => {
       </Card>
 
       {/* Course Grid */}
-      <div className="grid gap-3 md:grid-cols-2">
+      <div className="grid gap-3 md:grid-cols-3 lg:grid-cols-4">
         {filteredCourses.map((course) => (
           <Card key={course.id} className="group transition-all duration-200 hover:shadow-md">
-            <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary-glow/30 rounded-t-lg flex items-center justify-center">
-              <Play className="w-8 h-8 text-primary" />
-            </div>
-            
             <CardHeader className="space-y-2 pb-3">
               <div className="flex items-start justify-between">
                 <CardTitle className="text-sm line-clamp-2 group-hover:text-primary transition-colors leading-tight">
                   {course.title}
                 </CardTitle>
-                <Badge variant="outline" className="text-xs">{course.price}</Badge>
+                <Badge variant="outline" className="text-xs shrink-0 ml-2">{course.price}</Badge>
               </div>
               <p className="text-xs text-muted-foreground line-clamp-2">
                 {course.description}
@@ -158,14 +154,10 @@ const BrowseLearning = () => {
             </CardHeader>
             
             <CardContent className="space-y-3 pt-0">
-              <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <Star className="w-3 h-3 fill-current text-yellow-500" />
                   {course.rating}
-                </span>
-                <span className="flex items-center gap-1">
-                  <Users className="w-3 h-3" />
-                  {course.students.toLocaleString()}
                 </span>
                 <span className="flex items-center gap-1">
                   <Clock className="w-3 h-3" />
@@ -173,21 +165,33 @@ const BrowseLearning = () => {
                 </span>
               </div>
               
+              <div className="text-xs text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <Users className="w-3 h-3" />
+                  {course.students.toLocaleString()} students
+                </span>
+              </div>
+              
               <div className="flex flex-wrap gap-1">
-                {course.tags.slice(0, 3).map(tag => (
+                {course.tags.slice(0, 2).map(tag => (
                   <Badge key={tag} variant="secondary" className="text-xs px-1.5 py-0.5">
                     {tag}
                   </Badge>
                 ))}
+                {course.tags.length > 2 && (
+                  <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
+                    +{course.tags.length - 2}
+                  </Badge>
+                )}
               </div>
               
               <Button 
                 size="sm"
-                className="w-full gap-2 h-7"
+                className="w-full gap-1 h-7"
                 onClick={() => handleEnrollCourse(course.id, course.title)}
               >
                 <Plus className="w-3 h-3" />
-                Enroll Now
+                Enroll
               </Button>
             </CardContent>
           </Card>
