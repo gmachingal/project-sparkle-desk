@@ -759,15 +759,6 @@ const EditTask = () => {
             </CardContent>
           </Card>
 
-            <div className="flex justify-end gap-3">
-              <Button variant="outline" type="button" onClick={() => navigate("/my-tasks")}>
-                Cancel
-              </Button>
-              <Button variant="destructive" onClick={handleDelete}>
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete Task
-              </Button>
-          </div>
         </form>
       </div>
     </div>

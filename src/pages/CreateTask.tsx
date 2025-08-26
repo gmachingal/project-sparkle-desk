@@ -668,11 +668,6 @@ const CreateTask = () => {
             </CardContent>
           </Card>
 
-          <div className="flex justify-end gap-3 pt-6 border-t">
-            <Button variant="outline" type="button" onClick={() => navigate("/my-tasks")}>
-              Cancel
-            </Button>
-          </div>
         </form>
       </div>
     </div>

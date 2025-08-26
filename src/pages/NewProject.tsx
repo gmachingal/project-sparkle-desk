@@ -424,11 +424,6 @@ const NewProject = () => {
               </CardContent>
             </Card>
 
-            <div className="flex justify-end gap-3">
-              <Button variant="outline" type="button" onClick={() => navigate("/")}>
-                Cancel
-              </Button>
-            </div>
           </form>
         </div>
       </div>
