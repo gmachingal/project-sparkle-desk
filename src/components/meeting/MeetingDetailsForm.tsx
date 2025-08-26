@@ -87,7 +87,7 @@ export function MeetingDetailsForm({ data, onChange }: MeetingDetailsFormProps) 
             <SelectTrigger className="mt-2">
               <SelectValue placeholder="Select duration" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-background border shadow-lg z-50">
               <SelectItem value="30">30 minutes</SelectItem>
               <SelectItem value="60">1 hour</SelectItem>
               <SelectItem value="90">1.5 hours</SelectItem>
@@ -103,7 +103,7 @@ export function MeetingDetailsForm({ data, onChange }: MeetingDetailsFormProps) 
             <SelectTrigger className="mt-2">
               <SelectValue placeholder="Select meeting type" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-background border shadow-lg z-50">
               <SelectItem value="team-standup">Team Standup</SelectItem>
               <SelectItem value="project-review">Project Review</SelectItem>
               <SelectItem value="training">Training Session</SelectItem>

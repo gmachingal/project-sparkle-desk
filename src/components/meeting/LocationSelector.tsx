@@ -95,7 +95,7 @@ export function LocationSelector({ location, onChange }: LocationSelectorProps) 
               <SelectTrigger className="mt-2">
                 <SelectValue placeholder="Choose a conference room" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-background border shadow-lg z-50">
                 {conferenceRooms.map((room) => (
                   <SelectItem key={room.id} value={room.id}>
                     <div className="flex flex-col items-start">

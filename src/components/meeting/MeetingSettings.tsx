@@ -131,7 +131,7 @@ export function MeetingSettings({ settings, onChange }: MeetingSettingsProps) {
               <SelectTrigger className="mt-2">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-background border shadow-lg z-50">
                 <SelectItem value="5">5 minutes before</SelectItem>
                 <SelectItem value="15">15 minutes before</SelectItem>
                 <SelectItem value="30">30 minutes before</SelectItem>
@@ -147,7 +147,7 @@ export function MeetingSettings({ settings, onChange }: MeetingSettingsProps) {
               <SelectTrigger className="mt-2">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-background border shadow-lg z-50">
                 <SelectItem value="low">Low</SelectItem>
                 <SelectItem value="normal">Normal</SelectItem>
                 <SelectItem value="high">High</SelectItem>
@@ -162,7 +162,7 @@ export function MeetingSettings({ settings, onChange }: MeetingSettingsProps) {
               <SelectTrigger className="mt-2">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-background border shadow-lg z-50">
                 <SelectItem value="local">Local Time</SelectItem>
                 <SelectItem value="utc">UTC</SelectItem>
                 <SelectItem value="est">Eastern Time</SelectItem>
