@@ -200,11 +200,11 @@ const LeaveManagement = () => {
                 ))}
               </SelectContent>
             </Select>
-            <div className="flex items-center gap-3 p-3 rounded-lg border border-red-300 bg-red-50">
-              <Settings className="w-4 h-4 text-red-600" />
-              <div className="flex flex-col">
-                <span className="text-sm font-medium text-red-700">Employee View</span>
-                <span className="text-xs text-muted-foreground">Switch to admin view</span>
+            {/* Compact Admin/Employee Toggle */}
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-card/50 hover:bg-card transition-colors">
+              <div className="flex items-center gap-2">
+                <Settings className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm font-medium">Employee</span>
               </div>
               <Switch 
                 checked={false}
@@ -213,8 +213,9 @@ const LeaveManagement = () => {
                     navigate('/admin-leave-management');
                   }
                 }}
-                className="data-[state=checked]:bg-red-600"
+                className="data-[state=checked]:bg-admin scale-75"
               />
+              <span className="text-sm text-muted-foreground">Admin</span>
             </div>
             <Button 
               variant="outline"

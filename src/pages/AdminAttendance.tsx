@@ -225,12 +225,9 @@ const AdminAttendance = () => {
           </div>
           
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-3 p-3 rounded-lg border border-admin/30 bg-admin/5">
-              <UserCheck className="w-4 h-4 text-admin" />
-              <div className="flex flex-col">
-                <span className="text-sm font-medium text-admin">Admin View</span>
-                <span className="text-xs text-muted-foreground">Switch to employee view</span>
-              </div>
+            {/* Compact Admin/Employee Toggle */}
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-card/50 hover:bg-card transition-colors">
+              <span className="text-sm text-muted-foreground">Employee</span>
               <Switch 
                 checked={true}
                 onCheckedChange={(checked) => {
@@ -238,8 +235,12 @@ const AdminAttendance = () => {
                     window.location.href = '/attendance';
                   }
                 }}
-                className="data-[state=checked]:bg-admin"
+                className="data-[state=checked]:bg-admin scale-75"
               />
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">Admin</span>
+                <UserCheck className="w-4 h-4 text-admin" />
+              </div>
             </div>
             <Button variant="outline" className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin">
               <Bell className="w-4 h-4" />
