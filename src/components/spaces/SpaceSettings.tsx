@@ -42,8 +42,7 @@ export const SpaceSettings = ({ space, onBack }: SpaceSettingsProps) => {
               <h1 className="text-2xl font-bold">
                 <Button variant="back" onClick={onBack}>
                   <ArrowLeft className="h-4 w-4 " />     
-                </Button>
-                Space Settings</h1>
+                </Button> Space Settings</h1>
               <p className="text-sm text-muted-foreground">Configure {space.name} workspace</p>
             </div>
           </div>

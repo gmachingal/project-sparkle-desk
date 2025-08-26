@@ -55,8 +55,7 @@ export const SpaceAnalytics = ({ space, analytics, onBack }: SpaceAnalyticsProps
               <h1 className="text-2xl font-bold">           
                 <Button variant="back" onClick={onBack}>
                   <ArrowLeft className="h-4 w-4 " />     
-                </Button>
-                Analytics</h1>
+                </Button> Analytics</h1>
               <p className="text-sm text-muted-foreground">{space.name} performance insights</p>
             </div>
           </div>

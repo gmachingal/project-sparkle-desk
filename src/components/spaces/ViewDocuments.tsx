@@ -44,9 +44,7 @@ export const ViewDocuments = ({ space, documents, onBack, onViewDocument, onEdit
               <h1 className="text-2xl font-bold">
                 <Button variant="back" onClick={onBack}>
                   <ArrowLeft className="h-4 w-4 " />     
-                </Button>
-
-                {space.name} Documents</h1>
+                </Button> {space.name} Documents</h1>
               <p className="text-sm text-muted-foreground">{documents.length} documents in this space</p>
             </div>
           </div>

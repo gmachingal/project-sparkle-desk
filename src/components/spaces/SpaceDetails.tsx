@@ -53,8 +53,7 @@ export const SpaceDetails = ({ space, members, analytics, onBack, onViewDocument
               <h1 className="text-2xl font-bold">
                 <Button variant="back" onClick={onBack}>
                   <ArrowLeft className="h-4 w-4 " />     
-                </Button>
-                {space.name}</h1>
+                </Button> {space.name}</h1>
               <div className="flex items-center gap-2 mt-1">
                 {getVisibilityIcon(space.visibility)}
                 <span className="text-sm text-muted-foreground capitalize">
