@@ -705,36 +705,36 @@ const DocumentMockup = () => {
                   </div>
                 </div>
                 {viewMode === "grid" && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                     {documents.map((doc) => (
-                      <Card key={doc.id} className="hover:shadow-xl transition-all duration-300 group cursor-pointer border-2 hover:border-primary/20 bg-gradient-to-br from-background to-muted/20">
-                        <CardHeader className="pb-4">
-                          <div className="flex items-start justify-between gap-4">
+                      <Card key={doc.id} className="hover:shadow-lg transition-all duration-300 group cursor-pointer border hover:border-primary/30 bg-background">
+                        <CardHeader className="pb-2 px-4 pt-4">
+                          <div className="flex items-start justify-between gap-3">
                             <div className="flex-1 min-w-0">
-                              <CardTitle className="text-xl line-clamp-2 group-hover:text-primary transition-colors duration-200 leading-tight">
+                              <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors duration-200 leading-snug mb-2">
                                 {doc.title}
                               </CardTitle>
-                              <p className="text-muted-foreground mt-3 line-clamp-3 leading-relaxed">
+                              <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
                                 {doc.content}
                               </p>
                             </div>
-                            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-all duration-200 h-10 w-10 p-0 hover:bg-muted/50">
-                              <MoreHorizontal className="w-5 h-5" />
+                            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-all duration-200 h-8 w-8 p-0 hover:bg-muted/50">
+                              <MoreHorizontal className="w-4 h-4" />
                             </Button>
                           </div>
                           
-                          <div className="flex items-center gap-3 mt-4">
-                            <Badge className={`${getStatusColor(doc.status)} border-2`} variant="outline">
+                          <div className="flex items-center gap-2 mt-3">
+                            <Badge className={`${getStatusColor(doc.status)} text-xs px-2 py-0.5`} variant="outline">
                               {doc.status}
                             </Badge>
-                            <div className="flex gap-2">
+                            <div className="flex gap-1 flex-wrap">
                               {doc.tags.slice(0, 2).map((tag) => (
-                                <Badge key={tag} variant="secondary" className="text-xs px-2 py-1 bg-primary/10 text-primary border-primary/20">
+                                <Badge key={tag} variant="secondary" className="text-xs px-1.5 py-0.5 bg-primary/5 text-primary border-primary/10">
                                   {tag}
                                 </Badge>
                               ))}
                               {doc.tags.length > 2 && (
-                                <Badge variant="secondary" className="text-xs px-2 py-1 bg-muted text-muted-foreground">
+                                <Badge variant="secondary" className="text-xs px-1.5 py-0.5 bg-muted text-muted-foreground">
                                   +{doc.tags.length - 2}
                                 </Badge>
                               )}
@@ -742,47 +742,47 @@ const DocumentMockup = () => {
                           </div>
                         </CardHeader>
                         
-                        <CardContent className="pt-0 pb-6">
-                          <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
-                            <div className="flex items-center gap-3">
-                              <Avatar className="w-8 h-8 border-2 border-background shadow-sm">
-                                <AvatarFallback className="text-sm font-medium bg-gradient-to-br from-primary/20 to-primary-glow/20 text-primary">
+                        <CardContent className="px-4 pb-4">
+                          <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
+                            <div className="flex items-center gap-2">
+                              <Avatar className="w-6 h-6 border border-background shadow-sm">
+                                <AvatarFallback className="text-xs font-medium bg-gradient-to-br from-primary/10 to-primary-glow/10 text-primary">
                                   {doc.author.split(' ').map(n => n[0]).join('')}
                                 </AvatarFallback>
                               </Avatar>
-                              <span className="font-medium">{doc.author}</span>
+                              <span className="text-sm font-medium truncate">{doc.author}</span>
                             </div>
-                            <span className="text-xs bg-muted/50 px-2 py-1 rounded-md">{doc.updatedAt}</span>
+                            <span className="text-xs bg-muted/30 px-2 py-1 rounded text-muted-foreground">{doc.updatedAt}</span>
                           </div>
                           
-                          <div className="flex items-center justify-between mt-4 pt-4 border-t border-muted/50">
-                            <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                              <div className="flex items-center gap-2">
-                                <Eye className="w-4 h-4" />
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                              <div className="flex items-center gap-1">
+                                <Eye className="w-3 h-3" />
                                 <span className="font-medium">{doc.views}</span>
                               </div>
-                              <div className="flex items-center gap-2">
-                                <MessageSquare className="w-4 h-4" />
+                              <div className="flex items-center gap-1">
+                                <MessageSquare className="w-3 h-3" />
                                 <span className="font-medium">{doc.comments}</span>
                               </div>
-                              <div className="flex items-center gap-2">
-                                <Heart className="w-4 h-4" />
+                              <div className="flex items-center gap-1">
+                                <Heart className="w-3 h-3" />
                                 <span className="font-medium">{doc.likes}</span>
                               </div>
                             </div>
                             
-                            <div className="flex items-center gap-2">
-                              <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-primary/10 hover:text-primary transition-colors duration-200">
-                                <Star className="w-4 h-4" />
+                            <div className="flex items-center gap-1">
+                              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 hover:bg-primary/10 hover:text-primary transition-colors duration-200">
+                                <Star className="w-3 h-3" />
                               </Button>
-                              <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-primary/10 hover:text-primary transition-colors duration-200">
-                                <Share className="w-4 h-4" />
+                              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 hover:bg-primary/10 hover:text-primary transition-colors duration-200">
+                                <Share className="w-3 h-3" />
                               </Button>
-                              <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-primary/10 hover:text-primary transition-colors duration-200" onClick={() => handleViewDocument(doc.id)}>
-                                <Eye className="w-4 h-4" />
+                              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 hover:bg-primary/10 hover:text-primary transition-colors duration-200" onClick={() => handleViewDocument(doc.id)}>
+                                <Eye className="w-3 h-3" />
                               </Button>
-                              <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-primary/10 hover:text-primary transition-colors duration-200" onClick={handleEditDocument}>
-                                <Edit className="w-4 h-4" />
+                              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 hover:bg-primary/10 hover:text-primary transition-colors duration-200" onClick={handleEditDocument}>
+                                <Edit className="w-3 h-3" />
                               </Button>
                             </div>
                           </div>
@@ -795,43 +795,43 @@ const DocumentMockup = () => {
                 {viewMode === "list" && (
                   <div className="space-y-2">
                     {documents.map((doc) => (
-                      <Card key={doc.id} className="hover:shadow-md transition-all duration-200 group cursor-pointer">
-                        <CardContent className="p-4">
+                      <Card key={doc.id} className="hover:shadow-md transition-all duration-200 group cursor-pointer border hover:border-primary/20">
+                        <CardContent className="p-3">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3 flex-1">
-                              <FileText className="w-5 h-5 text-muted-foreground" />
+                              <FileText className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                               <div className="flex-1 min-w-0">
-                                <h3 className="font-medium group-hover:text-primary transition-colors truncate">
+                                <h3 className="font-semibold text-sm group-hover:text-primary transition-colors truncate">
                                   {doc.title}
                                 </h3>
-                                <div className="flex items-center gap-2 mt-1">
-                                  <span className="text-sm text-muted-foreground">{doc.author}</span>
+                                <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
+                                  <span>{doc.author}</span>
                                   <Separator orientation="vertical" className="h-3" />
-                                  <span className="text-sm text-muted-foreground">{doc.updatedAt}</span>
-                                  <Badge className={getStatusColor(doc.status)} variant="outline">
+                                  <span>{doc.updatedAt}</span>
+                                  <Badge className={`${getStatusColor(doc.status)} text-xs px-1.5 py-0.5`} variant="outline">
                                     {doc.status}
                                   </Badge>
                                 </div>
                               </div>
                             </div>
                             
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
                               <div className="flex items-center gap-1">
-                                <Eye className="w-4 h-4" />
+                                <Eye className="w-3 h-3" />
                                 {doc.views}
                               </div>
                               <div className="flex items-center gap-1">
-                                <MessageSquare className="w-4 h-4" />
+                                <MessageSquare className="w-3 h-3" />
                                 {doc.comments}
                               </div>
-                              <Button variant="ghost" size="sm">
-                                <Eye className="w-4 h-4" />
+                              <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                                <Eye className="w-3 h-3" />
                               </Button>
-                              <Button variant="ghost" size="sm" onClick={handleEditDocument}>
-                                <Edit className="w-4 h-4" />
+                              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={handleEditDocument}>
+                                <Edit className="w-3 h-3" />
                               </Button>
-                              <Button variant="ghost" size="sm">
-                                <MoreHorizontal className="w-4 h-4" />
+                              <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                                <MoreHorizontal className="w-3 h-3" />
                               </Button>
                             </div>
                           </div>
