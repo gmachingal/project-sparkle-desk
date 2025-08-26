@@ -137,62 +137,61 @@ const ContinueLearning = () => {
       {/* Current Courses */}
       <div className="space-y-3">
         <h3 className="text-base font-semibold">Continue Learning</h3>
-        <div className="grid gap-3">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {inProgressCourses.map((course) => (
             <Card key={course.id} className="transition-all duration-200 hover:shadow-md">
               <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1 flex-1 min-w-0">
-                    <CardTitle className="text-base leading-tight">{course.title}</CardTitle>
-                    <p className="text-xs text-muted-foreground line-clamp-1">{course.description}</p>
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                      <span>By {course.instructor}</span>
-                      <span className="flex items-center gap-1">
-                        <Star className="w-3 h-3 fill-current text-yellow-500" />
-                        {course.rating}
-                      </span>
-                      <span>{course.lastAccessed}</span>
-                    </div>
+                <div className="space-y-2">
+                  <div className="flex items-start justify-between">
+                    <CardTitle className="text-sm leading-tight line-clamp-2">{course.title}</CardTitle>
+                    <Button
+                      onClick={() => handlePlayPause(course.id)}
+                      variant={playingCourse === course.id ? "secondary" : "default"}
+                      size="sm"
+                      className="gap-1 h-7 shrink-0 ml-2"
+                    >
+                      {playingCourse === course.id ? (
+                        <>
+                          <Pause className="w-3 h-3" />
+                          Pause
+                        </>
+                      ) : (
+                        <>
+                          <Play className="w-3 h-3" />
+                          Continue
+                        </>
+                      )}
+                    </Button>
                   </div>
-                  <Button
-                    onClick={() => handlePlayPause(course.id)}
-                    variant={playingCourse === course.id ? "secondary" : "default"}
-                    size="sm"
-                    className="gap-1 ml-3"
-                  >
-                    {playingCourse === course.id ? (
-                      <>
-                        <Pause className="w-3 h-3" />
-                        Pause
-                      </>
-                    ) : (
-                      <>
-                        <Play className="w-3 h-3" />
-                        Continue
-                      </>
-                    )}
-                  </Button>
+                  <p className="text-xs text-muted-foreground line-clamp-2">{course.description}</p>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>By {course.instructor}</span>
+                    <span className="flex items-center gap-1">
+                      <Star className="w-3 h-3 fill-current text-yellow-500" />
+                      {course.rating}
+                    </span>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-3 pt-0">
                 <div className="space-y-1">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-muted-foreground">Progress</span>
-                    <span className="font-medium">{course.progress}% complete</span>
+                    <span className="font-medium">{course.progress}%</span>
                   </div>
                   <Progress value={course.progress} className="h-1.5" />
                 </div>
                 
-                <div className="bg-muted/50 rounded-md p-2">
-                  <p className="text-xs font-medium">Next: {course.nextLesson}</p>
-                  <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
+                <div className="bg-muted/50 rounded-md p-2 space-y-1">
+                  <p className="text-xs font-medium line-clamp-1">Next: {course.nextLesson}</p>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <BookOpen className="w-3 h-3" />
-                      Lesson {Math.floor(course.progress / 100 * course.totalLessons) + 1}/{course.totalLessons}
+                      {Math.floor(course.progress / 100 * course.totalLessons) + 1}/{course.totalLessons}
                     </span>
                     <span className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
-                      {course.timeSpent} done
+                      {course.timeSpent}
                     </span>
                   </div>
                 </div>
