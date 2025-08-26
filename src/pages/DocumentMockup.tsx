@@ -53,7 +53,10 @@ import {
   Home,
   ArrowLeft,
   Upload,
-  UserPlus
+  UserPlus,
+  Building,
+  Briefcase,
+  BarChart
 } from "lucide-react";
 
 interface Document {
@@ -1155,117 +1158,6 @@ const DocumentMockup = () => {
                             </div>
                           </div>
 
-                          {/* Space Quick Actions */}
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <Card className="hover:shadow-lg transition-all duration-200 border-blue-200 bg-blue-50/50">
-                              <CardContent className="p-4">
-                                <div className="flex items-center gap-3 mb-3">
-                                  <div className="p-2 bg-blue-500 rounded-lg">
-                                    <FileText className="w-4 h-4 text-white" />
-                                  </div>
-                                  <h3 className="font-medium text-sm">View Documents</h3>
-                                </div>
-                                <p className="text-xs text-muted-foreground mb-3">Browse all documents in this space</p>
-                                <Button size="sm" className="w-full h-8 text-xs bg-blue-600 hover:bg-blue-700">
-                                  Open Documents
-                                </Button>
-                              </CardContent>
-                            </Card>
-
-                            <Card className="hover:shadow-lg transition-all duration-200 border-green-200 bg-green-50/50">
-                              <CardContent className="p-4">
-                                <div className="flex items-center gap-3 mb-3">
-                                  <div className="p-2 bg-green-500 rounded-lg">
-                                    <UserPlus className="w-4 h-4 text-white" />
-                                  </div>
-                                  <h3 className="font-medium text-sm">Manage Members</h3>
-                                </div>
-                                <p className="text-xs text-muted-foreground mb-3">Add or remove space members</p>
-                                <Button size="sm" className="w-full h-8 text-xs bg-green-600 hover:bg-green-700">
-                                  Manage Team
-                                </Button>
-                              </CardContent>
-                            </Card>
-
-                            <Card className="hover:shadow-lg transition-all duration-200 border-purple-200 bg-purple-50/50">
-                              <CardContent className="p-4">
-                                <div className="flex items-center gap-3 mb-3">
-                                  <div className="p-2 bg-purple-500 rounded-lg">
-                                    <Settings className="w-4 h-4 text-white" />
-                                  </div>
-                                  <h3 className="font-medium text-sm">Space Settings</h3>
-                                </div>
-                                <p className="text-xs text-muted-foreground mb-3">Configure space preferences</p>
-                                <Button size="sm" className="w-full h-8 text-xs bg-purple-600 hover:bg-purple-700">
-                                  Open Settings
-                                </Button>
-                              </CardContent>
-                            </Card>
-
-                            <Card className="hover:shadow-lg transition-all duration-200 border-orange-200 bg-orange-50/50">
-                              <CardContent className="p-4">
-                                <div className="flex items-center gap-3 mb-3">
-                                  <div className="p-2 bg-orange-500 rounded-lg">
-                                    <TrendingUp className="w-4 h-4 text-white" />
-                                  </div>
-                                  <h3 className="font-medium text-sm">Analytics</h3>
-                                </div>
-                                <p className="text-xs text-muted-foreground mb-3">View space activity metrics</p>
-                                <Button size="sm" className="w-full h-8 text-xs bg-orange-600 hover:bg-orange-700">
-                                  View Analytics
-                                </Button>
-                              </CardContent>
-                            </Card>
-                          </div>
-
-                          {/* Secondary Actions */}
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <Card className="hover:shadow-lg transition-all duration-200 border-indigo-200 bg-indigo-50/50">
-                              <CardContent className="p-4">
-                                <div className="flex items-center gap-3 mb-3">
-                                  <div className="p-2 bg-indigo-500 rounded-lg">
-                                    <Plus className="w-4 h-4 text-white" />
-                                  </div>
-                                  <h3 className="font-medium text-sm">New Document</h3>
-                                </div>
-                                <p className="text-xs text-muted-foreground mb-3">Create a new document in this space</p>
-                                <Button size="sm" className="w-full h-8 text-xs bg-indigo-600 hover:bg-indigo-700">
-                                  Create Document
-                                </Button>
-                              </CardContent>
-                            </Card>
-
-                            <Card className="hover:shadow-lg transition-all duration-200 border-teal-200 bg-teal-50/50">
-                              <CardContent className="p-4">
-                                <div className="flex items-center gap-3 mb-3">
-                                  <div className="p-2 bg-teal-500 rounded-lg">
-                                    <Share className="w-4 h-4 text-white" />
-                                  </div>
-                                  <h3 className="font-medium text-sm">Share Space</h3>
-                                </div>
-                                <p className="text-xs text-muted-foreground mb-3">Share space with external users</p>
-                                <Button size="sm" className="w-full h-8 text-xs bg-teal-600 hover:bg-teal-700">
-                                  Share Space
-                                </Button>
-                              </CardContent>
-                            </Card>
-
-                            <Card className="hover:shadow-lg transition-all duration-200 border-pink-200 bg-pink-50/50">
-                              <CardContent className="p-4">
-                                <div className="flex items-center gap-3 mb-3">
-                                  <div className="p-2 bg-pink-500 rounded-lg">
-                                    <Archive className="w-4 h-4 text-white" />
-                                  </div>
-                                  <h3 className="font-medium text-sm">Archive Space</h3>
-                                </div>
-                                <p className="text-xs text-muted-foreground mb-3">Archive or delete this space</p>
-                                <Button size="sm" variant="outline" className="w-full h-8 text-xs border-pink-300 text-pink-600 hover:bg-pink-50">
-                                  Archive
-                                </Button>
-                              </CardContent>
-                            </Card>
-                          </div>
-
                           {/* Space Stats */}
                           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <Card>
@@ -1474,44 +1366,158 @@ const DocumentMockup = () => {
                   </div>
                 ) : (
                   // Spaces Grid View
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {spaces.map((space) => (
-                      <Card key={space.id} className="hover:shadow-lg transition-all duration-200 group cursor-pointer" onClick={() => handleSpaceClick(space.id)}>
-                        <CardContent className="p-6">
-                          <div className="flex items-start gap-4">
-                            <div className={`w-12 h-12 rounded-lg ${space.color} flex items-center justify-center text-2xl`}>
-                              {space.icon}
+                  <div className="space-y-6">
+                    {/* Quick Actions for Spaces */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                      {/* Space Management */}
+                      <Card className="border border-primary/10 shadow-md hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-background via-background to-primary/[0.02] hover:border-primary/20 group">
+                        <CardHeader className="pb-1 px-2.5 pt-2.5">
+                          <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground group-hover:text-primary transition-colors duration-200">
+                            <div className="p-0.5 bg-primary/10 rounded group-hover:bg-primary/20 transition-colors duration-200">
+                              <Building className="w-3 h-3 text-primary" />
                             </div>
-                            <div className="flex-1">
-                              <h3 className="font-semibold group-hover:text-primary transition-colors">
-                                {space.name}
-                              </h3>
-                              <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                                {space.description}
-                              </p>
-                              <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground">
-                                <div className="flex items-center gap-1">
-                                  <Users className="w-4 h-4" />
-                                  {space.members} members
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <FileText className="w-4 h-4" />
-                                  {space.documents} docs
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  {getVisibilityIcon(space.visibility)}
-                                  {space.visibility}
-                                </div>
-                              </div>
-                            </div>
-                            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                              <ChevronRight className="w-4 h-4" />
+                            Space Actions
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2.5 px-2.5 pb-1.5 pt-4">
+                          <Dialog open={isCreateSpaceDialogOpen} onOpenChange={setIsCreateSpaceDialogOpen}>
+                            <DialogTrigger asChild>
+                              <Button className="w-full justify-start gap-2 h-9 text-sm bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-md hover:shadow-lg transition-all duration-200 font-medium">
+                                <Plus className="w-4 h-4" />
+                                New Space
+                              </Button>
+                            </DialogTrigger>
+                          </Dialog>
+                          
+                          <div className="grid grid-cols-2 gap-1 pt-1">
+                            <Button variant="outline" className="justify-start gap-1.5 h-8 text-sm border-purple-200 bg-purple-50 text-purple-700 hover:border-purple-300 hover:bg-purple-100 transition-all duration-200 font-normal px-3">
+                              <Users className="w-3.5 h-3.5 text-purple-600" />
+                              Members
+                            </Button>
+                            <Button variant="outline" className="justify-start gap-1.5 h-8 text-sm border-orange-200 bg-orange-50 text-orange-700 hover:border-orange-300 hover:bg-orange-100 transition-all duration-200 font-normal px-3">
+                              <Settings className="w-3.5 h-3.5 text-orange-600" />
+                              Settings
                             </Button>
                           </div>
                         </CardContent>
                       </Card>
-                    ))}
-                  </div>
+
+                      {/* Space Templates */}
+                      <Card className="border border-border/50 shadow-md hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-background to-muted/10 hover:border-border group">
+                        <CardHeader className="pb-1 px-2.5 pt-2.5">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground group-hover:text-primary transition-colors duration-200">
+                              <div className="p-0.5 bg-blue-500/10 rounded group-hover:bg-blue-500/20 transition-colors duration-200">
+                                <Folder className="w-3 h-3 text-blue-600" />
+                              </div>
+                              Space Types
+                            </CardTitle>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="space-y-1.5 px-2.5 pb-1.5 pt-2">
+                          <div className="flex items-center gap-2 p-2 rounded-lg hover:bg-gradient-to-r hover:from-muted/30 hover:to-muted/10 transition-all duration-200 cursor-pointer border border-transparent hover:border-border/30 hover:shadow-sm group">
+                            <div className="p-1 bg-blue-500/10 rounded group-hover:bg-blue-500/20 transition-colors duration-200">
+                              <Briefcase className="w-3 h-3 text-blue-600" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="font-medium text-xs text-foreground group-hover:text-primary transition-colors duration-200 leading-tight">Project Space</p>
+                              <p className="text-[10px] text-muted-foreground font-normal">Team collaboration</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 p-2 rounded-lg hover:bg-gradient-to-r hover:from-muted/30 hover:to-muted/10 transition-all duration-200 cursor-pointer border border-transparent hover:border-border/30 hover:shadow-sm group">
+                            <div className="p-1 bg-green-500/10 rounded group-hover:bg-green-500/20 transition-colors duration-200">
+                              <Archive className="w-3 h-3 text-green-600" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="font-medium text-xs text-foreground group-hover:text-primary transition-colors duration-200 leading-tight">Knowledge Base</p>
+                              <p className="text-[10px] text-muted-foreground font-normal">Documentation hub</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 p-2 rounded-lg hover:bg-gradient-to-r hover:from-muted/30 hover:to-muted/10 transition-all duration-200 cursor-pointer border border-transparent hover:border-border/30 hover:shadow-sm group">
+                            <div className="p-1 bg-purple-500/10 rounded group-hover:bg-purple-500/20 transition-colors duration-200">
+                              <Lock className="w-3 h-3 text-purple-600" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="font-medium text-xs text-foreground group-hover:text-primary transition-colors duration-200 leading-tight">Private Workspace</p>
+                              <p className="text-[10px] text-muted-foreground font-normal">Personal documents</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Space Analytics */}
+                      <Card className="border border-border/50 shadow-md hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-background to-green-500/5 hover:border-green-500/20 group">
+                        <CardHeader className="pb-1 px-2.5 pt-2.5">
+                          <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground group-hover:text-green-600 transition-colors duration-200">
+                            <div className="p-0.5 bg-green-500/10 rounded group-hover:bg-green-500/20 transition-colors duration-200">
+                              <BarChart className="w-3 h-3 text-green-600" />
+                            </div>
+                            Space Overview
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="px-2.5 pb-1.5 pt-2">
+                          <div className="grid grid-cols-2 gap-1.5">
+                            <div className="text-center p-2 rounded-lg bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/10 hover:border-primary/20 transition-all duration-200 group">
+                              <div className="text-lg font-bold text-primary leading-none mb-0.5 group-hover:scale-105 transition-transform duration-200">{spaces.length}</div>
+                              <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Spaces</div>
+                            </div>
+                            <div className="text-center p-2 rounded-lg bg-gradient-to-br from-blue-500/5 to-blue-500/10 border border-blue-500/10 hover:border-blue-500/20 transition-all duration-200 group">
+                              <div className="text-lg font-bold text-blue-600 leading-none mb-0.5 group-hover:scale-105 transition-transform duration-200">{spaces.reduce((acc, space) => acc + space.members, 0)}</div>
+                              <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Members</div>
+                            </div>
+                            <div className="text-center p-2 rounded-lg bg-gradient-to-br from-orange-500/5 to-orange-500/10 border border-orange-500/10 hover:border-orange-500/20 transition-all duration-200 group">
+                              <div className="text-lg font-bold text-orange-600 leading-none mb-0.5 group-hover:scale-105 transition-transform duration-200">{spaces.reduce((acc, space) => acc + space.documents, 0)}</div>
+                              <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Documents</div>
+                            </div>
+                            <div className="text-center p-2 rounded-lg bg-gradient-to-br from-purple-500/5 to-purple-500/10 border border-purple-500/10 hover:border-purple-500/20 transition-all duration-200 group">
+                              <div className="text-lg font-bold text-purple-600 leading-none mb-0.5 group-hover:scale-105 transition-transform duration-200">{spaces.filter(space => space.visibility === 'private').length}</div>
+                              <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Private</div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    {/* Spaces Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     {spaces.map((space) => (
+                       <Card key={space.id} className="hover:shadow-lg transition-all duration-200 group cursor-pointer" onClick={() => handleSpaceClick(space.id)}>
+                         <CardContent className="p-6">
+                           <div className="flex items-start gap-4">
+                             <div className={`w-12 h-12 rounded-lg ${space.color} flex items-center justify-center text-2xl`}>
+                               {space.icon}
+                             </div>
+                             <div className="flex-1">
+                               <h3 className="font-semibold group-hover:text-primary transition-colors">
+                                 {space.name}
+                               </h3>
+                               <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                                 {space.description}
+                               </p>
+                               <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground">
+                                 <div className="flex items-center gap-1">
+                                   <Users className="w-4 h-4" />
+                                   {space.members} members
+                                 </div>
+                                 <div className="flex items-center gap-1">
+                                   <FileText className="w-4 h-4" />
+                                   {space.documents} docs
+                                 </div>
+                                 <div className="flex items-center gap-1">
+                                   {getVisibilityIcon(space.visibility)}
+                                   {space.visibility}
+                                 </div>
+                               </div>
+                             </div>
+                             <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                               <ChevronRight className="w-4 h-4" />
+                             </Button>
+                           </div>
+                         </CardContent>
+                       </Card>
+                     ))}
+                   </div>
+                 </div>
                 )}
               </TabsContent>
 
