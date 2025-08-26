@@ -302,7 +302,7 @@ const Header = ({ userRole, title, subtitle, backButton, actionButton }: HeaderP
               className={`gap-2 ${isActivePage("/document-mockup") ? (isAdminPage ? "bg-admin text-admin-foreground" : "bg-primary text-primary-foreground") : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
               <FileText className="w-4 h-4" />
-              <span className="hidden xl:inline">Docs</span>
+              <span className="hidden xl:inline">Brain</span>
             </Button>
           </nav>
           )}
@@ -342,7 +342,7 @@ const Header = ({ userRole, title, subtitle, backButton, actionButton }: HeaderP
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate("/document-mockup")} className="gap-2">
                 <FileText className="w-4 h-4" />
-                Documentation
+                Knowledge Brain
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
