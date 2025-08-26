@@ -44,22 +44,17 @@ export const SpaceDetails = ({ space, members, analytics, onBack, onViewDocument
   return (
     <>
       {/* Back Button Above Header */}
-        <div className="container mx-auto px-4 py-3">
-          <Button variant="back" onClick={onBack}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Spaces
-          </Button>
-        </div>
 
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className={`w-12 h-12 rounded-lg ${space.color} flex items-center justify-center text-white text-xl`}>
-              {space.icon}
-            </div>
             <div>
-              <h1 className="text-2xl font-bold">{space.name}</h1>
+              <h1 className="text-2xl font-bold">
+                <Button variant="back" onClick={onBack}>
+                  <ArrowLeft className="h-4 w-4 " />     
+                </Button>
+                {space.name}</h1>
               <div className="flex items-center gap-2 mt-1">
                 {getVisibilityIcon(space.visibility)}
                 <span className="text-sm text-muted-foreground capitalize">

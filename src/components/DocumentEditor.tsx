@@ -245,9 +245,10 @@ This document outlines the requirements for version 2.0 of our mobile applicatio
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               {onClose && (
-                <Button variant="outline" size="sm" onClick={onClose} className="gap-2">
+
+                <Button variant="back" size="sm" onClick={onClose} className="gap-2">
                   <ArrowLeft className="w-4 h-4" />
-                  Back to Hub
+                  
                 </Button>
               )}
               <div className="flex items-center gap-2">

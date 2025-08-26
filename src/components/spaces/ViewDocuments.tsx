@@ -35,22 +35,18 @@ export const ViewDocuments = ({ space, documents, onBack, onViewDocument, onEdit
   return (
     <>
       {/* Back Button Above Header */}
-        <div className="container mx-auto px-4 py-3">
-          <Button variant="back" onClick={onBack}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to {space.name}
-          </Button>
-        </div>
 
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-lg ${space.color} flex items-center justify-center text-white text-lg`}>
-              {space.icon}
-            </div>
             <div>
-              <h1 className="text-2xl font-bold">{space.name} Documents</h1>
+              <h1 className="text-2xl font-bold">
+                <Button variant="back" onClick={onBack}>
+                  <ArrowLeft className="h-4 w-4 " />     
+                </Button>
+
+                {space.name} Documents</h1>
               <p className="text-sm text-muted-foreground">{documents.length} documents in this space</p>
             </div>
           </div>
