@@ -2430,162 +2430,169 @@ const AdminCollaboration = () => {
 
         {/* Schedule Meeting Dialog */}
         <Dialog open={isScheduleMeetingOpen} onOpenChange={setIsScheduleMeetingOpen}>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden p-0">
+            <DialogHeader className="p-6 pb-0">
               <DialogTitle className="flex items-center gap-2">
                 <CalendarIcon className="w-5 h-5" />
                 Schedule Meeting
               </DialogTitle>
             </DialogHeader>
             
-            <div className="space-y-6">
-              {/* Meeting Details */}
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="meeting-title">Meeting Title</Label>
-                  <Input id="meeting-title" placeholder="Enter meeting title..." />
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="meeting-date">Date</Label>
-                    <Input id="meeting-date" type="date" />
-                  </div>
-                  <div>
-                    <Label htmlFor="meeting-time">Time</Label>
-                    <Input id="meeting-time" type="time" />
-                  </div>
-                </div>
-                
-                <div>
-                  <Label htmlFor="meeting-duration">Duration</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select duration" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="30">30 minutes</SelectItem>
-                      <SelectItem value="60">1 hour</SelectItem>
-                      <SelectItem value="90">1.5 hours</SelectItem>
-                      <SelectItem value="120">2 hours</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <Label htmlFor="meeting-type">Meeting Type</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select meeting type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="team-standup">Team Standup</SelectItem>
-                      <SelectItem value="project-review">Project Review</SelectItem>
-                      <SelectItem value="training">Training Session</SelectItem>
-                      <SelectItem value="one-on-one">One-on-One</SelectItem>
-                      <SelectItem value="all-hands">All Hands</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <Label htmlFor="meeting-description">Description</Label>
-                  <Textarea 
-                    id="meeting-description" 
-                    placeholder="Enter meeting agenda or description..."
-                    className="min-h-[100px]"
-                  />
-                </div>
+            <Tabs defaultValue="details" className="flex-1">
+              <div className="px-6">
+                <TabsList className="grid w-full grid-cols-4">
+                  <TabsTrigger value="details">Details</TabsTrigger>
+                  <TabsTrigger value="attendees">Attendees</TabsTrigger>
+                  <TabsTrigger value="location">Location</TabsTrigger>
+                  <TabsTrigger value="settings">Settings</TabsTrigger>
+                </TabsList>
               </div>
 
-              {/* Attendees */}
-              <div className="space-y-4">
-                <h4 className="font-medium">Attendees</h4>
-                <div className="space-y-2">
-                  <Input placeholder="Search and add attendees..." />
-                  <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto">
-                    {[
-                      { name: "Alice Johnson", role: "Developer", selected: true },
-                      { name: "Bob Smith", role: "Designer", selected: false },
-                      { name: "Carol Davis", role: "Project Manager", selected: true },
-                      { name: "David Wilson", role: "QA Engineer", selected: false },
-                      { name: "Emma Brown", role: "DevOps", selected: false },
-                      { name: "Frank Miller", role: "Backend Dev", selected: true }
-                    ].map((person, index) => (
-                      <div key={index} className="flex items-center space-x-2 p-2 border rounded">
-                        <Checkbox defaultChecked={person.selected} />
-                        <div className="flex-1">
-                          <div className="text-sm font-medium">{person.name}</div>
-                          <div className="text-xs text-muted-foreground">{person.role}</div>
+              <div className="overflow-y-auto max-h-[calc(90vh-180px)] px-6 pb-6">
+                <TabsContent value="details" className="space-y-4 mt-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="md:col-span-2">
+                      <Label htmlFor="meeting-title">Meeting Title</Label>
+                      <Input id="meeting-title" placeholder="Enter meeting title..." />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="meeting-date">Date</Label>
+                      <Input id="meeting-date" type="date" />
+                    </div>
+                    <div>
+                      <Label htmlFor="meeting-time">Time</Label>
+                      <Input id="meeting-time" type="time" />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="meeting-duration">Duration</Label>
+                      <Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select duration" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="30">30 minutes</SelectItem>
+                          <SelectItem value="60">1 hour</SelectItem>
+                          <SelectItem value="90">1.5 hours</SelectItem>
+                          <SelectItem value="120">2 hours</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="meeting-type">Meeting Type</Label>
+                      <Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select meeting type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="team-standup">Team Standup</SelectItem>
+                          <SelectItem value="project-review">Project Review</SelectItem>
+                          <SelectItem value="training">Training Session</SelectItem>
+                          <SelectItem value="one-on-one">One-on-One</SelectItem>
+                          <SelectItem value="all-hands">All Hands</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="md:col-span-2">
+                      <Label htmlFor="meeting-description">Description</Label>
+                      <Textarea 
+                        id="meeting-description" 
+                        placeholder="Enter meeting agenda or description..."
+                        className="min-h-[80px]"
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="attendees" className="space-y-4 mt-4">
+                  <div className="space-y-4">
+                    <Input placeholder="Search and add attendees..." />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-60 overflow-y-auto">
+                      {[
+                        { name: "Alice Johnson", role: "Developer", selected: true },
+                        { name: "Bob Smith", role: "Designer", selected: false },
+                        { name: "Carol Davis", role: "Project Manager", selected: true },
+                        { name: "David Wilson", role: "QA Engineer", selected: false },
+                        { name: "Emma Brown", role: "DevOps", selected: false },
+                        { name: "Frank Miller", role: "Backend Dev", selected: true }
+                      ].map((person, index) => (
+                        <div key={index} className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50">
+                          <Checkbox defaultChecked={person.selected} />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-medium truncate">{person.name}</div>
+                            <div className="text-xs text-muted-foreground truncate">{person.role}</div>
+                          </div>
                         </div>
+                      ))}
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="location" className="space-y-4 mt-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Button variant="outline" className="h-24 flex-col gap-2">
+                      <Video className="w-6 h-6" />
+                      Video Call
+                      <span className="text-xs text-muted-foreground">Online meeting</span>
+                    </Button>
+                    <Button variant="outline" className="h-24 flex-col gap-2">
+                      <Users className="w-6 h-6" />
+                      Conference Room
+                      <span className="text-xs text-muted-foreground">Book physical room</span>
+                    </Button>
+                  </div>
+                  
+                  <div>
+                    <Label>Select Conference Room</Label>
+                    <Select>
+                      <SelectTrigger className="mt-2">
+                        <SelectValue placeholder="Select conference room" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="boardroom">Boardroom (12 people)</SelectItem>
+                        <SelectItem value="meeting-a">Meeting Room A (8 people)</SelectItem>
+                        <SelectItem value="meeting-b">Meeting Room B (6 people)</SelectItem>
+                        <SelectItem value="huddle-1">Huddle Room 1 (4 people)</SelectItem>
+                        <SelectItem value="huddle-2">Huddle Room 2 (4 people)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="settings" className="space-y-4 mt-4">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <Label>Send Calendar Invitation</Label>
+                        <div className="text-sm text-muted-foreground">Email invites to all attendees</div>
                       </div>
-                    ))}
+                      <Switch defaultChecked />
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <Label>Enable Recording</Label>
+                        <div className="text-sm text-muted-foreground">Record meeting for later review</div>
+                      </div>
+                      <Switch />
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <Label>Recurring Meeting</Label>
+                        <div className="text-sm text-muted-foreground">Set up recurring schedule</div>
+                      </div>
+                      <Switch />
+                    </div>
                   </div>
-                </div>
+                </TabsContent>
               </div>
 
-              {/* Meeting Settings */}
-              <div className="space-y-4">
-                <h4 className="font-medium">Meeting Settings</h4>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label>Send Calendar Invitation</Label>
-                      <div className="text-sm text-muted-foreground">Email invites to all attendees</div>
-                    </div>
-                    <Switch defaultChecked />
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label>Enable Recording</Label>
-                      <div className="text-sm text-muted-foreground">Record meeting for later review</div>
-                    </div>
-                    <Switch />
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label>Recurring Meeting</Label>
-                      <div className="text-sm text-muted-foreground">Set up recurring schedule</div>
-                    </div>
-                    <Switch />
-                  </div>
-                </div>
-              </div>
-
-              {/* Meeting Room */}
-              <div className="space-y-4">
-                <h4 className="font-medium">Meeting Location</h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <Button variant="outline" className="h-20 flex-col gap-2">
-                    <Video className="w-6 h-6" />
-                    Video Call
-                    <span className="text-xs text-muted-foreground">Online meeting</span>
-                  </Button>
-                  <Button variant="outline" className="h-20 flex-col gap-2">
-                    <Users className="w-6 h-6" />
-                    Conference Room
-                    <span className="text-xs text-muted-foreground">Book physical room</span>
-                  </Button>
-                </div>
-                
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select conference room" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="boardroom">Boardroom (12 people)</SelectItem>
-                    <SelectItem value="meeting-a">Meeting Room A (8 people)</SelectItem>
-                    <SelectItem value="meeting-b">Meeting Room B (6 people)</SelectItem>
-                    <SelectItem value="huddle-1">Huddle Room 1 (4 people)</SelectItem>
-                    <SelectItem value="huddle-2">Huddle Room 2 (4 people)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex justify-end gap-3 pt-4 border-t">
+              {/* Sticky Action Buttons */}
+              <div className="flex justify-end gap-3 p-6 pt-4 border-t bg-background">
                 <Button variant="outline" onClick={() => setIsScheduleMeetingOpen(false)}>
                   Cancel
                 </Button>
@@ -2601,7 +2608,7 @@ const AdminCollaboration = () => {
                   Schedule Meeting
                 </Button>
               </div>
-            </div>
+            </Tabs>
           </DialogContent>
         </Dialog>
 
