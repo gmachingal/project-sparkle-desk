@@ -1068,7 +1068,162 @@ const Collaboration = () => {
           </TabsContent>
 
           {/* Learning Tab */}
+          {/* Enhanced My Learning Tab */}
           <TabsContent value="learning" className="space-y-6">
+            {/* Learning Overview Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary-glow/10">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                      <BookOpen className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <div className="text-sm text-muted-foreground">Courses in Progress</div>
+                      <div className="text-xl font-bold text-primary">3</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-success/20 bg-gradient-to-br from-success/5 to-success-glow/10">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center">
+                      <Award className="w-5 h-5 text-success" />
+                    </div>
+                    <div>
+                      <div className="text-sm text-muted-foreground">Certificates Earned</div>
+                      <div className="text-xl font-bold text-success">12</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-warning/20 bg-gradient-to-br from-warning/5 to-warning-glow/10">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-warning/20 flex items-center justify-center">
+                      <Clock className="w-5 h-5 text-warning" />
+                    </div>
+                    <div>
+                      <div className="text-sm text-muted-foreground">Learning Hours</div>
+                      <div className="text-xl font-bold text-warning">48</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-info/20 bg-gradient-to-br from-info/5 to-info-glow/10">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-info/20 flex items-center justify-center">
+                      <Target className="w-5 h-5 text-info" />
+                    </div>
+                    <div>
+                      <div className="text-sm text-muted-foreground">Completion Rate</div>
+                      <div className="text-xl font-bold text-info">87%</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Main Learning Actions */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Continue Learning */}
+              <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary-glow/10 hover:from-primary/10 hover:to-primary-glow/20 transition-all duration-300 cursor-pointer group">
+                <Dialog open={isContinueLearningOpen} onOpenChange={setIsContinueLearningOpen}>
+                  <DialogTrigger asChild>
+                    <div className="h-full">
+                      <CardHeader className="text-center pb-3">
+                        <div className="w-16 h-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                          <RotateCcw className="w-8 h-8 text-primary" />
+                        </div>
+                        <CardTitle className="text-xl">Continue Learning</CardTitle>
+                        <p className="text-sm text-muted-foreground">Resume your active courses</p>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="bg-background/50 rounded-lg p-3">
+                          <div className="text-sm font-medium mb-1">Last Activity</div>
+                          <div className="text-xs text-muted-foreground">Advanced React Development - 2 hours ago</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-primary">3</div>
+                          <div className="text-xs text-muted-foreground">Active Courses</div>
+                        </div>
+                        <Button className="w-full group-hover:shadow-md transition-shadow">
+                          <Play className="w-4 h-4 mr-2" />
+                          Continue Learning
+                        </Button>
+                      </CardContent>
+                    </div>
+                  </DialogTrigger>
+                </Dialog>
+              </Card>
+
+              {/* Start Learning */}
+              <Card className="border-success/20 bg-gradient-to-br from-success/5 to-success-glow/10 hover:from-success/10 hover:to-success-glow/20 transition-all duration-300 cursor-pointer group">
+                <Dialog open={isStartLearningOpen} onOpenChange={setIsStartLearningOpen}>
+                  <DialogTrigger asChild>
+                    <div className="h-full">
+                      <CardHeader className="text-center pb-3">
+                        <div className="w-16 h-16 mx-auto rounded-full bg-success/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                          <GraduationCap className="w-8 h-8 text-success" />
+                        </div>
+                        <CardTitle className="text-xl">Start Learning</CardTitle>
+                        <p className="text-sm text-muted-foreground">Explore new courses and skills</p>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="bg-background/50 rounded-lg p-3">
+                          <div className="text-sm font-medium mb-1">Available</div>
+                          <div className="text-xs text-muted-foreground">247 courses in learning library</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-success">New</div>
+                          <div className="text-xs text-muted-foreground">Learning Paths</div>
+                        </div>
+                        <Button className="w-full group-hover:shadow-md transition-shadow" variant="outline">
+                          <BookOpen className="w-4 h-4 mr-2" />
+                          Browse Courses
+                        </Button>
+                      </CardContent>
+                    </div>
+                  </DialogTrigger>
+                </Dialog>
+              </Card>
+
+              {/* View Certificates */}
+              <Card className="border-warning/20 bg-gradient-to-br from-warning/5 to-warning-glow/10 hover:from-warning/10 hover:to-warning-glow/20 transition-all duration-300 cursor-pointer group">
+                <Dialog open={isViewCertificatesOpen} onOpenChange={setIsViewCertificatesOpen}>
+                  <DialogTrigger asChild>
+                    <div className="h-full">
+                      <CardHeader className="text-center pb-3">
+                        <div className="w-16 h-16 mx-auto rounded-full bg-warning/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                          <Award className="w-8 h-8 text-warning" />
+                        </div>
+                        <CardTitle className="text-xl">View Certificates</CardTitle>
+                        <p className="text-sm text-muted-foreground">Your achievements and credentials</p>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="bg-background/50 rounded-lg p-3">
+                          <div className="text-sm font-medium mb-1">Latest Certificate</div>
+                          <div className="text-xs text-muted-foreground">Advanced React Development - Aug 20</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-warning">12</div>
+                          <div className="text-xs text-muted-foreground">Total Earned</div>
+                        </div>
+                        <Button className="w-full group-hover:shadow-md transition-shadow" variant="outline">
+                          <Trophy className="w-4 h-4 mr-2" />
+                          View All
+                        </Button>
+                      </CardContent>
+                    </div>
+                  </DialogTrigger>
+                </Dialog>
+              </Card>
+            </div>
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
