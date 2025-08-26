@@ -716,111 +716,302 @@ const Collaboration = () => {
             </TabsTrigger>
           </TabsList>
 
-          {/* Overview Tab */}
+          {/* Enhanced My Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
-            <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-primary-glow/5">
-              <CardHeader>
-                <CardTitle className="text-2xl">My Profile & Progress</CardTitle>
-                <p className="text-muted-foreground">Track your personal performance and collaborate with your team</p>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="flex items-center gap-4">
-                    <div className="relative">
-                      <Avatar className="w-16 h-16">
+            {/* Welcome Section with Profile */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Profile Card */}
+              <Card className="lg:col-span-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary-glow/10 hover:from-primary/10 hover:to-primary-glow/20 transition-all duration-300">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-xl">Welcome back, {myProfile.name.split(' ')[0]}! 👋</CardTitle>
+                      <p className="text-muted-foreground text-sm">Here's your productivity overview for today</p>
+                    </div>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <Settings className="w-4 h-4" />
+                      Edit Profile
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-start gap-6">
+                    {/* Avatar Section */}
+                    <div className="relative group">
+                      <Avatar className="w-20 h-20 ring-4 ring-primary/20 transition-all duration-300 group-hover:ring-primary/40">
                         <AvatarImage src={myProfile.avatar} />
-                        <AvatarFallback className="bg-primary text-primary-foreground text-xl">
+                        <AvatarFallback className="bg-gradient-to-r from-primary to-primary-glow text-primary-foreground text-2xl font-bold">
                           {myProfile.name.split(' ').map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
                       <div className={cn(
-                        "absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-background",
+                        "absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-4 border-background flex items-center justify-center",
                         getStatusColor(myProfile.status)
-                      )} />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold">{myProfile.name}</h3>
-                      <p className="text-muted-foreground">{myProfile.role}</p>
-                      <Badge variant="outline" className="mt-1">
-                        {myProfile.department}
-                      </Badge>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>Current Workload</span>
-                        <span className={getWorkloadColor(myProfile.workload)}>
-                          {myProfile.workload}%
-                        </span>
+                      )}>
+                        <div className="w-2 h-2 rounded-full bg-white"></div>
                       </div>
-                      <Progress value={myProfile.workload} className="h-2" />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {myProfile.currentCapacity}
-                      </p>
                     </div>
 
-                    <div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>Collaboration Score</span>
-                        <span className="font-medium text-purple-600">
-                          {myProfile.collaboration}%
-                        </span>
+                    {/* Profile Info */}
+                    <div className="flex-1 space-y-4">
+                      <div>
+                        <h3 className="text-2xl font-bold text-foreground">{myProfile.name}</h3>
+                        <p className="text-lg text-muted-foreground">{myProfile.role}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <Badge variant="outline" className="bg-background/50">
+                            {myProfile.department}
+                          </Badge>
+                          <Badge variant="outline" className="bg-background/50">
+                            {myProfile.timezone}
+                          </Badge>
+                          <Badge variant="secondary" className="bg-green-100 text-green-700">
+                            Available until {myProfile.availableUntil}
+                          </Badge>
+                        </div>
                       </div>
-                      <Progress value={myProfile.collaboration} className="h-2" />
+
+                      {/* Key Metrics Row */}
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="text-center p-3 rounded-lg bg-background/50">
+                          <div className="text-2xl font-bold text-success">{myProfile.tasksCompleted}</div>
+                          <div className="text-xs text-muted-foreground">Completed Tasks</div>
+                        </div>
+                        <div className="text-center p-3 rounded-lg bg-background/50">
+                          <div className="text-2xl font-bold text-info">{myProfile.tasksInProgress}</div>
+                          <div className="text-xs text-muted-foreground">Active Tasks</div>
+                        </div>
+                        <div className="text-center p-3 rounded-lg bg-background/50">
+                          <div className="text-2xl font-bold text-warning">{myProfile.activeProjects.length}</div>
+                          <div className="text-xs text-muted-foreground">Active Projects</div>
+                        </div>
+                      </div>
                     </div>
                   </div>
+                </CardContent>
+              </Card>
 
+              {/* Quick Stats Card */}
+              <Card className="border-success/20 bg-gradient-to-br from-success/5 to-success-glow/10">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-success" />
+                    Today's Progress
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm font-medium">Workload</span>
+                      <span className={cn("text-sm font-bold", getWorkloadColor(myProfile.workload))}>
+                        {myProfile.workload}%
+                      </span>
+                    </div>
+                    <Progress value={myProfile.workload} className="h-3" />
+                    <p className="text-xs text-muted-foreground mt-1">{myProfile.currentCapacity}</p>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm font-medium">Collaboration</span>
+                      <span className="text-sm font-bold text-purple-600">{myProfile.collaboration}%</span>
+                    </div>
+                    <Progress value={myProfile.collaboration} className="h-3" />
+                    <p className="text-xs text-muted-foreground mt-1">Team engagement score</p>
+                  </div>
+
+                  <div className="pt-2 border-t">
+                    <div className="text-xs text-muted-foreground mb-2">Last Activity</div>
+                    <div className="text-sm font-medium">{myProfile.lastActivity}</div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Interactive Skills & Projects Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Skills Section */}
+              <Card className="border-info/20 bg-gradient-to-br from-info/5 to-info-glow/10">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2">
+                      <Star className="w-5 h-5 text-info" />
+                      My Skills
+                    </CardTitle>
+                    <Button variant="ghost" size="sm" className="text-info hover:text-info">
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
                   <div className="space-y-3">
-                    <div className="p-3 bg-green-50 rounded-lg">
-                      <div className="text-lg font-bold text-green-700">{myProfile.tasksCompleted}</div>
-                      <div className="text-sm text-green-600">Tasks Completed</div>
-                    </div>
-                    <div className="p-3 bg-blue-50 rounded-lg">
-                      <div className="text-lg font-bold text-blue-700">{myProfile.tasksInProgress}</div>
-                      <div className="text-sm text-blue-600">Tasks in Progress</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Skills Section */}
-                <div className="mt-6">
-                  <h4 className="font-semibold mb-3">My Skills</h4>
-                  <div className="flex flex-wrap gap-2">
                     {myProfile.skills.map((skill, index) => (
-                      <Badge key={index} variant="secondary" className="text-sm">
-                        {skill}
-                      </Badge>
+                      <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <div className="w-2 h-2 rounded-full bg-info"></div>
+                          <span className="font-medium">{skill}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="flex">
+                            {[...Array(5)].map((_, i) => (
+                              <Star 
+                                key={i} 
+                                className={cn(
+                                  "w-3 h-3",
+                                  i < (Math.floor(Math.random() * 2) + 3) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                                )} 
+                              />
+                            ))}
+                          </div>
+                          <span className="text-xs text-muted-foreground">
+                            {Math.floor(Math.random() * 3) + 2}y exp
+                          </span>
+                        </div>
+                      </div>
                     ))}
                   </div>
-                </div>
+                  <Button variant="outline" className="w-full mt-4" size="sm">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add New Skill
+                  </Button>
+                </CardContent>
+              </Card>
 
-                {/* Recent Tasks */}
-                <div className="mt-6">
-                  <h4 className="font-semibold mb-3">Recent Tasks</h4>
+              {/* Active Projects */}
+              <Card className="border-warning/20 bg-gradient-to-br from-warning/5 to-warning-glow/10">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Briefcase className="w-5 h-5 text-warning" />
+                    Active Projects
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
                   <div className="space-y-3">
-                    {myProfile.recentTasks.map((task) => (
-                      <div key={task.id} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div className="flex items-center gap-3">
-                          {getTaskStatusIcon(task.status)}
-                          <div>
-                            <h5 className="font-medium">{task.name}</h5>
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <Badge variant="outline" className="text-xs">
-                                {task.priority}
-                              </Badge>
-                              <span>Progress: {task.progress}%</span>
+                    {myProfile.activeProjects.map((project, index) => (
+                      <div key={index} className="p-4 rounded-lg bg-background/50 hover:bg-background/80 transition-all duration-200 cursor-pointer group">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-warning to-warning-glow flex items-center justify-center">
+                              <Briefcase className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-sm group-hover:text-warning transition-colors">{project}</h4>
+                              <p className="text-xs text-muted-foreground">
+                                {Math.floor(Math.random() * 5) + 2} team members
+                              </p>
                             </div>
                           </div>
+                          <div className="flex items-center gap-2">
+                            <Progress value={Math.floor(Math.random() * 40) + 40} className="w-16 h-2" />
+                            <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-warning transition-colors" />
+                          </div>
                         </div>
-                        <Progress value={task.progress} className="w-20 h-2" />
                       </div>
                     ))}
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                  <Button variant="outline" className="w-full mt-4" size="sm">
+                    <Eye className="w-4 h-4 mr-2" />
+                    View All Projects
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Recent Tasks & Activity */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Recent Tasks */}
+              <Card className="lg:col-span-2">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-primary" />
+                      Recent Tasks
+                    </CardTitle>
+                    <Button variant="ghost" size="sm" className="text-primary hover:text-primary">
+                      View All
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {myProfile.recentTasks.map((task) => (
+                      <div key={task.id} className="flex items-center gap-4 p-4 rounded-lg border hover:shadow-md transition-all duration-200 cursor-pointer group">
+                        <div className="flex-shrink-0">
+                          {getTaskStatusIcon(task.status)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h5 className="font-semibold text-sm group-hover:text-primary transition-colors truncate">
+                            {task.name}
+                          </h5>
+                          <div className="flex items-center gap-3 mt-1">
+                            <Badge 
+                              variant="outline" 
+                              className={cn(
+                                "text-xs",
+                                task.priority === "high" ? "border-red-200 text-red-700 bg-red-50" :
+                                task.priority === "medium" ? "border-yellow-200 text-yellow-700 bg-yellow-50" :
+                                "border-blue-200 text-blue-700 bg-blue-50"
+                              )}
+                            >
+                              {task.priority}
+                            </Badge>
+                            <span className="text-xs text-muted-foreground">
+                              {task.progress}% complete
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Progress value={task.progress} className="w-20 h-2" />
+                          <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Quick Actions & Notifications */}
+              <Card className="border-accent/20 bg-gradient-to-br from-accent/5 to-accent-glow/10">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-accent" />
+                    Quick Actions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Button variant="outline" className="w-full justify-start gap-3 h-12">
+                    <Timer className="w-4 h-4 text-primary" />
+                    <div className="text-left">
+                      <div className="font-medium text-sm">Log Time</div>
+                      <div className="text-xs text-muted-foreground">Track work hours</div>
+                    </div>
+                  </Button>
+                  
+                  <Button variant="outline" className="w-full justify-start gap-3 h-12">
+                    <MessageSquare className="w-4 h-4 text-success" />
+                    <div className="text-left">
+                      <div className="font-medium text-sm">Team Chat</div>
+                      <div className="text-xs text-muted-foreground">3 new messages</div>
+                    </div>
+                  </Button>
+                  
+                  <Button variant="outline" className="w-full justify-start gap-3 h-12">
+                    <CalendarIcon className="w-4 h-4 text-warning" />
+                    <div className="text-left">
+                      <div className="font-medium text-sm">Schedule Meeting</div>
+                      <div className="text-xs text-muted-foreground">Book time slot</div>
+                    </div>
+                  </Button>
+                  
+                  <Button variant="outline" className="w-full justify-start gap-3 h-12">
+                    <GraduationCap className="w-4 h-4 text-info" />
+                    <div className="text-left">
+                      <div className="font-medium text-sm">Continue Learning</div>
+                      <div className="text-xs text-muted-foreground">3 courses active</div>
+                    </div>
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* Workload Tab */}
