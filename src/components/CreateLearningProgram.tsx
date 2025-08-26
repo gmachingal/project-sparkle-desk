@@ -75,6 +75,8 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
   });
 
   const [showQuestions, setShowQuestions] = useState(false);
+  const [showCourseForm, setShowCourseForm] = useState(false);
+  const [editingCourse, setEditingCourse] = useState<any>(null);
 
   const steps = [
     {
@@ -524,26 +526,27 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
                       <Button 
                         variant="outline" 
                         className="gap-2"
-                        onClick={() => {
-                          // Mock adding a course
-                          setProgramData(prev => ({
-                            ...prev,
-                            courses: [
-                              ...prev.courses,
-                              {
-                                id: `course-${prev.courses.length + 1}`,
-                                title: "Sample Course",
-                                type: "video",
-                                duration: "2 hours"
-                              }
-                            ]
-                          }));
-                        }}
+                        onClick={() => setShowCourseForm(true)}
                       >
                         <Plus className="w-4 h-4" />
                         Browse Library
                       </Button>
-                      <Button variant="outline" className="gap-2">
+                      <Button 
+                        variant="outline" 
+                        className="gap-2"
+                        onClick={() => {
+                          setEditingCourse({
+                            id: `course-${programData.courses.length + 1}`,
+                            title: "",
+                            description: "",
+                            type: "video",
+                            duration: "",
+                            instructor: "",
+                            difficulty: "beginner",
+                            modules: []
+                          });
+                        }}
+                      >
                         <Upload className="w-4 h-4" />
                         Create Course
                       </Button>
@@ -567,45 +570,64 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
                               </p>
                             </div>
                           </div>
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            onClick={() => {
-                              setProgramData(prev => ({
-                                ...prev,
-                                courses: prev.courses.filter((_, i) => i !== index)
-                              }));
-                            }}
-                          >
-                            Remove
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              className="text-xs gap-1"
+                              onClick={() => setEditingCourse(course)}
+                            >
+                              <Edit className="w-3 h-3" />
+                              Edit
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              className="text-xs text-destructive"
+                              onClick={() => {
+                                setProgramData(prev => ({
+                                  ...prev,
+                                  courses: prev.courses.filter((_, i) => i !== index)
+                                }));
+                              }}
+                            >
+                              Remove
+                            </Button>
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
                   ))}
                   
-                  <Button 
-                    variant="outline" 
-                    className="w-full gap-2"
-                    onClick={() => {
-                      // Mock adding another course
-                      setProgramData(prev => ({
-                        ...prev,
-                        courses: [
-                          ...prev.courses,
-                          {
-                            id: `course-${prev.courses.length + 1}`,
-                            title: `Course ${prev.courses.length + 1}`,
-                            type: "interactive",
-                            duration: "3 hours"
-                          }
-                        ]
-                      }));
-                    }}
-                  >
-                    <Plus className="w-4 h-4" />
-                    Add Another Course
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      className="flex-1 gap-2"
+                      onClick={() => setShowCourseForm(true)}
+                    >
+                      <BookOpen className="w-4 h-4" />
+                      Browse Library
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="flex-1 gap-2"
+                      onClick={() => {
+                        setEditingCourse({
+                          id: `course-${programData.courses.length + 1}`,
+                          title: "",
+                          description: "",
+                          type: "video",
+                          duration: "",
+                          instructor: "",
+                          difficulty: "beginner",
+                          modules: []
+                        });
+                      }}
+                    >
+                      <Plus className="w-4 h-4" />
+                      Create Course
+                    </Button>
+                  </div>
                 </div>
               )}
               {errors.courses && <p className="text-xs text-destructive mt-2">{errors.courses}</p>}
@@ -1263,6 +1285,277 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
                 >
                   <CheckCircle className="w-4 h-4" />
                   {editingIndex === -1 ? "Create Assessment" : "Save Changes"}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Course Library Dialog */}
+      <Dialog open={showCourseForm} onOpenChange={setShowCourseForm}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Browse Course Library</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 pt-4">
+            <div className="grid gap-4">
+              {/* Mock course library */}
+              {[
+                { id: "lib-1", title: "Introduction to Project Management", type: "video", duration: "3 hours", instructor: "John Smith", rating: 4.8, enrolled: 234 },
+                { id: "lib-2", title: "Advanced Excel Skills", type: "interactive", duration: "5 hours", instructor: "Sarah Johnson", rating: 4.9, enrolled: 456 },
+                { id: "lib-3", title: "Leadership Fundamentals", type: "video", duration: "4 hours", instructor: "Mike Davis", rating: 4.7, enrolled: 189 },
+                { id: "lib-4", title: "Digital Marketing Basics", type: "mixed", duration: "6 hours", instructor: "Lisa Chen", rating: 4.6, enrolled: 312 },
+                { id: "lib-5", title: "Data Analysis with Python", type: "interactive", duration: "8 hours", instructor: "Alex Wong", rating: 4.9, enrolled: 567 }
+              ].map((course) => (
+                <Card key={course.id} className="border hover:shadow-md transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                          <BookOpen className="w-6 h-6 text-primary" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium">{course.title}</h4>
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
+                            <span>{course.type}</span>
+                            <span>•</span>
+                            <span>{course.duration}</span>
+                            <span>•</span>
+                            <span>by {course.instructor}</span>
+                          </div>
+                          <div className="flex items-center gap-2 mt-2">
+                            <div className="flex items-center gap-1">
+                              <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                              <span className="text-xs">{course.rating}</span>
+                            </div>
+                            <span className="text-xs text-muted-foreground">({course.enrolled} enrolled)</span>
+                          </div>
+                        </div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setProgramData(prev => ({
+                            ...prev,
+                            courses: [...prev.courses, course]
+                          }));
+                          setShowCourseForm(false);
+                        }}
+                      >
+                        Add to Program
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Create/Edit Course Dialog */}
+      <Dialog open={!!editingCourse} onOpenChange={() => setEditingCourse(null)}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Create New Course</DialogTitle>
+          </DialogHeader>
+          
+          {editingCourse && (
+            <div className="space-y-6 pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="course-title" className="text-sm font-medium">Course Title *</Label>
+                  <Input
+                    id="course-title"
+                    value={editingCourse.title || ""}
+                    onChange={(e) => setEditingCourse(prev => ({ ...prev, title: e.target.value }))}
+                    placeholder="Enter course title"
+                    className="mt-1"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="course-type" className="text-sm font-medium">Course Type *</Label>
+                  <Select 
+                    value={editingCourse.type || ""} 
+                    onValueChange={(value) => setEditingCourse(prev => ({ ...prev, type: value }))}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="video">Video Course</SelectItem>
+                      <SelectItem value="interactive">Interactive</SelectItem>
+                      <SelectItem value="document">Document-based</SelectItem>
+                      <SelectItem value="mixed">Mixed Media</SelectItem>
+                      <SelectItem value="live">Live Session</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="course-description" className="text-sm font-medium">Description</Label>
+                <Textarea
+                  id="course-description"
+                  value={editingCourse.description || ""}
+                  onChange={(e) => setEditingCourse(prev => ({ ...prev, description: e.target.value }))}
+                  placeholder="Describe the course content and learning objectives"
+                  rows={3}
+                  className="mt-1"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="course-duration" className="text-sm font-medium">Duration *</Label>
+                  <Input
+                    id="course-duration"
+                    value={editingCourse.duration || ""}
+                    onChange={(e) => setEditingCourse(prev => ({ ...prev, duration: e.target.value }))}
+                    placeholder="e.g., 2 hours"
+                    className="mt-1"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="course-instructor" className="text-sm font-medium">Instructor</Label>
+                  <Input
+                    id="course-instructor"
+                    value={editingCourse.instructor || ""}
+                    onChange={(e) => setEditingCourse(prev => ({ ...prev, instructor: e.target.value }))}
+                    placeholder="Instructor name"
+                    className="mt-1"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="course-difficulty" className="text-sm font-medium">Difficulty Level</Label>
+                  <Select 
+                    value={editingCourse.difficulty || "beginner"} 
+                    onValueChange={(value) => setEditingCourse(prev => ({ ...prev, difficulty: value }))}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="beginner">Beginner</SelectItem>
+                      <SelectItem value="intermediate">Intermediate</SelectItem>
+                      <SelectItem value="advanced">Advanced</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Course Modules */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-medium">Course Modules</Label>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const newModule = {
+                        id: `module-${(editingCourse.modules?.length || 0) + 1}`,
+                        title: "",
+                        content: "",
+                        duration: "",
+                        order: (editingCourse.modules?.length || 0) + 1
+                      };
+                      setEditingCourse(prev => ({
+                        ...prev,
+                        modules: [...(prev.modules || []), newModule]
+                      }));
+                    }}
+                    className="gap-1"
+                  >
+                    <Plus className="w-3 h-3" />
+                    Add Module
+                  </Button>
+                </div>
+
+                {editingCourse.modules && editingCourse.modules.length > 0 ? (
+                  <div className="space-y-2">
+                    {editingCourse.modules.map((module: any, index: number) => (
+                      <Card key={module.id} className="border">
+                        <CardContent className="p-3">
+                          <div className="flex items-center justify-between mb-2">
+                            <Label className="text-xs font-medium">Module {index + 1}</Label>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                const updatedModules = editingCourse.modules.filter((_: any, i: number) => i !== index);
+                                setEditingCourse(prev => ({ ...prev, modules: updatedModules }));
+                              }}
+                              className="text-destructive text-xs h-6 px-2"
+                            >
+                              Remove
+                            </Button>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <Input
+                              value={module.title}
+                              onChange={(e) => {
+                                const updatedModules = [...editingCourse.modules];
+                                updatedModules[index] = { ...module, title: e.target.value };
+                                setEditingCourse(prev => ({ ...prev, modules: updatedModules }));
+                              }}
+                              placeholder="Module title"
+                              className="text-sm"
+                            />
+                            <Input
+                              value={module.duration}
+                              onChange={(e) => {
+                                const updatedModules = [...editingCourse.modules];
+                                updatedModules[index] = { ...module, duration: e.target.value };
+                                setEditingCourse(prev => ({ ...prev, modules: updatedModules }));
+                              }}
+                              placeholder="Duration (e.g., 30 min)"
+                              className="text-sm"
+                            />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <Card className="border-dashed border-muted-foreground/25">
+                    <CardContent className="p-6 text-center">
+                      <BookOpen className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+                      <p className="text-sm text-muted-foreground">No modules added yet</p>
+                      <p className="text-xs text-muted-foreground">Add modules to structure your course content</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4 border-t">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setEditingCourse(null)}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={() => {
+                    setProgramData(prev => ({
+                      ...prev,
+                      courses: [...prev.courses, editingCourse]
+                    }));
+                    setEditingCourse(null);
+                    toast({
+                      title: "Course Created",
+                      description: "Course has been successfully added to the curriculum.",
+                    });
+                  }}
+                  className="gap-2"
+                >
+                  <CheckCircle className="w-4 h-4" />
+                  Add to Curriculum
                 </Button>
               </div>
             </div>
