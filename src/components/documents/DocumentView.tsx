@@ -19,36 +19,35 @@ interface DocumentViewProps {
 
 export const DocumentView = ({ document, onBack, onEdit }: DocumentViewProps) => {
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      {/* Back Button Above Header */}
+      <div className="border-b backdrop-blur-sm bg-gradient-to-r from-primary/50 via-primary-glow/40 to-primary/50 shadow-lg shadow-black/20">
+        <div className="container mx-auto px-4 py-3">
+          <Button variant="back" onClick={onBack}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Documents
+          </Button>
+        </div>
+      </div>
+
       <div className="container mx-auto px-4 py-8">
         {/* Document View Header */}
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={onBack} 
-              className="gap-2 text-muted-foreground hover:text-foreground -ml-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Documents
-            </Button>
-            <div>
-              <h1 className="text-3xl font-bold">{document.title}</h1>
-              <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <Avatar className="w-6 h-6">
-                    <AvatarFallback className="text-xs">
-                      {document.author.split(' ').map(n => n[0]).join('')}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span>By {document.author}</span>
-                </div>
-                <span>Updated {document.updatedAt}</span>
-                <Badge className={getStatusColor(document.status)} variant="outline">
-                  {document.status}
-                </Badge>
+          <div>
+            <h1 className="text-3xl font-bold">{document.title}</h1>
+            <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <Avatar className="w-6 h-6">
+                  <AvatarFallback className="text-xs">
+                    {document.author.split(' ').map(n => n[0]).join('')}
+                  </AvatarFallback>
+                </Avatar>
+                <span>By {document.author}</span>
               </div>
+              <span>Updated {document.updatedAt}</span>
+              <Badge className={getStatusColor(document.status)} variant="outline">
+                {document.status}
+              </Badge>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -171,6 +170,6 @@ export const DocumentView = ({ document, onBack, onEdit }: DocumentViewProps) =>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };

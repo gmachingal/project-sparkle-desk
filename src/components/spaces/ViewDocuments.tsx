@@ -33,19 +33,20 @@ interface ViewDocumentsProps {
 
 export const ViewDocuments = ({ space, documents, onBack, onViewDocument, onEditDocument }: ViewDocumentsProps) => {
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={onBack} 
-            className="gap-2 text-muted-foreground hover:text-foreground -ml-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
+    <>
+      {/* Back Button Above Header */}
+      <div className="border-b backdrop-blur-sm bg-gradient-to-r from-primary/50 via-primary-glow/40 to-primary/50 shadow-lg shadow-black/20">
+        <div className="container mx-auto px-4 py-3">
+          <Button variant="back" onClick={onBack}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
             Back to {space.name}
           </Button>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             <div className={`w-10 h-10 rounded-lg ${space.color} flex items-center justify-center text-white text-lg`}>
               {space.icon}
@@ -55,12 +56,11 @@ export const ViewDocuments = ({ space, documents, onBack, onViewDocument, onEdit
               <p className="text-sm text-muted-foreground">{documents.length} documents in this space</p>
             </div>
           </div>
+          <Button className="gap-2">
+            <Plus className="w-4 h-4" />
+            New Document
+          </Button>
         </div>
-        <Button className="gap-2">
-          <Plus className="w-4 h-4" />
-          New Document
-        </Button>
-      </div>
 
       {/* Search and Filters */}
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
@@ -195,6 +195,7 @@ export const ViewDocuments = ({ space, documents, onBack, onViewDocument, onEdit
           </CardContent>
         </Card>
       )}
-    </div>
+      </div>
+    </>
   );
 };

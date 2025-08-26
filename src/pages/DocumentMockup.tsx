@@ -95,16 +95,16 @@ const DocumentMockup = () => {
   if (selectedDocumentView) {
     const document = documents.find(doc => doc.id === selectedDocumentView);
     if (document) {
-      return (
-        <div className="min-h-screen bg-background">
-          <Header />
-          <DocumentView
-            document={document}
-            onBack={handleBackToDocuments}
-            onEdit={handleEditFromView}
-          />
-        </div>
-      );
+  return (
+    <div className="min-h-screen bg-background">
+      <Header />
+      <DocumentView
+        document={document}
+        onBack={handleBackToDocuments}
+        onEdit={handleEditFromView}
+      />
+    </div>
+  );
     }
   }
 
