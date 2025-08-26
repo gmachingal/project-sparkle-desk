@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Search, Bell, Plus, Settings, User, Clock, Users, Briefcase, FileText, Calendar, Home, LogOut, Building2, ChevronDown, Check } from "lucide-react";
+import { Search, Bell, Plus, Settings, User, Clock, Users, Briefcase, FileText, Calendar, Home, LogOut, Building2, ChevronDown, Check, Cog } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -19,7 +19,7 @@ const Header = ({ userRole }: HeaderProps) => {
   const location = useLocation();
   const { toast } = useToast();
   
-  // User's organizations - in real app, this would come from user context/API
+  // Enhanced user's organizations with admin-style data structure
   const [currentOrganization, setCurrentOrganization] = useState("ORG-001");
   const userOrganizations = [
     { 
@@ -27,6 +27,11 @@ const Header = ({ userRole }: HeaderProps) => {
       name: "TechCorp Solutions", 
       role: "Admin", 
       domain: "techcorp.com",
+      plan: "Enterprise",
+      licenses: 50,
+      usedLicenses: 37,
+      status: "Active",
+      monthlyFee: 2500,
       isActive: true 
     },
     { 
@@ -34,6 +39,11 @@ const Header = ({ userRole }: HeaderProps) => {
       name: "StartupXYZ", 
       role: "Member", 
       domain: "startupxyz.com",
+      plan: "Professional", 
+      licenses: 25,
+      usedLicenses: 18,
+      status: "Active",
+      monthlyFee: 1250,
       isActive: true 
     },
     { 
@@ -41,7 +51,12 @@ const Header = ({ userRole }: HeaderProps) => {
       name: "Innovation Labs", 
       role: "Manager", 
       domain: "innovationlabs.org",
-      isActive: true 
+      plan: "Basic",
+      licenses: 10,
+      usedLicenses: 8,
+      status: "Suspended",
+      monthlyFee: 500,
+      isActive: false 
     }
   ];
   
@@ -183,54 +198,88 @@ const Header = ({ userRole }: HeaderProps) => {
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Compact Organization Switcher */}
+          {/* Enhanced Organization Switcher */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="hidden lg:flex gap-2 px-3">
+              <Button variant="ghost" size="sm" className={`hidden lg:flex gap-2 px-3 ${isAdminPage ? 'hover:bg-admin/10 text-admin/70 hover:text-admin' : ''}`}>
                 <Building2 className="w-4 h-4" />
-                <span className="text-sm font-medium max-w-32 truncate">{getCurrentOrg()?.name}</span>
+                <div className="flex flex-col items-start">
+                  <span className="text-sm font-medium max-w-32 truncate">{getCurrentOrg()?.name}</span>
+                  <span className="text-xs text-muted-foreground">{getCurrentOrg()?.plan}</span>
+                </div>
                 <ChevronDown className="w-3 h-3 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-80">
-              <div className="p-2">
-                <div className="text-xs font-medium text-muted-foreground mb-2 px-2">
+            <DropdownMenuContent align="start" className="w-96">
+              <div className="p-3">
+                <div className="text-xs font-medium text-muted-foreground mb-3 px-1">
                   Switch Organization
                 </div>
                 {userOrganizations.map((org) => (
                   <DropdownMenuItem
                     key={org.id}
                     onClick={() => switchOrganization(org.id)}
-                    className="flex items-center justify-between p-3 rounded-md cursor-pointer"
+                    className="flex items-center justify-between p-4 rounded-lg cursor-pointer hover:bg-muted/50"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Building2 className="w-4 h-4 text-primary" />
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className={`w-10 h-10 rounded-lg ${isAdminPage ? 'bg-admin/10' : 'bg-primary/10'} flex items-center justify-center flex-shrink-0`}>
+                        <Building2 className={`w-5 h-5 ${isAdminPage ? 'text-admin' : 'text-primary'}`} />
                       </div>
-                      <div className="flex flex-col">
-                        <span className="font-medium text-sm">{org.name}</span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-muted-foreground">{org.domain}</span>
+                      <div className="flex flex-col min-w-0 flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-medium text-sm truncate">{org.name}</span>
+                          <Badge 
+                            variant={org.status === "Active" ? "default" : "destructive"} 
+                            className="text-xs h-4 flex-shrink-0"
+                          >
+                            {org.status}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <span className="truncate">{org.domain}</span>
+                          <span>•</span>
                           <Badge variant="outline" className="text-xs h-4">
                             {org.role}
                           </Badge>
                         </div>
+                        <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
+                          <span className="font-medium text-primary">{org.plan}</span>
+                          <span>•</span>
+                          <span>{org.usedLicenses}/{org.licenses} users</span>
+                          <span>•</span>
+                          <span className="font-medium">${org.monthlyFee}/mo</span>
+                        </div>
                       </div>
                     </div>
                     {currentOrganization === org.id && (
-                      <Check className="w-4 h-4 text-primary" />
+                      <Check className={`w-4 h-4 flex-shrink-0 ${isAdminPage ? 'text-admin' : 'text-primary'}`} />
                     )}
                   </DropdownMenuItem>
                 ))}
               </div>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
-                onClick={() => navigate("/organization")}
-                className="gap-2 mx-2 mb-2"
-              >
-                <Settings className="w-4 h-4" />
-                Organization Settings
-              </DropdownMenuItem>
+              <div className="p-2">
+                <DropdownMenuItem 
+                  onClick={() => navigate("/admin/organizations")}
+                  className="gap-2 mx-1 mb-1 rounded-lg p-3"
+                >
+                  <Settings className="w-4 h-4" />
+                  <div className="flex flex-col">
+                    <span className="font-medium">Organization Management</span>
+                    <span className="text-xs text-muted-foreground">Manage all organizations</span>
+                  </div>
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => navigate("/organization")}
+                  className="gap-2 mx-1 rounded-lg p-3"
+                >
+                  <Cog className="w-4 h-4" />
+                  <div className="flex flex-col">
+                    <span className="font-medium">Organization Settings</span>
+                    <span className="text-xs text-muted-foreground">Configure current organization</span>
+                  </div>
+                </DropdownMenuItem>
+              </div>
             </DropdownMenuContent>
           </DropdownMenu>
 
