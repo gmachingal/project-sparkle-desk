@@ -21,6 +21,10 @@ import ProfileCard from "@/components/overview/ProfileCard";
 import StatsOverview from "@/components/overview/StatsOverview";
 import TasksSummary from "@/components/overview/TasksSummary";
 import ProjectsOverview from "@/components/overview/ProjectsOverview";
+import TakeAssessment from "@/components/learning/TakeAssessment";
+import ContinueLearning from "@/components/learning/ContinueLearning";
+import BrowseLearning from "@/components/learning/BrowseLearning";
+import ViewAllCertificates from "@/components/learning/ViewAllCertificates";
 import { 
   Users, 
   Calendar as CalendarIcon,
@@ -79,6 +83,7 @@ const Collaboration = () => {
   const [isViewCertificatesOpen, setIsViewCertificatesOpen] = useState(false);
   const [isCertificateDetailOpen, setIsCertificateDetailOpen] = useState(false);
   const [selectedCertificate, setSelectedCertificate] = useState<any>(null);
+  const [activeLearningTab, setActiveLearningTab] = useState("continue");
   
   // Form states
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
@@ -938,205 +943,42 @@ const Collaboration = () => {
                 <p className="text-muted-foreground">Track your learning progress and skill development</p>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <h4 className="font-semibold">Current Learning Paths</h4>
-                    <div className="space-y-3">
-                      <div className="p-4 border rounded-lg">
-                        <div className="flex items-center justify-between mb-2">
-                          <h5 className="font-medium">Advanced React Patterns</h5>
-                          <Badge variant="secondary">In Progress</Badge>
-                        </div>
-                        <div className="flex justify-between text-sm mb-2">
-                          <span>Progress</span>
-                          <span>65%</span>
-                        </div>
-                        <Progress value={65} className="mb-3" />
-                        <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
-                          <span>4 of 7 modules completed</span>
-                          <span>12.5h logged</span>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
-                            className="flex-1 gap-1"
-                            onClick={() => handleStartAssessment("Advanced React Patterns")}
-                          >
-                            <Award className="w-3 h-3" />
-                            Take Assessment
-                          </Button>
-                          <Button size="sm" variant="outline" className="flex-1 gap-1">
-                            <BookOpen className="w-3 h-3" />
-                            Continue Learning
-                          </Button>
-                        </div>
-                      </div>
-                      
-                      <div className="p-4 border rounded-lg">
-                        <div className="flex items-center justify-between mb-2">
-                          <h5 className="font-medium">Leadership Fundamentals</h5>
-                          <Badge variant="outline">Not Started</Badge>
-                        </div>
-                        <div className="flex justify-between text-sm mb-2">
-                          <span>Progress</span>
-                          <span>0%</span>
-                        </div>
-                        <Progress value={0} className="mb-3" />
-                        <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
-                          <span>0 of 5 modules completed</span>
-                          <span>0h logged</span>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
-                            className="flex-1 gap-1"
-                            disabled
-                          >
-                            <Award className="w-3 h-3" />
-                            Assessment Locked
-                          </Button>
-                          <Button size="sm" className="flex-1 gap-1">
-                            <BookOpen className="w-3 h-3" />
-                            Start Learning
-                          </Button>
-                        </div>
-                      </div>
-
-                      <div className="p-4 border rounded-lg">
-                        <div className="flex items-center justify-between mb-2">
-                          <h5 className="font-medium">TypeScript Mastery</h5>
-                          <Badge variant="default">Completed</Badge>
-                        </div>
-                        <div className="flex justify-between text-sm mb-2">
-                          <span>Progress</span>
-                          <span>100%</span>
-                        </div>
-                        <Progress value={100} className="mb-3" />
-                        <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
-                          <span>6 of 6 modules completed</span>
-                          <span>24.5h logged</span>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
-                            className="flex-1 gap-1"
-                            onClick={() => handleStartAssessment("TypeScript Mastery")}
-                          >
-                            <Award className="w-3 h-3" />
-                            Retake Assessment
-                          </Button>
-                          <Button size="sm" variant="outline" className="flex-1 gap-1" disabled>
-                            <BookOpen className="w-3 h-3" />
-                            Completed
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h4 className="font-semibold">Learning Statistics</h4>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="p-3 bg-blue-50 rounded-lg">
-                        <div className="text-lg font-bold text-blue-700">12</div>
-                        <div className="text-sm text-blue-600">Courses Completed</div>
-                      </div>
-                      <div className="p-3 bg-green-50 rounded-lg">
-                        <div className="text-lg font-bold text-green-700">47.5h</div>
-                        <div className="text-sm text-green-600">Total Hours Logged</div>
-                      </div>
-                      <div className="p-3 bg-purple-50 rounded-lg">
-                        <div className="text-lg font-bold text-purple-700">8</div>
-                        <div className="text-sm text-purple-600">Certificates Earned</div>
-                      </div>
-                      <div className="p-3 bg-orange-50 rounded-lg">
-                        <div className="text-lg font-bold text-orange-700">95%</div>
-                        <div className="text-sm text-orange-600">Assessment Average</div>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <h5 className="font-medium">Recent Learning Activity</h5>
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-3 p-2 bg-muted rounded">
-                          <Clock className="w-4 h-4 text-blue-500" />
-                          <div>
-                            <div className="text-sm font-medium">2.5 hours logged</div>
-                            <div className="text-xs text-muted-foreground">Advanced React Patterns - Today</div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3 p-2 bg-muted rounded">
-                          <Award className="w-4 h-4 text-green-500" />
-                          <div>
-                            <div className="text-sm font-medium">Assessment completed</div>
-                            <div className="text-xs text-muted-foreground">TypeScript Mastery - Score: 92%</div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3 p-2 bg-muted rounded">
-                          <BookOpen className="w-4 h-4 text-purple-500" />
-                          <div>
-                            <div className="text-sm font-medium">Module completed</div>
-                            <div className="text-xs text-muted-foreground">React Hooks Deep Dive - Yesterday</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <h5 className="font-medium">Achievements & Badges</h5>
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="flex items-center gap-2 p-2 bg-yellow-50 rounded">
-                          <Star className="w-4 h-4 text-yellow-500" />
-                          <div>
-                            <div className="text-xs font-medium">React Expert</div>
-                            <div className="text-xs text-muted-foreground">Completed advanced course</div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2 p-2 bg-green-50 rounded">
-                          <Star className="w-4 h-4 text-green-500" />
-                          <div>
-                            <div className="text-xs font-medium">Fast Learner</div>
-                            <div className="text-xs text-muted-foreground">50+ hours this month</div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2 p-2 bg-purple-50 rounded">
-                          <Star className="w-4 h-4 text-purple-500" />
-                          <div>
-                            <div className="text-xs font-medium">Assessment Ace</div>
-                            <div className="text-xs text-muted-foreground">90%+ average score</div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2 p-2 bg-blue-50 rounded">
-                          <Star className="w-4 h-4 text-blue-500" />
-                          <div>
-                            <div className="text-xs font-medium">Consistent</div>
-                            <div className="text-xs text-muted-foreground">Daily learning streak</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                  <div className="space-y-2">
-                    <Button className="w-full gap-2" variant="outline">
-                      <Dialog open={isStartLearningOpen} onOpenChange={setIsStartLearningOpen}>
-                        <DialogTrigger asChild>
-                          <span className="flex items-center gap-2 cursor-pointer">
-                            <BookOpen className="w-4 h-4" />
-                            Browse Learning Library
-                          </span>
-                        </DialogTrigger>
-                      </Dialog>
-                    </Button>
-                    <Button className="w-full gap-2" variant="outline">
+                <Tabs value={activeLearningTab} onValueChange={setActiveLearningTab} className="w-full">
+                  <TabsList className="grid w-full grid-cols-4">
+                    <TabsTrigger value="continue" className="gap-2">
+                      <Play className="w-4 h-4" />
+                      Continue Learning
+                    </TabsTrigger>
+                    <TabsTrigger value="browse" className="gap-2">
+                      <BookOpen className="w-4 h-4" />
+                      Browse Learning
+                    </TabsTrigger>
+                    <TabsTrigger value="assessment" className="gap-2">
                       <Award className="w-4 h-4" />
+                      Take Assessment
+                    </TabsTrigger>
+                    <TabsTrigger value="certificates" className="gap-2">
+                      <Trophy className="w-4 h-4" />
                       View All Certificates
-                    </Button>
-                  </div>
-                  </div>
-                </div>
+                    </TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="continue" className="mt-6">
+                    <ContinueLearning />
+                  </TabsContent>
+                  
+                  <TabsContent value="browse" className="mt-6">
+                    <BrowseLearning />
+                  </TabsContent>
+                  
+                  <TabsContent value="assessment" className="mt-6">
+                    <TakeAssessment />
+                  </TabsContent>
+                  
+                  <TabsContent value="certificates" className="mt-6">
+                    <ViewAllCertificates />
+                  </TabsContent>
+                </Tabs>
               </CardContent>
             </Card>
           </TabsContent>
