@@ -48,6 +48,7 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
     departments: [] as string[],
     roles: [] as string[],
     courses: [] as any[],
+    assessments: [] as any[],
     settings: {
       deadline: "",
       gracePeriod: "",
@@ -97,6 +98,13 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
       description: "Add courses and assessments",
       icon: Target,
       fields: ["courses"]
+    },
+    {
+      id: 5,
+      title: "Assessments",
+      description: "Create tests and evaluations",
+      icon: Award,
+      fields: ["assessments"]
     }
   ];
 
@@ -135,6 +143,9 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
         break;
       case 4:
         if (programData.courses.length === 0) newErrors.courses = "Add at least one course";
+        break;
+      case 5:
+        if (programData.assessments.length === 0) newErrors.assessments = "Add at least one assessment";
         break;
     }
 
@@ -556,6 +567,111 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
                 </div>
               )}
               {errors.courses && <p className="text-xs text-destructive mt-2">{errors.courses}</p>}
+            </div>
+          </div>
+        );
+
+      case 5:
+        return (
+          <div className="space-y-6">
+            <div>
+              <Label className="text-sm font-medium mb-3 block">Program Assessments *</Label>
+              
+              {programData.assessments.length === 0 ? (
+                <Card className="border-dashed border-2 border-muted-foreground/25">
+                  <CardContent className="p-8 text-center">
+                    <Award className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                    <h4 className="font-medium mb-2">Add Assessments to Program</h4>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Create assessments to test knowledge and skills throughout the program
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      className="gap-2"
+                      onClick={() => {
+                        // Mock adding an assessment
+                        setProgramData(prev => ({
+                          ...prev,
+                          assessments: [
+                            ...prev.assessments,
+                            {
+                              id: `assessment-${prev.assessments.length + 1}`,
+                              title: "Knowledge Check",
+                              type: "quiz",
+                              questions: 10,
+                              timeLimit: 30,
+                              passingScore: 70
+                            }
+                          ]
+                        }));
+                      }}
+                    >
+                      <Plus className="w-4 h-4" />
+                      Create Assessment
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="space-y-3">
+                  {programData.assessments.map((assessment, index) => (
+                    <Card key={assessment.id} className="border">
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-warning/10 rounded-md flex items-center justify-center">
+                              <Award className="w-4 h-4 text-warning" />
+                            </div>
+                            <div>
+                              <h4 className="font-medium text-sm">{assessment.title}</h4>
+                              <p className="text-xs text-muted-foreground">
+                                {assessment.questions} questions • {assessment.timeLimit} min • {assessment.passingScore}% to pass
+                              </p>
+                            </div>
+                          </div>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => {
+                              setProgramData(prev => ({
+                                ...prev,
+                                assessments: prev.assessments.filter((_, i) => i !== index)
+                              }));
+                            }}
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                  
+                  <Button 
+                    variant="outline" 
+                    className="w-full gap-2"
+                    onClick={() => {
+                      // Mock adding another assessment
+                      setProgramData(prev => ({
+                        ...prev,
+                        assessments: [
+                          ...prev.assessments,
+                          {
+                            id: `assessment-${prev.assessments.length + 1}`,
+                            title: `Assessment ${prev.assessments.length + 1}`,
+                            type: "quiz",
+                            questions: 15,
+                            timeLimit: 45,
+                            passingScore: 80
+                          }
+                        ]
+                      }));
+                    }}
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Another Assessment
+                  </Button>
+                </div>
+              )}
+              {errors.assessments && <p className="text-xs text-destructive mt-2">{errors.assessments}</p>}
             </div>
           </div>
         );
