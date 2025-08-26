@@ -11,6 +11,8 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import CreateLearningProgram from "@/components/CreateLearningProgram";
+import BrowseLearning from "@/components/learning/BrowseLearning";
+import ViewAllCertificates from "@/components/learning/ViewAllCertificates";
 import Header from "@/components/Header";
 import { 
   Users, 
@@ -286,6 +288,11 @@ const AdminCollaboration = () => {
                   Browse Library
                 </Button>
               </DialogTrigger>
+              <DialogContent className="sm:max-w-6xl max-h-[95vh] overflow-hidden p-0">
+                <div className="p-6 overflow-y-auto max-h-[95vh]">
+                  <BrowseLearning />
+                </div>
+              </DialogContent>
             </Dialog>
             
             <Dialog open={isViewCertificatesOpen} onOpenChange={setIsViewCertificatesOpen}>
@@ -298,6 +305,11 @@ const AdminCollaboration = () => {
                   View Certificates
                 </Button>
               </DialogTrigger>
+              <DialogContent className="sm:max-w-6xl max-h-[95vh] overflow-hidden p-0">
+                <div className="p-6 overflow-y-auto max-h-[95vh]">
+                  <ViewAllCertificates />
+                </div>
+              </DialogContent>
             </Dialog>
             
             <Dialog open={isCreateProgramOpen} onOpenChange={setIsCreateProgramOpen}>
@@ -953,10 +965,7 @@ const AdminCollaboration = () => {
                     <div className="grid grid-cols-1 gap-2">
                       <Button 
                         className="w-full gap-2 bg-gradient-to-r from-admin to-admin-glow"
-                        onClick={() => toast({
-                          title: "Create Learning Program",
-                          description: "Setting up new organization-wide learning program"
-                        })}
+                        onClick={() => setIsCreateProgramOpen(true)}
                       >
                         <Plus className="w-4 h-4" />
                         Create Learning Program
@@ -964,10 +973,7 @@ const AdminCollaboration = () => {
                       <Button 
                         variant="outline" 
                         className="w-full gap-2 border-admin/30 hover:bg-admin/10"
-                        onClick={() => toast({
-                          title: "Learning Library",
-                          description: "Browsing organization learning resources and content"
-                        })}
+                        onClick={() => setIsBrowseLibraryOpen(true)}
                       >
                         <BookOpen className="w-4 h-4" />
                         Browse Learning Library
@@ -975,10 +981,7 @@ const AdminCollaboration = () => {
                       <Button 
                         variant="outline" 
                         className="w-full gap-2 border-admin/30 hover:bg-admin/10"
-                        onClick={() => toast({
-                          title: "All Certificates",
-                          description: "Viewing organization-wide certificates and achievements"
-                        })}
+                        onClick={() => setIsViewCertificatesOpen(true)}
                       >
                         <Award className="w-4 h-4" />
                         View All Certificates
@@ -986,10 +989,7 @@ const AdminCollaboration = () => {
                       <Button 
                         variant="outline" 
                         className="w-full gap-2 border-admin/30 hover:bg-admin/10"
-                        onClick={() => toast({
-                          title: "View & Manage",
-                          description: "Managing organization learning programs and progress"
-                        })}
+                        onClick={() => setIsViewMemberOpen(true)}
                       >
                         <Eye className="w-4 h-4" />
                         View & Manage
