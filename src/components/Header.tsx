@@ -128,6 +128,7 @@ const Header = ({ userRole, title, subtitle, backButton, actionButton }: HeaderP
     // Check for admin versions of pages
     if (path === "/attendance" && (currentPath.includes("attendance") || currentPath.includes("admin-attendance"))) return true;
     if (path === "/leave-management" && (currentPath.includes("leave") || currentPath.includes("admin-leave"))) return true;
+    if (path === "/collaboration" && (currentPath.includes("collaboration") || currentPath.includes("admin-collaboration"))) return true;
     
     return false;
   };
@@ -146,6 +147,8 @@ const Header = ({ userRole, title, subtitle, backButton, actionButton }: HeaderP
           return "/admin-attendance";
         case "/leave-management":
           return "/admin-leave-management";
+        case "/collaboration":
+          return "/admin-collaboration";
         default:
           return basePath;
       }
@@ -268,7 +271,7 @@ const Header = ({ userRole, title, subtitle, backButton, actionButton }: HeaderP
             <Button 
               variant="ghost" 
               size="sm" 
-              onClick={() => navigate("/collaboration")} 
+              onClick={() => navigate(getNavigationUrl("/collaboration"))} 
               className={`gap-2 ${isActivePage("/collaboration") ? (isAdminPage ? "bg-admin text-admin-foreground" : "bg-primary text-primary-foreground") : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
               <Users className="w-4 h-4" />
@@ -316,7 +319,7 @@ const Header = ({ userRole, title, subtitle, backButton, actionButton }: HeaderP
                 <Briefcase className="w-4 h-4" />
                 Projects
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/collaboration")} className="gap-2">
+              <DropdownMenuItem onClick={() => navigate(getNavigationUrl("/collaboration"))} className="gap-2">
                 <Users className="w-4 h-4" />
                 Collaboration
               </DropdownMenuItem>
