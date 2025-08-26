@@ -763,12 +763,16 @@ const DocumentMockup = () => {
                 {/* View Mode Selector - Only for Documents Tab */}
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-2xl font-bold text-foreground">All Documents</h3>
-                  <div className="flex items-center bg-muted/50 rounded-lg p-1">
+                  <div className="flex items-center bg-muted rounded-lg p-1 border">
                     <Button 
                       variant={viewMode === "grid" ? "default" : "ghost"} 
                       size="sm" 
                       onClick={() => setViewMode("grid")}
-                      className={`h-10 px-4 rounded-md ${viewMode === "grid" ? "bg-background shadow-sm" : ""}`}
+                      className={`h-9 px-4 rounded-md transition-all ${
+                        viewMode === "grid" 
+                          ? "bg-primary text-primary-foreground shadow-sm" 
+                          : "hover:bg-muted-foreground/10"
+                      }`}
                     >
                       Grid
                     </Button>
@@ -776,7 +780,11 @@ const DocumentMockup = () => {
                       variant={viewMode === "list" ? "default" : "ghost"} 
                       size="sm" 
                       onClick={() => setViewMode("list")}
-                      className={`h-10 px-4 rounded-md ${viewMode === "list" ? "bg-background shadow-sm" : ""}`}
+                      className={`h-9 px-4 rounded-md transition-all ${
+                        viewMode === "list" 
+                          ? "bg-primary text-primary-foreground shadow-sm" 
+                          : "hover:bg-muted-foreground/10"
+                      }`}
                     >
                       List
                     </Button>
@@ -784,7 +792,11 @@ const DocumentMockup = () => {
                       variant={viewMode === "tree" ? "default" : "ghost"} 
                       size="sm" 
                       onClick={() => setViewMode("tree")}
-                      className={`h-10 px-4 rounded-md ${viewMode === "tree" ? "bg-background shadow-sm" : ""}`}
+                      className={`h-9 px-4 rounded-md transition-all ${
+                        viewMode === "tree" 
+                          ? "bg-primary text-primary-foreground shadow-sm" 
+                          : "hover:bg-muted-foreground/10"
+                      }`}
                     >
                       Tree
                     </Button>
