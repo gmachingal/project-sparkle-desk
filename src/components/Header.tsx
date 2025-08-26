@@ -277,7 +277,7 @@ const Header = ({ userRole }: HeaderProps) => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className={`hidden lg:flex gap-2 px-2 h-8 border-muted-foreground/20 hover:border-muted-foreground/40 ${
+                className={`hidden lg:flex gap-2 px-2 h-9 border-muted-foreground/20 hover:border-muted-foreground/40 ${
                   isAdminPage 
                     ? 'hover:bg-admin/10 text-admin/80 hover:text-admin border-admin/20 hover:border-admin/40' 
                     : 'hover:bg-primary/10'
