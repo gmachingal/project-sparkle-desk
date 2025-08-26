@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import StatsCard from "./StatsCard";
 import ProjectCard from "./ProjectCard";
+import DailyTaskReport from "./DailyTaskReport";
 import { 
   Users, 
   Clock, 
