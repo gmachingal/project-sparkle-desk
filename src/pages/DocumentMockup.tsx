@@ -94,6 +94,7 @@ const DocumentMockup = () => {
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [selectedSpaceDetails, setSelectedSpaceDetails] = useState<string | null>(null);
+  const [selectedDocumentView, setSelectedDocumentView] = useState<string | null>(null);
   const { toast } = useToast();
 
   // Mock data
@@ -343,6 +344,19 @@ const DocumentMockup = () => {
     setShowEditor(true);
   };
 
+  const handleViewDocument = (documentId: string) => {
+    setSelectedDocumentView(documentId);
+  };
+
+  const handleEditFromView = () => {
+    setSelectedDocumentView(null);
+    setShowEditor(true);
+  };
+
+  const handleBackToDocuments = () => {
+    setSelectedDocumentView(null);
+  };
+
   const handleSpaceClick = (spaceId: string) => {
     setSelectedSpaceDetails(spaceId);
   };
@@ -350,6 +364,200 @@ const DocumentMockup = () => {
   const handleBackToSpaces = () => {
     setSelectedSpaceDetails(null);
   };
+
+  if (selectedDocumentView) {
+    const document = documents.find(doc => doc.id === selectedDocumentView);
+    if (document) {
+      return (
+        <div className="min-h-screen bg-background">
+          <Header />
+          <div className="container mx-auto px-4 py-8">
+            {/* Document View Header */}
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-4">
+                <Button variant="outline" size="sm" onClick={handleBackToDocuments} className="gap-2">
+                  <ArrowLeft className="w-4 h-4" />
+                  Back to Documents
+                </Button>
+                <div>
+                  <h1 className="text-3xl font-bold">{document.title}</h1>
+                  <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                      <Avatar className="w-6 h-6">
+                        <AvatarFallback className="text-xs">
+                          {document.author.split(' ').map(n => n[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span>By {document.author}</span>
+                    </div>
+                    <span>Updated {document.updatedAt}</span>
+                    <Badge className={getStatusColor(document.status)} variant="outline">
+                      {document.status}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" className="gap-2">
+                  <Star className="w-4 h-4" />
+                  Star
+                </Button>
+                <Button variant="outline" className="gap-2">
+                  <Share className="w-4 h-4" />
+                  Share
+                </Button>
+                <Button onClick={handleEditFromView} className="gap-2">
+                  <Edit className="w-4 h-4" />
+                  Edit
+                </Button>
+              </div>
+            </div>
+
+            {/* Document Content */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+              <div className="lg:col-span-3">
+                <Card>
+                  <CardContent className="p-8">
+                    <div className="prose prose-slate max-w-none">
+                      <div className="whitespace-pre-wrap text-foreground leading-relaxed">
+                        {document.content}
+                        
+                        {/* Extended content for demo */}
+                        <div className="mt-8 space-y-4">
+                          <h2 className="text-xl font-semibold">Overview</h2>
+                          <p>This document outlines the requirements for version 2.0 of our mobile application. The new version focuses on improving user experience, adding requested features, and enhancing overall performance.</p>
+                          
+                          <h2 className="text-xl font-semibold">Key Features</h2>
+                          <ul className="list-disc list-inside space-y-2 ml-4">
+                            <li>Redesigned user interface with modern aesthetics</li>
+                            <li>Enhanced navigation system for better user flow</li>
+                            <li>New productivity features based on user feedback</li>
+                            <li>Improved performance and loading times</li>
+                            <li>Enhanced security measures and data protection</li>
+                          </ul>
+
+                          <h2 className="text-xl font-semibold">Technical Specifications</h2>
+                          <p>The application will support iOS 14+ and Android 10+, with offline functionality for core features and improved security measures throughout the platform.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Document Sidebar */}
+              <div className="space-y-6">
+                {/* Document Info */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Document Info</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Status</span>
+                      <Badge className={getStatusColor(document.status)} variant="outline">
+                        {document.status}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Views</span>
+                      <span className="font-medium">{document.views}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Comments</span>
+                      <span className="font-medium">{document.comments}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Likes</span>
+                      <span className="font-medium">{document.likes}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Created</span>
+                      <span className="font-medium">{document.createdAt}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Tags */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Tags</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {document.tags.map((tag) => (
+                        <Badge key={tag} variant="secondary">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Collaborators */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Collaborators</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="w-8 h-8">
+                        <AvatarFallback className="text-xs">
+                          {document.author.split(' ').map(n => n[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-sm font-medium">{document.author}</p>
+                        <p className="text-xs text-muted-foreground">Author</p>
+                      </div>
+                    </div>
+                    {document.collaborators.map((collaborator, index) => (
+                      <div key={index} className="flex items-center gap-3">
+                        <Avatar className="w-8 h-8">
+                          <AvatarFallback className="text-xs">
+                            {collaborator.split('@')[0].slice(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="text-sm font-medium">{collaborator}</p>
+                          <p className="text-xs text-muted-foreground">Collaborator</p>
+                        </div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+
+                {/* Actions */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Actions</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <Button variant="outline" className="w-full justify-start gap-2" onClick={handleEditFromView}>
+                      <Edit className="w-4 h-4" />
+                      Edit Document
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Download className="w-4 h-4" />
+                      Export
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Copy className="w-4 h-4" />
+                      Duplicate
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <History className="w-4 h-4" />
+                      Version History
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }
 
   if (showEditor) {
     return <DocumentEditor onClose={() => setShowEditor(false)} />;
@@ -426,33 +634,6 @@ const DocumentMockup = () => {
                 ))}
               </SelectContent>
             </Select>
-            
-            <div className="flex items-center border rounded-lg">
-              <Button 
-                variant={viewMode === "grid" ? "default" : "ghost"} 
-                size="sm" 
-                onClick={() => setViewMode("grid")}
-                className="rounded-r-none"
-              >
-                Grid
-              </Button>
-              <Button 
-                variant={viewMode === "list" ? "default" : "ghost"} 
-                size="sm" 
-                onClick={() => setViewMode("list")}
-                className="rounded-none"
-              >
-                List
-              </Button>
-              <Button 
-                variant={viewMode === "tree" ? "default" : "ghost"} 
-                size="sm" 
-                onClick={() => setViewMode("tree")}
-                className="rounded-l-none"
-              >
-                Tree
-              </Button>
-            </div>
           </div>
         </div>
 
@@ -481,6 +662,36 @@ const DocumentMockup = () => {
 
               {/* Documents Tab */}
               <TabsContent value="documents" className="space-y-4">
+                {/* View Mode Selector - Only for Documents Tab */}
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">All Documents</h3>
+                  <div className="flex items-center border rounded-lg">
+                    <Button 
+                      variant={viewMode === "grid" ? "default" : "ghost"} 
+                      size="sm" 
+                      onClick={() => setViewMode("grid")}
+                      className="rounded-r-none"
+                    >
+                      Grid
+                    </Button>
+                    <Button 
+                      variant={viewMode === "list" ? "default" : "ghost"} 
+                      size="sm" 
+                      onClick={() => setViewMode("list")}
+                      className="rounded-none"
+                    >
+                      List
+                    </Button>
+                    <Button 
+                      variant={viewMode === "tree" ? "default" : "ghost"} 
+                      size="sm" 
+                      onClick={() => setViewMode("tree")}
+                      className="rounded-l-none"
+                    >
+                      Tree
+                    </Button>
+                  </div>
+                </div>
                 {viewMode === "grid" && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {documents.map((doc) => (
@@ -555,6 +766,9 @@ const DocumentMockup = () => {
                               <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                                 <Share className="w-3 h-3" />
                               </Button>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => handleViewDocument(doc.id)}>
+                                <Eye className="w-3 h-3" />
+                              </Button>
                               <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={handleEditDocument}>
                                 <Edit className="w-3 h-3" />
                               </Button>
@@ -598,6 +812,9 @@ const DocumentMockup = () => {
                                 <MessageSquare className="w-4 h-4" />
                                 {doc.comments}
                               </div>
+                              <Button variant="ghost" size="sm">
+                                <Eye className="w-4 h-4" />
+                              </Button>
                               <Button variant="ghost" size="sm" onClick={handleEditDocument}>
                                 <Edit className="w-4 h-4" />
                               </Button>
@@ -630,6 +847,9 @@ const DocumentMockup = () => {
                               <Badge className={getStatusColor(doc.status)} variant="outline">
                                 {doc.status}
                               </Badge>
+                              <Button variant="ghost" size="sm" className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100" onClick={() => handleViewDocument(doc.id)}>
+                                <Eye className="w-3 h-3" />
+                              </Button>
                               <Button variant="ghost" size="sm" className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100" onClick={handleEditDocument}>
                                 <Edit className="w-3 h-3" />
                               </Button>
