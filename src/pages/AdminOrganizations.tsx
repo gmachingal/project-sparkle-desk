@@ -1592,112 +1592,182 @@ const AdminOrganizations = () => {
                 </Card>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Learning Topics Management */}
-                <div className="lg:col-span-2 space-y-6">
-                  <Card>
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="flex items-center gap-2">
-                          <BookOpen className="w-5 h-5" />
-                          Learning Topics
-                        </CardTitle>
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button className="gap-2">
-                              <Plus className="w-4 h-4" />
-                              Add Topic
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent className="max-w-md">
-                            <DialogHeader>
-                              <DialogTitle>Create Learning Topic</DialogTitle>
-                              <DialogDescription>Add a new learning topic for your organization</DialogDescription>
-                            </DialogHeader>
-                            <div className="space-y-4">
-                              <div>
-                                <Label htmlFor="topic-title">Topic Title</Label>
-                                <Input id="topic-title" placeholder="e.g., React Advanced Patterns" />
+              
+              {/* Learning Management Main Content */}
+              <div className="space-y-6">
+                {/* Learning Programs Overview */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BookOpen className="w-5 h-5" />
+                      Active Learning Programs
+                    </CardTitle>
+                    <CardDescription>
+                      Manage and monitor learning programs across your organization
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {[
+                        {
+                          id: 1,
+                          title: "React Advanced Patterns",
+                          category: "Frontend Development",
+                          difficulty: "Advanced",
+                          enrolled: 156,
+                          completed: 89,
+                          duration: "6 weeks",
+                          rating: 4.8,
+                          status: "active"
+                        },
+                        {
+                          id: 2,
+                          title: "TypeScript Fundamentals",
+                          category: "Programming",
+                          difficulty: "Intermediate",
+                          enrolled: 234,
+                          completed: 178,
+                          duration: "4 weeks",
+                          rating: 4.9,
+                          status: "active"
+                        },
+                        {
+                          id: 3,
+                          title: "Agile Project Management",
+                          category: "Project Management",
+                          difficulty: "Beginner",
+                          enrolled: 189,
+                          completed: 156,
+                          duration: "5 weeks",
+                          rating: 4.7,
+                          status: "active"
+                        },
+                        {
+                          id: 4,
+                          title: "Cybersecurity Awareness",
+                          category: "Security",
+                          difficulty: "Beginner",
+                          enrolled: 324,
+                          completed: 298,
+                          duration: "3 weeks",
+                          rating: 4.6,
+                          status: "active"
+                        },
+                        {
+                          id: 5,
+                          title: "API Development",
+                          category: "Backend Development",
+                          difficulty: "Intermediate",
+                          enrolled: 134,
+                          completed: 87,
+                          duration: "8 weeks",
+                          rating: 4.8,
+                          status: "active"
+                        },
+                        {
+                          id: 6,
+                          title: "UI/UX Design Principles",
+                          category: "Design",
+                          difficulty: "Intermediate",
+                          enrolled: 145,
+                          completed: 112,
+                          duration: "7 weeks",
+                          rating: 4.7,
+                          status: "active"
+                        }
+                      ].map((program) => (
+                        <Card key={program.id} className="transition-all duration-200 hover:shadow-md">
+                          <CardContent className="p-4">
+                            <div className="space-y-3">
+                              <div className="flex items-start justify-between">
+                                <div className="space-y-1">
+                                  <h4 className="font-semibold text-sm line-clamp-2">{program.title}</h4>
+                                  <Badge variant="outline" className="text-xs">
+                                    {program.category}
+                                  </Badge>
+                                </div>
+                                <Badge variant={program.difficulty === "Advanced" ? "destructive" : program.difficulty === "Intermediate" ? "default" : "secondary"} className="text-xs">
+                                  {program.difficulty}
+                                </Badge>
                               </div>
-                              <div>
-                                <Label htmlFor="topic-description">Description</Label>
-                                <Textarea id="topic-description" placeholder="Describe what learners will gain from this topic..." />
+                              
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between text-xs">
+                                  <span className="text-muted-foreground">Progress</span>
+                                  <span className="font-medium">{Math.round((program.completed / program.enrolled) * 100)}%</span>
+                                </div>
+                                <Progress value={(program.completed / program.enrolled) * 100} className="h-1.5" />
                               </div>
-                              <div className="grid grid-cols-2 gap-4">
+                              
+                              <div className="grid grid-cols-2 gap-3 text-xs">
                                 <div>
-                                  <Label htmlFor="difficulty">Difficulty Level</Label>
-                                  <Select>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select level" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="beginner">Beginner</SelectItem>
-                                      <SelectItem value="intermediate">Intermediate</SelectItem>
-                                      <SelectItem value="advanced">Advanced</SelectItem>
-                                    </SelectContent>
-                                  </Select>
+                                  <div className="text-muted-foreground">Enrolled</div>
+                                  <div className="font-semibold">{program.enrolled}</div>
                                 </div>
                                 <div>
-                                  <Label htmlFor="category">Category</Label>
-                                  <Select>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select category" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="frontend">Frontend</SelectItem>
-                                      <SelectItem value="backend">Backend</SelectItem>
-                                      <SelectItem value="devops">DevOps</SelectItem>
-                                      <SelectItem value="design">Design</SelectItem>
-                                      <SelectItem value="qa">QA/Testing</SelectItem>
-                                      <SelectItem value="security">Security</SelectItem>
-                                    </SelectContent>
-                                  </Select>
+                                  <div className="text-muted-foreground">Completed</div>
+                                  <div className="font-semibold text-green-600">{program.completed}</div>
                                 </div>
                               </div>
-                              <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                  <Label htmlFor="estimated-hours">Estimated Hours</Label>
-                                  <Input id="estimated-hours" type="number" placeholder="8" />
+                              
+                              <div className="flex items-center justify-between text-xs">
+                                <div className="flex items-center gap-1">
+                                  <Clock className="w-3 h-3" />
+                                  <span>{program.duration}</span>
                                 </div>
-                                <div>
-                                  <Label htmlFor="max-participants">Max Participants</Label>
-                                  <Input id="max-participants" type="number" placeholder="20" />
+                                <div className="flex items-center gap-1">
+                                  <Star className="w-3 h-3 fill-current text-yellow-500" />
+                                  <span>{program.rating}</span>
                                 </div>
-                              </div>
-                              <div className="flex justify-end gap-2">
-                                <Button variant="outline">Cancel</Button>
-                                <Button>Create Topic</Button>
                               </div>
                             </div>
-                          </DialogContent>
-                        </Dialog>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        {[
-                          { id: 1, title: "React Advanced Patterns", description: "Learn advanced React patterns and best practices", category: "Frontend", difficulty: "Advanced", enrolled: 12, completed: 8, hours: 24, rating: 4.8, status: "active" },
-                          { id: 2, title: "API Security Best Practices", description: "Comprehensive guide to securing REST APIs", category: "Security", difficulty: "Intermediate", enrolled: 8, completed: 6, hours: 16, rating: 4.6, status: "active" },
-                          { id: 3, title: "UI/UX Design Principles", description: "Fundamentals of user interface and experience design", category: "Design", difficulty: "Beginner", enrolled: 15, completed: 12, hours: 20, rating: 4.7, status: "active" },
-                          { id: 4, title: "Testing Strategies", description: "Unit, integration, and e2e testing methodologies", category: "QA", difficulty: "Intermediate", enrolled: 10, completed: 7, hours: 18, rating: 4.5, status: "active" },
-                          { id: 5, title: "DevOps Fundamentals", description: "CI/CD, containerization, and deployment strategies", category: "DevOps", difficulty: "Advanced", enrolled: 6, completed: 4, hours: 32, rating: 4.9, status: "draft" }
-                        ].map((topic) => (
-                          <div key={topic.id} className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                            <div className="flex items-start justify-between mb-3">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <h4 className="font-semibold">{topic.title}</h4>
-                                  <Badge variant={topic.status === 'active' ? 'default' : 'secondary'}>
-                                    {topic.status}
-                                  </Badge>
-                                  <Badge variant="outline" className="text-xs">
-                                    {topic.category}
-                                  </Badge>
-                                  <Badge variant="outline" className="text-xs">
-                                    {topic.difficulty}
-                                  </Badge>
-                                </div>
-                                <p className="text-sm text-muted-foreground mb-3">{topic.description}</p>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Quick Actions */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Quick Actions</CardTitle>
+                    <CardDescription>
+                      Manage your organization's learning ecosystem
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <Button 
+                        variant="outline" 
+                        className="h-24 flex-col gap-2 hover:bg-admin/10"
+                        onClick={() => setIsBrowseLibraryOpen(true)}
+                      >
+                        <BookOpen className="w-6 h-6 text-admin" />
+                        <span>Browse Learning Library</span>
+                      </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        className="h-24 flex-col gap-2 hover:bg-admin/10"
+                        onClick={() => setIsViewCertificatesOpen(true)}
+                      >
+                        <Award className="w-6 h-6 text-admin" />
+                        <span>View All Certificates</span>
+                      </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        className="h-24 flex-col gap-2 hover:bg-admin/10"
+                        onClick={() => setIsCreateProgramOpen(true)}
+                      >
+                        <Plus className="w-6 h-6 text-admin" />
+                        <span>Create New Program</span>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
                                 
                                 <div className="grid grid-cols-4 gap-4 text-sm">
                                   <div className="flex items-center gap-1">
