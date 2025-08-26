@@ -53,7 +53,8 @@ import {
   Code,
   Zap,
   ChevronRight,
-  MoreVertical
+  MoreVertical,
+  Shield
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -1186,7 +1187,13 @@ const AdminCollaboration = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Button className="w-full gap-2 bg-gradient-to-r from-admin to-admin-glow">
+                      <Button 
+                        className="w-full gap-2 bg-gradient-to-r from-admin to-admin-glow"
+                        onClick={() => {
+                          setSelectedTool({ name: "All Collaboration Tools" });
+                          setIsConfigureToolOpen(true);
+                        }}
+                      >
                         <Settings className="w-4 h-4" />
                         Configure Tools
                       </Button>
@@ -1875,94 +1882,419 @@ const AdminCollaboration = () => {
           </DialogContent>
         </Dialog>
         
-        {/* Configure Tool Dialog */}
+        {/* Enhanced Configure Tool Dialog */}
         <Dialog open={isConfigureToolOpen} onOpenChange={setIsConfigureToolOpen}>
-          <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <Settings className="w-5 h-5 text-admin" />
-                Configure {selectedTool?.name}
+                Configure {selectedTool?.name || "Collaboration Tools"}
               </DialogTitle>
+              <p className="text-muted-foreground">
+                Manage organization-wide collaboration tool settings and preferences
+              </p>
             </DialogHeader>
             
             <div className="space-y-6">
-              {/* General Settings */}
+              {/* Tool Availability Overview */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-base">General Settings</CardTitle>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Target className="w-4 h-4" />
+                    Tool Availability & Status
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="font-medium">Enable {selectedTool?.name}</Label>
-                      <p className="text-sm text-muted-foreground">Allow organization members to use this tool</p>
-                    </div>
-                    <Switch defaultChecked />
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="font-medium">Auto-notifications</Label>
-                      <p className="text-sm text-muted-foreground">Send automatic notifications for activities</p>
-                    </div>
-                    <Switch defaultChecked />
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="font-medium">Guest Access</Label>
-                      <p className="text-sm text-muted-foreground">Allow external users to join</p>
-                    </div>
-                    <Switch />
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {[
+                      { 
+                        name: "Team Chat", 
+                        status: "active", 
+                        users: 142, 
+                        uptime: "99.9%",
+                        lastUpdate: "2 hours ago",
+                        icon: MessageSquare
+                      },
+                      { 
+                        name: "Video Meetings", 
+                        status: "active", 
+                        users: 98, 
+                        uptime: "98.7%",
+                        lastUpdate: "30 minutes ago",
+                        icon: CalendarIcon
+                      },
+                      { 
+                        name: "File Sharing", 
+                        status: "maintenance", 
+                        users: 156, 
+                        uptime: "97.2%",
+                        lastUpdate: "1 hour ago",
+                        icon: Share2
+                      },
+                      { 
+                        name: "Project Boards", 
+                        status: "active", 
+                        users: 87, 
+                        uptime: "99.5%",
+                        lastUpdate: "5 minutes ago",
+                        icon: Briefcase
+                      }
+                    ].map((tool, index) => (
+                      <Card key={index} className="border-l-4 border-l-primary">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              <tool.icon className="w-5 h-5 text-admin" />
+                              <h4 className="font-medium">{tool.name}</h4>
+                            </div>
+                            <Badge variant={tool.status === 'active' ? 'default' : 'secondary'}>
+                              {tool.status}
+                            </Badge>
+                          </div>
+                          
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Active Users:</span>
+                              <span className="font-medium">{tool.users}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Uptime:</span>
+                              <span className="font-medium text-green-600">{tool.uptime}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Last Update:</span>
+                              <span className="font-medium">{tool.lastUpdate}</span>
+                            </div>
+                          </div>
+                          
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="w-full mt-3 border-admin/30 hover:bg-admin/10 hover:text-admin"
+                          >
+                            Configure
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
-              
-              {/* Advanced Settings */}
+
+              {/* Organization-Wide Settings */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* General Settings */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Settings className="w-4 h-4" />
+                      General Settings
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label className="font-medium">Global Notifications</Label>
+                        <p className="text-sm text-muted-foreground">Send system-wide notifications for all tools</p>
+                      </div>
+                      <Switch defaultChecked />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label className="font-medium">External Integration</Label>
+                        <p className="text-sm text-muted-foreground">Allow third-party tool integrations</p>
+                      </div>
+                      <Switch defaultChecked />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label className="font-medium">Guest Access</Label>
+                        <p className="text-sm text-muted-foreground">Allow external users to join collaboration</p>
+                      </div>
+                      <Switch />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label className="font-medium">Audit Logging</Label>
+                        <p className="text-sm text-muted-foreground">Log all collaboration activities</p>
+                      </div>
+                      <Switch defaultChecked />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="session-timeout">Session Timeout (minutes)</Label>
+                      <Select defaultValue="30">
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="15">15 minutes</SelectItem>
+                          <SelectItem value="30">30 minutes</SelectItem>
+                          <SelectItem value="60">1 hour</SelectItem>
+                          <SelectItem value="120">2 hours</SelectItem>
+                          <SelectItem value="0">No timeout</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Security & Compliance */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Shield className="w-4 h-4" />
+                      Security & Compliance
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label className="font-medium">End-to-End Encryption</Label>
+                        <p className="text-sm text-muted-foreground">Encrypt all communications</p>
+                      </div>
+                      <Switch defaultChecked />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label className="font-medium">Two-Factor Authentication</Label>
+                        <p className="text-sm text-muted-foreground">Require 2FA for sensitive operations</p>
+                      </div>
+                      <Switch defaultChecked />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label className="font-medium">Content Scanning</Label>
+                        <p className="text-sm text-muted-foreground">Scan shared files for malware</p>
+                      </div>
+                      <Switch defaultChecked />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="data-retention">Data Retention Policy</Label>
+                      <Select defaultValue="365">
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="30">30 days</SelectItem>
+                          <SelectItem value="90">90 days</SelectItem>
+                          <SelectItem value="180">6 months</SelectItem>
+                          <SelectItem value="365">1 year</SelectItem>
+                          <SelectItem value="1095">3 years</SelectItem>
+                          <SelectItem value="0">Indefinite</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="compliance-standard">Compliance Standard</Label>
+                      <Select defaultValue="gdpr">
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="gdpr">GDPR</SelectItem>
+                          <SelectItem value="hipaa">HIPAA</SelectItem>
+                          <SelectItem value="sox">SOX</SelectItem>
+                          <SelectItem value="iso27001">ISO 27001</SelectItem>
+                          <SelectItem value="custom">Custom</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Usage Limits & Quotas */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-base">Advanced Settings</CardTitle>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4" />
+                    Usage Limits & Quotas
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="max-users">Maximum Users</Label>
-                    <Input id="max-users" type="number" defaultValue="156" placeholder="Enter max users" />
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="space-y-3">
+                      <Label htmlFor="max-concurrent-users">Max Concurrent Users</Label>
+                      <Input id="max-concurrent-users" type="number" defaultValue="500" />
+                      <p className="text-xs text-muted-foreground">Maximum simultaneous active users</p>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <Label htmlFor="file-size-limit">File Size Limit (MB)</Label>
+                      <Input id="file-size-limit" type="number" defaultValue="100" />
+                      <p className="text-xs text-muted-foreground">Maximum file upload size</p>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <Label htmlFor="storage-quota">Storage Quota (GB)</Label>
+                      <Input id="storage-quota" type="number" defaultValue="1000" />
+                      <p className="text-xs text-muted-foreground">Total organization storage limit</p>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <Label htmlFor="meeting-duration">Max Meeting Duration (hours)</Label>
+                      <Select defaultValue="8">
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">1 hour</SelectItem>
+                          <SelectItem value="2">2 hours</SelectItem>
+                          <SelectItem value="4">4 hours</SelectItem>
+                          <SelectItem value="8">8 hours</SelectItem>
+                          <SelectItem value="0">Unlimited</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-muted-foreground">Maximum video meeting duration</p>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <Label htmlFor="chat-history">Chat History Retention</Label>
+                      <Select defaultValue="forever">
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="30">30 days</SelectItem>
+                          <SelectItem value="90">90 days</SelectItem>
+                          <SelectItem value="365">1 year</SelectItem>
+                          <SelectItem value="forever">Forever</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-muted-foreground">How long to keep chat messages</p>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <Label htmlFor="api-rate-limit">API Rate Limit (req/min)</Label>
+                      <Input id="api-rate-limit" type="number" defaultValue="1000" />
+                      <p className="text-xs text-muted-foreground">API requests per minute limit</p>
+                    </div>
                   </div>
-                  
-                  <div>
-                    <Label htmlFor="retention">Data Retention (days)</Label>
-                    <Select defaultValue="30">
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="7">7 days</SelectItem>
-                        <SelectItem value="30">30 days</SelectItem>
-                        <SelectItem value="90">90 days</SelectItem>
-                        <SelectItem value="365">1 year</SelectItem>
-                      </SelectContent>
-                    </Select>
+                </CardContent>
+              </Card>
+
+              {/* Integration Settings */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Share2 className="w-4 h-4" />
+                    Third-Party Integrations
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {[
+                      { name: "Slack", status: "connected", icon: "💬", description: "Chat and notification sync" },
+                      { name: "Microsoft Teams", status: "available", icon: "🎯", description: "Video conferencing integration" },
+                      { name: "Google Workspace", status: "connected", icon: "📧", description: "Document collaboration and calendar sync" },
+                      { name: "Zoom", status: "connected", icon: "📹", description: "Video meeting integration" },
+                      { name: "Trello", status: "available", icon: "📋", description: "Project board synchronization" },
+                      { name: "GitHub", status: "connected", icon: "🐙", description: "Code repository integration" }
+                    ].map((integration, index) => (
+                      <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <div className="text-2xl">{integration.icon}</div>
+                          <div>
+                            <h4 className="font-medium">{integration.name}</h4>
+                            <p className="text-sm text-muted-foreground">{integration.description}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Badge variant={integration.status === 'connected' ? 'default' : 'outline'}>
+                            {integration.status}
+                          </Badge>
+                          <Button 
+                            size="sm" 
+                            variant={integration.status === 'connected' ? 'outline' : 'default'}
+                            className={integration.status === 'connected' ? 'border-admin/30 hover:bg-admin/10 hover:text-admin' : 'bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90'}
+                          >
+                            {integration.status === 'connected' ? 'Configure' : 'Connect'}
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  
-                  <div>
-                    <Label htmlFor="permissions">Default Permissions</Label>
-                    <div className="grid grid-cols-2 gap-2 mt-2">
-                      {['View', 'Create', 'Edit', 'Delete', 'Share', 'Admin'].map((perm) => (
-                        <div key={perm} className="flex items-center space-x-2">
-                          <Checkbox id={perm.toLowerCase()} defaultChecked={perm !== 'Delete' && perm !== 'Admin'} />
-                          <Label htmlFor={perm.toLowerCase()} className="text-sm">{perm}</Label>
+                </CardContent>
+              </Card>
+
+              {/* Notification Preferences */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Bell className="w-4 h-4" />
+                    Organization Notification Preferences
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <h4 className="font-medium">Email Notifications</h4>
+                      {[
+                        { name: "New team member joins", enabled: true },
+                        { name: "Project milestones reached", enabled: true },
+                        { name: "System maintenance alerts", enabled: true },
+                        { name: "Security incidents", enabled: true },
+                        { name: "Weekly usage reports", enabled: false }
+                      ].map((notif, index) => (
+                        <div key={index} className="flex items-center justify-between">
+                          <Label className="text-sm">{notif.name}</Label>
+                          <Switch defaultChecked={notif.enabled} />
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <h4 className="font-medium">In-App Notifications</h4>
+                      {[
+                        { name: "Real-time collaboration updates", enabled: true },
+                        { name: "File sharing notifications", enabled: true },
+                        { name: "Meeting reminders", enabled: true },
+                        { name: "Task assignments", enabled: true },
+                        { name: "System announcements", enabled: false }
+                      ].map((notif, index) => (
+                        <div key={index} className="flex items-center justify-between">
+                          <Label className="text-sm">{notif.name}</Label>
+                          <Switch defaultChecked={notif.enabled} />
                         </div>
                       ))}
                     </div>
                   </div>
                 </CardContent>
               </Card>
-              
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setIsConfigureToolOpen(false)} className="border-admin/30 hover:bg-admin/10 hover:text-admin">
+
+              {/* Action Buttons */}
+              <div className="flex justify-end gap-3 pt-4 border-t">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setIsConfigureToolOpen(false)}
+                  className="border-admin/30 hover:bg-admin/10 hover:text-admin"
+                >
                   Cancel
                 </Button>
-                <Button className="bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90">
+                <Button 
+                  variant="outline"
+                  className="border-admin/30 hover:bg-admin/10 hover:text-admin"
+                >
+                  Save as Template
+                </Button>
+                <Button 
+                  className="bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90"
+                  onClick={() => {
+                    toast({
+                      title: "Configuration Saved",
+                      description: "All collaboration tool settings have been updated successfully."
+                    });
+                    setIsConfigureToolOpen(false);
+                  }}
+                >
                   Save Changes
                 </Button>
               </div>
