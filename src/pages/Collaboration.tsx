@@ -335,15 +335,19 @@ const Collaboration = () => {
         {/* Page Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className={`text-3xl font-bold bg-clip-text text-transparent ${
+            {/* Debug indicator */}
+            {(currentUser.role === 'admin' && isAdminView) && (
+              <div className="text-xs text-admin mb-1 bg-admin/10 px-2 py-1 rounded">🔴 ADMIN VIEW ACTIVE</div>
+            )}
+            {/* Simple admin color test */}
+            {(currentUser.role === 'admin' && isAdminView) && (
+              <div className="w-20 h-4 bg-admin mb-2 rounded"></div>
+            )}
+            <h1 className={
               (currentUser.role === 'admin' && isAdminView) 
-                ? 'bg-gradient-to-r from-admin to-admin-glow' 
-                : 'bg-gradient-to-r from-primary to-primary-glow'
-            }`} style={{
-              backgroundImage: (currentUser.role === 'admin' && isAdminView) 
-                ? 'linear-gradient(to right, hsl(var(--admin-primary)), hsl(var(--admin-glow)))' 
-                : undefined
-            }}>
+                ? 'text-3xl font-bold bg-gradient-to-r from-admin to-admin-glow bg-clip-text text-transparent'
+                : 'text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent'
+            }>
               {(currentUser.role === 'admin' && isAdminView) ? 'Organization Collaboration' : 'My Collaboration'}
             </h1>
             <p className="text-muted-foreground mt-1">
