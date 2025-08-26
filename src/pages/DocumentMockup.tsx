@@ -632,19 +632,14 @@ const DocumentMockup = () => {
                 </DialogTrigger>
               </Dialog>
               
-              <Button variant="outline" onClick={handleEditDocument} className="w-full justify-start gap-3 h-11 border-2 hover:border-primary/50 hover:bg-primary/5">
-                <Edit className="w-4 h-4" />
-                Open Editor
-              </Button>
-              
               <div className="grid grid-cols-2 gap-2">
                 <Button variant="outline" className="justify-start gap-2 h-9 text-sm hover:bg-primary/5">
                   <Folder className="w-3 h-3" />
-                  Space
+                  New Space
                 </Button>
                 <Button variant="outline" className="justify-start gap-2 h-9 text-sm hover:bg-primary/5">
                   <Upload className="w-3 h-3" />
-                  Upload
+                  Upload File
                 </Button>
               </div>
             </CardContent>
