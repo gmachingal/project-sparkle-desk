@@ -1316,7 +1316,7 @@ const AdminOrganizations = () => {
                     <h3 className="text-lg font-semibold">Departments</h3>
                     <Dialog open={isAddDepartmentOpen} onOpenChange={setIsAddDepartmentOpen}>
                       <DialogTrigger asChild>
-                        <Button className="flex items-center gap-2">
+                        <Button className="flex items-center gap-2 bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90">
                           <Plus className="h-4 w-4" />
                           Add Department
                         </Button>
