@@ -306,7 +306,10 @@ const AdminCollaboration = () => {
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-6xl max-h-[95vh] overflow-hidden p-0">
-                <div className="p-6 overflow-y-auto max-h-[95vh]">
+                <DialogHeader className="p-6 pb-2">
+                  <DialogTitle>Organization Certificates</DialogTitle>
+                </DialogHeader>
+                <div className="px-6 pb-6 overflow-y-auto max-h-[85vh]">
                   <ViewAllCertificates />
                 </div>
               </DialogContent>
