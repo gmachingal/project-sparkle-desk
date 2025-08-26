@@ -2430,7 +2430,7 @@ const AdminCollaboration = () => {
 
         {/* Schedule Meeting Dialog */}
         <Dialog open={isScheduleMeetingOpen} onOpenChange={setIsScheduleMeetingOpen}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden p-0">
+          <DialogContent className="max-w-6xl w-[95vw] max-h-[90vh] overflow-hidden p-0">
             <DialogHeader className="p-6 pb-0">
               <DialogTitle className="flex items-center gap-2">
                 <CalendarIcon className="w-5 h-5" />
