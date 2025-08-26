@@ -476,12 +476,14 @@ const Header = ({ userRole }: HeaderProps) => {
             {/* Settings & Profile Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Avatar className="w-8 h-8 cursor-pointer transition-all duration-200 hover:shadow-md hover:shadow-black/10 hover:-translate-y-0.5 border border-muted-foreground/20 hover:border-muted-foreground/40">
-                  <AvatarImage src="" />
-                  <AvatarFallback className="bg-primary text-primary-foreground">
-                    <User className="w-4 h-4" />
-                  </AvatarFallback>
-                </Avatar>
+                <Button variant="outline" size="sm" className="w-10 h-9 p-0 border-muted-foreground/20 hover:border-muted-foreground/40 hover:bg-background/90 hover:shadow-sm transition-all duration-200 hover:scale-105 active:scale-95">
+                  <Avatar className="w-6 h-6">
+                    <AvatarImage src="" />
+                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                      <User className="w-3 h-3" />
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem onClick={() => navigate("/settings")} className="gap-2">
