@@ -2438,11 +2438,7 @@ const AdminCollaboration = () => {
 
                 {/* Action Footer */}
                 <div className="flex gap-3 pt-4 border-t">
-                  <Button className="flex-1 bg-gradient-to-r from-admin to-admin-glow">
-                    <Edit className="w-4 h-4 mr-2" />
-                    Edit Member Profile
-                  </Button>
-                  <Button variant="outline" className="gap-2">
+                  <Button variant="outline" className="flex-1 gap-2">
                     <Download className="w-4 h-4" />
                     Export Report
                   </Button>
