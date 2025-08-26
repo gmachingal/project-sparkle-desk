@@ -34,13 +34,39 @@ import {
   CalendarIcon,
   AlertCircle,
   BookOpen,
-  Award
+  Award,
+  Download,
+  Upload,
+  Trash2,
+  Edit,
+  Clock,
+  TrendingUp,
+  Target,
+  Users as UsersIcon,
+  FileText,
+  Video,
+  Headphones,
+  Image,
+  Code,
+  Zap,
+  ChevronRight,
+  MoreVertical
 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const AdminCollaboration = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterDepartment, setFilterDepartment] = useState("all");
+  
+  // Dialog states for new features
+  const [isBrowseLibraryOpen, setIsBrowseLibraryOpen] = useState(false);
+  const [isViewCertificatesOpen, setIsViewCertificatesOpen] = useState(false);
+  const [isCreateProgramOpen, setIsCreateProgramOpen] = useState(false);
+  
   const { toast } = useToast();
 
   // Check for admin state on component mount
@@ -229,34 +255,38 @@ const AdminCollaboration = () => {
               </div>
             </div>
             
-            <Button
-              variant="outline"
-              className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin"
-              onClick={() => toast({
-                title: "Learning Library",
-                description: "Accessing organization-wide learning resources"
-              })}
-            >
-              <BookOpen className="w-4 h-4" />
-              Browse Library
-            </Button>
+            <Dialog open={isBrowseLibraryOpen} onOpenChange={setIsBrowseLibraryOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin"
+                >
+                  <BookOpen className="w-4 h-4" />
+                  Browse Library
+                </Button>
+              </DialogTrigger>
+            </Dialog>
             
-            <Button
-              variant="outline"
-              className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin"
-              onClick={() => toast({
-                title: "Certificates",
-                description: "Viewing all organization certificates and achievements"
-              })}
-            >
-              <Award className="w-4 h-4" />
-              View Certificates
-            </Button>
+            <Dialog open={isViewCertificatesOpen} onOpenChange={setIsViewCertificatesOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin"
+                >
+                  <Award className="w-4 h-4" />
+                  View Certificates
+                </Button>
+              </DialogTrigger>
+            </Dialog>
             
-            <Button className="gap-2 bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90">
-              <Plus className="w-4 h-4" />
-              Create Program
-            </Button>
+            <Dialog open={isCreateProgramOpen} onOpenChange={setIsCreateProgramOpen}>
+              <DialogTrigger asChild>
+                <Button className="gap-2 bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90">
+                  <Plus className="w-4 h-4" />
+                  Create Program
+                </Button>
+              </DialogTrigger>
+            </Dialog>
           </div>
         </div>
 
@@ -1135,6 +1165,668 @@ const AdminCollaboration = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Browse Learning Library Dialog */}
+        <Dialog open={isBrowseLibraryOpen} onOpenChange={setIsBrowseLibraryOpen}>
+          <DialogContent className="sm:max-w-6xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-admin" />
+                Organization Learning Library
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-6">
+              {/* Library Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Card className="border-admin/20 bg-gradient-to-br from-admin/5 to-admin-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-admin/20 flex items-center justify-center">
+                        <BookOpen className="w-5 h-5 text-admin" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Total Courses</div>
+                        <div className="text-xl font-bold text-admin">247</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-success/20 bg-gradient-to-br from-success/5 to-success-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center">
+                        <TrendingUp className="w-5 h-5 text-success" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Active Learners</div>
+                        <div className="text-xl font-bold text-success">1,842</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-warning/20 bg-gradient-to-br from-warning/5 to-warning-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-warning/20 flex items-center justify-center">
+                        <Clock className="w-5 h-5 text-warning" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Learning Hours</div>
+                        <div className="text-xl font-bold text-warning">12,456</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-info/20 bg-gradient-to-br from-info/5 to-info-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-info/20 flex items-center justify-center">
+                        <Target className="w-5 h-5 text-info" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Completion Rate</div>
+                        <div className="text-xl font-bold text-info">87%</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Search and Filters */}
+              <div className="flex items-center gap-4">
+                <div className="relative flex-1 max-w-md">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                  <Input
+                    placeholder="Search courses, skills, categories..."
+                    className="pl-10"
+                  />
+                </div>
+                
+                <Select defaultValue="all">
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="Category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Categories</SelectItem>
+                    <SelectItem value="technical">Technical Skills</SelectItem>
+                    <SelectItem value="leadership">Leadership</SelectItem>
+                    <SelectItem value="soft-skills">Soft Skills</SelectItem>
+                    <SelectItem value="compliance">Compliance</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                <Button className="gap-2 bg-gradient-to-r from-admin to-admin-glow">
+                  <Upload className="w-4 h-4" />
+                  Add Content
+                </Button>
+              </div>
+
+              {/* Course Categories */}
+              <Tabs defaultValue="technical" className="w-full">
+                <TabsList className="grid w-full grid-cols-4">
+                  <TabsTrigger value="technical">Technical Skills</TabsTrigger>
+                  <TabsTrigger value="leadership">Leadership</TabsTrigger>
+                  <TabsTrigger value="soft-skills">Soft Skills</TabsTrigger>
+                  <TabsTrigger value="compliance">Compliance</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="technical" className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {[
+                      {
+                        id: "react-advanced",
+                        title: "Advanced React Development",
+                        description: "Master complex React patterns, hooks, and performance optimization",
+                        instructor: "Sarah Johnson",
+                        duration: "16 hours",
+                        enrolled: 89,
+                        rating: 4.8,
+                        level: "Advanced",
+                        type: "video",
+                        lastUpdated: "2 days ago"
+                      },
+                      {
+                        id: "typescript-pro",
+                        title: "TypeScript for Professionals",
+                        description: "Advanced TypeScript features and enterprise patterns",
+                        instructor: "Mike Chen",
+                        duration: "12 hours",
+                        enrolled: 124,
+                        rating: 4.9,
+                        level: "Intermediate",
+                        type: "interactive",
+                        lastUpdated: "1 week ago"
+                      },
+                      {
+                        id: "nodejs-scaling",
+                        title: "Scaling Node.js Applications",
+                        description: "Build and scale high-performance Node.js applications",
+                        instructor: "Alex Rodriguez",
+                        duration: "20 hours",
+                        enrolled: 67,
+                        rating: 4.7,
+                        level: "Advanced",
+                        type: "hands-on",
+                        lastUpdated: "3 days ago"
+                      }
+                    ].map((course) => (
+                      <Card key={course.id} className="hover:shadow-lg transition-all duration-200">
+                        <CardContent className="p-5">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              {course.type === "video" && <Video className="w-4 h-4 text-blue-500" />}
+                              {course.type === "interactive" && <Zap className="w-4 h-4 text-purple-500" />}
+                              {course.type === "hands-on" && <Code className="w-4 h-4 text-green-500" />}
+                              <Badge variant="outline" className="text-xs">
+                                {course.level}
+                              </Badge>
+                            </div>
+                            <Button variant="ghost" size="sm">
+                              <MoreVertical className="w-4 h-4" />
+                            </Button>
+                          </div>
+                          
+                          <h4 className="font-semibold text-sm mb-2">{course.title}</h4>
+                          <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
+                            {course.description}
+                          </p>
+                          
+                          <div className="space-y-2 text-xs text-muted-foreground">
+                            <div className="flex items-center justify-between">
+                              <span>By {course.instructor}</span>
+                              <span>⭐ {course.rating}</span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span>{course.duration}</span>
+                              <span>{course.enrolled} enrolled</span>
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              Updated {course.lastUpdated}
+                            </div>
+                          </div>
+                          
+                          <div className="flex gap-2 mt-3">
+                            <Button size="sm" variant="outline" className="flex-1 text-xs">
+                              <Eye className="w-3 h-3 mr-1" />
+                              Preview
+                            </Button>
+                            <Button size="sm" variant="outline" className="flex-1 text-xs">
+                              <Edit className="w-3 h-3 mr-1" />
+                              Edit
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="leadership">
+                  <div className="text-center py-8">
+                    <GraduationCap className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">Leadership courses coming soon...</p>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="soft-skills">
+                  <div className="text-center py-8">
+                    <UsersIcon className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">Soft skills courses coming soon...</p>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="compliance">
+                  <div className="text-center py-8">
+                    <FileText className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">Compliance courses coming soon...</p>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* View Certificates Dialog */}
+        <Dialog open={isViewCertificatesOpen} onOpenChange={setIsViewCertificatesOpen}>
+          <DialogContent className="sm:max-w-6xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Award className="w-5 h-5 text-admin" />
+                Organization Certificates & Achievements
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-6">
+              {/* Certificate Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Card className="border-admin/20 bg-gradient-to-br from-admin/5 to-admin-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-admin/20 flex items-center justify-center">
+                        <Award className="w-5 h-5 text-admin" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Total Certificates</div>
+                        <div className="text-xl font-bold text-admin">1,247</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-success/20 bg-gradient-to-br from-success/5 to-success-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center">
+                        <TrendingUp className="w-5 h-5 text-success" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">This Month</div>
+                        <div className="text-xl font-bold text-success">89</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-warning/20 bg-gradient-to-br from-warning/5 to-warning-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-warning/20 flex items-center justify-center">
+                        <Star className="w-5 h-5 text-warning" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Top Achievers</div>
+                        <div className="text-xl font-bold text-warning">23</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-info/20 bg-gradient-to-br from-info/5 to-info-glow/10">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-info/20 flex items-center justify-center">
+                        <Download className="w-5 h-5 text-info" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Downloads</div>
+                        <div className="text-xl font-bold text-info">456</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Filters and Actions */}
+              <div className="flex items-center gap-4">
+                <div className="relative flex-1 max-w-md">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                  <Input
+                    placeholder="Search certificates, employees, skills..."
+                    className="pl-10"
+                  />
+                </div>
+                
+                <Select defaultValue="all">
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="Department" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Departments</SelectItem>
+                    <SelectItem value="engineering">Engineering</SelectItem>
+                    <SelectItem value="design">Design</SelectItem>
+                    <SelectItem value="marketing">Marketing</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                <Button variant="outline" className="gap-2">
+                  <Download className="w-4 h-4" />
+                  Export All
+                </Button>
+              </div>
+
+              {/* Recent Certificates */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Recent Certificates</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {[
+                    {
+                      id: "cert-001",
+                      employee: "Sarah Johnson",
+                      course: "Advanced React Development",
+                      department: "Engineering",
+                      completedDate: "2024-08-24",
+                      score: 96,
+                      level: "Advanced",
+                      avatar: "",
+                      certificateId: "RCT-ADV-2024-001"
+                    },
+                    {
+                      id: "cert-002",
+                      employee: "Mike Chen",
+                      course: "TypeScript for Professionals",
+                      department: "Engineering",
+                      completedDate: "2024-08-23",
+                      score: 94,
+                      level: "Intermediate",
+                      avatar: "",
+                      certificateId: "TS-PRO-2024-002"
+                    },
+                    {
+                      id: "cert-003",
+                      employee: "Emily Davis",
+                      course: "Leadership Fundamentals",
+                      department: "Marketing",
+                      completedDate: "2024-08-22",
+                      score: 92,
+                      level: "Beginner",
+                      avatar: "",
+                      certificateId: "LDR-FND-2024-003"
+                    },
+                    {
+                      id: "cert-004",
+                      employee: "Alex Rodriguez",
+                      course: "Node.js Scaling",
+                      department: "Engineering",
+                      completedDate: "2024-08-21",
+                      score: 98,
+                      level: "Advanced",
+                      avatar: "",
+                      certificateId: "NJS-SCL-2024-004"
+                    },
+                    {
+                      id: "cert-005",
+                      employee: "Lisa Thompson",
+                      course: "UI/UX Design Principles",
+                      department: "Design",
+                      completedDate: "2024-08-20",
+                      score: 95,
+                      level: "Intermediate",
+                      avatar: "",
+                      certificateId: "UXD-PRI-2024-005"
+                    },
+                    {
+                      id: "cert-006",
+                      employee: "David Wilson",
+                      course: "Project Management",
+                      department: "Engineering",
+                      completedDate: "2024-08-19",
+                      score: 91,
+                      level: "Intermediate",
+                      avatar: "",
+                      certificateId: "PMG-INT-2024-006"
+                    }
+                  ].map((cert) => (
+                    <Card key={cert.id} className="hover:shadow-lg transition-all duration-200">
+                      <CardContent className="p-5">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <Avatar className="w-10 h-10">
+                              <AvatarImage src={cert.avatar} />
+                              <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                                {cert.employee.split(' ').map(n => n[0]).join('')}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <h4 className="font-semibold text-sm">{cert.employee}</h4>
+                              <Badge variant="outline" className="text-xs">
+                                {cert.department}
+                              </Badge>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-sm font-bold text-green-600">{cert.score}%</div>
+                            <Badge variant="secondary" className="text-xs">
+                              {cert.level}
+                            </Badge>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <h5 className="font-medium text-sm">{cert.course}</h5>
+                          <div className="text-xs text-muted-foreground">
+                            Certificate ID: {cert.certificateId}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Completed: {new Date(cert.completedDate).toLocaleDateString()}
+                          </div>
+                        </div>
+                        
+                        <div className="flex gap-2 mt-4">
+                          <Button size="sm" variant="outline" className="flex-1 text-xs">
+                            <Eye className="w-3 h-3 mr-1" />
+                            View
+                          </Button>
+                          <Button size="sm" variant="outline" className="flex-1 text-xs">
+                            <Download className="w-3 h-3 mr-1" />
+                            Download
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Create Learning Program Dialog */}
+        <Dialog open={isCreateProgramOpen} onOpenChange={setIsCreateProgramOpen}>
+          <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Plus className="w-5 h-5 text-admin" />
+                Create Learning Program
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-6">
+              {/* Program Basic Info */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="program-name" className="text-sm font-medium">Program Name</Label>
+                  <Input
+                    id="program-name"
+                    placeholder="e.g., Frontend Development Bootcamp"
+                    className="mt-1"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="program-category" className="text-sm font-medium">Category</Label>
+                  <Select defaultValue="">
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="technical">Technical Skills</SelectItem>
+                      <SelectItem value="leadership">Leadership Development</SelectItem>
+                      <SelectItem value="soft-skills">Soft Skills</SelectItem>
+                      <SelectItem value="compliance">Compliance Training</SelectItem>
+                      <SelectItem value="onboarding">Employee Onboarding</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="program-description" className="text-sm font-medium">Program Description</Label>
+                <Textarea
+                  id="program-description"
+                  placeholder="Describe the learning objectives, target audience, and expected outcomes..."
+                  rows={3}
+                  className="mt-1"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="duration" className="text-sm font-medium">Duration</Label>
+                  <Select defaultValue="">
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select duration" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1-week">1 Week</SelectItem>
+                      <SelectItem value="2-weeks">2 Weeks</SelectItem>
+                      <SelectItem value="1-month">1 Month</SelectItem>
+                      <SelectItem value="3-months">3 Months</SelectItem>
+                      <SelectItem value="6-months">6 Months</SelectItem>
+                      <SelectItem value="custom">Custom</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <Label htmlFor="difficulty" className="text-sm font-medium">Difficulty Level</Label>
+                  <Select defaultValue="">
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="beginner">Beginner</SelectItem>
+                      <SelectItem value="intermediate">Intermediate</SelectItem>
+                      <SelectItem value="advanced">Advanced</SelectItem>
+                      <SelectItem value="expert">Expert</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <Label htmlFor="capacity" className="text-sm font-medium">Max Participants</Label>
+                  <Input
+                    id="capacity"
+                    type="number"
+                    placeholder="e.g., 50"
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+
+              {/* Target Audience */}
+              <div>
+                <Label className="text-sm font-medium mb-3 block">Target Audience</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm text-muted-foreground">Departments</Label>
+                    <div className="space-y-2 mt-2">
+                      {departments.map((dept) => (
+                        <div key={dept.id} className="flex items-center space-x-2">
+                          <Checkbox id={`dept-${dept.id}`} />
+                          <label htmlFor={`dept-${dept.id}`} className="text-sm">
+                            {dept.name} ({dept.members.length} members)
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-sm text-muted-foreground">Job Roles</Label>
+                    <div className="space-y-2 mt-2">
+                      {["Software Engineer", "Team Lead", "Designer", "Product Manager", "Data Analyst"].map((role) => (
+                        <div key={role} className="flex items-center space-x-2">
+                          <Checkbox id={`role-${role}`} />
+                          <label htmlFor={`role-${role}`} className="text-sm">
+                            {role}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Course Selection */}
+              <div>
+                <Label className="text-sm font-medium mb-3 block">Program Curriculum</Label>
+                <Card className="border-dashed border-2 border-muted-foreground/25">
+                  <CardContent className="p-6">
+                    <div className="text-center">
+                      <BookOpen className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                      <h4 className="font-medium mb-2">Add Courses to Program</h4>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Select existing courses or create new ones to build your program curriculum
+                      </p>
+                      <div className="flex gap-2 justify-center">
+                        <Button variant="outline" className="gap-2">
+                          <Plus className="w-4 h-4" />
+                          Browse Library
+                        </Button>
+                        <Button variant="outline" className="gap-2">
+                          <Upload className="w-4 h-4" />
+                          Create Course
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Program Settings */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Program Settings</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="auto-enroll" />
+                    <label htmlFor="auto-enroll" className="text-sm">
+                      Auto-enroll new employees matching criteria
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="send-reminders" />
+                    <label htmlFor="send-reminders" className="text-sm">
+                      Send completion reminders
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="certificate" />
+                    <label htmlFor="certificate" className="text-sm">
+                      Generate completion certificates
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="manager-notifications" />
+                    <label htmlFor="manager-notifications" className="text-sm">
+                      Notify managers of progress
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3 pt-4 border-t">
+                <Button 
+                  className="flex-1 bg-gradient-to-r from-admin to-admin-glow"
+                  onClick={() => {
+                    toast({
+                      title: "Learning Program Created! 🎉",
+                      description: "New learning program has been successfully created and is ready for enrollment."
+                    });
+                    setIsCreateProgramOpen(false);
+                  }}
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create Program
+                </Button>
+                <Button variant="outline" onClick={() => setIsCreateProgramOpen(false)}>
+                  Cancel
+                </Button>
+                <Button variant="outline" className="gap-2">
+                  <Eye className="w-4 h-4" />
+                  Preview
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
