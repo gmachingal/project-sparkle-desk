@@ -74,6 +74,12 @@ const AdminCollaboration = () => {
   const [isCertificateDetailOpen, setIsCertificateDetailOpen] = useState(false);
   const [selectedCertificate, setSelectedCertificate] = useState<any>(null);
   
+  // Collaboration tool dialog states
+  const [isConfigureToolOpen, setIsConfigureToolOpen] = useState(false);
+  const [isAnalyticsToolOpen, setIsAnalyticsToolOpen] = useState(false);
+  const [isManageToolOpen, setIsManageToolOpen] = useState(false);
+  const [selectedTool, setSelectedTool] = useState<any>(null);
+  
   // Enhanced Program creation states with assessments
   const [programTitle, setProgramTitle] = useState("");
   const [programDescription, setProgramDescription] = useState("");
@@ -1084,15 +1090,39 @@ const AdminCollaboration = () => {
                               
                               {/* Sub-buttons for each tool */}
                               <div className="flex gap-2 mt-3 pt-2 border-t">
-                                <Button size="sm" variant="outline" className="flex-1 text-xs border-admin/30 hover:bg-admin/10 hover:text-admin">
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="flex-1 text-xs border-admin/30 hover:bg-admin/10 hover:text-admin"
+                                  onClick={() => {
+                                    setSelectedTool(tool);
+                                    setIsConfigureToolOpen(true);
+                                  }}
+                                >
                                   <Settings className="w-3 h-3 mr-1" />
                                   Configure
                                 </Button>
-                                <Button size="sm" variant="outline" className="flex-1 text-xs border-admin/30 hover:bg-admin/10 hover:text-admin">
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="flex-1 text-xs border-admin/30 hover:bg-admin/10 hover:text-admin"
+                                  onClick={() => {
+                                    setSelectedTool(tool);
+                                    setIsAnalyticsToolOpen(true);
+                                  }}
+                                >
                                   <BarChart3 className="w-3 h-3 mr-1" />
                                   Analytics
                                 </Button>
-                                <Button size="sm" variant="outline" className="flex-1 text-xs border-admin/30 hover:bg-admin/10 hover:text-admin">
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="flex-1 text-xs border-admin/30 hover:bg-admin/10 hover:text-admin"
+                                  onClick={() => {
+                                    setSelectedTool(tool);
+                                    setIsManageToolOpen(true);
+                                  }}
+                                >
                                   <Users className="w-3 h-3 mr-1" />
                                   Manage
                                 </Button>
@@ -1844,8 +1874,226 @@ const AdminCollaboration = () => {
             )}
           </DialogContent>
         </Dialog>
+        
+        {/* Configure Tool Dialog */}
+        <Dialog open={isConfigureToolOpen} onOpenChange={setIsConfigureToolOpen}>
+          <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Settings className="w-5 h-5 text-admin" />
+                Configure {selectedTool?.name}
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-6">
+              {/* General Settings */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">General Settings</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label className="font-medium">Enable {selectedTool?.name}</Label>
+                      <p className="text-sm text-muted-foreground">Allow organization members to use this tool</p>
+                    </div>
+                    <Switch defaultChecked />
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label className="font-medium">Auto-notifications</Label>
+                      <p className="text-sm text-muted-foreground">Send automatic notifications for activities</p>
+                    </div>
+                    <Switch defaultChecked />
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label className="font-medium">Guest Access</Label>
+                      <p className="text-sm text-muted-foreground">Allow external users to join</p>
+                    </div>
+                    <Switch />
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* Advanced Settings */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Advanced Settings</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="max-users">Maximum Users</Label>
+                    <Input id="max-users" type="number" defaultValue="156" placeholder="Enter max users" />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="retention">Data Retention (days)</Label>
+                    <Select defaultValue="30">
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="7">7 days</SelectItem>
+                        <SelectItem value="30">30 days</SelectItem>
+                        <SelectItem value="90">90 days</SelectItem>
+                        <SelectItem value="365">1 year</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="permissions">Default Permissions</Label>
+                    <div className="grid grid-cols-2 gap-2 mt-2">
+                      {['View', 'Create', 'Edit', 'Delete', 'Share', 'Admin'].map((perm) => (
+                        <div key={perm} className="flex items-center space-x-2">
+                          <Checkbox id={perm.toLowerCase()} defaultChecked={perm !== 'Delete' && perm !== 'Admin'} />
+                          <Label htmlFor={perm.toLowerCase()} className="text-sm">{perm}</Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setIsConfigureToolOpen(false)} className="border-admin/30 hover:bg-admin/10 hover:text-admin">
+                  Cancel
+                </Button>
+                <Button className="bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90">
+                  Save Changes
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+        
+        {/* Analytics Tool Dialog */}
+        <Dialog open={isAnalyticsToolOpen} onOpenChange={setIsAnalyticsToolOpen}>
+          <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-admin" />
+                {selectedTool?.name} Analytics
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-6">
+              {/* Usage Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                        <Users className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Active Users</div>
+                        <div className="text-xl font-bold">{selectedTool?.users || 0}</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                        <Activity className="w-5 h-5 text-green-600" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Usage Rate</div>
+                        <div className="text-xl font-bold">{selectedTool?.usage || 0}%</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                        <Clock className="w-5 h-5 text-purple-600" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Avg Session</div>
+                        <div className="text-xl font-bold">24m</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+                        <TrendingUp className="w-5 h-5 text-orange-600" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Growth</div>
+                        <div className="text-xl font-bold">+12%</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+              
+              {/* Usage Chart Placeholder */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Usage Trends (Last 30 Days)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64 bg-muted/20 rounded-lg flex items-center justify-center">
+                    <div className="text-center">
+                      <BarChart3 className="w-12 h-12 mx-auto text-muted-foreground mb-2" />
+                      <p className="text-muted-foreground">Interactive chart would appear here</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* Top Users */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Most Active Users</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {[
+                      { name: "Alice Johnson", usage: "48h", actions: 234 },
+                      { name: "Bob Smith", usage: "42h", actions: 198 },
+                      { name: "Carol Davis", usage: "38h", actions: 176 },
+                      { name: "David Wilson", usage: "35h", actions: 165 }
+                    ].map((user, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-medium">
+                            {index + 1}
+                          </div>
+                          <div>
+                            <div className="font-medium">{user.name}</div>
+                            <div className="text-sm text-muted-foreground">{user.actions} actions</div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-medium">{user.usage}</div>
+                          <div className="text-sm text-muted-foreground">total time</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </DialogContent>
+        </Dialog>
+
       </div>
     </div>
   );
 };
+
 export default AdminCollaboration;

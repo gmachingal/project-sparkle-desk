@@ -86,6 +86,14 @@ const Collaboration = () => {
   const [selectedCertificate, setSelectedCertificate] = useState<any>(null);
   const [activeLearningTab, setActiveLearningTab] = useState("dashboard");
   
+  // Collaboration tool dialog states
+  const [isChatRoomsOpen, setIsChatRoomsOpen] = useState(false);
+  const [isNewChatOpen, setIsNewChatOpen] = useState(false);
+  const [isVideoCallOpen, setIsVideoCallOpen] = useState(false);
+  const [isBookRoomOpen, setIsBookRoomOpen] = useState(false);
+  const [isUploadFileOpen, setIsUploadFileOpen] = useState(false);
+  const [isBrowseFilesOpen, setIsBrowseFilesOpen] = useState(false);
+  
   // Form states
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
   const [loggedHours, setLoggedHours] = useState("");
@@ -1074,11 +1082,21 @@ const Collaboration = () => {
                         </Dialog>
                         
                         <div className="flex gap-2 mt-3 pt-3 border-t">
-                          <Button size="sm" variant="outline" className="flex-1 text-xs">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="flex-1 text-xs"
+                            onClick={() => setIsChatRoomsOpen(true)}
+                          >
                             <Users className="w-3 h-3 mr-1" />
                             Rooms
                           </Button>
-                          <Button size="sm" variant="outline" className="flex-1 text-xs">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="flex-1 text-xs"
+                            onClick={() => setIsNewChatOpen(true)}
+                          >
                             <Plus className="w-3 h-3 mr-1" />
                             New Chat
                           </Button>
@@ -1102,11 +1120,21 @@ const Collaboration = () => {
                         </Dialog>
                         
                         <div className="flex gap-2 mt-3 pt-3 border-t">
-                          <Button size="sm" variant="outline" className="flex-1 text-xs">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="flex-1 text-xs"
+                            onClick={() => setIsVideoCallOpen(true)}
+                          >
                             <Video className="w-3 h-3 mr-1" />
                             Video Call
                           </Button>
-                          <Button size="sm" variant="outline" className="flex-1 text-xs">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="flex-1 text-xs"
+                            onClick={() => setIsBookRoomOpen(true)}
+                          >
                             <MapPin className="w-3 h-3 mr-1" />
                             Book Room
                           </Button>
@@ -1126,11 +1154,21 @@ const Collaboration = () => {
                         </div>
                         
                         <div className="flex gap-2 mt-3 pt-3 border-t">
-                          <Button size="sm" variant="outline" className="flex-1 text-xs">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="flex-1 text-xs"
+                            onClick={() => setIsUploadFileOpen(true)}
+                          >
                             <Upload className="w-3 h-3 mr-1" />
                             Upload
                           </Button>
-                          <Button size="sm" variant="outline" className="flex-1 text-xs">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="flex-1 text-xs"
+                            onClick={() => setIsBrowseFilesOpen(true)}
+                          >
                             <Eye className="w-3 h-3 mr-1" />
                             Browse
                           </Button>
@@ -2724,6 +2762,467 @@ const Collaboration = () => {
                 </div>
               </div>
             )}
+          </DialogContent>
+        </Dialog>
+
+        </Dialog>
+        
+        {/* Chat Rooms Dialog */}
+        <Dialog open={isChatRoomsOpen} onOpenChange={setIsChatRoomsOpen}>
+          <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Users className="w-5 h-5 text-primary" />
+                Chat Rooms
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              {/* Active Rooms */}
+              <div className="space-y-3">
+                {chatRooms.map((room) => (
+                  <Card key={room.id} className="hover:shadow-md transition-all duration-200">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={cn(
+                            "w-3 h-3 rounded-full",
+                            room.isOnline ? "bg-green-500" : "bg-gray-400"
+                          )} />
+                          <div>
+                            <h4 className="font-medium">{room.name}</h4>
+                            <p className="text-sm text-muted-foreground">{room.lastMessage}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-xs text-muted-foreground">{room.lastMessageTime}</div>
+                          {room.unreadCount > 0 && (
+                            <Badge variant="default" className="mt-1">
+                              {room.unreadCount}
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t">
+                        <div className="flex -space-x-2">
+                          {room.participants.slice(0, 3).map((participant, index) => (
+                            <Avatar key={index} className="w-6 h-6 border-2 border-background">
+                              <AvatarFallback className="text-xs">
+                                {participant.name.split(' ').map(n => n[0]).join('')}
+                              </AvatarFallback>
+                            </Avatar>
+                          ))}
+                          {room.participants.length > 3 && (
+                            <div className="w-6 h-6 rounded-full bg-muted border-2 border-background flex items-center justify-center text-xs">
+                              +{room.participants.length - 3}
+                            </div>
+                          )}
+                        </div>
+                        <Button size="sm" variant="outline">
+                          Join Chat
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              
+              {/* Create New Room */}
+              <Card className="border-dashed">
+                <CardContent className="p-4 text-center">
+                  <Button variant="ghost" className="gap-2">
+                    <Plus className="w-4 h-4" />
+                    Create New Room
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </DialogContent>
+        </Dialog>
+        
+        {/* New Chat Dialog */}
+        <Dialog open={isNewChatOpen} onOpenChange={setIsNewChatOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <MessageSquare className="w-5 h-5 text-primary" />
+                Start New Chat
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="chat-search">Search people</Label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                  <Input id="chat-search" placeholder="Type a name or email..." className="pl-10" />
+                </div>
+              </div>
+              
+              <div>
+                <Label>Team Members</Label>
+                <div className="space-y-2 mt-2 max-h-48 overflow-y-auto">
+                  {teamMembers.map((member) => (
+                    <div key={member.id} className="flex items-center justify-between p-2 hover:bg-muted rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          <Avatar className="w-8 h-8">
+                            <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                          </Avatar>
+                          <div className={cn(
+                            "absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-background",
+                            getStatusColor(member.status)
+                          )} />
+                        </div>
+                        <div>
+                          <div className="font-medium text-sm">{member.name}</div>
+                          <div className="text-xs text-muted-foreground">{member.role}</div>
+                        </div>
+                      </div>
+                      <Checkbox />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setIsNewChatOpen(false)}>
+                  Cancel
+                </Button>
+                <Button>
+                  Start Chat
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+        
+        {/* Video Call Dialog */}
+        <Dialog open={isVideoCallOpen} onOpenChange={setIsVideoCallOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Video className="w-5 h-5 text-primary" />
+                Start Video Call
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              <div>
+                <Label>Call Type</Label>
+                <Select defaultValue="instant">
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="instant">Instant Call</SelectItem>
+                    <SelectItem value="scheduled">Schedule for Later</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label>Invite People</Label>
+                <div className="space-y-2 mt-2">
+                  {teamMembers.slice(0, 4).map((member) => (
+                    <div key={member.id} className="flex items-center justify-between p-2 hover:bg-muted rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="w-8 h-8">
+                          <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="font-medium text-sm">{member.name}</div>
+                          <Badge variant="outline" className="text-xs">
+                            {member.status}
+                          </Badge>
+                        </div>
+                      </div>
+                      <Checkbox />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span>Camera</span>
+                  <Switch defaultChecked />
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span>Microphone</span>
+                  <Switch defaultChecked />
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span>Screen Share</span>
+                  <Switch />
+                </div>
+              </div>
+              
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setIsVideoCallOpen(false)}>
+                  Cancel
+                </Button>
+                <Button className="gap-2">
+                  <Video className="w-4 h-4" />
+                  Start Call
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+        
+        {/* Book Room Dialog */}
+        <Dialog open={isBookRoomOpen} onOpenChange={setIsBookRoomOpen}>
+          <DialogContent className="sm:max-w-lg">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-primary" />
+                Book Meeting Room
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="meeting-date">Date</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="w-full justify-start text-left font-normal">
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {meetingDate ? format(meetingDate, "PPP") : "Pick a date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={meetingDate}
+                        onSelect={setMeetingDate}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                
+                <div>
+                  <Label htmlFor="meeting-time">Time</Label>
+                  <Select value={meetingTime} onValueChange={setMeetingTime}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select time" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from({ length: 24 }, (_, i) => (
+                        <SelectItem key={i} value={`${i.toString().padStart(2, '0')}:00`}>
+                          {`${i.toString().padStart(2, '0')}:00`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              <div>
+                <Label htmlFor="room-duration">Duration</Label>
+                <Select value={meetingDuration} onValueChange={setMeetingDuration}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="30">30 minutes</SelectItem>
+                    <SelectItem value="60">1 hour</SelectItem>
+                    <SelectItem value="90">1.5 hours</SelectItem>
+                    <SelectItem value="120">2 hours</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label>Available Rooms</Label>
+                <div className="space-y-2 mt-2">
+                  {meetingRooms.map((room) => (
+                    <div key={room.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <div className="font-medium">{room.name}</div>
+                        <div className="text-sm text-muted-foreground">Capacity: {room.capacity} people</div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={room.available ? "default" : "secondary"}>
+                          {room.available ? "Available" : "Occupied"}
+                        </Badge>
+                        {room.available && (
+                          <Button size="sm" variant="outline">
+                            Select
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setIsBookRoomOpen(false)}>
+                  Cancel
+                </Button>
+                <Button>
+                  Book Room
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+        
+        {/* Upload File Dialog */}
+        <Dialog open={isUploadFileOpen} onOpenChange={setIsUploadFileOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Upload className="w-5 h-5 text-primary" />
+                Upload Files
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              {/* Drag & Drop Area */}
+              <div className="border-2 border-dashed border-muted rounded-lg p-8 text-center">
+                <Upload className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                <p className="text-lg font-medium mb-2">Drop files here</p>
+                <p className="text-sm text-muted-foreground mb-4">or click to browse</p>
+                <Button variant="outline">
+                  Choose Files
+                </Button>
+              </div>
+              
+              {/* File Type Filters */}
+              <div>
+                <Label>File Types</Label>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  {['Documents', 'Images', 'Videos', 'All Files'].map((type) => (
+                    <div key={type} className="flex items-center space-x-2">
+                      <Checkbox id={type.toLowerCase().replace(' ', '-')} />
+                      <Label htmlFor={type.toLowerCase().replace(' ', '-')} className="text-sm">{type}</Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Privacy Settings */}
+              <div>
+                <Label>Share with</Label>
+                <Select defaultValue="team">
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="team">My Team</SelectItem>
+                    <SelectItem value="project">Project Members</SelectItem>
+                    <SelectItem value="organization">Entire Organization</SelectItem>
+                    <SelectItem value="custom">Custom List</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setIsUploadFileOpen(false)}>
+                  Cancel
+                </Button>
+                <Button>
+                  Upload Files
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+        
+        {/* Browse Files Dialog */}
+        <Dialog open={isBrowseFilesOpen} onOpenChange={setIsBrowseFilesOpen}>
+          <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <FileText className="w-5 h-5 text-primary" />
+                Browse Shared Files
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              {/* Search and Filters */}
+              <div className="flex items-center gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                  <Input placeholder="Search files..." className="pl-10" />
+                </div>
+                <Select defaultValue="all">
+                  <SelectTrigger className="w-48">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Files</SelectItem>
+                    <SelectItem value="documents">Documents</SelectItem>
+                    <SelectItem value="images">Images</SelectItem>
+                    <SelectItem value="videos">Videos</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {/* File Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[
+                  { name: "Project Proposal.pdf", type: "PDF", size: "2.4 MB", shared: "Alice Johnson", date: "2 days ago" },
+                  { name: "Design Mockups.figma", type: "Figma", size: "15.8 MB", shared: "Bob Smith", date: "1 week ago" },
+                  { name: "Meeting Notes.docx", type: "Word", size: "1.2 MB", shared: "Carol Davis", date: "3 days ago" },
+                  { name: "Presentation.pptx", type: "PowerPoint", size: "8.5 MB", shared: "David Wilson", date: "1 day ago" },
+                  { name: "Spreadsheet.xlsx", type: "Excel", size: "3.1 MB", shared: "Emily Chen", date: "5 days ago" },
+                  { name: "Video Demo.mp4", type: "Video", size: "45.2 MB", shared: "Frank Rodriguez", date: "1 week ago" }
+                ].map((file, index) => (
+                  <Card key={index} className="hover:shadow-md transition-all duration-200">
+                    <CardContent className="p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
+                          <FileText className="w-5 h-5 text-primary" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-medium text-sm truncate">{file.name}</h4>
+                          <p className="text-xs text-muted-foreground">{file.type} • {file.size}</p>
+                          <p className="text-xs text-muted-foreground">Shared by {file.shared}</p>
+                          <p className="text-xs text-muted-foreground">{file.date}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-2 mt-3 pt-3 border-t">
+                        <Button size="sm" variant="outline" className="flex-1 text-xs">
+                          <Eye className="w-3 h-3 mr-1" />
+                          View
+                        </Button>
+                        <Button size="sm" variant="outline" className="flex-1 text-xs">
+                          <Download className="w-3 h-3 mr-1" />
+                          Download
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              
+              {/* Pagination */}
+              <div className="flex items-center justify-center pt-4">
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" disabled>
+                    Previous
+                  </Button>
+                  <Button variant="outline" size="sm" className="bg-primary text-primary-foreground">
+                    1
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    2
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    3
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    Next
+                  </Button>
+                </div>
+              </div>
+            </div>
           </DialogContent>
         </Dialog>
 
