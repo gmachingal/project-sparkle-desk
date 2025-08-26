@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -30,6 +30,14 @@ import {
 const Collaboration = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const { toast } = useToast();
+
+  // Check for admin state on component mount
+  useEffect(() => {
+    const preferredRole = localStorage.getItem('preferredRole');
+    if (preferredRole === 'admin') {
+      window.location.href = '/admin-collaboration';
+    }
+  }, []);
 
   // Mock user data - employee view only
   const currentUser = {
@@ -130,6 +138,7 @@ const Collaboration = () => {
                   checked={false}
                   onCheckedChange={(checked) => {
                     if (checked) {
+                      localStorage.setItem('preferredRole', 'admin');
                       window.location.href = '/admin-collaboration';
                     }
                   }}

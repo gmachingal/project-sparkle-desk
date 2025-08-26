@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -38,6 +38,14 @@ const AdminCollaboration = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterDepartment, setFilterDepartment] = useState("all");
   const { toast } = useToast();
+
+  // Check for admin state on component mount
+  useEffect(() => {
+    const preferredRole = localStorage.getItem('preferredRole');
+    if (preferredRole !== 'admin') {
+      localStorage.setItem('preferredRole', 'admin');
+    }
+  }, []);
 
   // Mock team data - organization-wide view
   const teamMembers = [
@@ -201,13 +209,14 @@ const AdminCollaboration = () => {
             {/* Admin/Employee Toggle */}
             <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-admin/30 bg-gradient-to-r from-admin/10 to-admin-glow/15 hover:from-admin/20 hover:to-admin-glow/25 transition-all duration-200 shadow-sm">
               <span className="text-sm text-muted-foreground">Employee</span>
-              <Switch 
-                checked={true}
-                onCheckedChange={(checked) => {
-                  if (!checked) {
-                    window.location.href = '/collaboration';
-                  }
-                }}
+                <Switch 
+                  checked={true}
+                  onCheckedChange={(checked) => {
+                    if (!checked) {
+                      localStorage.setItem('preferredRole', 'user');
+                      window.location.href = '/collaboration';
+                    }
+                  }}
                 className="data-[state=checked]:bg-admin scale-75"
               />
               <div className="flex items-center gap-2">
