@@ -7,8 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import ProjectCard from "./ProjectCard";
 import StatsCard from "./StatsCard";
+import ProjectCard from "./ProjectCard";
 import { 
   Users, 
   Clock, 
