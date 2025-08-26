@@ -74,6 +74,8 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
     }
   });
 
+  const [showQuestions, setShowQuestions] = useState(false);
+
   const steps = [
     {
       id: 1,
@@ -989,6 +991,246 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
                     <label htmlFor="edit-mandatory" className="text-sm">Mandatory assessment (required for program completion)</label>
                   </div>
                 </div>
+              </div>
+
+              {/* Questions Section */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-medium">Questions</Label>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowQuestions(!showQuestions)}
+                    className="text-xs gap-1"
+                  >
+                    <Target className="w-3 h-3" />
+                    {showQuestions ? "Hide Questions" : "Manage Questions"}
+                  </Button>
+                </div>
+
+                {showQuestions && (
+                  <Card className="border-dashed border-primary/30">
+                    <CardContent className="p-4">
+                      <div className="space-y-4">
+                        {/* Initialize questions array if it doesn't exist */}
+                        {!editingAssessment.questions && (
+                          <div className="text-center py-6">
+                            <BookOpen className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
+                            <h4 className="font-medium mb-2">No Questions Added</h4>
+                            <p className="text-sm text-muted-foreground mb-4">
+                              Start building your assessment by adding questions
+                            </p>
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                setEditingAssessment(prev => ({
+                                  ...prev,
+                                  questions: [{
+                                    id: "q1",
+                                    text: "",
+                                    type: "multiple-choice",
+                                    options: ["", "", "", ""],
+                                    correctAnswer: 0,
+                                    explanation: ""
+                                  }]
+                                }));
+                              }}
+                              className="gap-2"
+                            >
+                              <Plus className="w-4 h-4" />
+                              Add First Question
+                            </Button>
+                          </div>
+                        )}
+
+                        {/* Questions List */}
+                        {editingAssessment.questions && editingAssessment.questions.map((question: any, qIndex: number) => (
+                          <Card key={question.id} className="border">
+                            <CardContent className="p-4">
+                              <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                  <Label className="text-sm font-medium">Question {qIndex + 1}</Label>
+                                  <div className="flex gap-2">
+                                    <Select
+                                      value={question.type}
+                                      onValueChange={(value) => {
+                                        const updatedQuestions = [...editingAssessment.questions];
+                                        updatedQuestions[qIndex] = { ...question, type: value };
+                                        setEditingAssessment(prev => ({ ...prev, questions: updatedQuestions }));
+                                      }}
+                                    >
+                                      <SelectTrigger className="w-32">
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="multiple-choice">Multiple Choice</SelectItem>
+                                        <SelectItem value="true-false">True/False</SelectItem>
+                                        <SelectItem value="text">Text Answer</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => {
+                                        const updatedQuestions = editingAssessment.questions.filter((_: any, i: number) => i !== qIndex);
+                                        setEditingAssessment(prev => ({ ...prev, questions: updatedQuestions }));
+                                      }}
+                                      className="text-destructive text-xs"
+                                    >
+                                      Remove
+                                    </Button>
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <Label className="text-xs text-muted-foreground">Question Text</Label>
+                                  <Textarea
+                                    value={question.text}
+                                    onChange={(e) => {
+                                      const updatedQuestions = [...editingAssessment.questions];
+                                      updatedQuestions[qIndex] = { ...question, text: e.target.value };
+                                      setEditingAssessment(prev => ({ ...prev, questions: updatedQuestions }));
+                                    }}
+                                    placeholder="Enter your question here..."
+                                    rows={2}
+                                    className="mt-1"
+                                  />
+                                </div>
+
+                                {/* Multiple Choice Options */}
+                                {question.type === "multiple-choice" && (
+                                  <div className="space-y-2">
+                                    <Label className="text-xs text-muted-foreground">Answer Options</Label>
+                                    {question.options.map((option: string, optIndex: number) => (
+                                      <div key={optIndex} className="flex items-center gap-2">
+                                        <Checkbox
+                                          checked={question.correctAnswer === optIndex}
+                                          onCheckedChange={(checked) => {
+                                            if (checked) {
+                                              const updatedQuestions = [...editingAssessment.questions];
+                                              updatedQuestions[qIndex] = { ...question, correctAnswer: optIndex };
+                                              setEditingAssessment(prev => ({ ...prev, questions: updatedQuestions }));
+                                            }
+                                          }}
+                                        />
+                                        <Input
+                                          value={option}
+                                          onChange={(e) => {
+                                            const updatedQuestions = [...editingAssessment.questions];
+                                            const updatedOptions = [...question.options];
+                                            updatedOptions[optIndex] = e.target.value;
+                                            updatedQuestions[qIndex] = { ...question, options: updatedOptions };
+                                            setEditingAssessment(prev => ({ ...prev, questions: updatedQuestions }));
+                                          }}
+                                          placeholder={`Option ${optIndex + 1}`}
+                                          className="flex-1"
+                                        />
+                                      </div>
+                                    ))}
+                                    <p className="text-xs text-muted-foreground">Check the box next to the correct answer</p>
+                                  </div>
+                                )}
+
+                                {/* True/False Options */}
+                                {question.type === "true-false" && (
+                                  <div className="space-y-2">
+                                    <Label className="text-xs text-muted-foreground">Correct Answer</Label>
+                                    <div className="flex gap-4">
+                                      <div className="flex items-center space-x-2">
+                                        <Checkbox
+                                          checked={question.correctAnswer === true}
+                                          onCheckedChange={(checked) => {
+                                            if (checked) {
+                                              const updatedQuestions = [...editingAssessment.questions];
+                                              updatedQuestions[qIndex] = { ...question, correctAnswer: true };
+                                              setEditingAssessment(prev => ({ ...prev, questions: updatedQuestions }));
+                                            }
+                                          }}
+                                        />
+                                        <label className="text-sm">True</label>
+                                      </div>
+                                      <div className="flex items-center space-x-2">
+                                        <Checkbox
+                                          checked={question.correctAnswer === false}
+                                          onCheckedChange={(checked) => {
+                                            if (checked) {
+                                              const updatedQuestions = [...editingAssessment.questions];
+                                              updatedQuestions[qIndex] = { ...question, correctAnswer: false };
+                                              setEditingAssessment(prev => ({ ...prev, questions: updatedQuestions }));
+                                            }
+                                          }}
+                                        />
+                                        <label className="text-sm">False</label>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* Text Answer */}
+                                {question.type === "text" && (
+                                  <div>
+                                    <Label className="text-xs text-muted-foreground">Sample/Expected Answer (optional)</Label>
+                                    <Textarea
+                                      value={question.sampleAnswer || ""}
+                                      onChange={(e) => {
+                                        const updatedQuestions = [...editingAssessment.questions];
+                                        updatedQuestions[qIndex] = { ...question, sampleAnswer: e.target.value };
+                                        setEditingAssessment(prev => ({ ...prev, questions: updatedQuestions }));
+                                      }}
+                                      placeholder="Provide a sample answer or key points..."
+                                      rows={2}
+                                      className="mt-1"
+                                    />
+                                  </div>
+                                )}
+
+                                <div>
+                                  <Label className="text-xs text-muted-foreground">Explanation (optional)</Label>
+                                  <Textarea
+                                    value={question.explanation || ""}
+                                    onChange={(e) => {
+                                      const updatedQuestions = [...editingAssessment.questions];
+                                      updatedQuestions[qIndex] = { ...question, explanation: e.target.value };
+                                      setEditingAssessment(prev => ({ ...prev, questions: updatedQuestions }));
+                                    }}
+                                    placeholder="Explain why this is the correct answer..."
+                                    rows={2}
+                                    className="mt-1"
+                                  />
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+
+                        {/* Add Another Question */}
+                        {editingAssessment.questions && (
+                          <Button
+                            variant="outline"
+                            onClick={() => {
+                              const newQuestion = {
+                                id: `q${editingAssessment.questions.length + 1}`,
+                                text: "",
+                                type: "multiple-choice",
+                                options: ["", "", "", ""],
+                                correctAnswer: 0,
+                                explanation: ""
+                              };
+                              setEditingAssessment(prev => ({
+                                ...prev,
+                                questions: [...prev.questions, newQuestion]
+                              }));
+                            }}
+                            className="w-full gap-2"
+                          >
+                            <Plus className="w-4 h-4" />
+                            Add Another Question
+                          </Button>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
 
               <div className="flex justify-end gap-3 pt-4 border-t">
