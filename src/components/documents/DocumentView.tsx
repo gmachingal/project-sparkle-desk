@@ -21,22 +21,17 @@ export const DocumentView = ({ document, onBack, onEdit }: DocumentViewProps) =>
   return (
     <>
       {/* Back Button Above Header */}
-      
-        <div className="container mx-auto px-4 py-3">
-          <Button variant="back" onClick={onBack}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </div>
-      
+            
       <div className="container mx-auto px-4 py-8">
         {/* Document View Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
 
 
-            <h1 className="text-3xl font-bold">            <Button variant="back" onClick={onBack}>
-              <ArrowLeft className="h-4 w-4" />
-            </Button> {document.title}</h1>
+            <h1 className="text-3xl font-bold">            
+              <Button variant="back" onClick={onBack}>
+                <ArrowLeft className="h-4 w-4" />
+              </Button> {document.title}</h1>
             <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <Avatar className="w-6 h-6">
