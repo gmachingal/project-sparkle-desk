@@ -78,8 +78,14 @@ const Collaboration = () => {
     role: 'admin' // Change to 'member' for regular users
   };
   
-  // State to track if admin is viewing as admin or employee
-  const [isAdminView, setIsAdminView] = useState(false);
+  // Check URL params for admin view state (like attendance module)
+  const [isAdminView, setIsAdminView] = useState(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('view') === 'admin';
+  });
+
+  // Debug: Log current state
+  console.log('Admin View State:', isAdminView, 'User Role:', currentUser.role);
 
   // Mock team data - now focused on collaboration and workload
   const teamMembers = [
@@ -333,7 +339,11 @@ const Collaboration = () => {
               (currentUser.role === 'admin' && isAdminView) 
                 ? 'bg-gradient-to-r from-admin to-admin-glow' 
                 : 'bg-gradient-to-r from-primary to-primary-glow'
-            }`}>
+            }`} style={{
+              backgroundImage: (currentUser.role === 'admin' && isAdminView) 
+                ? 'linear-gradient(to right, hsl(var(--admin-primary)), hsl(var(--admin-glow)))' 
+                : undefined
+            }}>
               {(currentUser.role === 'admin' && isAdminView) ? 'Organization Collaboration' : 'My Collaboration'}
             </h1>
             <p className="text-muted-foreground mt-1">
@@ -357,6 +367,18 @@ const Collaboration = () => {
                   checked={isAdminView}
                   onCheckedChange={(checked) => {
                     setIsAdminView(checked);
+                    
+                    // Update URL params to maintain state like attendance module
+                    const newSearchParams = new URLSearchParams(window.location.search);
+                    if (checked) {
+                      newSearchParams.set('view', 'admin');
+                    } else {
+                      newSearchParams.delete('view');
+                    }
+                    
+                    const newURL = `${window.location.pathname}${newSearchParams.toString() ? '?' + newSearchParams.toString() : ''}`;
+                    window.history.replaceState({}, '', newURL);
+                    
                     toast({
                       title: checked ? "Admin View" : "Employee View",
                       description: `Switched to ${checked ? 'admin' : 'employee'} collaboration view`,
