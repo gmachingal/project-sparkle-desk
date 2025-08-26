@@ -2765,7 +2765,6 @@ const Collaboration = () => {
           </DialogContent>
         </Dialog>
 
-        </Dialog>
         
         {/* Chat Rooms Dialog */}
         <Dialog open={isChatRoomsOpen} onOpenChange={setIsChatRoomsOpen}>
