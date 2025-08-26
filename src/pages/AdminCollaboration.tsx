@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import CreateLearningProgram from "@/components/CreateLearningProgram";
 import Header from "@/components/Header";
 import { 
   Users, 
@@ -1640,13 +1641,20 @@ const AdminCollaboration = () => {
 
         {/* Create Learning Program Dialog */}
         <Dialog open={isCreateProgramOpen} onOpenChange={setIsCreateProgramOpen}>
-          <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Plus className="w-5 h-5 text-admin" />
-                Create Learning Program
-              </DialogTitle>
-            </DialogHeader>
+          <DialogContent className="sm:max-w-5xl max-h-[95vh] overflow-hidden">
+            <CreateLearningProgram 
+              onClose={() => setIsCreateProgramOpen(false)}
+              onSuccess={() => {
+                // Reset any form states if needed
+                setProgramTitle("");
+                setProgramDescription("");
+                setProgramCategory("");
+                setProgramType("");
+                setProgramDuration("");
+                setProgramLevel("");
+                setProgramCapacity("");
+              }}
+            />
             
             <div className="space-y-6">
               {/* Program Basic Info */}
