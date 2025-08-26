@@ -577,42 +577,208 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
             <div>
               <Label className="text-sm font-medium mb-3 block">Program Assessments *</Label>
               
-              {programData.assessments.length === 0 ? (
-                <Card className="border-dashed border-2 border-muted-foreground/25">
-                  <CardContent className="p-8 text-center">
-                    <Award className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                    <h4 className="font-medium mb-2">Add Assessments to Program</h4>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Create assessments to test knowledge and skills throughout the program
-                    </p>
+              {/* Assessment Creation Form */}
+              <Card className="border-primary/20 bg-primary/5">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Award className="w-4 h-4 text-primary" />
+                    Create New Assessment
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Assessment Basic Details */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Assessment Title *</Label>
+                      <Input
+                        placeholder="e.g., React Fundamentals Quiz"
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium">Assessment Type</Label>
+                      <Select>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="Select type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="quiz">Multiple Choice Quiz</SelectItem>
+                          <SelectItem value="practical">Practical Exercise</SelectItem>
+                          <SelectItem value="essay">Essay Questions</SelectItem>
+                          <SelectItem value="mixed">Mixed Format</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium">Description</Label>
+                    <Textarea
+                      placeholder="Describe what this assessment covers..."
+                      rows={2}
+                      className="mt-1"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Time Limit (minutes)</Label>
+                      <Input
+                        type="number"
+                        placeholder="30"
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium">Passing Score (%)</Label>
+                      <Input
+                        type="number"
+                        placeholder="70"
+                        min="0"
+                        max="100"
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium">Max Attempts</Label>
+                      <Input
+                        type="number"
+                        placeholder="3"
+                        min="1"
+                        className="mt-1"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Questions Section */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-medium">Questions</Label>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="gap-1"
+                      >
+                        <Plus className="w-3 h-3" />
+                        Add Question
+                      </Button>
+                    </div>
+
+                    {/* Sample Questions - You can make this dynamic */}
+                    <Card className="border">
+                      <CardContent className="p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-sm font-medium">Question 1</Label>
+                          <Button variant="ghost" size="sm">Remove</Button>
+                        </div>
+
+                        <Textarea
+                          placeholder="Enter your question here..."
+                          rows={2}
+                          className="w-full"
+                        />
+
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium">Answer Options</Label>
+                          {[1, 2, 3, 4].map((option) => (
+                            <div key={option} className="flex gap-2 items-center">
+                              <Checkbox />
+                              <Input
+                                placeholder={`Option ${option}`}
+                                className="flex-1"
+                              />
+                            </div>
+                          ))}
+                        </div>
+
+                        <div>
+                          <Label className="text-sm font-medium">Explanation (Optional)</Label>
+                          <Textarea
+                            placeholder="Explain why this answer is correct..."
+                            rows={2}
+                            className="mt-1"
+                          />
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border">
+                      <CardContent className="p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-sm font-medium">Question 2</Label>
+                          <Button variant="ghost" size="sm">Remove</Button>
+                        </div>
+
+                        <Textarea
+                          placeholder="Enter your question here..."
+                          rows={2}
+                          className="w-full"
+                        />
+
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium">Answer Options</Label>
+                          {[1, 2, 3, 4].map((option) => (
+                            <div key={option} className="flex gap-2 items-center">
+                              <Checkbox />
+                              <Input
+                                placeholder={`Option ${option}`}
+                                className="flex-1"
+                              />
+                            </div>
+                          ))}
+                        </div>
+
+                        <div>
+                          <Label className="text-sm font-medium">Explanation (Optional)</Label>
+                          <Textarea
+                            placeholder="Explain why this answer is correct..."
+                            rows={2}
+                            className="mt-1"
+                          />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Add Assessment Button */}
+                  <div className="flex gap-2 pt-4 border-t">
                     <Button 
                       variant="outline" 
                       className="gap-2"
                       onClick={() => {
-                        // Mock adding an assessment
+                        // Mock adding assessment with details
                         setProgramData(prev => ({
                           ...prev,
                           assessments: [
                             ...prev.assessments,
                             {
                               id: `assessment-${prev.assessments.length + 1}`,
-                              title: "Knowledge Check",
+                              title: "Sample Assessment",
                               type: "quiz",
-                              questions: 10,
+                              description: "A comprehensive test of knowledge",
+                              questions: 2,
                               timeLimit: 30,
-                              passingScore: 70
+                              passingScore: 70,
+                              maxAttempts: 3
                             }
                           ]
                         }));
                       }}
                     >
                       <Plus className="w-4 h-4" />
-                      Create Assessment
+                      Add Assessment to Program
                     </Button>
-                  </CardContent>
-                </Card>
-              ) : (
+                    <Button variant="ghost" size="sm">
+                      Save as Draft
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Created Assessments List */}
+              {programData.assessments.length > 0 && (
                 <div className="space-y-3">
+                  <Label className="text-sm font-medium">Created Assessments ({programData.assessments.length})</Label>
                   {programData.assessments.map((assessment, index) => (
                     <Card key={assessment.id} className="border">
                       <CardContent className="p-4">
@@ -626,51 +792,35 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
                               <p className="text-xs text-muted-foreground">
                                 {assessment.questions} questions • {assessment.timeLimit} min • {assessment.passingScore}% to pass
                               </p>
+                              {assessment.description && (
+                                <p className="text-xs text-muted-foreground mt-1">{assessment.description}</p>
+                              )}
                             </div>
                           </div>
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            onClick={() => {
-                              setProgramData(prev => ({
-                                ...prev,
-                                assessments: prev.assessments.filter((_, i) => i !== index)
-                              }));
-                            }}
-                          >
-                            Remove
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button variant="ghost" size="sm">
+                              <span className="text-xs">Edit</span>
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => {
+                                setProgramData(prev => ({
+                                  ...prev,
+                                  assessments: prev.assessments.filter((_, i) => i !== index)
+                                }));
+                              }}
+                            >
+                              <span className="text-xs">Remove</span>
+                            </Button>
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
                   ))}
-                  
-                  <Button 
-                    variant="outline" 
-                    className="w-full gap-2"
-                    onClick={() => {
-                      // Mock adding another assessment
-                      setProgramData(prev => ({
-                        ...prev,
-                        assessments: [
-                          ...prev.assessments,
-                          {
-                            id: `assessment-${prev.assessments.length + 1}`,
-                            title: `Assessment ${prev.assessments.length + 1}`,
-                            type: "quiz",
-                            questions: 15,
-                            timeLimit: 45,
-                            passingScore: 80
-                          }
-                        ]
-                      }));
-                    }}
-                  >
-                    <Plus className="w-4 h-4" />
-                    Add Another Assessment
-                  </Button>
                 </div>
               )}
+
               {errors.assessments && <p className="text-xs text-destructive mt-2">{errors.assessments}</p>}
             </div>
           </div>
