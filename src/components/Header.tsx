@@ -128,7 +128,8 @@ const Header = ({ userRole }: HeaderProps) => {
     if (isAdminPage) {
       switch (basePath) {
         case "/dashboard":
-          return userRole === 'admin' ? "/dashboard" : "/dashboard";
+          // Dashboard stays the same but should maintain admin context via userRole
+          return "/dashboard";
         case "/attendance":
           return "/admin-attendance";
         case "/leave-management":
