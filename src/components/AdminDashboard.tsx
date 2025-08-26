@@ -208,8 +208,8 @@ const AdminDashboard = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {/* Compact Admin/Employee Toggle */}
-          <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-card/50 hover:bg-card transition-colors">
+          {/* Colorful Admin/Employee Toggle */}
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-admin/30 bg-gradient-to-r from-admin/10 to-admin-glow/15 hover:from-admin/20 hover:to-admin-glow/25 transition-all duration-200 shadow-sm">
             <span className="text-sm text-muted-foreground">Employee</span>
             <Switch 
               checked={true}
@@ -222,7 +222,7 @@ const AdminDashboard = () => {
               className="data-[state=checked]:bg-admin scale-75"
             />
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">Admin</span>
+              <span className="text-sm font-medium text-admin">Admin</span>
               <Users className="w-4 h-4 text-admin" />
             </div>
           </div>

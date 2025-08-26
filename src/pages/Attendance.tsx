@@ -873,10 +873,10 @@ const Attendance = () => {
               </p>
             </div>
             {currentUser.role === 'admin' && (
-              <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-card/50 hover:bg-card transition-colors">
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-primary/20 bg-gradient-to-r from-primary/5 to-primary-glow/10 hover:from-primary/10 hover:to-primary-glow/20 transition-all duration-200">
                 <div className="flex items-center gap-2">
-                  <Settings className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">Employee</span>
+                  <Settings className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium text-primary">Employee</span>
                 </div>
                 <Switch 
                   checked={false}
