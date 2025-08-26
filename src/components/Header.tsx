@@ -370,9 +370,9 @@ const Header = ({ userRole }: HeaderProps) => {
                     variant="outline"
                     size="sm"
                     onClick={handleSearchClick}
-                    className="w-10 h-9 p-0 border-muted-foreground/20 hover:border-muted-foreground/40 hover:bg-background/90 hover:shadow-sm"
+                    className="w-10 h-9 p-0 border-muted-foreground/20 hover:border-muted-foreground/40 hover:bg-background/90 hover:shadow-sm transition-all duration-200 hover:scale-105 active:scale-95"
                   >
-                    <Search className="w-5 h-5 text-foreground/70 hover:text-foreground transition-colors" />
+                    <Search className="w-5 h-5 text-foreground/70 hover:text-foreground transition-colors duration-200" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -380,15 +380,15 @@ const Header = ({ userRole }: HeaderProps) => {
                 </TooltipContent>
               </Tooltip>
             ) : (
-              <>
+              <div className="animate-fade-in">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 z-10" />
                 <Input
                   ref={searchInputRef}
                   placeholder="Search..."
-                  className="pl-10 w-64 bg-muted/50 transition-all duration-200"
+                  className="pl-10 w-64 bg-muted/50 transition-all duration-300 animate-scale-in"
                   onBlur={handleSearchBlur}
                 />
-              </>
+              </div>
             )}
           </div>
           
