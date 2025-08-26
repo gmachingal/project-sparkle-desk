@@ -225,15 +225,15 @@ const AdminAttendance = () => {
           </div>
           
           <div className="flex items-center gap-3">
-            <Button variant="outline" className="gap-2 hover:bg-primary/10" onClick={() => window.location.href = '/attendance'}>
+            <Button variant="outline" className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin" onClick={() => window.location.href = '/attendance'}>
               <UserCheck className="w-4 h-4" />
               Employee View
             </Button>
-            <Button variant="outline" className="gap-2 hover:bg-primary/10">
+            <Button variant="outline" className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin">
               <Bell className="w-4 h-4" />
               Notifications
             </Button>
-            <Button variant="outline" className="gap-2 hover:bg-primary/10">
+            <Button variant="outline" className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin">
               <Settings className="w-4 h-4" />
               Settings
             </Button>
@@ -487,7 +487,7 @@ const AdminAttendance = () => {
                       </SelectContent>
                     </Select>
                     
-                    <Button variant="outline" size="sm" className="gap-2 hover:bg-primary/10">
+                    <Button variant="outline" size="sm" className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin">
                       <Download className="w-4 h-4" />
                       Export
                     </Button>
@@ -819,7 +819,7 @@ const AdminAttendance = () => {
                     <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
                       {pendingRequests.length} Pending
                     </Badge>
-                    <Button variant="outline" size="sm" className="gap-2">
+                    <Button variant="outline" size="sm" className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin">
                       <Download className="w-4 h-4" />
                       Export
                     </Button>
@@ -1012,7 +1012,7 @@ const AdminAttendance = () => {
                         <SelectItem value="month">Monthly View</SelectItem>
                       </SelectContent>
                     </Select>
-                    <Button variant="outline" size="sm" className="gap-2">
+                    <Button variant="outline" size="sm" className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin">
                       <Download className="w-4 h-4" />
                       Export
                     </Button>
@@ -1035,7 +1035,7 @@ const AdminAttendance = () => {
                       
                       <Popover>
                         <PopoverTrigger asChild>
-                          <Button variant="outline" className="gap-2 min-w-[200px]">
+                          <Button variant="outline" className="gap-2 min-w-[200px] hover:bg-admin/10 border-admin/30 text-admin hover:text-admin">
                             <CalendarIcon className="w-4 h-4" />
                             {getDateDisplayText()}
                           </Button>

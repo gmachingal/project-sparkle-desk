@@ -209,7 +209,7 @@ const AdminDashboard = () => {
         <div className="flex items-center gap-2">
           <Button 
             variant="outline" 
-            className="gap-2 bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200" 
+            className="gap-2 bg-admin/10 text-admin border-admin/30 hover:bg-admin/20 hover:text-admin" 
             onClick={() => {
               localStorage.setItem('preferredRole', 'user');
               window.location.reload();
@@ -218,11 +218,11 @@ const AdminDashboard = () => {
             <Users className="w-4 h-4" />
             Employee View
           </Button>
-          <Button variant="outline" className="gap-2" onClick={() => navigate("/admin-attendance")}>
+          <Button variant="outline" className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin" onClick={() => navigate("/admin-attendance")}>
             <BarChart3 className="w-4 h-4" />
             Reports
           </Button>
-          <Button variant="default" className="gap-2" onClick={() => navigate("/new-project")}>
+          <Button variant="default" className="gap-2 bg-gradient-to-r from-admin to-admin-glow" onClick={() => navigate("/new-project")}>
             <Plus className="w-4 h-4" />
             New Project
           </Button>
@@ -317,7 +317,7 @@ const AdminDashboard = () => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <Button 
                   variant="outline" 
-                  className="h-20 flex-col gap-2"
+                  className="h-20 flex-col gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin"
                   onClick={() => navigate('/admin-attendance')}
                 >
                   <Clock className="w-6 h-6" />
@@ -325,7 +325,7 @@ const AdminDashboard = () => {
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="h-20 flex-col gap-2"
+                  className="h-20 flex-col gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin"
                   onClick={() => navigate('/admin-leave-management')}
                 >
                   <Calendar className="w-6 h-6" />
@@ -333,7 +333,7 @@ const AdminDashboard = () => {
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="h-20 flex-col gap-2"
+                  className="h-20 flex-col gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin"
                   onClick={() => navigate('/teams')}
                 >
                   <Users className="w-6 h-6" />
@@ -341,7 +341,7 @@ const AdminDashboard = () => {
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="h-20 flex-col gap-2"
+                  className="h-20 flex-col gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin"
                   onClick={() => navigate('/settings')}
                 >
                   <Settings className="w-6 h-6" />
@@ -371,7 +371,7 @@ const AdminDashboard = () => {
                   ))}
                 </SelectContent>
               </Select>
-              <Button variant="hero" onClick={() => navigate('/admin-attendance')} className="gap-2">
+              <Button variant="hero" onClick={() => navigate('/admin-attendance')} className="gap-2 bg-gradient-to-r from-admin to-admin-glow">
                 <Eye className="w-4 h-4" />
                 Detailed Report
               </Button>
@@ -580,7 +580,7 @@ const AdminDashboard = () => {
                     {selectedDepartment === 'all' ? 'All Departments' : selectedDepartment}
                   </Badge>
                 </CardTitle>
-                <Button variant="outline" size="sm" onClick={() => navigate('/admin-attendance')}>
+                <Button variant="outline" size="sm" onClick={() => navigate('/admin-attendance')} className="hover:bg-admin/10 border-admin/30 text-admin hover:text-admin">
                   <Eye className="w-4 h-4 mr-2" />
                   Full Report
                 </Button>
@@ -657,7 +657,7 @@ const AdminDashboard = () => {
         <TabsContent value="projects" className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-semibold">Active Projects</h2>
-            <Button variant="hero" onClick={() => navigate('/projects')}>
+            <Button variant="hero" onClick={() => navigate('/projects')} className="bg-gradient-to-r from-admin to-admin-glow">
               View All Projects
             </Button>
           </div>

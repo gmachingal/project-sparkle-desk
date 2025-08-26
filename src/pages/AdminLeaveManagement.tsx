@@ -171,7 +171,7 @@ const AdminLeaveManagement = () => {
           <div className="flex gap-2">
             <Button 
               variant="outline" 
-              className="bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200"
+              className="bg-admin/10 text-admin border-admin/30 hover:bg-admin/20 hover:text-admin"
               onClick={() => window.location.href = '/leave-management'}
             >
               <Users className="w-4 h-4 mr-2" />
@@ -284,7 +284,7 @@ const AdminLeaveManagement = () => {
                     <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
                       {pendingRequests.length} Pending
                     </Badge>
-                    <Button variant="outline" size="sm" className="gap-2">
+                    <Button variant="outline" size="sm" className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin">
                       <FileText className="w-4 h-4" />
                       Export
                     </Button>
@@ -544,7 +544,7 @@ const AdminLeaveManagement = () => {
                   {/* Bulk Allocate Button */}
                   <Dialog open={isBulkAllocateDialogOpen} onOpenChange={setIsBulkAllocateDialogOpen}>
                     <DialogTrigger asChild>
-                      <Button className="gap-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800">
+                      <Button className="gap-2 bg-gradient-to-r from-admin to-admin-glow hover:from-admin hover:to-admin-accent">
                         <UserPlus className="h-4 w-4" />
                         Bulk Allocate Leave
                       </Button>
@@ -590,7 +590,7 @@ const AdminLeaveManagement = () => {
                           <Button variant="outline" onClick={() => setIsBulkAllocateDialogOpen(false)}>
                             Cancel
                           </Button>
-                          <Button onClick={handleBulkAllocate} className="bg-gradient-to-r from-purple-600 to-purple-700">
+                          <Button onClick={handleBulkAllocate} className="bg-gradient-to-r from-admin to-admin-glow">
                             Allocate to All Employees
                           </Button>
                         </div>
@@ -630,7 +630,7 @@ const AdminLeaveManagement = () => {
                         <CardTitle>Employee Leave Balance - {selectedYear}</CardTitle>
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="outline" className="gap-2">
+                            <Button variant="outline" className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin">
                               <Plus className="h-4 w-4" />
                               Add Individual Balance
                             </Button>
@@ -726,7 +726,7 @@ const AdminLeaveManagement = () => {
                                 <span className="font-medium">{emp.used} days</span>
                               </TableCell>
                               <TableCell>
-                                <Button variant="outline" size="sm">
+                                <Button variant="outline" size="sm" className="hover:bg-admin/10 border-admin/30 text-admin hover:text-admin">
                                   <Edit className="h-4 w-4 mr-1" />
                                   Edit
                                 </Button>

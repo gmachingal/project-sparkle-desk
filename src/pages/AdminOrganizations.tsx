@@ -566,7 +566,7 @@ const AdminOrganizations = () => {
             </div>
             <Dialog>
               <DialogTrigger asChild>
-                <Button className="flex items-center gap-2">
+                <Button className="flex items-center gap-2 bg-gradient-to-r from-admin to-admin-glow">
                   <Plus className="h-4 w-4" />
                   New Organization
                 </Button>
@@ -602,7 +602,7 @@ const AdminOrganizations = () => {
                     <Label htmlFor="domain">Domain Name</Label>
                     <Input id="domain" placeholder="Enter domain (e.g., company.com)" />
                   </div>
-                  <Button className="w-full">Create Organization</Button>
+                  <Button className="w-full bg-gradient-to-r from-admin to-admin-glow">Create Organization</Button>
                 </div>
               </DialogContent>
             </Dialog>
@@ -1064,7 +1064,7 @@ const AdminOrganizations = () => {
                     <h3 className="text-lg font-semibold">Organization Users</h3>
                     <Dialog open={isAddUserOpen} onOpenChange={setIsAddUserOpen}>
                       <DialogTrigger asChild>
-                        <Button className="flex items-center gap-2">
+                        <Button className="flex items-center gap-2 bg-gradient-to-r from-admin to-admin-glow">
                           <UserPlus className="h-4 w-4" />
                           Add User
                         </Button>
@@ -1222,7 +1222,7 @@ const AdminOrganizations = () => {
                           <div className="flex gap-2">
                             <Dialog>
                               <DialogTrigger asChild>
-                                <Button variant="outline" size="sm">
+                                <Button variant="outline" size="sm" className="hover:bg-admin/10 border-admin/30 text-admin hover:text-admin">
                                   <Edit className="h-3 w-3" />
                                 </Button>
                               </DialogTrigger>
@@ -1273,11 +1273,11 @@ const AdminOrganizations = () => {
                                       </Select>
                                     </div>
                                   </div>
-                                  <Button className="w-full">Update User</Button>
+                                  <Button className="w-full bg-gradient-to-r from-admin to-admin-glow">Update User</Button>
                                 </div>
                               </DialogContent>
                             </Dialog>
-                            <Button variant="outline" size="sm">
+                            <Button variant="outline" size="sm" className="hover:bg-admin/10 border-admin/30 text-admin hover:text-admin">
                               <Trash2 className="h-3 w-3" />
                             </Button>
                           </div>
