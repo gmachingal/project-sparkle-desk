@@ -30,7 +30,9 @@ import {
   Timer,
   Star,
   Eye,
-  Bell
+  Bell,
+  CalendarIcon,
+  AlertCircle
 } from "lucide-react";
 
 const AdminCollaboration = () => {
@@ -209,14 +211,14 @@ const AdminCollaboration = () => {
             {/* Admin/Employee Toggle */}
             <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-admin/30 bg-gradient-to-r from-admin/10 to-admin-glow/15 hover:from-admin/20 hover:to-admin-glow/25 transition-all duration-200 shadow-sm">
               <span className="text-sm text-muted-foreground">Employee</span>
-                <Switch 
-                  checked={true}
-                  onCheckedChange={(checked) => {
-                    if (!checked) {
-                      localStorage.setItem('preferredRole', 'user');
-                      window.location.href = '/collaboration';
-                    }
-                  }}
+              <Switch 
+                checked={true}
+                onCheckedChange={(checked) => {
+                  if (!checked) {
+                    localStorage.setItem('preferredRole', 'user');
+                    window.location.href = '/collaboration';
+                  }
+                }}
                 className="data-[state=checked]:bg-admin scale-75"
               />
               <div className="flex items-center gap-2">
@@ -497,47 +499,587 @@ const AdminCollaboration = () => {
             </div>
           </TabsContent>
 
-          {/* Other tabs content would go here */}
+          {/* Team Workload Tab */}
           <TabsContent value="workload" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Team Workload Distribution</CardTitle>
+                <CardTitle>Team Workload Management</CardTitle>
+                <p className="text-muted-foreground">Monitor and manage team workload distribution</p>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">Workload management content for admin view...</p>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h4 className="font-semibold">Workload Distribution</h4>
+                    <div className="space-y-3">
+                      {getFilteredMembers().map((member) => (
+                        <div key={member.id} className="p-4 border rounded-lg">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <Avatar className="w-8 h-8">
+                                <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <div className="font-medium">{member.name}</div>
+                                <div className="text-sm text-muted-foreground">{member.department}</div>
+                              </div>
+                            </div>
+                            <Badge 
+                              variant={member.workload >= 90 ? "destructive" : member.workload >= 80 ? "secondary" : "default"}
+                              className="text-xs"
+                            >
+                              {member.workload}% loaded
+                            </Badge>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex justify-between text-sm">
+                              <span>Capacity</span>
+                              <span>{member.currentCapacity}</span>
+                            </div>
+                            <Progress value={member.workload} className="h-2" />
+                            <div className="flex justify-between text-xs text-muted-foreground">
+                              <span>{member.tasksInProgress} active tasks</span>
+                              <span>{member.activeProjects.length} projects</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="font-semibold">Workload Analytics</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-4 bg-red-50 rounded-lg">
+                        <div className="text-2xl font-bold text-red-700">2</div>
+                        <div className="text-sm text-red-600">Overloaded Members</div>
+                        <div className="text-xs text-muted-foreground mt-1">≥90% capacity</div>
+                      </div>
+                      <div className="p-4 bg-yellow-50 rounded-lg">
+                        <div className="text-2xl font-bold text-yellow-700">3</div>
+                        <div className="text-sm text-yellow-600">High Load Members</div>
+                        <div className="text-xs text-muted-foreground mt-1">80-89% capacity</div>
+                      </div>
+                      <div className="p-4 bg-green-50 rounded-lg">
+                        <div className="text-2xl font-bold text-green-700">7</div>
+                        <div className="text-sm text-green-600">Optimal Load</div>
+                        <div className="text-xs text-muted-foreground mt-1">60-79% capacity</div>
+                      </div>
+                      <div className="p-4 bg-blue-50 rounded-lg">
+                        <div className="text-2xl font-bold text-blue-700">1</div>
+                        <div className="text-sm text-blue-600">Under-utilized</div>
+                        <div className="text-xs text-muted-foreground mt-1">&lt;60% capacity</div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <h5 className="font-medium">Workload Recommendations</h5>
+                      <div className="space-y-2">
+                        <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                          <div className="flex items-start gap-2">
+                            <AlertCircle className="w-4 h-4 text-amber-600 mt-0.5" />
+                            <div>
+                              <div className="text-sm font-medium text-amber-800">High Workload Alert</div>
+                              <div className="text-xs text-amber-700">Mike Rodriguez is at 95% capacity. Consider redistributing tasks.</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                          <div className="flex items-start gap-2">
+                            <Users className="w-4 h-4 text-blue-600 mt-0.5" />
+                            <div>
+                              <div className="text-sm font-medium text-blue-800">Resource Available</div>
+                              <div className="text-xs text-blue-700">Emily Davis has available capacity for new projects.</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-4">
+                      <Button className="w-full gap-2 bg-gradient-to-r from-admin to-admin-glow">
+                        <Timer className="w-4 h-4" />
+                        Balance Workloads
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
+          {/* Departments Tab */}
           <TabsContent value="departments" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Department Overview</CardTitle>
+                <CardTitle>Department Management</CardTitle>
+                <p className="text-muted-foreground">Manage departments and cross-functional collaboration</p>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">Department management content for admin view...</p>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {departments.map((dept) => (
+                    <Card key={dept.id} className="border-l-4" style={{ borderLeftColor: dept.color }}>
+                      <CardHeader className="pb-3">
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-lg">{dept.name}</CardTitle>
+                          <Badge variant="outline">{dept.members.length} members</Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div>
+                          <div className="flex justify-between text-sm mb-2">
+                            <span>Average Workload</span>
+                            <span className={getWorkloadColor(dept.avgWorkload)}>
+                              {dept.avgWorkload}%
+                            </span>
+                          </div>
+                          <Progress value={dept.avgWorkload} className="h-2" />
+                        </div>
+
+                        <div>
+                          <h5 className="font-medium mb-2">Team Members</h5>
+                          <div className="space-y-2">
+                            {dept.members.slice(0, 3).map((member) => (
+                              <div key={member.id} className="flex items-center gap-2">
+                                <Avatar className="w-6 h-6">
+                                  <AvatarFallback className="text-xs">
+                                    {member.name.split(' ').map(n => n[0]).join('')}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span className="text-sm flex-1">{member.name}</span>
+                                <div className={cn(
+                                  "w-2 h-2 rounded-full",
+                                  getStatusColor(member.status)
+                                )} />
+                              </div>
+                            ))}
+                            {dept.members.length > 3 && (
+                              <div className="text-xs text-muted-foreground">
+                                +{dept.members.length - 3} more members
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div>
+                          <h5 className="font-medium mb-2">Active Projects</h5>
+                          <div className="space-y-1">
+                            {dept.activeProjects.slice(0, 2).map((project, index) => (
+                              <div key={index} className="text-xs bg-muted rounded px-2 py-1">
+                                {project}
+                              </div>
+                            ))}
+                            {dept.activeProjects.length > 2 && (
+                              <div className="text-xs text-muted-foreground">
+                                +{dept.activeProjects.length - 2} more projects
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="outline" className="flex-1">
+                            <Eye className="w-3 h-3 mr-1" />
+                            View
+                          </Button>
+                          <Button size="sm" variant="outline" className="flex-1">
+                            <Settings className="w-3 h-3 mr-1" />
+                            Manage
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                <div className="mt-6">
+                  <h4 className="font-semibold mb-4">Cross-Department Collaboration</h4>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-lg">Active Collaborations</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          {[
+                            { 
+                              name: "Website Redesign", 
+                              departments: ["Engineering", "Design"], 
+                              members: 6, 
+                              progress: 75 
+                            },
+                            { 
+                              name: "Marketing Campaign", 
+                              departments: ["Marketing", "Design"], 
+                              members: 4, 
+                              progress: 45 
+                            },
+                            { 
+                              name: "Data Analytics", 
+                              departments: ["Engineering", "Marketing"], 
+                              members: 3, 
+                              progress: 90 
+                            }
+                          ].map((collab, index) => (
+                            <div key={index} className="p-3 border rounded-lg">
+                              <div className="flex items-center justify-between mb-2">
+                                <h5 className="font-medium">{collab.name}</h5>
+                                <Badge variant="outline">{collab.members} members</Badge>
+                              </div>
+                              <div className="flex gap-1 mb-2">
+                                {collab.departments.map((dept, i) => (
+                                  <Badge key={i} variant="secondary" className="text-xs">
+                                    {dept}
+                                  </Badge>
+                                ))}
+                              </div>
+                              <div className="flex justify-between text-sm mb-1">
+                                <span>Progress</span>
+                                <span>{collab.progress}%</span>
+                              </div>
+                              <Progress value={collab.progress} className="h-1" />
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-lg">Collaboration Metrics</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="text-center p-3 bg-blue-50 rounded-lg">
+                            <div className="text-2xl font-bold text-blue-700">12</div>
+                            <div className="text-sm text-blue-600">Active Projects</div>
+                          </div>
+                          <div className="text-center p-3 bg-green-50 rounded-lg">
+                            <div className="text-2xl font-bold text-green-700">89%</div>
+                            <div className="text-sm text-green-600">Success Rate</div>
+                          </div>
+                          <div className="text-center p-3 bg-purple-50 rounded-lg">
+                            <div className="text-2xl font-bold text-purple-700">24</div>
+                            <div className="text-sm text-purple-600">Cross-Dept Teams</div>
+                          </div>
+                          <div className="text-center p-3 bg-orange-50 rounded-lg">
+                            <div className="text-2xl font-bold text-orange-700">4.2</div>
+                            <div className="text-sm text-orange-600">Avg Team Size</div>
+                          </div>
+                        </div>
+
+                        <div className="mt-4">
+                          <Button className="w-full gap-2 bg-gradient-to-r from-admin to-admin-glow">
+                            <Plus className="w-4 h-4" />
+                            Create Cross-Department Project
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
+          {/* Learning Management Tab */}
           <TabsContent value="learning" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Learning Management</CardTitle>
+                <CardTitle>Organization Learning Management</CardTitle>
+                <p className="text-muted-foreground">Manage organization-wide learning and development programs</p>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">Learning management content for admin view...</p>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h4 className="font-semibold">Learning Programs</h4>
+                    <div className="space-y-3">
+                      {[
+                        { 
+                          name: "Leadership Development", 
+                          participants: 24, 
+                          completion: 78, 
+                          status: "active",
+                          duration: "8 weeks"
+                        },
+                        { 
+                          name: "Technical Skills Bootcamp", 
+                          participants: 42, 
+                          completion: 65, 
+                          status: "active",
+                          duration: "12 weeks"
+                        },
+                        { 
+                          name: "Communication Excellence", 
+                          participants: 18, 
+                          completion: 92, 
+                          status: "completed",
+                          duration: "4 weeks"
+                        },
+                        { 
+                          name: "Digital Transformation", 
+                          participants: 35, 
+                          completion: 45, 
+                          status: "active",
+                          duration: "16 weeks"
+                        }
+                      ].map((program, index) => (
+                        <Card key={index}>
+                          <CardContent className="p-4">
+                            <div className="flex items-center justify-between mb-3">
+                              <h5 className="font-medium">{program.name}</h5>
+                              <Badge variant={program.status === 'completed' ? 'default' : 'secondary'}>
+                                {program.status}
+                              </Badge>
+                            </div>
+                            <div className="space-y-2">
+                              <div className="flex justify-between text-sm">
+                                <span>Participants</span>
+                                <span>{program.participants} enrolled</span>
+                              </div>
+                              <div className="flex justify-between text-sm">
+                                <span>Completion Rate</span>
+                                <span>{program.completion}%</span>
+                              </div>
+                              <Progress value={program.completion} className="h-2" />
+                              <div className="flex justify-between text-xs text-muted-foreground">
+                                <span>Duration: {program.duration}</span>
+                                <Button size="sm" variant="ghost" className="h-6 px-2">
+                                  Manage
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="font-semibold">Learning Analytics</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-4 bg-blue-50 rounded-lg">
+                        <div className="text-2xl font-bold text-blue-700">156</div>
+                        <div className="text-sm text-blue-600">Total Learners</div>
+                        <div className="text-xs text-muted-foreground mt-1">All employees enrolled</div>
+                      </div>
+                      <div className="p-4 bg-green-50 rounded-lg">
+                        <div className="text-2xl font-bold text-green-700">89%</div>
+                        <div className="text-sm text-green-600">Completion Rate</div>
+                        <div className="text-xs text-muted-foreground mt-1">Above industry avg</div>
+                      </div>
+                      <div className="p-4 bg-purple-50 rounded-lg">
+                        <div className="text-2xl font-bold text-purple-700">245h</div>
+                        <div className="text-sm text-purple-600">Learning Hours</div>
+                        <div className="text-xs text-muted-foreground mt-1">This month</div>
+                      </div>
+                      <div className="p-4 bg-orange-50 rounded-lg">
+                        <div className="text-2xl font-bold text-orange-700">12</div>
+                        <div className="text-sm text-orange-600">Active Programs</div>
+                        <div className="text-xs text-muted-foreground mt-1">Various skill levels</div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <h5 className="font-medium">Department Learning Progress</h5>
+                      <div className="space-y-3">
+                        {departments.map((dept) => (
+                          <div key={dept.id} className="p-3 border rounded-lg">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="font-medium">{dept.name}</span>
+                              <Badge variant="outline">{dept.members.length} learners</Badge>
+                            </div>
+                            <div className="flex justify-between text-sm mb-1">
+                              <span>Progress</span>
+                              <span>{Math.floor(Math.random() * 30) + 70}%</span>
+                            </div>
+                            <Progress value={Math.floor(Math.random() * 30) + 70} className="h-2" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Button className="w-full gap-2 bg-gradient-to-r from-admin to-admin-glow">
+                        <Plus className="w-4 h-4" />
+                        Create Learning Program
+                      </Button>
+                      <Button variant="outline" className="w-full gap-2">
+                        <Star className="w-4 h-4" />
+                        View Learning Library
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
+          {/* Team Collaboration Tab */}
           <TabsContent value="collaboration" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Team Collaboration Analytics</CardTitle>
+                <CardTitle>Organization Collaboration Management</CardTitle>
+                <p className="text-muted-foreground">Manage organization-wide collaboration tools and initiatives</p>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">Team collaboration analytics for admin view...</p>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h4 className="font-semibold">Collaboration Tools</h4>
+                    <div className="grid grid-cols-1 gap-3">
+                      {[
+                        { 
+                          name: "Team Chat", 
+                          users: 142, 
+                          usage: 89, 
+                          status: "active",
+                          icon: MessageSquare,
+                          description: "Internal messaging platform"
+                        },
+                        { 
+                          name: "Video Meetings", 
+                          users: 98, 
+                          usage: 76, 
+                          status: "active",
+                          icon: CalendarIcon,
+                          description: "Virtual meeting rooms"
+                        },
+                        { 
+                          name: "File Sharing", 
+                          users: 156, 
+                          usage: 94, 
+                          status: "active",
+                          icon: Share2,
+                          description: "Document collaboration"
+                        },
+                        { 
+                          name: "Project Boards", 
+                          users: 87, 
+                          usage: 68, 
+                          status: "active",
+                          icon: Briefcase,
+                          description: "Task management boards"
+                        }
+                      ].map((tool, index) => (
+                        <Card key={index}>
+                          <CardContent className="p-4">
+                            <div className="flex items-center gap-3 mb-3">
+                              <div className="p-2 bg-primary/10 rounded-lg">
+                                <tool.icon className="w-5 h-5 text-primary" />
+                              </div>
+                              <div className="flex-1">
+                                <h5 className="font-medium">{tool.name}</h5>
+                                <p className="text-xs text-muted-foreground">{tool.description}</p>
+                              </div>
+                              <Badge variant={tool.status === 'active' ? 'default' : 'secondary'}>
+                                {tool.status}
+                              </Badge>
+                            </div>
+                            <div className="space-y-2">
+                              <div className="flex justify-between text-sm">
+                                <span>Active Users</span>
+                                <span>{tool.users} / 156</span>
+                              </div>
+                              <div className="flex justify-between text-sm">
+                                <span>Usage Rate</span>
+                                <span>{tool.usage}%</span>
+                              </div>
+                              <Progress value={tool.usage} className="h-2" />
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="font-semibold">Collaboration Metrics</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-4 bg-blue-50 rounded-lg">
+                        <div className="text-2xl font-bold text-blue-700">324</div>
+                        <div className="text-sm text-blue-600">Active Conversations</div>
+                        <div className="text-xs text-muted-foreground mt-1">Across all channels</div>
+                      </div>
+                      <div className="p-4 bg-green-50 rounded-lg">
+                        <div className="text-2xl font-bold text-green-700">89%</div>
+                        <div className="text-sm text-green-600">Response Rate</div>
+                        <div className="text-xs text-muted-foreground mt-1">Within 2 hours</div>
+                      </div>
+                      <div className="p-4 bg-purple-50 rounded-lg">
+                        <div className="text-2xl font-bold text-purple-700">67</div>
+                        <div className="text-sm text-purple-600">Meetings This Week</div>
+                        <div className="text-xs text-muted-foreground mt-1">8.2 avg duration</div>
+                      </div>
+                      <div className="p-4 bg-orange-50 rounded-lg">
+                        <div className="text-2xl font-bold text-orange-700">1.2k</div>
+                        <div className="text-sm text-orange-600">Files Shared</div>
+                        <div className="text-xs text-muted-foreground mt-1">This month</div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <h5 className="font-medium">Recent Activity</h5>
+                      <div className="space-y-2">
+                        {[
+                          { action: "New project created", user: "Alice Johnson", time: "2 min ago", type: "project" },
+                          { action: "Team meeting scheduled", user: "Bob Smith", time: "15 min ago", type: "meeting" },
+                          { action: "Document shared", user: "Carol Davis", time: "1 hour ago", type: "file" },
+                          { action: "Task completed", user: "David Wilson", time: "2 hours ago", type: "task" }
+                        ].map((activity, index) => (
+                          <div key={index} className="flex items-center gap-3 p-2 bg-muted rounded">
+                            <div className={cn(
+                              "w-2 h-2 rounded-full",
+                              activity.type === 'project' ? 'bg-blue-500' :
+                              activity.type === 'meeting' ? 'bg-green-500' :
+                              activity.type === 'file' ? 'bg-purple-500' : 'bg-orange-500'
+                            )} />
+                            <div className="flex-1">
+                              <div className="text-sm">{activity.action}</div>
+                              <div className="text-xs text-muted-foreground">by {activity.user}</div>
+                            </div>
+                            <div className="text-xs text-muted-foreground">{activity.time}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Button className="w-full gap-2 bg-gradient-to-r from-admin to-admin-glow">
+                        <Settings className="w-4 h-4" />
+                        Configure Tools
+                      </Button>
+                      <Button variant="outline" className="w-full gap-2">
+                        <Activity className="w-4 h-4" />
+                        View Analytics Dashboard
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6">
+                  <h4 className="font-semibold mb-4">Quick Actions</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <Button variant="outline" className="gap-2 h-auto py-4 flex-col">
+                      <Plus className="w-6 h-6" />
+                      Create Team
+                      <span className="text-xs text-muted-foreground">Set up new collaboration</span>
+                    </Button>
+                    <Button variant="outline" className="gap-2 h-auto py-4 flex-col">
+                      <CalendarIcon className="w-6 h-6" />
+                      Schedule Meeting
+                      <span className="text-xs text-muted-foreground">Organize team sync</span>
+                    </Button>
+                    <Button variant="outline" className="gap-2 h-auto py-4 flex-col">
+                      <Share2 className="w-6 h-6" />
+                      Share Resources
+                      <span className="text-xs text-muted-foreground">Distribute documents</span>
+                    </Button>
+                    <Button variant="outline" className="gap-2 h-auto py-4 flex-col">
+                      <Eye className="w-6 h-6" />
+                      Monitor Activity
+                      <span className="text-xs text-muted-foreground">Track engagement</span>
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

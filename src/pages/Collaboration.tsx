@@ -24,7 +24,8 @@ import {
   Timer,
   Star,
   Clock,
-  AlertCircle
+  AlertCircle,
+  Plus
 } from "lucide-react";
 
 const Collaboration = () => {
@@ -412,7 +413,80 @@ const Collaboration = () => {
                 <p className="text-muted-foreground">Track your learning progress and skill development</p>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">Learning management content for employee view...</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h4 className="font-semibold">Current Learning Paths</h4>
+                    <div className="space-y-3">
+                      <div className="p-4 border rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <h5 className="font-medium">Advanced React Patterns</h5>
+                          <Badge variant="secondary">In Progress</Badge>
+                        </div>
+                        <div className="flex justify-between text-sm mb-2">
+                          <span>Progress</span>
+                          <span>65%</span>
+                        </div>
+                        <Progress value={65} className="mb-2" />
+                        <p className="text-xs text-muted-foreground">4 of 7 modules completed</p>
+                      </div>
+                      
+                      <div className="p-4 border rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <h5 className="font-medium">Leadership Fundamentals</h5>
+                          <Badge variant="outline">Not Started</Badge>
+                        </div>
+                        <div className="flex justify-between text-sm mb-2">
+                          <span>Progress</span>
+                          <span>0%</span>
+                        </div>
+                        <Progress value={0} className="mb-2" />
+                        <p className="text-xs text-muted-foreground">0 of 5 modules completed</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="font-semibold">Learning Statistics</h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-3 bg-blue-50 rounded-lg">
+                        <div className="text-lg font-bold text-blue-700">12</div>
+                        <div className="text-sm text-blue-600">Courses Completed</div>
+                      </div>
+                      <div className="p-3 bg-green-50 rounded-lg">
+                        <div className="text-lg font-bold text-green-700">45h</div>
+                        <div className="text-sm text-green-600">Learning Hours</div>
+                      </div>
+                      <div className="p-3 bg-purple-50 rounded-lg">
+                        <div className="text-lg font-bold text-purple-700">8</div>
+                        <div className="text-sm text-purple-600">Certificates</div>
+                      </div>
+                      <div className="p-3 bg-orange-50 rounded-lg">
+                        <div className="text-lg font-bold text-orange-700">95%</div>
+                        <div className="text-sm text-orange-600">Completion Rate</div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <h5 className="font-medium">Recent Achievements</h5>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-3 p-2 bg-muted rounded">
+                          <Star className="w-4 h-4 text-yellow-500" />
+                          <div>
+                            <div className="text-sm font-medium">React Expert</div>
+                            <div className="text-xs text-muted-foreground">Completed advanced React course</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 p-2 bg-muted rounded">
+                          <Star className="w-4 h-4 text-yellow-500" />
+                          <div>
+                            <div className="text-sm font-medium">Team Player</div>
+                            <div className="text-xs text-muted-foreground">100% collaboration score this month</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -425,7 +499,100 @@ const Collaboration = () => {
                 <p className="text-muted-foreground">Collaborate with your team members and track shared projects</p>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">Team collaboration features for employee view...</p>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h4 className="font-semibold">My Team Members</h4>
+                    <div className="space-y-3">
+                      {[
+                        { name: "Alice Johnson", role: "Team Lead", status: "online", avatar: "", lastSeen: "Just now" },
+                        { name: "Bob Smith", role: "Designer", status: "away", avatar: "", lastSeen: "30 min ago" },
+                        { name: "Carol Davis", role: "Developer", status: "in-meeting", avatar: "", lastSeen: "1 hour ago" },
+                        { name: "David Wilson", role: "Analyst", status: "offline", avatar: "", lastSeen: "2 hours ago" }
+                      ].map((member, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <div className="relative">
+                              <Avatar className="w-10 h-10">
+                                <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                              </Avatar>
+                              <div className={cn(
+                                "absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-background",
+                                getStatusColor(member.status)
+                              )} />
+                            </div>
+                            <div>
+                              <div className="font-medium">{member.name}</div>
+                              <div className="text-sm text-muted-foreground">{member.role}</div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <Badge variant="outline" className="text-xs">
+                              {member.status}
+                            </Badge>
+                            <div className="text-xs text-muted-foreground mt-1">{member.lastSeen}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="font-semibold">Shared Projects</h4>
+                    <div className="space-y-3">
+                      {[
+                        { name: "Website Redesign", members: 4, progress: 75, deadline: "Next Friday" },
+                        { name: "Mobile App", members: 3, progress: 45, deadline: "Next Month" },
+                        { name: "Data Analytics", members: 2, progress: 90, deadline: "This Week" }
+                      ].map((project, index) => (
+                        <div key={index} className="p-4 border rounded-lg">
+                          <div className="flex items-center justify-between mb-2">
+                            <h5 className="font-medium">{project.name}</h5>
+                            <Badge variant="outline">{project.members} members</Badge>
+                          </div>
+                          <div className="flex justify-between text-sm mb-2">
+                            <span>Progress</span>
+                            <span>{project.progress}%</span>
+                          </div>
+                          <Progress value={project.progress} className="mb-2" />
+                          <div className="flex justify-between text-xs text-muted-foreground">
+                            <span>Deadline: {project.deadline}</span>
+                            <Button size="sm" variant="ghost" className="h-6 px-2">
+                              View Details
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="p-4 border-2 border-dashed border-muted rounded-lg text-center">
+                      <Button variant="ghost" className="gap-2">
+                        <Plus className="w-4 h-4" />
+                        Request to Join Project
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6">
+                  <h4 className="font-semibold mb-4">Communication & Tools</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Button variant="outline" className="gap-2 h-auto py-4 flex-col">
+                      <MessageSquare className="w-6 h-6" />
+                      Team Chat
+                      <span className="text-xs text-muted-foreground">3 unread messages</span>
+                    </Button>
+                    <Button variant="outline" className="gap-2 h-auto py-4 flex-col">
+                      <Calendar className="w-6 h-6" />
+                      Schedule Meeting
+                      <span className="text-xs text-muted-foreground">Next available: 2 PM</span>
+                    </Button>
+                    <Button variant="outline" className="gap-2 h-auto py-4 flex-col">
+                      <Share2 className="w-6 h-6" />
+                      Share Files
+                      <span className="text-xs text-muted-foreground">5 recent files</span>
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
