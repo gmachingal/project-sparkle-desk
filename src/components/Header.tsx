@@ -197,20 +197,25 @@ const Header = ({ userRole }: HeaderProps) => {
           </DropdownMenu>
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* Enhanced Organization Switcher */}
+        <div className="flex items-center gap-2">
+          {/* Compact Organization Switcher */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className={`hidden lg:flex gap-2 px-3 ${isAdminPage ? 'hover:bg-admin/10 text-admin/70 hover:text-admin' : ''}`}>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className={`hidden lg:flex gap-2 px-2 h-8 border-muted-foreground/20 hover:border-muted-foreground/40 ${
+                  isAdminPage 
+                    ? 'hover:bg-admin/10 text-admin/80 hover:text-admin border-admin/20 hover:border-admin/40' 
+                    : 'hover:bg-primary/10'
+                }`}
+              >
                 <Building2 className="w-4 h-4" />
-                <div className="flex flex-col items-start">
-                  <span className="text-sm font-medium max-w-32 truncate">{getCurrentOrg()?.name}</span>
-                  <span className="text-xs text-muted-foreground">{getCurrentOrg()?.plan}</span>
-                </div>
+                <span className="text-sm font-medium max-w-20 truncate">{getCurrentOrg()?.name}</span>
                 <ChevronDown className="w-3 h-3 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-96">
+            <DropdownMenuContent align="start" className="w-96 bg-background/95 backdrop-blur-sm border border-border/60">
               <div className="p-3">
                 <div className="text-xs font-medium text-muted-foreground mb-3 px-1">
                   Switch Organization
@@ -293,7 +298,7 @@ const Header = ({ userRole }: HeaderProps) => {
           </div>
           
           {/* Action Buttons Group */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <Button 
               variant="hero" 
               size="sm" 
