@@ -1676,7 +1676,7 @@ const AdminCollaboration = () => {
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <Award className="w-5 h-5 text-primary" />
-                {selectedCertificate?.title}
+                {selectedCertificate?.course || selectedCertificate?.title}
               </DialogTitle>
             </DialogHeader>
             {selectedCertificate && (
@@ -1686,7 +1686,7 @@ const AdminCollaboration = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium text-sm">{selectedCertificate.employee}</p>
-                      <p className="text-xs text-muted-foreground">{selectedCertificate.employeeRole}</p>
+                      <p className="text-xs text-muted-foreground">{selectedCertificate.employeeRole || 'Employee'}</p>
                     </div>
                     <Badge variant="outline" className="text-xs">
                       {selectedCertificate.department}
@@ -1697,11 +1697,11 @@ const AdminCollaboration = () => {
                 {/* Certificate Display */}
                 <div className="text-center p-4 border-2 border-primary/20 rounded-lg bg-gradient-to-br from-primary/5 to-primary-glow/10">
                   <Award className="w-10 h-10 text-primary mx-auto mb-3" />
-                  <h3 className="text-base font-bold mb-2">{selectedCertificate.title}</h3>
+                  <h3 className="text-base font-bold mb-2">{selectedCertificate.course || selectedCertificate.title}</h3>
                   <div className="grid grid-cols-3 gap-3 text-sm">
                     <div>
                       <span className="text-muted-foreground">ID:</span>
-                      <p className="font-mono font-medium text-xs">{selectedCertificate.credentialId}</p>
+                      <p className="font-mono font-medium text-xs">{selectedCertificate.certificateId || selectedCertificate.credentialId}</p>
                     </div>
                     <div>
                       <span className="text-muted-foreground">Score:</span>
@@ -1709,7 +1709,7 @@ const AdminCollaboration = () => {
                     </div>
                     <div>
                       <span className="text-muted-foreground">Issued:</span>
-                      <p className="font-medium text-xs">{new Date(selectedCertificate.issueDate).toLocaleDateString()}</p>
+                      <p className="font-medium text-xs">{new Date(selectedCertificate.completedDate || selectedCertificate.issueDate).toLocaleDateString()}</p>
                     </div>
                   </div>
                 </div>
@@ -1722,7 +1722,7 @@ const AdminCollaboration = () => {
                     onClick={() => {
                       toast({
                         title: "Download Started",
-                        description: `Downloading certificate: ${selectedCertificate.title}`,
+                        description: `Downloading certificate: ${selectedCertificate.course || selectedCertificate.title}`,
                       });
                     }}
                   >
@@ -1734,7 +1734,7 @@ const AdminCollaboration = () => {
                     className="flex-1 gap-2" 
                     size="sm" 
                     onClick={() => {
-                      navigator.clipboard.writeText(`https://certificates.company.com/verify/${selectedCertificate.credentialId}`);
+                      navigator.clipboard.writeText(`https://certificates.company.com/verify/${selectedCertificate.certificateId || selectedCertificate.credentialId}`);
                       toast({
                         title: "Link Copied",
                         description: "Certificate verification link copied to clipboard",
