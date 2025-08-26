@@ -45,6 +45,7 @@ import {
 import { format } from "date-fns";
 
 const Collaboration = () => {
+  console.log("Collaboration component loaded");
   const [activeTab, setActiveTab] = useState("overview");
   
   // Dialog states
@@ -243,6 +244,8 @@ const Collaboration = () => {
     setLogDescription("");
     setSelectedCourse(null);
     setIsLogHoursOpen(false);
+  };
+
   const handleToggleAttendee = (memberId: string) => {
     setMeetingAttendees(prev => 
       prev.includes(memberId) 
