@@ -476,7 +476,7 @@ const Header = ({ userRole }: HeaderProps) => {
             {/* Settings & Profile Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Avatar className="w-8 h-8 cursor-pointer transition-all duration-200 hover:shadow-md hover:shadow-black/10 hover:-translate-y-0.5">
+                <Avatar className="w-8 h-8 cursor-pointer transition-all duration-200 hover:shadow-md hover:shadow-black/10 hover:-translate-y-0.5 border border-muted-foreground/20 hover:border-muted-foreground/40">
                   <AvatarImage src="" />
                   <AvatarFallback className="bg-primary text-primary-foreground">
                     <User className="w-4 h-4" />
