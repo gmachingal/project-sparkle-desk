@@ -67,6 +67,21 @@ const AdminCollaboration = () => {
   const [isViewCertificatesOpen, setIsViewCertificatesOpen] = useState(false);
   const [isCreateProgramOpen, setIsCreateProgramOpen] = useState(false);
   
+  // Enhanced Program creation states with assessments
+  const [programTitle, setProgramTitle] = useState("");
+  const [programDescription, setProgramDescription] = useState("");
+  const [programCategory, setProgramCategory] = useState("");
+  const [programDuration, setProgramDuration] = useState("");
+  const [programLevel, setProgramLevel] = useState("");
+  const [programCapacity, setProgramCapacity] = useState("");
+  const [programAssessments, setProgramAssessments] = useState<any[]>([]);
+  const [currentAssessment, setCurrentAssessment] = useState({
+    title: "",
+    passingScore: 70,
+    timeLimit: 30,
+    questions: [{ question: "", options: ["", "", "", ""], correct: 0, explanation: "" }]
+  });
+  
   const { toast } = useToast();
 
   // Check for admin state on component mount
@@ -1626,86 +1641,99 @@ const AdminCollaboration = () => {
             
             <div className="space-y-6">
               {/* Program Basic Info */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="program-name" className="text-sm font-medium">Program Name</Label>
-                  <Input
-                    id="program-name"
-                    placeholder="e.g., Frontend Development Bootcamp"
-                    className="mt-1"
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="program-category" className="text-sm font-medium">Category</Label>
-                  <Select defaultValue="">
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="technical">Technical Skills</SelectItem>
-                      <SelectItem value="leadership">Leadership Development</SelectItem>
-                      <SelectItem value="soft-skills">Soft Skills</SelectItem>
-                      <SelectItem value="compliance">Compliance Training</SelectItem>
-                      <SelectItem value="onboarding">Employee Onboarding</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+              <Card className="border-admin/20">
+                <CardHeader>
+                  <CardTitle className="text-lg">Program Information</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="program-name" className="text-sm font-medium">Program Name</Label>
+                      <Input
+                        id="program-name"
+                        value={programTitle}
+                        onChange={(e) => setProgramTitle(e.target.value)}
+                        placeholder="e.g., Frontend Development Bootcamp"
+                        className="mt-1 bg-background"
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="program-category" className="text-sm font-medium">Category</Label>
+                      <Select value={programCategory} onValueChange={setProgramCategory}>
+                        <SelectTrigger className="mt-1 bg-background">
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-background border shadow-lg z-50">
+                          <SelectItem value="technical">Technical Skills</SelectItem>
+                          <SelectItem value="leadership">Leadership Development</SelectItem>
+                          <SelectItem value="soft-skills">Soft Skills</SelectItem>
+                          <SelectItem value="compliance">Compliance Training</SelectItem>
+                          <SelectItem value="onboarding">Employee Onboarding</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
 
-              <div>
-                <Label htmlFor="program-description" className="text-sm font-medium">Program Description</Label>
-                <Textarea
-                  id="program-description"
-                  placeholder="Describe the learning objectives, target audience, and expected outcomes..."
-                  rows={3}
-                  className="mt-1"
-                />
-              </div>
+                  <div>
+                    <Label htmlFor="program-description" className="text-sm font-medium">Program Description</Label>
+                    <Textarea
+                      id="program-description"
+                      value={programDescription}
+                      onChange={(e) => setProgramDescription(e.target.value)}
+                      placeholder="Describe the learning objectives, target audience, and expected outcomes..."
+                      rows={3}
+                      className="mt-1 bg-background"
+                    />
+                  </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="duration" className="text-sm font-medium">Duration</Label>
-                  <Select defaultValue="">
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Select duration" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1-week">1 Week</SelectItem>
-                      <SelectItem value="2-weeks">2 Weeks</SelectItem>
-                      <SelectItem value="1-month">1 Month</SelectItem>
-                      <SelectItem value="3-months">3 Months</SelectItem>
-                      <SelectItem value="6-months">6 Months</SelectItem>
-                      <SelectItem value="custom">Custom</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <Label htmlFor="difficulty" className="text-sm font-medium">Difficulty Level</Label>
-                  <Select defaultValue="">
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Select level" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="beginner">Beginner</SelectItem>
-                      <SelectItem value="intermediate">Intermediate</SelectItem>
-                      <SelectItem value="advanced">Advanced</SelectItem>
-                      <SelectItem value="expert">Expert</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <Label htmlFor="capacity" className="text-sm font-medium">Max Participants</Label>
-                  <Input
-                    id="capacity"
-                    type="number"
-                    placeholder="e.g., 50"
-                    className="mt-1"
-                  />
-                </div>
-              </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label htmlFor="duration" className="text-sm font-medium">Duration</Label>
+                      <Select value={programDuration} onValueChange={setProgramDuration}>
+                        <SelectTrigger className="mt-1 bg-background">
+                          <SelectValue placeholder="Select duration" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-background border shadow-lg z-50">
+                          <SelectItem value="1-week">1 Week</SelectItem>
+                          <SelectItem value="2-weeks">2 Weeks</SelectItem>
+                          <SelectItem value="1-month">1 Month</SelectItem>
+                          <SelectItem value="3-months">3 Months</SelectItem>
+                          <SelectItem value="6-months">6 Months</SelectItem>
+                          <SelectItem value="custom">Custom</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="difficulty" className="text-sm font-medium">Difficulty Level</Label>
+                      <Select value={programLevel} onValueChange={setProgramLevel}>
+                        <SelectTrigger className="mt-1 bg-background">
+                          <SelectValue placeholder="Select level" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-background border shadow-lg z-50">
+                          <SelectItem value="beginner">Beginner</SelectItem>
+                          <SelectItem value="intermediate">Intermediate</SelectItem>
+                          <SelectItem value="advanced">Advanced</SelectItem>
+                          <SelectItem value="expert">Expert</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="capacity" className="text-sm font-medium">Max Participants</Label>
+                      <Input
+                        id="capacity"
+                        type="number"
+                        value={programCapacity}
+                        onChange={(e) => setProgramCapacity(e.target.value)}
+                        placeholder="e.g., 50"
+                        className="mt-1 bg-background"
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
               {/* Target Audience */}
               <div>
@@ -1801,20 +1829,42 @@ const AdminCollaboration = () => {
                 </div>
               </div>
 
-              {/* Actions */}
+              {/* Enhanced Actions */}
               <div className="flex gap-3 pt-4 border-t">
                 <Button 
                   className="flex-1 bg-gradient-to-r from-admin to-admin-glow"
                   onClick={() => {
-                    toast({
-                      title: "Learning Program Created! 🎉",
-                      description: "New learning program has been successfully created and is ready for enrollment."
-                    });
-                    setIsCreateProgramOpen(false);
+                    if (programTitle && programDescription && programAssessments.length > 0) {
+                      toast({
+                        title: "Learning Program Created! 🎉",
+                        description: `"${programTitle}" has been created with ${programAssessments.length} assessments and is ready for enrollment.`
+                      });
+                      // Reset form
+                      setProgramTitle("");
+                      setProgramDescription("");
+                      setProgramCategory("");
+                      setProgramDuration("");
+                      setProgramLevel("");
+                      setProgramCapacity("");
+                      setProgramAssessments([]);
+                      setCurrentAssessment({
+                        title: "",
+                        passingScore: 70,
+                        timeLimit: 30,
+                        questions: [{ question: "", options: ["", "", "", ""], correct: 0, explanation: "" }]
+                      });
+                      setIsCreateProgramOpen(false);
+                    } else {
+                      toast({
+                        title: "Missing Information",
+                        description: "Please complete program details and add at least one assessment.",
+                        variant: "destructive"
+                      });
+                    }
                   }}
                 >
                   <Plus className="w-4 h-4 mr-2" />
-                  Create Program
+                  Create Program ({programAssessments.length} assessment{programAssessments.length !== 1 ? 's' : ''})
                 </Button>
                 <Button variant="outline" onClick={() => setIsCreateProgramOpen(false)}>
                   Cancel
