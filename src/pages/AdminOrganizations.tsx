@@ -1631,7 +1631,7 @@ const AdminOrganizations = () => {
                                           {course.level}
                                         </Badge>
                                       </div>
-                                      <Button variant="ghost" size="sm">
+                                      <Button variant="ghost" size="sm" className="hover:bg-admin/10 hover:text-admin">
                                         <MoreVertical className="w-4 h-4" />
                                       </Button>
                                     </div>
@@ -1656,11 +1656,11 @@ const AdminOrganizations = () => {
                                     </div>
                                     
                                     <div className="flex gap-2 mt-3">
-                                      <Button size="sm" variant="outline" className="flex-1 text-xs">
+                                      <Button size="sm" variant="outline" className="flex-1 text-xs border-admin/30 hover:bg-admin/10 hover:text-admin">
                                         <Eye className="w-3 h-3 mr-1" />
                                         Preview
                                       </Button>
-                                      <Button size="sm" variant="outline" className="flex-1 text-xs">
+                                      <Button size="sm" variant="outline" className="flex-1 text-xs border-admin/30 hover:bg-admin/10 hover:text-admin">
                                         <Edit className="w-3 h-3 mr-1" />
                                         Edit
                                       </Button>
@@ -1819,7 +1819,7 @@ const AdminOrganizations = () => {
                         </CardTitle>
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button className="gap-2">
+                            <Button className="gap-2 bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90">
                               <Plus className="w-4 h-4" />
                               Add Topic
                             </Button>
@@ -1880,8 +1880,8 @@ const AdminOrganizations = () => {
                                 </div>
                               </div>
                               <div className="flex justify-end gap-2">
-                                <Button variant="outline">Cancel</Button>
-                                <Button>Create Topic</Button>
+                                <Button variant="outline" className="border-admin/30 hover:bg-admin/10 hover:text-admin">Cancel</Button>
+                                <Button className="bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90">Create Topic</Button>
                               </div>
                             </div>
                           </DialogContent>
@@ -1935,10 +1935,10 @@ const AdminOrganizations = () => {
                               </div>
                               
                               <div className="flex items-center gap-2">
-                                <Button variant="outline" size="sm">
+                                <Button variant="outline" size="sm" className="border-admin/30 hover:bg-admin/10 hover:text-admin">
                                   <Edit className="w-3 h-3" />
                                 </Button>
-                                <Button variant="outline" size="sm">
+                                <Button variant="outline" size="sm" className="border-admin/30 hover:bg-admin/10 hover:text-admin">
                                   <MoreHorizontal className="w-3 h-3" />
                                 </Button>
                               </div>
@@ -2035,15 +2035,15 @@ const AdminOrganizations = () => {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      <Button className="w-full gap-2" size="sm">
+                      <Button className="w-full gap-2 bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90" size="sm">
                         <Plus className="w-4 h-4" />
                         Bulk Import Topics
                       </Button>
-                      <Button variant="outline" className="w-full gap-2" size="sm">
+                      <Button variant="outline" className="w-full gap-2 border-admin/30 hover:bg-admin/10 hover:text-admin" size="sm">
                         <Copy className="w-4 h-4" />
                         Export Learning Data
                       </Button>
-                      <Button variant="outline" className="w-full gap-2" size="sm">
+                      <Button variant="outline" className="w-full gap-2 border-admin/30 hover:bg-admin/10 hover:text-admin" size="sm">
                         <Settings className="w-4 h-4" />
                         Learning Settings
                       </Button>
