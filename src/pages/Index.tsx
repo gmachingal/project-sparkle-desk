@@ -6,13 +6,16 @@ import AdminDashboard from "@/components/AdminDashboard";
 const Index = () => {
   // Mock user role - in real app this would come from auth context
   const [userRole] = useState<'admin' | 'user'>(() => {
-    // Check for preferred role in localStorage (for demo purposes)
+    // Check for admin context based on various indicators
     const preferredRole = localStorage.getItem('preferredRole');
-    if (preferredRole === 'admin') {
-      localStorage.removeItem('preferredRole'); // Clear after use
-      return 'admin';
-    }
-    return 'user';
+    const currentPath = window.location.pathname;
+    const hasAdminContext = currentPath.includes('/admin') || 
+                           currentPath.includes('admin-') || 
+                           currentPath === '/organization' ||
+                           preferredRole === 'admin';
+    
+    // Maintain admin state but don't clear from localStorage
+    return hasAdminContext ? 'admin' : 'user';
   });
 
   return (

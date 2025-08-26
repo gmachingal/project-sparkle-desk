@@ -126,6 +126,9 @@ const Header = ({ userRole }: HeaderProps) => {
   const getNavigationUrl = (basePath: string) => {
     // If currently in admin mode, route to admin versions when they exist
     if (isAdminPage) {
+      // Set admin preference in localStorage to maintain state
+      localStorage.setItem('preferredRole', 'admin');
+      
       switch (basePath) {
         case "/dashboard":
           // Dashboard stays the same but should maintain admin context via userRole
@@ -137,6 +140,9 @@ const Header = ({ userRole }: HeaderProps) => {
         default:
           return basePath;
       }
+    } else {
+      // Clear admin preference when not in admin mode
+      localStorage.removeItem('preferredRole');
     }
     return basePath;
   };
