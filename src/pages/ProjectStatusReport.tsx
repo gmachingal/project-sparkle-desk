@@ -198,18 +198,16 @@ const ProjectStatusReport = () => {
 
   return (
     <div className="min-h-screen bg-background">
-
-      <div className="backdrop-blur-sm bg-gradient-to-l sticky top-0 z-50 from-primary/40 via-primary-glow/60 to-primary/80  shadow-2xl shadow-black/30 drop-shadow-lg">
-        <div className="flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" onClick={() => navigate(-1)} className="gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </Button>
-            <h1 className="text-2xl font-bold from-primary text-white">Project Status Report</h1>
-          </div>
-        </div>
-      </div>
+      <Header
+        title="Project Status Report"
+        backButton={true}
+        actionButton={{
+          label: "Export",
+          icon: Download,
+          onClick: exportReport,
+          variant: "outline"
+        }}
+      />
       
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
@@ -222,23 +220,17 @@ const ProjectStatusReport = () => {
                 Comprehensive Performance Analysis
               </p>
             </div>
-            <div className="flex gap-2">
-              <Select value={timeRange} onValueChange={setTimeRange}>
-                <SelectTrigger className="w-40">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="week">Last Week</SelectItem>
-                  <SelectItem value="month">Last Month</SelectItem>
-                  <SelectItem value="quarter">Last Quarter</SelectItem>
-                  <SelectItem value="year">Last Year</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" onClick={exportReport}>
-                <Download className="w-4 h-4 mr-2" />
-                Export
-              </Button>
-            </div>
+            <Select value={timeRange} onValueChange={setTimeRange}>
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="week">Last Week</SelectItem>
+                <SelectItem value="month">Last Month</SelectItem>
+                <SelectItem value="quarter">Last Quarter</SelectItem>
+                <SelectItem value="year">Last Year</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 

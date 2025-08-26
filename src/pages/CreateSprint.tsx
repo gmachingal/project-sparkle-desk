@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -128,25 +129,17 @@ const CreateSprint = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="backdrop-blur-sm bg-gradient-to-l sticky top-0 z-50 from-primary/40 via-primary-glow/60 to-primary/80 shadow-2xl shadow-black/30 drop-shadow-lg">
-        <div className="flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" onClick={() => navigate(-1)} className="gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </Button>
-            <div>
-              <h1 className="text-2xl font-bold text-white">Create Sprint</h1>
-              <p className="text-white/80 text-sm">for {project.name}</p>
-            </div>
-          </div>
-          <Button variant="default" onClick={handleSubmit} className="gap-2 bg-white text-primary hover:bg-white/90">
-            <Save className="w-4 h-4" />
-            Create Sprint
-          </Button>
-        </div>
-      </div>
+      <Header
+        title="Create Sprint"
+        subtitle={`for ${project.name}`}
+        backButton={true}
+        actionButton={{
+          label: "Create Sprint",
+          icon: Save,
+          onClick: () => handleSubmit({ preventDefault: () => {} } as React.FormEvent),
+          variant: "default"
+        }}
+      />
 
       <div className="container mx-auto px-4 py-8">
         <form onSubmit={handleSubmit} className="space-y-6">
