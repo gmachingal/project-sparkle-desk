@@ -482,61 +482,61 @@ const TimeLogging = () => {
                         )}
                       </div>
 
-                      {/* Enhanced Task Cards */}
-                      <div className="space-y-4">
+                      {/* Compact Task Cards */}
+                      <div className="space-y-3">
                         {currentTasks.map((task) => {
                           const entry = timeEntries[task.id] || { hours: '', notes: '' };
                           const progressPercentage = task.estimatedHours > 0 ? Math.round((task.loggedHours / task.estimatedHours) * 100) : 0;
                           
                           return (
-                            <Card key={task.id} className="group hover:shadow-md transition-all duration-200 border-l-4 border-l-primary/20 hover:border-l-primary">
-                              <CardContent className="p-6">
-                                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                                  {/* Task Information */}
-                                  <div className="lg:col-span-7 space-y-4">
-                                    {/* Task Header */}
+                            <Card key={task.id} className="group hover:shadow-sm transition-all duration-200 border-l-4 border-l-primary/20 hover:border-l-primary">
+                              <CardContent className="p-4">
+                                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                                  {/* Task Information - Compact */}
+                                  <div className="lg:col-span-8 space-y-2">
+                                    {/* Task Header - Condensed */}
                                     <div>
-                                      <div className="flex items-start justify-between mb-3">
-                                        <h4 className="font-semibold text-base leading-tight flex-1 pr-4">{task.title}</h4>
-                                        <div className="flex items-center gap-2 flex-shrink-0">
-                                          <Badge className={`${getPriorityColor(task.priority)} text-xs`} variant="outline">
-                                            <Flag className="w-3 h-3 mr-1" />
+                                      <div className="flex items-start justify-between mb-2">
+                                        <h4 className="font-semibold text-sm leading-tight flex-1 pr-3">{task.title}</h4>
+                                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                                          <Badge className={`${getPriorityColor(task.priority)} text-xs px-1.5 py-0.5`} variant="outline">
+                                            <Flag className="w-2.5 h-2.5 mr-1" />
                                             {task.priority}
                                           </Badge>
-                                          <Badge className={`${getStatusColor(task.status)} text-xs`} variant="secondary">
+                                          <Badge className={`${getStatusColor(task.status)} text-xs px-1.5 py-0.5`} variant="secondary">
                                             {task.status.replace('-', ' ')}
                                           </Badge>
                                         </div>
                                       </div>
                                       
-                                      <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+                                      <div className="flex items-center gap-4 text-xs text-muted-foreground mb-2">
                                         <span className="flex items-center gap-1">
-                                          <Briefcase className="w-4 h-4" />
+                                          <Briefcase className="w-3 h-3" />
                                           {task.project}
                                         </span>
                                         <span className="flex items-center gap-1">
-                                          <User className="w-4 h-4" />
+                                          <User className="w-3 h-3" />
                                           {task.assignee}
                                         </span>
                                         <span className="flex items-center gap-1">
-                                          <CalendarLucide className="w-4 h-4" />
+                                          <CalendarLucide className="w-3 h-3" />
                                           Due {format(task.dueDate, 'MMM dd')}
                                         </span>
                                       </div>
                                       
-                                      <p className="text-sm text-muted-foreground line-clamp-2">{task.description}</p>
+                                      <p className="text-xs text-muted-foreground line-clamp-1 mb-2">{task.description}</p>
                                     </div>
 
-                                    {/* Progress Section */}
-                                    <div className="space-y-2">
-                                      <div className="flex items-center justify-between text-sm">
-                                        <span className="text-muted-foreground">Time Progress</span>
+                                    {/* Progress Section - Compact */}
+                                    <div className="space-y-1">
+                                      <div className="flex items-center justify-between text-xs">
+                                        <span className="text-muted-foreground">Progress</span>
                                         <span className="font-medium">{task.loggedHours}h / {task.estimatedHours}h ({progressPercentage}%)</span>
                                       </div>
-                                      <div className="w-full bg-muted rounded-full h-2">
+                                      <div className="w-full bg-muted rounded-full h-1.5">
                                         <div 
                                           className={cn(
-                                            "h-2 rounded-full transition-all duration-300",
+                                            "h-1.5 rounded-full transition-all duration-300",
                                             progressPercentage >= 100 ? "bg-green-500" : progressPercentage >= 75 ? "bg-yellow-500" : "bg-primary"
                                           )}
                                           style={{ width: `${Math.min(progressPercentage, 100)}%` }}
@@ -545,55 +545,57 @@ const TimeLogging = () => {
                                     </div>
                                   </div>
 
-                                  {/* Time Logging Section */}
-                                  <div className="lg:col-span-5">
-                                    <div className="bg-muted/30 rounded-lg p-4 space-y-4">
-                                      <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-                                        <Timer className="w-4 h-4 text-primary" />
-                                        Log Time Entry
+                                  {/* Time Logging Section - Compact */}
+                                  <div className="lg:col-span-4">
+                                    <div className="bg-muted/20 rounded-md p-3 space-y-3">
+                                      <div className="flex items-center gap-2 text-xs font-medium text-foreground">
+                                        <Timer className="w-3 h-3 text-primary" />
+                                        Log Time
                                       </div>
                                       
-                                      <div className="grid grid-cols-12 gap-3">
-                                        <div className="col-span-4">
-                                          <Label htmlFor={`hours-${task.id}`} className="text-xs font-medium">Hours</Label>
-                                          <div className="relative mt-1">
-                                            <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                                            <Input
-                                              id={`hours-${task.id}`}
-                                              type="number"
-                                              step="0.25"
-                                              min="0"
-                                              max="24"
-                                              placeholder="0.00"
-                                              value={entry.hours}
-                                              onChange={(e) => handleTimeChange(task.id, e.target.value)}
-                                              className="pl-10 h-9 text-sm font-medium"
+                                      <div className="space-y-2">
+                                        <div className="grid grid-cols-5 gap-2">
+                                          <div className="col-span-2">
+                                            <Label htmlFor={`hours-${task.id}`} className="text-xs font-medium">Hours</Label>
+                                            <div className="relative mt-1">
+                                              <Clock className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground w-3 h-3" />
+                                              <Input
+                                                id={`hours-${task.id}`}
+                                                type="number"
+                                                step="0.25"
+                                                min="0"
+                                                max="24"
+                                                placeholder="0.00"
+                                                value={entry.hours}
+                                                onChange={(e) => handleTimeChange(task.id, e.target.value)}
+                                                className="pl-7 h-8 text-xs font-medium"
+                                              />
+                                            </div>
+                                          </div>
+                                          
+                                          <div className="col-span-3">
+                                            <Label htmlFor={`notes-${task.id}`} className="text-xs font-medium">Notes</Label>
+                                            <Textarea
+                                              id={`notes-${task.id}`}
+                                              placeholder="Work description..."
+                                              value={entry.notes}
+                                              onChange={(e) => handleNotesChange(task.id, e.target.value)}
+                                              className="resize-none h-8 text-xs mt-1"
+                                              rows={1}
                                             />
                                           </div>
                                         </div>
                                         
-                                        <div className="col-span-8">
-                                          <Label htmlFor={`notes-${task.id}`} className="text-xs font-medium">Work Description</Label>
-                                          <Textarea
-                                            id={`notes-${task.id}`}
-                                            placeholder="Describe what you worked on..."
-                                            value={entry.notes}
-                                            onChange={(e) => handleNotesChange(task.id, e.target.value)}
-                                            className="resize-none h-9 text-sm mt-1"
-                                            rows={1}
-                                          />
-                                        </div>
+                                        <Button 
+                                          onClick={() => handleSaveTimeEntry(task.id)}
+                                          disabled={!entry.hours || parseFloat(entry.hours) <= 0}
+                                          className="w-full gap-1.5 h-8 text-xs bg-primary hover:bg-primary/90"
+                                          size="sm"
+                                        >
+                                          <Timer className="w-3 h-3" />
+                                          Log {entry.hours || '0'}h
+                                        </Button>
                                       </div>
-                                      
-                                      <Button 
-                                        onClick={() => handleSaveTimeEntry(task.id)}
-                                        disabled={!entry.hours || parseFloat(entry.hours) <= 0}
-                                        className="w-full gap-2 h-9 bg-primary hover:bg-primary/90"
-                                        size="sm"
-                                      >
-                                        <Timer className="w-4 h-4" />
-                                        Log {entry.hours || '0'} Hour{entry.hours && parseFloat(entry.hours) !== 1 ? 's' : ''}
-                                      </Button>
                                     </div>
                                   </div>
                                 </div>
