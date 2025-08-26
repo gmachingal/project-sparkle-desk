@@ -637,9 +637,95 @@ const DocumentMockup = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-5 gap-10">
+        {/* Quick Actions Bar */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Quick Actions */}
+          <Card className="border-2 shadow-lg bg-gradient-to-br from-background to-muted/30">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg font-bold flex items-center gap-2">
+                <Plus className="w-5 h-5 text-primary" />
+                Quick Actions
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="grid grid-cols-2 gap-2">
+                <Button variant="outline" className="justify-start gap-2 h-10 text-sm border hover:border-primary/50" onClick={() => setIsCreateDialogOpen(true)}>
+                  <FilePlus className="w-4 h-4" />
+                  Create
+                </Button>
+                <Button variant="outline" className="justify-start gap-2 h-10 text-sm border hover:border-primary/50">
+                  <Folder className="w-4 h-4" />
+                  New Space
+                </Button>
+                <Button variant="outline" className="justify-start gap-2 h-10 text-sm border hover:border-primary/50">
+                  <Upload className="w-4 h-4" />
+                  Upload
+                </Button>
+                <Button variant="outline" className="justify-start gap-2 h-10 text-sm border hover:border-primary/50" onClick={handleEditDocument}>
+                  <Edit className="w-4 h-4" />
+                  Editor
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Popular Templates */}
+          <Card className="border-2 shadow-lg bg-gradient-to-br from-background to-muted/30">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg font-bold flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-primary" />
+                Popular Templates
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-2">
+                {templates.slice(0, 4).map((template) => (
+                  <div key={template.id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer border border-transparent hover:border-primary/20">
+                    <template.icon className="w-4 h-4 text-primary flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="font-medium text-xs truncate">{template.name}</p>
+                      <p className="text-xs text-muted-foreground truncate">{template.category}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Your Stats */}
+          <Card className="border-2 shadow-lg bg-gradient-to-br from-background to-muted/30">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg font-bold flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-primary" />
+                Your Stats
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-primary">12</div>
+                  <div className="text-xs text-muted-foreground">Documents</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-primary">1.2K</div>
+                  <div className="text-xs text-muted-foreground">Views</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-primary">56</div>
+                  <div className="text-xs text-muted-foreground">Comments</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-primary">8</div>
+                  <div className="text-xs text-muted-foreground">Collabs</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-1 gap-10">
           {/* Main Content */}
-          <div className="xl:col-span-4">
+          <div>
             <Tabs defaultValue="documents" className="space-y-8">
               <TabsList className="grid w-full grid-cols-4 h-14 p-1 bg-muted/30 border border-border/50">
                 <TabsTrigger 
@@ -1217,83 +1303,6 @@ const DocumentMockup = () => {
                 </Card>
               </TabsContent>
             </Tabs>
-          </div>
-
-          {/* Sidebar */}
-          <div className="xl:col-span-1 space-y-6">
-            {/* Quick Actions */}
-            <Card className="border-2 shadow-lg bg-gradient-to-br from-background to-muted/30">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-xl font-bold">Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start gap-3 h-12 border-2 hover:border-primary/50 hover:bg-primary/5" onClick={() => setIsCreateDialogOpen(true)}>
-                  <FilePlus className="w-5 h-5" />
-                  <span className="font-medium">Create Page</span>
-                </Button>
-                <Button variant="outline" className="w-full justify-start gap-3 h-12 border-2 hover:border-primary/50 hover:bg-primary/5">
-                  <Folder className="w-5 h-5" />
-                  <span className="font-medium">New Space</span>
-                </Button>
-                <Button variant="outline" className="w-full justify-start gap-3 h-12 border-2 hover:border-primary/50 hover:bg-primary/5">
-                  <Upload className="w-5 h-5" />
-                  <span className="font-medium">Upload File</span>
-                </Button>
-                <Button variant="outline" className="w-full justify-start gap-3 h-12 border-2 hover:border-primary/50 hover:bg-primary/5" onClick={() => setIsTemplateDialogOpen(true)}>
-                  <BookOpen className="w-5 h-5" />
-                  <span className="font-medium">Browse Templates</span>
-                </Button>
-                <Button variant="outline" className="w-full justify-start gap-3 h-12 border-2 hover:border-primary/50 hover:bg-primary/5" onClick={handleEditDocument}>
-                  <Edit className="w-5 h-5" />
-                  <span className="font-medium">Open Editor</span>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Popular Templates */}
-            <Card className="border-2 shadow-lg bg-gradient-to-br from-background to-muted/30">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-xl font-bold">Popular Templates</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {templates.slice(0, 4).map((template) => (
-                  <div key={template.id} className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer border border-transparent hover:border-primary/20">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <template.icon className="w-5 h-5 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-semibold text-sm">{template.name}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{template.category}</p>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Analytics */}
-            <Card className="border-2 shadow-lg bg-gradient-to-br from-background to-muted/30">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-xl font-bold">Your Stats</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground font-medium">Documents Created</span>
-                  <span className="text-2xl font-bold text-primary">12</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground font-medium">Total Views</span>
-                  <span className="text-2xl font-bold text-primary">1,234</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground font-medium">Comments</span>
-                  <span className="text-2xl font-bold text-primary">56</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground font-medium">Collaborations</span>
-                  <span className="text-2xl font-bold text-primary">8</span>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
 
