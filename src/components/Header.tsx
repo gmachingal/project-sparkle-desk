@@ -127,6 +127,8 @@ const Header = ({ userRole }: HeaderProps) => {
     // If currently in admin mode, route to admin versions when they exist
     if (isAdminPage) {
       switch (basePath) {
+        case "/dashboard":
+          return userRole === 'admin' ? "/dashboard" : "/dashboard";
         case "/attendance":
           return "/admin-attendance";
         case "/leave-management":
@@ -204,7 +206,7 @@ const Header = ({ userRole }: HeaderProps) => {
             <Button 
               variant="ghost" 
               size="sm" 
-              onClick={() => navigate("/dashboard")} 
+              onClick={() => navigate(getNavigationUrl("/dashboard"))}
               className={`gap-2 ${isActivePage("/dashboard") ? (isAdminPage ? "bg-admin text-admin-foreground" : "bg-primary text-primary-foreground") : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
               <Home className="w-4 h-4" />
@@ -265,7 +267,7 @@ const Header = ({ userRole }: HeaderProps) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56">
-              <DropdownMenuItem onClick={() => navigate("/dashboard")} className="gap-2">
+              <DropdownMenuItem onClick={() => navigate(getNavigationUrl("/dashboard"))} className="gap-2">
                 <Home className="w-4 h-4" />
                 Dashboard
               </DropdownMenuItem>
