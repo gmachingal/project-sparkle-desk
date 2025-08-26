@@ -40,7 +40,13 @@ import {
   Video,
   Phone,
   FileText,
-  User
+  User,
+  Smile,
+  Paperclip,
+  Mic,
+  MoreHorizontal,
+  Search,
+  MapPin
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -71,6 +77,10 @@ const Collaboration = () => {
   const [assessmentCourse, setAssessmentCourse] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [assessmentAnswers, setAssessmentAnswers] = useState<string[]>([]);
+  const [isTyping, setIsTyping] = useState(false);
+  const [meetingDuration, setMeetingDuration] = useState("60");
+  const [meetingType, setMeetingType] = useState("video");
+  const [meetingRoom, setMeetingRoom] = useState("");
   
   const { toast } = useToast();
 
@@ -169,40 +179,89 @@ const Collaboration = () => {
       name: "General Team Chat", 
       participants: teamMembers.slice(0, 4),
       lastMessage: "Backend APIs are almost ready",
-      unreadCount: 3
+      lastMessageTime: "2 min ago",
+      unreadCount: 3,
+      isOnline: true
     },
     { 
       id: "project-alpha", 
       name: "Project Alpha", 
       participants: [teamMembers[0], teamMembers[1], teamMembers[2]],
       lastMessage: "Making good progress on the designs!",
-      unreadCount: 1
+      lastMessageTime: "15 min ago",
+      unreadCount: 1,
+      isOnline: true
     },
     { 
       id: "dev-team", 
       name: "Development Team", 
       participants: [teamMembers[0], teamMembers[2], teamMembers[5]],
       lastMessage: "Code review needed for PR #123",
-      unreadCount: 0
+      lastMessageTime: "1 hour ago",
+      unreadCount: 0,
+      isOnline: false
     }
+  ];
+
+  const meetingRooms = [
+    { id: "conference-a", name: "Conference Room A", capacity: 10, available: true },
+    { id: "conference-b", name: "Conference Room B", capacity: 8, available: false },
+    { id: "meeting-room-1", name: "Meeting Room 1", capacity: 6, available: true },
+    { id: "phone-booth-1", name: "Phone Booth 1", capacity: 2, available: true }
   ];
 
   const chatMessages = {
     "team-general": [
-      { id: "1", user: "Alice Johnson", message: "Hey team, how's the project going?", time: "10:30 AM", avatar: "" },
-      { id: "2", user: "Bob Smith", message: "Making good progress on the designs!", time: "10:32 AM", avatar: "" },
-      { id: "3", user: "Carol Davis", message: "Backend APIs are almost ready", time: "10:35 AM", avatar: "" },
-      { id: "4", user: "David Wilson", message: "Great work everyone! Let's sync up tomorrow.", time: "10:40 AM", avatar: "" }
+      { 
+        id: "1", 
+        user: "Alice Johnson", 
+        message: "Hey team, how's the project going?", 
+        time: "10:30 AM", 
+        timestamp: new Date(), 
+        avatar: "", 
+        isOwn: false,
+        reactions: [{ emoji: "👍", count: 2, users: ["Bob Smith", "Carol Davis"] }]
+      },
+      { 
+        id: "2", 
+        user: "Bob Smith", 
+        message: "Making good progress on the designs! The new mockups are looking great.", 
+        time: "10:32 AM", 
+        timestamp: new Date(), 
+        avatar: "", 
+        isOwn: false,
+        reactions: []
+      },
+      { 
+        id: "3", 
+        user: "You", 
+        message: "That's awesome! Can't wait to see them.", 
+        time: "10:33 AM", 
+        timestamp: new Date(), 
+        avatar: "", 
+        isOwn: true,
+        reactions: [{ emoji: "🎉", count: 1, users: ["Alice Johnson"] }]
+      },
+      { 
+        id: "4", 
+        user: "Carol Davis", 
+        message: "Backend APIs are almost ready. Should be deployed by EOD.", 
+        time: "10:35 AM", 
+        timestamp: new Date(), 
+        avatar: "", 
+        isOwn: false,
+        reactions: []
+      }
     ],
     "project-alpha": [
-      { id: "1", user: "Alice Johnson", message: "Project Alpha kickoff meeting scheduled", time: "9:00 AM", avatar: "" },
-      { id: "2", user: "Bob Smith", message: "I'll have the mockups ready by EOD", time: "9:15 AM", avatar: "" },
-      { id: "3", user: "Carol Davis", message: "Database schema is finalized", time: "9:30 AM", avatar: "" }
+      { id: "1", user: "Alice Johnson", message: "Project Alpha kickoff meeting scheduled", time: "9:00 AM", timestamp: new Date(), avatar: "", isOwn: false, reactions: [] },
+      { id: "2", user: "Bob Smith", message: "I'll have the mockups ready by EOD", time: "9:15 AM", timestamp: new Date(), avatar: "", isOwn: false, reactions: [] },
+      { id: "3", user: "Carol Davis", message: "Database schema is finalized", time: "9:30 AM", timestamp: new Date(), avatar: "", isOwn: false, reactions: [] }
     ],
     "dev-team": [
-      { id: "1", user: "Alice Johnson", message: "Code review needed for PR #123", time: "2:00 PM", avatar: "" },
-      { id: "2", user: "Carol Davis", message: "I'll review it after my current task", time: "2:05 PM", avatar: "" },
-      { id: "3", user: "Frank Rodriguez", message: "Testing scenarios look good", time: "2:10 PM", avatar: "" }
+      { id: "1", user: "Alice Johnson", message: "Code review needed for PR #123", time: "2:00 PM", timestamp: new Date(), avatar: "", isOwn: false, reactions: [] },
+      { id: "2", user: "Carol Davis", message: "I'll review it after my current task", time: "2:05 PM", timestamp: new Date(), avatar: "", isOwn: false, reactions: [] },
+      { id: "3", user: "Frank Rodriguez", message: "Testing scenarios look good", time: "2:10 PM", timestamp: new Date(), avatar: "", isOwn: false, reactions: [] }
     ]
   };
 
@@ -279,6 +338,10 @@ const Collaboration = () => {
   const handleSendMessage = () => {
     if (!chatMessage.trim()) return;
     
+    // Simulate typing indicator
+    setIsTyping(true);
+    setTimeout(() => setIsTyping(false), 1000);
+    
     toast({
       title: "Message Sent",
       description: "Your message has been sent to the team",
@@ -289,7 +352,7 @@ const Collaboration = () => {
   const handleScheduleMeeting = () => {
     if (!meetingTitle || !meetingDate || !meetingTime || meetingAttendees.length === 0) {
       toast({
-        title: "Error",
+        title: "Missing Information",
         description: "Please fill in all required fields and select at least one attendee",
         variant: "destructive"
       });
@@ -301,15 +364,22 @@ const Collaboration = () => {
       .filter(Boolean)
       .join(", ");
 
+    const roomName = meetingType === "in-person" && meetingRoom 
+      ? meetingRooms.find(room => room.id === meetingRoom)?.name 
+      : "";
+
     toast({
-      title: "Meeting Scheduled",
-      description: `Meeting "${meetingTitle}" scheduled for ${format(meetingDate, "PPP")} at ${meetingTime} with ${attendeeNames}`,
+      title: "Meeting Scheduled Successfully! 🎉",
+      description: `"${meetingTitle}" on ${format(meetingDate, "PPP")} at ${meetingTime} (${meetingDuration}min) with ${attendeeNames}${roomName ? ` in ${roomName}` : ""}`,
     });
 
     setMeetingTitle("");
     setMeetingDescription("");
     setMeetingDate(undefined);
     setMeetingTime("");
+    setMeetingDuration("60");
+    setMeetingType("video");
+    setMeetingRoom("");
     setMeetingAttendees([]);
     setIsScheduleMeetingOpen(false);
   };
@@ -1065,60 +1135,85 @@ const Collaboration = () => {
           </TabsContent>
         </Tabs>
 
-        {/* Team Chat Dialog */}
+        {/* Enhanced Team Chat Dialog */}
         <Dialog open={isTeamChatOpen} onOpenChange={setIsTeamChatOpen}>
-          <DialogContent className="max-w-4xl max-h-[80vh]">
-            <DialogHeader>
-              <DialogTitle>Team Chat</DialogTitle>
-            </DialogHeader>
-            <div className="flex h-96">
-              {/* Chat Rooms Sidebar */}
-              <div className="w-64 border-r pr-4 space-y-4">
-                <div>
-                  <h4 className="font-medium mb-2">Chat Rooms</h4>
-                  <div className="space-y-2">
-                    {chatRooms.map((room) => (
-                      <button
-                        key={room.id}
-                        onClick={() => setActiveChatRoom(room.id)}
-                        className={`w-full p-2 text-left rounded-lg transition-colors ${
-                          activeChatRoom === room.id ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium text-sm">{room.name}</span>
-                          {room.unreadCount > 0 && (
-                            <Badge variant="destructive" className="text-xs">
-                              {room.unreadCount}
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-1 mt-1">
+          <DialogContent className="max-w-6xl max-h-[85vh] p-0">
+            <div className="flex h-[600px]">
+              {/* Enhanced Chat Rooms Sidebar */}
+              <div className="w-80 border-r bg-muted/30">
+                {/* Sidebar Header */}
+                <div className="p-4 border-b bg-background">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-lg">Messages</h3>
+                    <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <Input
+                      placeholder="Search conversations..."
+                      className="pl-10 h-9"
+                    />
+                  </div>
+                </div>
+
+                {/* Chat Rooms List */}
+                <div className="p-2 space-y-1 overflow-y-auto max-h-96">
+                  {chatRooms.map((room) => (
+                    <button
+                      key={room.id}
+                      onClick={() => setActiveChatRoom(room.id)}
+                      className={`w-full p-3 text-left rounded-lg transition-all hover:bg-background/60 ${
+                        activeChatRoom === room.id ? 'bg-primary/10 border border-primary/20' : ''
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="relative">
                           <div className="flex -space-x-1">
-                            {room.participants.slice(0, 3).map((participant) => (
-                              <Avatar key={participant.id} className="w-4 h-4 border border-background">
-                                <AvatarFallback className="text-xs">
+                            {room.participants.slice(0, 2).map((participant, index) => (
+                              <Avatar key={participant.id} className="w-8 h-8 border-2 border-background">
+                                <AvatarFallback className="text-xs bg-gradient-to-br from-blue-500 to-purple-600 text-white">
                                   {participant.name.split(' ').map(n => n[0]).join('')}
                                 </AvatarFallback>
                               </Avatar>
                             ))}
                           </div>
-                          <span className="text-xs text-muted-foreground ml-1">
-                            {room.participants.length} members
-                          </span>
+                          {room.isOnline && (
+                            <div className="absolute -bottom-0 -right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />
+                          )}
                         </div>
-                        <p className="text-xs text-muted-foreground truncate mt-1">
-                          {room.lastMessage}
-                        </p>
-                      </button>
-                    ))}
-                  </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <h4 className="font-medium text-sm truncate">{room.name}</h4>
+                            <div className="flex items-center gap-1">
+                              <span className="text-xs text-muted-foreground">{room.lastMessageTime}</span>
+                              {room.unreadCount > 0 && (
+                                <Badge variant="destructive" className="text-xs h-5 w-5 rounded-full p-0 flex items-center justify-center">
+                                  {room.unreadCount}
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                          <p className="text-xs text-muted-foreground truncate mt-1">
+                            {room.lastMessage}
+                          </p>
+                          <div className="flex items-center gap-1 mt-1">
+                            <span className="text-xs text-muted-foreground">
+                              {room.participants.length} members
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
                 </div>
 
-                <div>
-                  <h4 className="font-medium mb-2">Start New Chat</h4>
-                  <div className="space-y-2">
-                    {teamMembers.map((member) => (
+                {/* Start New Chat Section */}
+                <div className="p-4 border-t bg-background">
+                  <h4 className="font-medium mb-3 text-sm">Start New Chat</h4>
+                  <div className="space-y-2 max-h-32 overflow-y-auto">
+                    {teamMembers.slice(0, 3).map((member) => (
                       <div key={member.id} className="flex items-center space-x-2">
                         <Checkbox
                           id={`chat-${member.id}`}
@@ -1133,100 +1228,185 @@ const Collaboration = () => {
                         />
                         <label
                           htmlFor={`chat-${member.id}`}
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex items-center gap-2"
+                          className="text-sm leading-none cursor-pointer flex items-center gap-2 flex-1"
                         >
-                          <Avatar className="w-5 h-5">
+                          <Avatar className="w-6 h-6">
                             <AvatarFallback className="text-xs">
                               {member.name.split(' ').map(n => n[0]).join('')}
                             </AvatarFallback>
                           </Avatar>
-                          <span>{member.name}</span>
-                          <div className={cn(
-                            "w-2 h-2 rounded-full",
-                            getStatusColor(member.status)
-                          )} />
+                          <span className="truncate">{member.name}</span>
+                          <div className={cn("w-2 h-2 rounded-full", getStatusColor(member.status))} />
                         </label>
                       </div>
                     ))}
                   </div>
                   {selectedChatUsers.length > 0 && (
-                    <Button onClick={handleCreateGroupChat} size="sm" className="w-full mt-2">
-                      Create Chat ({selectedChatUsers.length} selected)
+                    <Button onClick={handleCreateGroupChat} size="sm" className="w-full mt-3">
+                      <Plus className="w-3 h-3 mr-1" />
+                      Create Chat ({selectedChatUsers.length})
                     </Button>
                   )}
                 </div>
               </div>
 
-              {/* Chat Messages Area */}
-              <div className="flex-1 pl-4 flex flex-col">
-                <div className="border-b pb-2 mb-4">
-                  <h3 className="font-medium">
-                    {chatRooms.find(room => room.id === activeChatRoom)?.name}
-                  </h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    <div className="flex -space-x-1">
-                      {chatRooms.find(room => room.id === activeChatRoom)?.participants.map((participant) => (
-                        <Avatar key={participant.id} className="w-6 h-6 border border-background">
-                          <AvatarFallback className="text-xs">
-                            {participant.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                      ))}
+              {/* Enhanced Chat Messages Area */}
+              <div className="flex-1 flex flex-col bg-background">
+                {/* Chat Header */}
+                <div className="p-4 border-b bg-background">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="flex -space-x-1">
+                        {chatRooms.find(room => room.id === activeChatRoom)?.participants.slice(0, 3).map((participant) => (
+                          <Avatar key={participant.id} className="w-8 h-8 border-2 border-background">
+                            <AvatarFallback className="text-xs bg-gradient-to-br from-green-500 to-blue-500 text-white">
+                              {participant.name.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                        ))}
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">
+                          {chatRooms.find(room => room.id === activeChatRoom)?.name}
+                        </h3>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <span>{chatRooms.find(room => room.id === activeChatRoom)?.participants.length} members</span>
+                          <span>•</span>
+                          <span className="flex items-center gap-1">
+                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                            {chatRooms.find(room => room.id === activeChatRoom)?.participants.filter(p => p.status === 'online').length} online
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <span className="text-sm text-muted-foreground">
-                      {chatRooms.find(room => room.id === activeChatRoom)?.participants.length} members
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <Button variant="ghost" size="sm">
+                        <Video className="w-4 h-4" />
+                      </Button>
+                      <Button variant="ghost" size="sm">
+                        <Phone className="w-4 h-4" />
+                      </Button>
+                      <Button variant="ghost" size="sm">
+                        <MoreHorizontal className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto space-y-3 mb-4">
+                {/* Messages Container */}
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
                   {(chatMessages[activeChatRoom as keyof typeof chatMessages] || []).map((msg) => (
-                    <div key={msg.id} className="flex items-start gap-2">
-                      <Avatar className="w-6 h-6">
-                        <AvatarFallback className="text-xs">
-                          {msg.user.split(' ').map(n => n[0]).join('')}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium">{msg.user}</span>
-                          <span className="text-xs text-muted-foreground">{msg.time}</span>
+                    <div key={msg.id} className={`flex gap-3 ${msg.isOwn ? 'justify-end' : 'justify-start'}`}>
+                      {!msg.isOwn && (
+                        <Avatar className="w-8 h-8 mt-1">
+                          <AvatarFallback className="text-xs bg-gradient-to-br from-purple-500 to-pink-500 text-white">
+                            {msg.user.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
+                      <div className={`max-w-xs lg:max-w-md ${msg.isOwn ? 'order-1' : ''}`}>
+                        {!msg.isOwn && (
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-sm font-medium text-foreground">{msg.user}</span>
+                            <span className="text-xs text-muted-foreground">{msg.time}</span>
+                          </div>
+                        )}
+                        <div className={`p-3 rounded-2xl ${
+                          msg.isOwn 
+                            ? 'bg-primary text-primary-foreground rounded-br-md' 
+                            : 'bg-muted rounded-bl-md'
+                        }`}>
+                          <p className="text-sm">{msg.message}</p>
                         </div>
-                        <p className="text-sm">{msg.message}</p>
+                        {msg.reactions && msg.reactions.length > 0 && (
+                          <div className="flex items-center gap-1 mt-1">
+                            {msg.reactions.map((reaction, index) => (
+                              <Button
+                                key={index}
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 px-2 text-xs rounded-full bg-background/50 hover:bg-background"
+                              >
+                                {reaction.emoji} {reaction.count}
+                              </Button>
+                            ))}
+                          </div>
+                        )}
+                        {msg.isOwn && (
+                          <div className="text-xs text-muted-foreground mt-1 text-right">
+                            {msg.time}
+                          </div>
+                        )}
                       </div>
+                      {msg.isOwn && (
+                        <Avatar className="w-8 h-8 mt-1 order-2">
+                          <AvatarFallback className="text-xs bg-gradient-to-br from-blue-500 to-green-500 text-white">
+                            You
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
                     </div>
                   ))}
+                  {isTyping && (
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                        <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      </div>
+                      <span className="text-sm">Someone is typing...</span>
+                    </div>
+                  )}
                 </div>
 
-                <div className="space-y-2">
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Type your message..."
-                      value={chatMessage}
-                      onChange={(e) => setChatMessage(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                      className="flex-1"
-                    />
-                    <Button onClick={handleSendMessage} size="icon">
+                {/* Enhanced Message Input */}
+                <div className="p-4 border-t bg-background">
+                  <div className="flex items-end gap-2">
+                    <Button variant="ghost" size="sm" className="mb-2">
+                      <Paperclip className="w-4 h-4" />
+                    </Button>
+                    <div className="flex-1 relative">
+                      <Input
+                        placeholder="Type a message..."
+                        value={chatMessage}
+                        onChange={(e) => setChatMessage(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                        className="pr-20 py-3 rounded-2xl border-2 focus:border-primary"
+                      />
+                      <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <Smile className="w-4 h-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <Mic className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <Button 
+                      onClick={handleSendMessage} 
+                      size="sm" 
+                      className="h-12 w-12 rounded-full"
+                      disabled={!chatMessage.trim()}
+                    >
                       <Send className="w-4 h-4" />
                     </Button>
                   </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="gap-1">
+                  <div className="flex items-center gap-2 mt-2">
+                    <Button variant="outline" size="sm" className="gap-1 h-8">
                       <Video className="w-3 h-3" />
-                      Video Call
+                      Video
                     </Button>
-                    <Button variant="outline" size="sm" className="gap-1">
+                    <Button variant="outline" size="sm" className="gap-1 h-8">
                       <Phone className="w-3 h-3" />
-                      Voice Call
+                      Call
                     </Button>
-                    <Button variant="outline" size="sm" className="gap-1">
+                    <Button variant="outline" size="sm" className="gap-1 h-8">
                       <FileText className="w-3 h-3" />
-                      Share File
+                      File
                     </Button>
-                    <Button variant="outline" size="sm" className="gap-1">
+                    <Button variant="outline" size="sm" className="gap-1 h-8">
                       <User className="w-3 h-3" />
-                      Add People
+                      Add
                     </Button>
                   </div>
                 </div>
@@ -1235,42 +1415,87 @@ const Collaboration = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Schedule Meeting Dialog */}
+        {/* Enhanced Schedule Meeting Dialog */}
         <Dialog open={isScheduleMeetingOpen} onOpenChange={setIsScheduleMeetingOpen}>
-          <DialogContent>
+          <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Schedule Meeting</DialogTitle>
+              <DialogTitle className="text-xl">Schedule Meeting</DialogTitle>
+              <p className="text-muted-foreground">Create and schedule a new team meeting</p>
             </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="meeting-title">Meeting Title</Label>
-                <Input
-                  id="meeting-title"
-                  placeholder="Enter meeting title"
-                  value={meetingTitle}
-                  onChange={(e) => setMeetingTitle(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="meeting-description">Description</Label>
-                <Textarea
-                  id="meeting-description"
-                  placeholder="Meeting agenda or description"
-                  value={meetingDescription}
-                  onChange={(e) => setMeetingDescription(e.target.value)}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-6">
+              {/* Meeting Basic Info */}
+              <div className="grid grid-cols-1 gap-4">
                 <div>
-                  <Label>Date</Label>
+                  <Label htmlFor="meeting-title" className="text-sm font-medium">Meeting Title *</Label>
+                  <Input
+                    id="meeting-title"
+                    placeholder="Enter meeting title"
+                    value={meetingTitle}
+                    onChange={(e) => setMeetingTitle(e.target.value)}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="meeting-description" className="text-sm font-medium">Description</Label>
+                  <Textarea
+                    id="meeting-description"
+                    placeholder="Meeting agenda or description"
+                    value={meetingDescription}
+                    onChange={(e) => setMeetingDescription(e.target.value)}
+                    className="mt-1 min-h-[80px]"
+                  />
+                </div>
+              </div>
+
+              {/* Meeting Type Selection */}
+              <div>
+                <Label className="text-sm font-medium">Meeting Type *</Label>
+                <div className="grid grid-cols-3 gap-3 mt-2">
+                  <button
+                    onClick={() => setMeetingType("video")}
+                    className={`p-3 rounded-lg border-2 transition-all ${
+                      meetingType === "video" ? 'border-primary bg-primary/5' : 'border-muted hover:border-primary/50'
+                    }`}
+                  >
+                    <Video className="w-5 h-5 mx-auto mb-2 text-primary" />
+                    <div className="text-sm font-medium">Video Call</div>
+                    <div className="text-xs text-muted-foreground">Online meeting</div>
+                  </button>
+                  <button
+                    onClick={() => setMeetingType("audio")}
+                    className={`p-3 rounded-lg border-2 transition-all ${
+                      meetingType === "audio" ? 'border-primary bg-primary/5' : 'border-muted hover:border-primary/50'
+                    }`}
+                  >
+                    <Phone className="w-5 h-5 mx-auto mb-2 text-primary" />
+                    <div className="text-sm font-medium">Audio Call</div>
+                    <div className="text-xs text-muted-foreground">Voice only</div>
+                  </button>
+                  <button
+                    onClick={() => setMeetingType("in-person")}
+                    className={`p-3 rounded-lg border-2 transition-all ${
+                      meetingType === "in-person" ? 'border-primary bg-primary/5' : 'border-muted hover:border-primary/50'
+                    }`}
+                  >
+                    <MapPin className="w-5 h-5 mx-auto mb-2 text-primary" />
+                    <div className="text-sm font-medium">In Person</div>
+                    <div className="text-xs text-muted-foreground">Physical location</div>
+                  </button>
+                </div>
+              </div>
+
+              {/* Date, Time, and Duration */}
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Date *</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
-                        className="w-full justify-start text-left font-normal"
+                        className="w-full justify-start text-left font-normal mt-1"
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {meetingDate ? format(meetingDate, "PPP") : "Pick a date"}
+                        {meetingDate ? format(meetingDate, "PPP") : "Select date"}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -1285,67 +1510,128 @@ const Collaboration = () => {
                   </Popover>
                 </div>
                 <div>
-                  <Label htmlFor="meeting-time">Time</Label>
+                  <Label htmlFor="meeting-time" className="text-sm font-medium">Time *</Label>
                   <Input
                     id="meeting-time"
                     type="time"
                     value={meetingTime}
                     onChange={(e) => setMeetingTime(e.target.value)}
+                    className="mt-1"
                   />
                 </div>
+                <div>
+                  <Label className="text-sm font-medium">Duration</Label>
+                  <Select value={meetingDuration} onValueChange={setMeetingDuration}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="15">15 minutes</SelectItem>
+                      <SelectItem value="30">30 minutes</SelectItem>
+                      <SelectItem value="60">1 hour</SelectItem>
+                      <SelectItem value="90">1.5 hours</SelectItem>
+                      <SelectItem value="120">2 hours</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div>
-                <Label>Attendees</Label>
-                <div className="space-y-2 max-h-32 overflow-y-auto border rounded-lg p-3">
-                  {teamMembers.map((member) => (
-                    <div key={member.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={`attendee-${member.id}`}
-                        checked={meetingAttendees.includes(member.id)}
-                        onCheckedChange={() => handleToggleAttendee(member.id)}
-                      />
-                      <label
-                        htmlFor={`attendee-${member.id}`}
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex items-center gap-2 flex-1"
+
+              {/* Meeting Room Selection (for in-person meetings) */}
+              {meetingType === "in-person" && (
+                <div>
+                  <Label className="text-sm font-medium">Meeting Room</Label>
+                  <div className="grid grid-cols-2 gap-3 mt-2">
+                    {meetingRooms.map((room) => (
+                      <button
+                        key={room.id}
+                        onClick={() => setMeetingRoom(room.id)}
+                        disabled={!room.available}
+                        className={`p-3 rounded-lg border-2 text-left transition-all ${
+                          meetingRoom === room.id ? 'border-primary bg-primary/5' : 'border-muted hover:border-primary/50'
+                        } ${!room.available ? 'opacity-50 cursor-not-allowed' : ''}`}
                       >
-                        <Avatar className="w-5 h-5">
-                          <AvatarFallback className="text-xs">
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="font-medium text-sm">{room.name}</div>
+                          <div className={`w-2 h-2 rounded-full ${room.available ? 'bg-green-500' : 'bg-red-500'}`} />
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          Capacity: {room.capacity} people
+                        </div>
+                        {!room.available && (
+                          <div className="text-xs text-red-500">Unavailable</div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {/* Enhanced Attendees Selection */}
+              <div>
+                <Label className="text-sm font-medium">Attendees *</Label>
+                <div className="mt-2">
+                  <div className="grid grid-cols-1 gap-2 max-h-40 overflow-y-auto border rounded-lg p-3">
+                    {teamMembers.map((member) => (
+                      <div key={member.id} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50">
+                        <Checkbox
+                          id={`attendee-${member.id}`}
+                          checked={meetingAttendees.includes(member.id)}
+                          onCheckedChange={() => handleToggleAttendee(member.id)}
+                        />
+                        <Avatar className="w-8 h-8">
+                          <AvatarFallback className="text-xs bg-gradient-to-br from-orange-500 to-red-500 text-white">
                             {member.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
-                          <div className="font-medium">{member.name}</div>
-                          <div className="text-xs text-muted-foreground">{member.role}</div>
+                          <div className="font-medium text-sm">{member.name}</div>
+                          <div className="text-xs text-muted-foreground flex items-center gap-2">
+                            <span>{member.role}</span>
+                            <div className="flex items-center gap-1">
+                              <div className={cn("w-2 h-2 rounded-full", getStatusColor(member.status))} />
+                              <span className="capitalize">{member.status}</span>
+                            </div>
+                          </div>
                         </div>
-                        <div className={cn(
-                          "w-2 h-2 rounded-full",
-                          getStatusColor(member.status)
-                        )} />
-                      </label>
-                    </div>
-                  ))}
-                </div>
-                {meetingAttendees.length > 0 && (
-                  <div className="mt-2 p-2 bg-muted rounded-lg">
-                    <div className="text-sm font-medium mb-1">Selected Attendees ({meetingAttendees.length}):</div>
-                    <div className="flex flex-wrap gap-1">
-                      {meetingAttendees.map((id) => {
-                        const member = teamMembers.find(m => m.id === id);
-                        return member ? (
-                          <Badge key={id} variant="secondary" className="text-xs">
-                            {member.name}
-                          </Badge>
-                        ) : null;
-                      })}
-                    </div>
+                        <div className="text-xs text-muted-foreground">
+                          {member.status === 'online' ? '✅ Available' : 
+                           member.status === 'in-meeting' ? '🔴 In Meeting' : 
+                           member.status === 'away' ? '🟡 Away' : '⚫ Offline'}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                )}
+                  {meetingAttendees.length > 0 && (
+                    <div className="mt-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
+                      <div className="text-sm font-medium mb-2 text-primary">
+                        Selected Attendees ({meetingAttendees.length})
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {meetingAttendees.map((id) => {
+                          const member = teamMembers.find(m => m.id === id);
+                          return member ? (
+                            <div key={id} className="flex items-center gap-1 bg-background rounded-full px-2 py-1">
+                              <Avatar className="w-4 h-4">
+                                <AvatarFallback className="text-xs">
+                                  {member.name.split(' ').map(n => n[0]).join('')}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span className="text-xs font-medium">{member.name}</span>
+                            </div>
+                          ) : null;
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="flex gap-3">
-                <Button onClick={handleScheduleMeeting} className="flex-1">
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4">
+                <Button onClick={handleScheduleMeeting} className="flex-1 h-11">
+                  <CalendarIcon className="w-4 h-4 mr-2" />
                   Schedule Meeting
                 </Button>
-                <Button variant="outline" onClick={() => setIsScheduleMeetingOpen(false)} className="flex-1">
+                <Button variant="outline" onClick={() => setIsScheduleMeetingOpen(false)} className="flex-1 h-11">
                   Cancel
                 </Button>
               </div>
