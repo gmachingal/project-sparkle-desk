@@ -57,7 +57,6 @@ import {
   CheckSquare,
   User
 } from "lucide-react";
-
 const Collaboration = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [searchQuery, setSearchQuery] = useState("");
@@ -330,7 +329,11 @@ const Collaboration = () => {
         {/* Page Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+            <h1 className={`text-3xl font-bold bg-clip-text text-transparent ${
+              (currentUser.role === 'admin' && isAdminView) 
+                ? 'bg-gradient-to-r from-admin to-admin-glow' 
+                : 'bg-gradient-to-r from-primary to-primary-glow'
+            }`}>
               {(currentUser.role === 'admin' && isAdminView) ? 'Organization Collaboration' : 'My Collaboration'}
             </h1>
             <p className="text-muted-foreground mt-1">
@@ -342,13 +345,14 @@ const Collaboration = () => {
           </div>
           
           <div className="flex items-center gap-3">
-            {/* Admin Switch - Same pattern as Attendance */}
+            {/* Admin Switch - Updated to match AdminAttendance style */}
             {currentUser.role === 'admin' && (
-              <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-primary/20 bg-gradient-to-r from-primary/5 to-primary-glow/10 hover:from-primary/10 hover:to-primary-glow/20 transition-all duration-200">
-                <div className="flex items-center gap-2">
-                  <Settings className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium text-primary">Employee</span>
-                </div>
+              <div className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-all duration-200 shadow-sm ${
+                isAdminView 
+                  ? 'border-admin/30 bg-gradient-to-r from-admin/10 to-admin-glow/15 hover:from-admin/20 hover:to-admin-glow/25'
+                  : 'border-primary/20 bg-gradient-to-r from-primary/5 to-primary-glow/10 hover:from-primary/10 hover:to-primary-glow/20'
+              }`}>
+                <span className="text-sm text-muted-foreground">Employee</span>
                 <Switch 
                   checked={isAdminView}
                   onCheckedChange={(checked) => {
@@ -360,13 +364,20 @@ const Collaboration = () => {
                   }}
                   className="data-[state=checked]:bg-admin scale-75"
                 />
-                <span className="text-sm text-muted-foreground">Admin</span>
+                <div className="flex items-center gap-2">
+                  <span className={`text-sm font-medium ${isAdminView ? 'text-admin' : 'text-primary'}`}>Admin</span>
+                  <UserCheck className={`w-4 h-4 ${isAdminView ? 'text-admin' : 'text-primary'}`} />
+                </div>
               </div>
             )}
             
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline" className="gap-2">
+                <Button variant="outline" className={`gap-2 ${
+                  isAdminView 
+                    ? 'hover:bg-admin/10 border-admin/30 text-admin hover:text-admin' 
+                    : 'hover:bg-primary/10 border-primary/30'
+                }`}>
                   <MessageSquare className="w-4 h-4" />
                   Team Chat
                 </Button>
@@ -381,7 +392,11 @@ const Collaboration = () => {
               </DialogContent>
             </Dialog>
             
-            <Button className="gap-2">
+            <Button className={`gap-2 ${
+              isAdminView 
+                ? 'bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90' 
+                : 'bg-gradient-to-r from-primary to-primary-glow'
+            }`}>
               <Calendar className="w-4 h-4" />
               Schedule Meeting
             </Button>
@@ -477,24 +492,61 @@ const Collaboration = () => {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="overview" className="flex items-center gap-2">
+          <TabsList className={`grid w-full grid-cols-5 h-12 rounded-t-lg ${
+            isAdminView ? 'border-admin/20' : ''
+          }`}>
+            <TabsTrigger 
+              value="overview" 
+              className={`flex items-center gap-2 font-medium transition-all duration-200 ${
+                isAdminView 
+                  ? 'data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin text-admin/70 hover:text-admin'
+                  : ''
+              }`}
+            >
               <Users className="h-4 w-4" />
               {(currentUser.role === 'admin' && isAdminView) ? 'Team Overview' : 'My Overview'}
             </TabsTrigger>
-            <TabsTrigger value="workload" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="workload" 
+              className={`flex items-center gap-2 font-medium transition-all duration-200 ${
+                isAdminView 
+                  ? 'data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin hover:bg-admin/10 text-admin/70 hover:text-admin'
+                  : ''
+              }`}
+            >
               <BarChart3 className="h-4 w-4" />
               {(currentUser.role === 'admin' && isAdminView) ? 'Team Workload' : 'My Workload'}
             </TabsTrigger>
-            <TabsTrigger value="departments" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="departments" 
+              className={`flex items-center gap-2 font-medium transition-all duration-200 ${
+                isAdminView 
+                  ? 'data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin hover:bg-admin/10 text-admin/70 hover:text-admin'
+                  : ''
+              }`}
+            >
               <Briefcase className="h-4 w-4" />
               {(currentUser.role === 'admin' && isAdminView) ? 'Departments' : 'My Team'}
             </TabsTrigger>
-            <TabsTrigger value="learning" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="learning" 
+              className={`flex items-center gap-2 font-medium transition-all duration-200 ${
+                isAdminView 
+                  ? 'data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin hover:bg-admin/10 text-admin/70 hover:text-admin'
+                  : ''
+              }`}
+            >
               <GraduationCap className="h-4 w-4" />
               {(currentUser.role === 'admin' && isAdminView) ? 'Learning Management' : 'My Learning'}
             </TabsTrigger>
-            <TabsTrigger value="collaboration" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="collaboration" 
+              className={`flex items-center gap-2 font-medium transition-all duration-200 ${
+                isAdminView 
+                  ? 'data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin hover:bg-admin/10 text-admin/70 hover:text-admin'
+                  : ''
+              }`}
+            >
               <Share2 className="h-4 w-4" />
               {(currentUser.role === 'admin' && isAdminView) ? 'Team Collaboration' : 'My Collaboration'}
             </TabsTrigger>
