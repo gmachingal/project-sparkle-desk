@@ -241,9 +241,9 @@ const AdminLeaveManagement = () => {
 
         <Tabs defaultValue="pending" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3 bg-gradient-to-r from-admin/10 to-admin-glow/10 border border-admin/20">
-            <TabsTrigger value="pending" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium hover:bg-admin/10 text-admin/70 hover:text-admin">Pending Requests</TabsTrigger>
-            <TabsTrigger value="all" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium hover:bg-admin/10 text-admin/70 hover:text-admin">All Requests</TabsTrigger>
-            <TabsTrigger value="balance" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium hover:bg-admin/10 text-admin/70 hover:text-admin">Leave Balance Management</TabsTrigger>
+            <TabsTrigger value="pending" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin font-medium hover:bg-admin/10 text-admin/70 hover:text-admin">Pending Requests</TabsTrigger>
+            <TabsTrigger value="all" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin font-medium hover:bg-admin/10 text-admin/70 hover:text-admin">All Requests</TabsTrigger>
+            <TabsTrigger value="balance" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin font-medium hover:bg-admin/10 text-admin/70 hover:text-admin">Leave Balance Management</TabsTrigger>
           </TabsList>
 
           <TabsContent value="pending" className="space-y-6">
