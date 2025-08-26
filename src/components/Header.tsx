@@ -7,6 +7,8 @@ import { Search, Bell, Plus, Settings, User, Clock, Users, Briefcase, FileText, 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import reposeLogo from "@/assets/repose-logo-bigger-font.png";
@@ -24,6 +26,52 @@ const Header = ({ userRole }: HeaderProps) => {
   const [currentOrganization, setCurrentOrganization] = useState("ORG-001");
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  
+  // Mock notifications data
+  const mockNotifications = [
+    {
+      id: "1",
+      title: "Sprint Review Meeting",
+      message: "Sprint review scheduled for tomorrow at 2:00 PM",
+      time: "2 min ago",
+      type: "meeting",
+      unread: true
+    },
+    {
+      id: "2", 
+      title: "Task Assignment",
+      message: "You have been assigned to 'Implement user authentication'",
+      time: "15 min ago",
+      type: "task",
+      unread: true
+    },
+    {
+      id: "3",
+      title: "Leave Request Approved",
+      message: "Your leave request for Dec 25-26 has been approved",
+      time: "1 hour ago", 
+      type: "approval",
+      unread: false
+    },
+    {
+      id: "4",
+      title: "Project Update",
+      message: "TechCorp Mobile App project status updated to 'In Progress'",
+      time: "3 hours ago",
+      type: "update",
+      unread: false
+    },
+    {
+      id: "5",
+      title: "System Maintenance",
+      message: "Scheduled maintenance tonight from 11 PM to 1 AM",
+      time: "1 day ago",
+      type: "system",
+      unread: false
+    }
+  ];
+  
+  const unreadCount = mockNotifications.filter(n => n.unread).length;
   const userOrganizations = [
     { 
       id: "ORG-001", 
@@ -94,6 +142,17 @@ const Header = ({ userRole }: HeaderProps) => {
   };
 
   const getCurrentOrg = () => userOrganizations.find(org => org.id === currentOrganization);
+
+  const getNotificationIcon = (type: string) => {
+    switch (type) {
+      case "meeting": return Calendar;
+      case "task": return FileText;
+      case "approval": return Check;
+      case "update": return Briefcase;
+      case "system": return Settings;
+      default: return Bell;
+    }
+  };
 
   // Check if current route is an admin page
   const isAdminPage = location.pathname.includes('/admin') || 
@@ -345,9 +404,79 @@ const Header = ({ userRole }: HeaderProps) => {
               <span className="hidden sm:inline">Create</span>
             </Button>
             
-            <Button variant="ghost" size="sm">
-              <Bell className="w-4 h-4" />
-            </Button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="sm" className="relative">
+                  <Bell className="w-4 h-4" />
+                  {unreadCount > 0 && (
+                    <Badge className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-xs bg-destructive text-destructive-foreground">
+                      {unreadCount}
+                    </Badge>
+                  )}
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="w-96 bg-background/95 backdrop-blur-sm">
+                <SheetHeader>
+                  <SheetTitle className="flex items-center gap-2">
+                    <Bell className="w-5 h-5" />
+                    Notifications
+                    {unreadCount > 0 && (
+                      <Badge variant="secondary" className="ml-auto">
+                        {unreadCount} new
+                      </Badge>
+                    )}
+                  </SheetTitle>
+                </SheetHeader>
+                <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+                  <div className="space-y-4">
+                    {mockNotifications.map((notification) => {
+                      const IconComponent = getNotificationIcon(notification.type);
+                      return (
+                        <div
+                          key={notification.id}
+                          className={`p-4 rounded-lg border transition-colors hover:bg-muted/50 cursor-pointer ${
+                            notification.unread ? 'bg-primary/5 border-primary/20' : 'bg-muted/20 border-border'
+                          }`}
+                        >
+                          <div className="flex gap-3">
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                              notification.unread ? 'bg-primary/10' : 'bg-muted'
+                            }`}>
+                              <IconComponent className={`w-4 h-4 ${
+                                notification.unread ? 'text-primary' : 'text-muted-foreground'
+                              }`} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between gap-2">
+                                <h4 className={`font-medium text-sm truncate ${
+                                  notification.unread ? 'text-foreground' : 'text-muted-foreground'
+                                }`}>
+                                  {notification.title}
+                                </h4>
+                                {notification.unread && (
+                                  <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-1" />
+                                )}
+                              </div>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                {notification.message}
+                              </p>
+                              <p className="text-xs text-muted-foreground mt-2">
+                                {notification.time}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="mt-6 p-4 text-center">
+                    <Button variant="outline" size="sm" className="w-full">
+                      View All Notifications
+                    </Button>
+                  </div>
+                </ScrollArea>
+              </SheetContent>
+            </Sheet>
             
             {/* Settings & Profile Menu */}
             <DropdownMenu>
