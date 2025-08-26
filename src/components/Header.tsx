@@ -295,6 +295,15 @@ const Header = ({ userRole, title, subtitle, backButton, actionButton }: HeaderP
               <Calendar className="w-4 h-4" />
               <span className="hidden xl:inline">Leave</span>
             </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate("/document-mockup")} 
+              className={`gap-2 ${isActivePage("/document-mockup") ? (isAdminPage ? "bg-admin text-admin-foreground" : "bg-primary text-primary-foreground") : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
+            >
+              <FileText className="w-4 h-4" />
+              <span className="hidden xl:inline">Docs</span>
+            </Button>
           </nav>
           )}
 
@@ -330,6 +339,10 @@ const Header = ({ userRole, title, subtitle, backButton, actionButton }: HeaderP
               <DropdownMenuItem onClick={() => navigate(getNavigationUrl("/leave-management"))} className="gap-2">
                 <Calendar className="w-4 h-4" />
                 Leave Management
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/document-mockup")} className="gap-2">
+                <FileText className="w-4 h-4" />
+                Documentation
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
