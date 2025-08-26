@@ -964,19 +964,18 @@ const DocumentMockup = () => {
                 {selectedSpaceDetails ? (
                   // Space Details View
                   <div className="space-y-6">
-                    {(() => {
-                      const space = spaces.find(s => s.id === selectedSpaceDetails);
-                      const members = spaceMembers[selectedSpaceDetails as keyof typeof spaceMembers] || [];
-                      const analytics = spaceAnalytics[selectedSpaceDetails as keyof typeof spaceAnalytics];
-                      const spaceDocuments = documents.filter(doc => 
-                        selectedSpaceDetails === 'product' ? doc.tags.includes('Product') || doc.tags.includes('PRD') :
-                        selectedSpaceDetails === 'engineering' ? doc.tags.includes('API') || doc.tags.includes('Backend') :
-                        selectedSpaceDetails === 'marketing' ? doc.tags.includes('Brand') || doc.tags.includes('Design') :
-                        selectedSpaceDetails === 'hr' ? doc.tags.includes('HR') || doc.tags.includes('Policy') :
-                        false
-                      );
+                    const space = spaces.find(s => s.id === selectedSpaceDetails);
+                    const members = spaceMembers[selectedSpaceDetails as keyof typeof spaceMembers] || [];
+                    const analytics = spaceAnalytics[selectedSpaceDetails as keyof typeof spaceAnalytics];
+                    const spaceDocuments = documents.filter(doc => 
+                      selectedSpaceDetails === 'product' ? doc.tags.includes('Product') || doc.tags.includes('PRD') :
+                      selectedSpaceDetails === 'engineering' ? doc.tags.includes('API') || doc.tags.includes('Backend') :
+                      selectedSpaceDetails === 'marketing' ? doc.tags.includes('Brand') || doc.tags.includes('Design') :
+                      selectedSpaceDetails === 'hr' ? doc.tags.includes('HR') || doc.tags.includes('Policy') :
+                      false
+                    );
 
-                      return (
+                    return (
                         <div className="space-y-6">
                           {/* Space Header */}
                           <div className="flex items-center justify-between">
@@ -1211,10 +1210,10 @@ const DocumentMockup = () => {
                             </div>
                           </div>
                         </div>
-                      );
-                    })()
+                      )
+                    }
+                  </div>
                 ) : (
-                  // Spaces Grid View
                   <div className="space-y-4">
                     {/* Spaces Search */}
                     <div className="flex items-center gap-4">
