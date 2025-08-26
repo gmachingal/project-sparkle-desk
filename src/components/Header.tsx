@@ -343,6 +343,9 @@ const Header = ({ userRole, title, subtitle, backButton, actionButton }: HeaderP
               {actionButton.label}
             </Button>
           )}
+          {/* Organization Switcher, Search, Notifications & Profile - Hide when showing page title */}
+          {!title && (
+          <>
           {/* Compact Organization Switcher */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -574,6 +577,8 @@ const Header = ({ userRole, title, subtitle, backButton, actionButton }: HeaderP
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+          </>
+          )}
         </div>
       </div>
     </header>
