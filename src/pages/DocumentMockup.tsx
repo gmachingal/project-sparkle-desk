@@ -631,33 +631,33 @@ const DocumentMockup = () => {
         </div>
 
         {/* Enhanced Quick Actions Bar */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-6">
           {/* Primary Actions */}
-          <Card className="border-2 border-primary/10 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-background via-background to-primary/[0.02] hover:border-primary/20 group">
-            <CardHeader className="pb-4 bg-gradient-to-r from-primary/5 to-transparent">
-              <CardTitle className="text-xl font-bold flex items-center gap-3 text-foreground group-hover:text-primary transition-colors duration-200">
-                <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors duration-200">
-                  <Plus className="w-5 h-5 text-primary" />
+          <Card className="border border-primary/10 shadow-md hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-background via-background to-primary/[0.02] hover:border-primary/20 group">
+            <CardHeader className="pb-2 px-3 pt-3">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground group-hover:text-primary transition-colors duration-200">
+                <div className="p-1 bg-primary/10 rounded group-hover:bg-primary/20 transition-colors duration-200">
+                  <Plus className="w-3 h-3 text-primary" />
                 </div>
                 Create Content
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4 p-6">
+            <CardContent className="space-y-2 px-3 pb-3">
               <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="w-full justify-start gap-3 h-12 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 font-semibold">
-                    <FilePlus className="w-5 h-5" />
+                  <Button className="w-full justify-start gap-2 h-8 text-xs bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-md hover:shadow-lg transition-all duration-200 font-medium">
+                    <FilePlus className="w-3 h-3" />
                     New Document
                   </Button>
                 </DialogTrigger>
               </Dialog>
               
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-1.5">
                 <Dialog open={isCreateSpaceDialogOpen} onOpenChange={setIsCreateSpaceDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="outline" className="justify-start gap-2 h-10 text-sm border-2 hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 font-medium">
-                      <Folder className="w-4 h-4" />
-                      New Space
+                    <Button variant="outline" className="justify-start gap-1.5 h-7 text-xs border hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 font-normal">
+                      <Folder className="w-3 h-3" />
+                      Space
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[425px]">
@@ -731,9 +731,9 @@ const DocumentMockup = () => {
 
                 <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="outline" className="justify-start gap-2 h-10 text-sm border-2 hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 font-medium">
-                      <Upload className="w-4 h-4" />
-                      Upload File
+                    <Button variant="outline" className="justify-start gap-1.5 h-7 text-xs border hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 font-normal">
+                      <Upload className="w-3 h-3" />
+                      Upload
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[425px]">
@@ -788,37 +788,37 @@ const DocumentMockup = () => {
           </Card>
 
           {/* Templates */}
-          <Card className="border-2 border-border/50 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-background to-muted/10 hover:border-border group">
-            <CardHeader className="pb-4 bg-gradient-to-r from-muted/20 to-transparent">
+          <Card className="border border-border/50 shadow-md hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-background to-muted/10 hover:border-border group">
+            <CardHeader className="pb-2 px-3 pt-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-xl font-bold flex items-center gap-3 text-foreground group-hover:text-primary transition-colors duration-200">
-                  <div className="p-2 bg-orange-500/10 rounded-lg group-hover:bg-orange-500/20 transition-colors duration-200">
-                    <BookOpen className="w-5 h-5 text-orange-600" />
+                <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground group-hover:text-primary transition-colors duration-200">
+                  <div className="p-1 bg-orange-500/10 rounded group-hover:bg-orange-500/20 transition-colors duration-200">
+                    <BookOpen className="w-3 h-3 text-orange-600" />
                   </div>
                   Templates
                 </CardTitle>
                 <Dialog open={isTemplateDialogOpen} onOpenChange={setIsTemplateDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10 font-medium border border-transparent hover:border-primary/20 transition-all duration-200">
+                    <Button variant="ghost" size="sm" className="text-xs px-2 h-6 text-primary hover:bg-primary/10 font-normal">
                       View All
                     </Button>
                   </DialogTrigger>
                 </Dialog>
               </div>
             </CardHeader>
-            <CardContent className="space-y-3 p-6">
-              {templates.slice(0, 4).map((template) => (
+            <CardContent className="space-y-1.5 px-3 pb-3">
+              {templates.slice(0, 3).map((template) => (
                 <div 
                   key={template.id} 
-                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-gradient-to-r hover:from-muted/30 hover:to-muted/10 transition-all duration-200 cursor-pointer border border-transparent hover:border-border/30 hover:shadow-md group"
+                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-gradient-to-r hover:from-muted/30 hover:to-muted/10 transition-all duration-200 cursor-pointer border border-transparent hover:border-border/30 hover:shadow-sm group"
                   onClick={() => handleUseTemplate(template.id)}
                 >
-                  <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors duration-200">
-                    <template.icon className="w-4 h-4 text-primary" />
+                  <div className="p-1 bg-primary/10 rounded group-hover:bg-primary/20 transition-colors duration-200">
+                    <template.icon className="w-3 h-3 text-primary" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors duration-200">{template.name}</p>
-                    <p className="text-xs text-muted-foreground font-medium">{template.category}</p>
+                    <p className="font-medium text-xs text-foreground group-hover:text-primary transition-colors duration-200 leading-tight">{template.name}</p>
+                    <p className="text-[10px] text-muted-foreground font-normal">{template.category}</p>
                   </div>
                 </div>
               ))}
@@ -826,32 +826,32 @@ const DocumentMockup = () => {
           </Card>
 
           {/* Your Stats */}
-          <Card className="border-2 border-border/50 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-background to-green-500/5 hover:border-green-500/20 group">
-            <CardHeader className="pb-4 bg-gradient-to-r from-green-500/5 to-transparent">
-              <CardTitle className="text-xl font-bold flex items-center gap-3 text-foreground group-hover:text-green-600 transition-colors duration-200">
-                <div className="p-2 bg-green-500/10 rounded-lg group-hover:bg-green-500/20 transition-colors duration-200">
-                  <TrendingUp className="w-5 h-5 text-green-600" />
+          <Card className="border border-border/50 shadow-md hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-background to-green-500/5 hover:border-green-500/20 group">
+            <CardHeader className="pb-2 px-3 pt-3">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground group-hover:text-green-600 transition-colors duration-200">
+                <div className="p-1 bg-green-500/10 rounded group-hover:bg-green-500/20 transition-colors duration-200">
+                  <TrendingUp className="w-3 h-3 text-green-600" />
                 </div>
                 Your Stats
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-3 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/10 hover:border-primary/20 transition-all duration-200 group">
-                  <div className="text-2xl font-bold text-primary leading-none mb-1 group-hover:scale-105 transition-transform duration-200">12</div>
-                  <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Documents</div>
+            <CardContent className="px-3 pb-3">
+              <div className="grid grid-cols-2 gap-1.5">
+                <div className="text-center p-2 rounded-lg bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/10 hover:border-primary/20 transition-all duration-200 group">
+                  <div className="text-lg font-bold text-primary leading-none mb-0.5 group-hover:scale-105 transition-transform duration-200">12</div>
+                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Docs</div>
                 </div>
-                <div className="text-center p-3 rounded-xl bg-gradient-to-br from-blue-500/5 to-blue-500/10 border border-blue-500/10 hover:border-blue-500/20 transition-all duration-200 group">
-                  <div className="text-2xl font-bold text-blue-600 leading-none mb-1 group-hover:scale-105 transition-transform duration-200">1.2K</div>
-                  <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Views</div>
+                <div className="text-center p-2 rounded-lg bg-gradient-to-br from-blue-500/5 to-blue-500/10 border border-blue-500/10 hover:border-blue-500/20 transition-all duration-200 group">
+                  <div className="text-lg font-bold text-blue-600 leading-none mb-0.5 group-hover:scale-105 transition-transform duration-200">1.2K</div>
+                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Views</div>
                 </div>
-                <div className="text-center p-3 rounded-xl bg-gradient-to-br from-orange-500/5 to-orange-500/10 border border-orange-500/10 hover:border-orange-500/20 transition-all duration-200 group">
-                  <div className="text-2xl font-bold text-orange-600 leading-none mb-1 group-hover:scale-105 transition-transform duration-200">56</div>
-                  <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Comments</div>
+                <div className="text-center p-2 rounded-lg bg-gradient-to-br from-orange-500/5 to-orange-500/10 border border-orange-500/10 hover:border-orange-500/20 transition-all duration-200 group">
+                  <div className="text-lg font-bold text-orange-600 leading-none mb-0.5 group-hover:scale-105 transition-transform duration-200">56</div>
+                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Comments</div>
                 </div>
-                <div className="text-center p-3 rounded-xl bg-gradient-to-br from-purple-500/5 to-purple-500/10 border border-purple-500/10 hover:border-purple-500/20 transition-all duration-200 group">
-                  <div className="text-2xl font-bold text-purple-600 leading-none mb-1 group-hover:scale-105 transition-transform duration-200">8</div>
-                  <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Collaborators</div>
+                <div className="text-center p-2 rounded-lg bg-gradient-to-br from-purple-500/5 to-purple-500/10 border border-purple-500/10 hover:border-purple-500/20 transition-all duration-200 group">
+                  <div className="text-lg font-bold text-purple-600 leading-none mb-0.5 group-hover:scale-105 transition-transform duration-200">8</div>
+                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Collaborators</div>
                 </div>
               </div>
             </CardContent>
