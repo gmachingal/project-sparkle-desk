@@ -311,10 +311,10 @@ const AdminAttendance = () => {
         {/* Enhanced Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <div className="relative">
-            <TabsList className="grid w-full grid-cols-5 bg-gradient-to-r from-admin/10 to-admin-glow/10 shadow-sm h-12 rounded-t-lg">
+            <TabsList className="grid w-full grid-cols-5 h-12 rounded-t-lg">
               <TabsTrigger 
                 value="overview" 
-                className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin font-medium transition-all duration-200 hover:bg-admin/10 text-admin/70 hover:text-admin"
+                className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin font-medium transition-all duration-200 text-admin/70 hover:text-admin"
               >
                 <div className="flex items-center gap-2">
                   <UserCheck className="w-4 h-4" />
