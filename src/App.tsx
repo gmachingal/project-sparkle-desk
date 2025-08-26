@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import MyTasks from "./pages/MyTasks";
 import Projects from "./pages/Projects";
 import Collaboration from "./pages/Collaboration";
+import AdminCollaboration from "./pages/AdminCollaboration";
 import EditProject from "./pages/EditProject";
 import EditTask from "./pages/EditTask";
 import TaskView from "./pages/TaskView";
@@ -48,6 +49,7 @@ const App = () => (
           <Route path="/my-tasks" element={<MyTasks />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/collaboration" element={<Collaboration />} />
+          <Route path="/admin-collaboration" element={<AdminCollaboration />} />
           <Route path="/create-task" element={<CreateTask />} />
           <Route path="/new-project" element={<NewProject />} />
           <Route path="/settings" element={<Settings />} />

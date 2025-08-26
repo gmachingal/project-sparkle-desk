@@ -71,21 +71,12 @@ const Collaboration = () => {
   const [timeLogData, setTimeLogData] = useState({ hours: '', notes: '', date: new Date().toISOString().split('T')[0] });
   const { toast } = useToast();
 
-  // Mock user data - in real app this would come from auth/context
+  // Mock user data - employee view only
   const currentUser = {
     name: 'John Doe',
     id: '1',
     role: 'admin' // Change to 'member' for regular users
   };
-  
-  // Check URL params for admin view state (like attendance module)
-  const [isAdminView, setIsAdminView] = useState(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('view') === 'admin';
-  });
-
-  // Debug: Log current state
-  console.log('Admin View State:', isAdminView, 'User Role:', currentUser.role);
 
   // Mock team data - now focused on collaboration and workload
   const teamMembers = [
@@ -244,26 +235,8 @@ const Collaboration = () => {
   ];
 
   const getFilteredMembers = () => {
-    let filtered = teamMembers;
-    
-    // If user view OR admin viewing as employee, show only current user's data
-    if (currentUser.role !== 'admin' || !isAdminView) {
-      filtered = teamMembers.filter(member => member.id === currentUser.id);
-    }
-    
-    if (searchQuery) {
-      filtered = filtered.filter(member => 
-        member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        member.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        member.skills.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
-    }
-    
-    if (filterDepartment !== "all") {
-      filtered = filtered.filter(member => member.department === filterDepartment);
-    }
-    
-    return filtered;
+    // Employee view - show only current user's data
+    return teamMembers.filter(member => member.id === currentUser.id);
   };
 
   const getStatusColor = (status: string) => {
@@ -295,15 +268,8 @@ const Collaboration = () => {
     }
   };
 
-  const teamStats = (currentUser.role === 'admin' && isAdminView) ? {
-    total: teamMembers.length,
-    online: teamMembers.filter(m => m.status === "online").length,
-    avgWorkload: Math.round(teamMembers.reduce((acc, m) => acc + m.workload, 0) / teamMembers.length),
-    totalProjects: [...new Set(teamMembers.flatMap(m => m.activeProjects))].length,
-    completedTasks: teamMembers.reduce((acc, m) => acc + m.tasksCompleted, 0),
-    inProgressTasks: teamMembers.reduce((acc, m) => acc + m.tasksInProgress, 0)
-  } : {
-    // User-specific stats (for regular users OR admin viewing as employee)
+  const teamStats = {
+    // User-specific stats (employee view)
     total: 1,
     online: teamMembers.find(m => m.id === currentUser.id)?.status === "online" ? 1 : 0,
     avgWorkload: teamMembers.find(m => m.id === currentUser.id)?.workload || 0,
@@ -335,94 +301,41 @@ const Collaboration = () => {
         {/* Page Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            {/* Debug indicator */}
-            {(currentUser.role === 'admin' && isAdminView) && (
-              <div className="text-xs text-admin mb-1 bg-admin/10 px-2 py-1 rounded">🔴 ADMIN VIEW ACTIVE</div>
-            )}
-            {/* Simple admin color test */}
-            {(currentUser.role === 'admin' && isAdminView) && (
-              <div className="w-20 h-4 bg-admin mb-2 rounded"></div>
-            )}
-            <h1 className={
-              (currentUser.role === 'admin' && isAdminView) 
-                ? 'text-3xl font-bold bg-gradient-to-r from-admin to-admin-glow bg-clip-text text-transparent'
-                : 'text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent'
-            }>
-              {(currentUser.role === 'admin' && isAdminView) ? 'Organization Collaboration' : 'My Collaboration'}
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+              My Collaboration
             </h1>
             <p className="text-muted-foreground mt-1">
-              {(currentUser.role === 'admin' && isAdminView)
-                ? 'Manage organization-wide collaboration, workloads, and team performance'
-                : 'Track your progress, collaborate with team members, and manage your workload'
-              }
+              Track your progress, collaborate with team members, and manage your workload
             </p>
           </div>
           
           <div className="flex items-center gap-3">
-            {/* Admin Switch - Updated to match AdminAttendance style */}
+            {/* Admin Switch - Same pattern as Attendance */}
             {currentUser.role === 'admin' && (
-              <div className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-all duration-200 shadow-sm ${
-                isAdminView 
-                  ? 'border-admin/30 bg-gradient-to-r from-admin/10 to-admin-glow/15 hover:from-admin/20 hover:to-admin-glow/25'
-                  : 'border-primary/20 bg-gradient-to-r from-primary/5 to-primary-glow/10 hover:from-primary/10 hover:to-primary-glow/20'
-              }`}>
-                <span className="text-sm text-muted-foreground">Employee</span>
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-primary/20 bg-gradient-to-r from-primary/5 to-primary-glow/10 hover:from-primary/10 hover:to-primary-glow/20 transition-all duration-200">
+                <div className="flex items-center gap-2">
+                  <Settings className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium text-primary">Employee</span>
+                </div>
                 <Switch 
-                  checked={isAdminView}
+                  checked={false}
                   onCheckedChange={(checked) => {
-                    setIsAdminView(checked);
-                    
-                    // Update URL params to maintain state like attendance module
-                    const newSearchParams = new URLSearchParams(window.location.search);
                     if (checked) {
-                      newSearchParams.set('view', 'admin');
-                    } else {
-                      newSearchParams.delete('view');
+                      window.location.href = '/admin-collaboration';
                     }
-                    
-                    const newURL = `${window.location.pathname}${newSearchParams.toString() ? '?' + newSearchParams.toString() : ''}`;
-                    window.history.replaceState({}, '', newURL);
-                    
-                    toast({
-                      title: checked ? "Admin View" : "Employee View",
-                      description: `Switched to ${checked ? 'admin' : 'employee'} collaboration view`,
-                    });
                   }}
                   className="data-[state=checked]:bg-admin scale-75"
                 />
-                <div className="flex items-center gap-2">
-                  <span className={`text-sm font-medium ${isAdminView ? 'text-admin' : 'text-primary'}`}>Admin</span>
-                  <UserCheck className={`w-4 h-4 ${isAdminView ? 'text-admin' : 'text-primary'}`} />
-                </div>
+                <span className="text-sm text-muted-foreground">Admin</span>
               </div>
             )}
             
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline" className={`gap-2 ${
-                  isAdminView 
-                    ? 'hover:bg-admin/10 border-admin/30 text-admin hover:text-admin' 
-                    : 'hover:bg-primary/10 border-primary/30'
-                }`}>
-                  <MessageSquare className="w-4 h-4" />
-                  Team Chat
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Team Communication</DialogTitle>
-                </DialogHeader>
-                <div className="p-4 text-center text-muted-foreground">
-                  Team chat feature coming soon...
-                </div>
-              </DialogContent>
-            </Dialog>
+            <Button variant="outline" className="gap-2">
+              <MessageSquare className="w-4 h-4" />
+              Team Chat
+            </Button>
             
-            <Button className={`gap-2 ${
-              isAdminView 
-                ? 'bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90' 
-                : 'bg-gradient-to-r from-primary to-primary-glow'
-            }`}>
+            <Button className="gap-2">
               <Calendar className="w-4 h-4" />
               Schedule Meeting
             </Button>
@@ -437,9 +350,7 @@ const Collaboration = () => {
                 <Users className="w-4 h-4 text-blue-500" />
                 <div>
                   <div className="text-2xl font-bold">{teamStats.total}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {(currentUser.role === 'admin' && isAdminView) ? 'Team Members' : 'Your Profile'}
-                  </div>
+                  <div className="text-xs text-muted-foreground">Your Profile</div>
                 </div>
               </div>
             </CardContent>
@@ -451,9 +362,7 @@ const Collaboration = () => {
                 <Activity className="w-4 h-4 text-green-500" />
                 <div>
                   <div className="text-2xl font-bold">{teamStats.online}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {(currentUser.role === 'admin' && isAdminView) ? 'Online Now' : 'Status'}
-                  </div>
+                  <div className="text-xs text-muted-foreground">Status</div>
                 </div>
               </div>
             </CardContent>
@@ -465,9 +374,7 @@ const Collaboration = () => {
                 <BarChart3 className={`w-4 h-4 ${getWorkloadColor(teamStats.avgWorkload)}`} />
                 <div>
                   <div className="text-2xl font-bold">{teamStats.avgWorkload}%</div>
-                  <div className="text-xs text-muted-foreground">
-                    {(currentUser.role === 'admin' && isAdminView) ? 'Avg Workload' : 'My Workload'}
-                  </div>
+                  <div className="text-xs text-muted-foreground">My Workload</div>
                 </div>
               </div>
             </CardContent>
@@ -479,9 +386,7 @@ const Collaboration = () => {
                 <Briefcase className="w-4 h-4 text-purple-500" />
                 <div>
                   <div className="text-2xl font-bold">{teamStats.totalProjects}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {(currentUser.role === 'admin' && isAdminView) ? 'Active Projects' : 'My Projects'}
-                  </div>
+                  <div className="text-xs text-muted-foreground">My Projects</div>
                 </div>
               </div>
             </CardContent>
@@ -493,9 +398,7 @@ const Collaboration = () => {
                 <CheckCircle className="w-4 h-4 text-green-500" />
                 <div>
                   <div className="text-2xl font-bold">{teamStats.completedTasks}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {(currentUser.role === 'admin' && isAdminView) ? 'Completed' : 'My Completed'}
-                  </div>
+                  <div className="text-xs text-muted-foreground">My Completed</div>
                 </div>
               </div>
             </CardContent>
@@ -507,9 +410,7 @@ const Collaboration = () => {
                 <Play className="w-4 h-4 text-blue-500" />
                 <div>
                   <div className="text-2xl font-bold">{teamStats.inProgressTasks}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {(currentUser.role === 'admin' && isAdminView) ? 'In Progress' : 'My Progress'}
-                  </div>
+                  <div className="text-xs text-muted-foreground">My Progress</div>
                 </div>
               </div>
             </CardContent>
@@ -518,98 +419,34 @@ const Collaboration = () => {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className={`grid w-full grid-cols-5 h-12 rounded-t-lg ${
-            isAdminView ? 'border-admin/20' : ''
-          }`}>
-            <TabsTrigger 
-              value="overview" 
-              className={`flex items-center gap-2 font-medium transition-all duration-200 ${
-                isAdminView 
-                  ? 'data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin text-admin/70 hover:text-admin'
-                  : ''
-              }`}
-            >
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="overview" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
-              {(currentUser.role === 'admin' && isAdminView) ? 'Team Overview' : 'My Overview'}
+              My Overview
             </TabsTrigger>
-            <TabsTrigger 
-              value="workload" 
-              className={`flex items-center gap-2 font-medium transition-all duration-200 ${
-                isAdminView 
-                  ? 'data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin hover:bg-admin/10 text-admin/70 hover:text-admin'
-                  : ''
-              }`}
-            >
+            <TabsTrigger value="workload" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
-              {(currentUser.role === 'admin' && isAdminView) ? 'Team Workload' : 'My Workload'}
+              My Workload
             </TabsTrigger>
-            <TabsTrigger 
-              value="departments" 
-              className={`flex items-center gap-2 font-medium transition-all duration-200 ${
-                isAdminView 
-                  ? 'data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin hover:bg-admin/10 text-admin/70 hover:text-admin'
-                  : ''
-              }`}
-            >
+            <TabsTrigger value="departments" className="flex items-center gap-2">
               <Briefcase className="h-4 w-4" />
-              {(currentUser.role === 'admin' && isAdminView) ? 'Departments' : 'My Team'}
+              My Team
             </TabsTrigger>
-            <TabsTrigger 
-              value="learning" 
-              className={`flex items-center gap-2 font-medium transition-all duration-200 ${
-                isAdminView 
-                  ? 'data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin hover:bg-admin/10 text-admin/70 hover:text-admin'
-                  : ''
-              }`}
-            >
+            <TabsTrigger value="learning" className="flex items-center gap-2">
               <GraduationCap className="h-4 w-4" />
-              {(currentUser.role === 'admin' && isAdminView) ? 'Learning Management' : 'My Learning'}
+              My Learning
             </TabsTrigger>
-            <TabsTrigger 
-              value="collaboration" 
-              className={`flex items-center gap-2 font-medium transition-all duration-200 ${
-                isAdminView 
-                  ? 'data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin hover:bg-admin/10 text-admin/70 hover:text-admin'
-                  : ''
-              }`}
-            >
+            <TabsTrigger value="collaboration" className="flex items-center gap-2">
               <Share2 className="h-4 w-4" />
-              {(currentUser.role === 'admin' && isAdminView) ? 'Team Collaboration' : 'My Collaboration'}
+              My Collaboration
             </TabsTrigger>
           </TabsList>
 
           {/* Team Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
-            {/* Search and Filters - Admin Only */}
-            {(currentUser.role === 'admin' && isAdminView) && (
-              <div className="flex items-center gap-4">
-                <div className="relative flex-1 max-w-md">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                  <Input
-                    placeholder="Search team members..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-                
-                <Select value={filterDepartment} onValueChange={setFilterDepartment}>
-                  <SelectTrigger className="w-48">
-                    <Filter className="w-4 h-4 mr-2" />
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Departments</SelectItem>
-                    {departments.map(dept => (
-                      <SelectItem key={dept.id} value={dept.name}>{dept.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+            {/* Search and Filters - Not needed for employee view */}
             
             {/* User View - My Profile Card */}
-            {(currentUser.role !== 'admin' || !isAdminView) && (
               <Card className="mb-6 border-primary/20 bg-gradient-to-r from-primary/5 to-primary-glow/5">
                 <CardHeader>
                   <CardTitle className="text-2xl">My Profile & Progress</CardTitle>
@@ -662,10 +499,9 @@ const Collaboration = () => {
                   </div>
                 </CardContent>
               </Card>
-            )}
-
-            {/* Team Members Grid - Admin View Only */}
-            {(currentUser.role === 'admin' && isAdminView) && (
+            
+            {/* Personal Collaboration Content */}
+            <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {getFilteredMembers().map((member) => (
                 <Card key={member.id} className="hover:shadow-md transition-shadow">
@@ -991,8 +827,7 @@ const Collaboration = () => {
                   </CardContent>
                 </Card>
               </div>
-            )}
-          </TabsContent>
+            </TabsContent>
 
           {/* Workload Management Tab */}
           <TabsContent value="workload" className="space-y-6">
