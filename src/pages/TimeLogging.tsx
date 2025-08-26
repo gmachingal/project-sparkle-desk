@@ -20,7 +20,12 @@ import {
   Timer,
   ChevronLeft,
   ChevronRight,
-  Filter
+  Filter,
+  Activity,
+  Target,
+  Briefcase,
+  User,
+  Calendar as CalendarLucide
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -50,7 +55,8 @@ const TimeLogging = () => {
       dueDate: new Date(currentYear, currentMonth, 10),
       project: "Website Redesign",
       estimatedHours: 16,
-      loggedHours: 8
+      loggedHours: 8,
+      assignee: "John Doe"
     },
     {
       id: "2",
@@ -61,7 +67,8 @@ const TimeLogging = () => {
       dueDate: new Date(currentYear, currentMonth, 15),
       project: "Mobile App",
       estimatedHours: 4,
-      loggedHours: 2
+      loggedHours: 2,
+      assignee: "Jane Smith"
     },
     {
       id: "3",
@@ -72,7 +79,8 @@ const TimeLogging = () => {
       dueDate: new Date(currentYear, currentMonth, 8),
       project: "Marketing Campaign",
       estimatedHours: 6,
-      loggedHours: 5
+      loggedHours: 5,
+      assignee: "Sarah Wilson"
     },
     {
       id: "4",
@@ -83,7 +91,8 @@ const TimeLogging = () => {
       dueDate: new Date(currentYear, currentMonth, 20),
       project: "Website Redesign",
       estimatedHours: 12,
-      loggedHours: 0
+      loggedHours: 0,
+      assignee: "Mike Johnson"
     },
     {
       id: "5",
@@ -94,7 +103,8 @@ const TimeLogging = () => {
       dueDate: new Date(currentYear, currentMonth, 25),
       project: "Internal",
       estimatedHours: 8,
-      loggedHours: 3
+      loggedHours: 3,
+      assignee: "Emily Davis"
     },
     {
       id: "6",
@@ -105,7 +115,8 @@ const TimeLogging = () => {
       dueDate: new Date(currentYear, currentMonth, 18),
       project: "Mobile App",
       estimatedHours: 4,
-      loggedHours: 1
+      loggedHours: 1,
+      assignee: "Alex Kim"
     },
     {
       id: "7",
@@ -116,7 +127,8 @@ const TimeLogging = () => {
       dueDate: new Date(currentYear, currentMonth, 22),
       project: "Website Redesign",
       estimatedHours: 24,
-      loggedHours: 12
+      loggedHours: 12,
+      assignee: "David Liu"
     },
     {
       id: "8",
@@ -127,7 +139,8 @@ const TimeLogging = () => {
       dueDate: new Date(currentYear, currentMonth, 28),
       project: "Infrastructure",
       estimatedHours: 16,
-      loggedHours: 3
+      loggedHours: 3,
+      assignee: "Robert Chen"
     },
     {
       id: "9",
@@ -138,7 +151,8 @@ const TimeLogging = () => {
       dueDate: new Date(currentYear, currentMonth + 1, 5),
       project: "Mobile App",
       estimatedHours: 8,
-      loggedHours: 1
+      loggedHours: 1,
+      assignee: "Lisa Zhang"
     }
   ];
 
@@ -336,62 +350,97 @@ const TimeLogging = () => {
           </TabsList>
 
           <TabsContent value="log" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-              {/* Date Picker Sidebar */}
-              <div className="lg:col-span-1">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <CalendarIcon className="w-5 h-5" />
-                      Select Date
+            {/* Enhanced Header Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              {/* Date Selection & Quick Stats */}
+              <div className="lg:col-span-4 xl:col-span-3">
+                <Card className="sticky top-24">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <CalendarIcon className="w-5 h-5 text-primary" />
+                      Date & Overview
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            "w-full justify-start text-left font-normal mb-4"
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {format(selectedDate, "PPP")}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={selectedDate}
-                          onSelect={(date) => date && setSelectedDate(date)}
-                          initialFocus
-                          className={cn("p-3 pointer-events-auto")}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    
+                  <CardContent className="space-y-6">
+                    {/* Date Picker */}
+                    <div>
+                      <Label className="text-sm font-medium mb-3 block">Select Date</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-full justify-start text-left font-normal h-10",
+                              "border-2 border-dashed border-muted-foreground/25 hover:border-primary/50"
+                            )}
+                          >
+                            <CalendarIcon className="mr-3 h-4 w-4 text-primary" />
+                            <span className="font-medium">{format(selectedDate, "EEEE, PPP")}</span>
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={selectedDate}
+                            onSelect={(date) => date && setSelectedDate(date)}
+                            initialFocus
+                            className={cn("p-3 pointer-events-auto")}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+
+                    {/* Daily Summary */}
                     <div className="space-y-4">
-                      <div className="text-sm">
-                        <div className="flex justify-between mb-2">
-                          <span className="text-muted-foreground">Active Tasks</span>
-                          <span className="font-medium">{allTasks.filter(t => t.status !== 'completed').length}</span>
+                      <div className="text-center p-4 bg-gradient-to-r from-primary/5 via-primary-glow/5 to-primary/5 rounded-lg border border-primary/10">
+                        <div className="text-2xl font-bold text-primary">{getTotalHoursForDay()}h</div>
+                        <div className="text-sm text-muted-foreground">Total Hours Today</div>
+                      </div>
+                      
+                      <div className="grid grid-cols-3 gap-3 text-center">
+                        <div className="p-3 bg-muted/30 rounded-lg">
+                          <div className="text-lg font-semibold text-green-600">{allTasks.filter(t => t.status === 'completed').length}</div>
+                          <div className="text-xs text-muted-foreground">Completed</div>
                         </div>
-                        <div className="flex justify-between mb-2">
-                          <span className="text-muted-foreground">Completed Tasks</span>
-                          <span className="font-medium">{allTasks.filter(t => t.status === 'completed').length}</span>
+                        <div className="p-3 bg-muted/30 rounded-lg">
+                          <div className="text-lg font-semibold text-blue-600">{allTasks.filter(t => t.status === 'in-progress').length}</div>
+                          <div className="text-xs text-muted-foreground">In Progress</div>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Total Tasks</span>
-                          <span className="font-medium">{allTasks.length}</span>
+                        <div className="p-3 bg-muted/30 rounded-lg">
+                          <div className="text-lg font-semibold text-orange-600">{allTasks.filter(t => t.status === 'todo').length}</div>
+                          <div className="text-xs text-muted-foreground">Todo</div>
                         </div>
+                      </div>
+                    </div>
+
+                    {/* Quick Filters */}
+                    <div className="space-y-3">
+                      <Label className="text-sm font-medium">Quick Filters</Label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button variant="outline" size="sm" className="justify-start text-xs">
+                          <Flag className="w-3 h-3 mr-2 text-red-500" />
+                          High Priority
+                        </Button>
+                        <Button variant="outline" size="sm" className="justify-start text-xs">
+                          <Clock className="w-3 h-3 mr-2 text-blue-500" />
+                          Due Today
+                        </Button>
+                        <Button variant="outline" size="sm" className="justify-start text-xs">
+                          <Activity className="w-3 h-3 mr-2 text-green-500" />
+                          In Progress
+                        </Button>
+                        <Button variant="outline" size="sm" className="justify-start text-xs">
+                          <Target className="w-3 h-3 mr-2 text-purple-500" />
+                          My Tasks
+                        </Button>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               </div>
 
-              {/* Tasks List with Pagination - Grid Layout */}
-              <div className="lg:col-span-3">
+              {/* Enhanced Tasks List */}
+              <div className="lg:col-span-8 xl:col-span-9">
                 {(() => {
                   const totalPages = Math.ceil(allTasks.length / recordsPerPage);
                   const startIndex = (currentPage - 1) * recordsPerPage;
@@ -399,90 +448,153 @@ const TimeLogging = () => {
                   const currentTasks = allTasks.slice(startIndex, endIndex);
                   
                   return (
-                    <>
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div className="space-y-6">
+                      {/* Tasks Header */}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-lg font-semibold">Time Logging</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Log time for {currentTasks.length} task{currentTasks.length !== 1 ? 's' : ''} • Page {currentPage} of {totalPages}
+                          </p>
+                        </div>
+                        {totalPages > 1 && (
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                              disabled={currentPage === 1}
+                            >
+                              <ChevronLeft className="h-4 w-4" />
+                            </Button>
+                            <span className="text-sm px-3">
+                              {currentPage} / {totalPages}
+                            </span>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                              disabled={currentPage === totalPages}
+                            >
+                              <ChevronRight className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Enhanced Task Cards */}
+                      <div className="space-y-4">
                         {currentTasks.map((task) => {
                           const entry = timeEntries[task.id] || { hours: '', notes: '' };
                           const progressPercentage = task.estimatedHours > 0 ? Math.round((task.loggedHours / task.estimatedHours) * 100) : 0;
                           
                           return (
-                            <Card key={task.id} className="compact h-fit">
-                              <CardContent className="p-3">
-                                <div className="space-y-3">
-                                  {/* Header - Compact */}
-                                  <div>
-                                    <div className="flex items-start gap-2 mb-1">
-                                      <h3 className="font-medium text-sm flex-1 line-clamp-1">{task.title}</h3>
-                                      <Badge className={`${getStatusColor(task.status)} text-xs px-1.5 py-0.5`} variant="secondary">
-                                        {task.status.replace('-', ' ')}
-                                      </Badge>
-                                    </div>
-                                    <div className="flex items-center gap-2 mb-2">
-                                      <Badge className={`${getPriorityColor(task.priority)} text-xs px-1.5 py-0.5`} variant="outline">
-                                        <Flag className="w-2.5 h-2.5 mr-1" />
-                                        {task.priority}
-                                      </Badge>
-                                      <Badge variant="secondary" className="text-xs px-1.5 py-0.5">{task.project}</Badge>
-                                    </div>
-                                    <p className="text-muted-foreground text-xs line-clamp-2 mb-2">{task.description}</p>
-                                  </div>
-
-                                  {/* Progress Bar - Compact */}
-                                  <div>
-                                    <div className="flex justify-between text-xs mb-1">
-                                      <span className="text-muted-foreground">{task.loggedHours}h / {task.estimatedHours}h</span>
-                                      <span className="font-medium">{progressPercentage}%</span>
-                                    </div>
-                                    <div className="w-full bg-muted rounded-full h-1">
-                                      <div 
-                                        className="bg-primary h-1 rounded-full transition-all duration-300" 
-                                        style={{ width: `${Math.min(progressPercentage, 100)}%` }}
-                                      />
-                                    </div>
-                                  </div>
-
-                                  {/* Time Entry Form - Compact */}
-                                  <div className="space-y-2">
-                                    <div className="grid grid-cols-3 gap-2">
-                                      <div>
-                                        <Label htmlFor={`hours-${task.id}`} className="text-xs">Hours</Label>
-                                        <div className="relative">
-                                          <Clock className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground w-3 h-3" />
-                                          <Input
-                                            id={`hours-${task.id}`}
-                                            type="number"
-                                            step="0.25"
-                                            min="0"
-                                            max="24"
-                                            placeholder="0.00"
-                                            value={entry.hours}
-                                            onChange={(e) => handleTimeChange(task.id, e.target.value)}
-                                            className="pl-8 h-7 text-xs"
-                                          />
+                            <Card key={task.id} className="group hover:shadow-md transition-all duration-200 border-l-4 border-l-primary/20 hover:border-l-primary">
+                              <CardContent className="p-6">
+                                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                                  {/* Task Information */}
+                                  <div className="lg:col-span-7 space-y-4">
+                                    {/* Task Header */}
+                                    <div>
+                                      <div className="flex items-start justify-between mb-3">
+                                        <h4 className="font-semibold text-base leading-tight flex-1 pr-4">{task.title}</h4>
+                                        <div className="flex items-center gap-2 flex-shrink-0">
+                                          <Badge className={`${getPriorityColor(task.priority)} text-xs`} variant="outline">
+                                            <Flag className="w-3 h-3 mr-1" />
+                                            {task.priority}
+                                          </Badge>
+                                          <Badge className={`${getStatusColor(task.status)} text-xs`} variant="secondary">
+                                            {task.status.replace('-', ' ')}
+                                          </Badge>
                                         </div>
                                       </div>
-                                      <div className="col-span-2">
-                                        <Label htmlFor={`notes-${task.id}`} className="text-xs">Notes</Label>
-                                        <Textarea
-                                          id={`notes-${task.id}`}
-                                          placeholder="What did you work on?"
-                                          value={entry.notes}
-                                          onChange={(e) => handleNotesChange(task.id, e.target.value)}
-                                          className="resize-none h-7 text-xs"
-                                          rows={1}
+                                      
+                                      <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+                                        <span className="flex items-center gap-1">
+                                          <Briefcase className="w-4 h-4" />
+                                          {task.project}
+                                        </span>
+                                        <span className="flex items-center gap-1">
+                                          <User className="w-4 h-4" />
+                                          {task.assignee}
+                                        </span>
+                                        <span className="flex items-center gap-1">
+                                          <CalendarLucide className="w-4 h-4" />
+                                          Due {format(task.dueDate, 'MMM dd')}
+                                        </span>
+                                      </div>
+                                      
+                                      <p className="text-sm text-muted-foreground line-clamp-2">{task.description}</p>
+                                    </div>
+
+                                    {/* Progress Section */}
+                                    <div className="space-y-2">
+                                      <div className="flex items-center justify-between text-sm">
+                                        <span className="text-muted-foreground">Time Progress</span>
+                                        <span className="font-medium">{task.loggedHours}h / {task.estimatedHours}h ({progressPercentage}%)</span>
+                                      </div>
+                                      <div className="w-full bg-muted rounded-full h-2">
+                                        <div 
+                                          className={cn(
+                                            "h-2 rounded-full transition-all duration-300",
+                                            progressPercentage >= 100 ? "bg-green-500" : progressPercentage >= 75 ? "bg-yellow-500" : "bg-primary"
+                                          )}
+                                          style={{ width: `${Math.min(progressPercentage, 100)}%` }}
                                         />
                                       </div>
                                     </div>
-                                    
-                                    <Button 
-                                      onClick={() => handleSaveTimeEntry(task.id)}
-                                      disabled={!entry.hours || parseFloat(entry.hours) <= 0}
-                                      className="w-full gap-1 h-7 text-xs"
-                                      size="sm"
-                                    >
-                                      <Timer className="w-3 h-3" />
-                                      Log Time
-                                    </Button>
+                                  </div>
+
+                                  {/* Time Logging Section */}
+                                  <div className="lg:col-span-5">
+                                    <div className="bg-muted/30 rounded-lg p-4 space-y-4">
+                                      <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                                        <Timer className="w-4 h-4 text-primary" />
+                                        Log Time Entry
+                                      </div>
+                                      
+                                      <div className="grid grid-cols-12 gap-3">
+                                        <div className="col-span-4">
+                                          <Label htmlFor={`hours-${task.id}`} className="text-xs font-medium">Hours</Label>
+                                          <div className="relative mt-1">
+                                            <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                                            <Input
+                                              id={`hours-${task.id}`}
+                                              type="number"
+                                              step="0.25"
+                                              min="0"
+                                              max="24"
+                                              placeholder="0.00"
+                                              value={entry.hours}
+                                              onChange={(e) => handleTimeChange(task.id, e.target.value)}
+                                              className="pl-10 h-9 text-sm font-medium"
+                                            />
+                                          </div>
+                                        </div>
+                                        
+                                        <div className="col-span-8">
+                                          <Label htmlFor={`notes-${task.id}`} className="text-xs font-medium">Work Description</Label>
+                                          <Textarea
+                                            id={`notes-${task.id}`}
+                                            placeholder="Describe what you worked on..."
+                                            value={entry.notes}
+                                            onChange={(e) => handleNotesChange(task.id, e.target.value)}
+                                            className="resize-none h-9 text-sm mt-1"
+                                            rows={1}
+                                          />
+                                        </div>
+                                      </div>
+                                      
+                                      <Button 
+                                        onClick={() => handleSaveTimeEntry(task.id)}
+                                        disabled={!entry.hours || parseFloat(entry.hours) <= 0}
+                                        className="w-full gap-2 h-9 bg-primary hover:bg-primary/90"
+                                        size="sm"
+                                      >
+                                        <Timer className="w-4 h-4" />
+                                        Log {entry.hours || '0'} Hour{entry.hours && parseFloat(entry.hours) !== 1 ? 's' : ''}
+                                      </Button>
+                                    </div>
                                   </div>
                                 </div>
                               </CardContent>
@@ -490,32 +602,7 @@ const TimeLogging = () => {
                           );
                         })}
                       </div>
-                      
-                      {/* Pagination for Log Time */}
-                      {totalPages > 1 && (
-                        <div className="flex justify-center gap-2 mt-6">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                            disabled={currentPage === 1}
-                          >
-                            <ChevronLeft className="h-4 w-4" />
-                          </Button>
-                          <span className="flex items-center px-3 text-sm">
-                            Page {currentPage} of {totalPages}
-                          </span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                            disabled={currentPage === totalPages}
-                          >
-                            <ChevronRight className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      )}
-                    </>
+                    </div>
                   );
                 })()}
               </div>
