@@ -77,6 +77,8 @@ const Collaboration = () => {
   const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
   const [isContinueLearningOpen, setIsContinueLearningOpen] = useState(false);
   const [isViewCertificatesOpen, setIsViewCertificatesOpen] = useState(false);
+  const [isCertificateDetailOpen, setIsCertificateDetailOpen] = useState(false);
+  const [selectedCertificate, setSelectedCertificate] = useState<any>(null);
   
   // Form states
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
@@ -2513,10 +2515,8 @@ const Collaboration = () => {
                       key={cert.id} 
                       className="group hover:shadow-lg transition-all duration-200 border-l-4 border-l-primary cursor-pointer relative"
                       onClick={() => {
-                        toast({
-                          title: "Certificate Viewer",
-                          description: `Opening ${cert.title} certificate details...`,
-                        });
+                        setSelectedCertificate(cert);
+                        setIsCertificateDetailOpen(true);
                       }}
                     >
                       {/* Hover Actions */}
@@ -2620,6 +2620,226 @@ const Collaboration = () => {
                 </Button>
               </div>
             </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Certificate Detail Dialog */}
+        <Dialog open={isCertificateDetailOpen} onOpenChange={setIsCertificateDetailOpen}>
+          <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Award className="w-5 h-5 text-primary" />
+                Certificate Details
+              </DialogTitle>
+            </DialogHeader>
+            
+            {selectedCertificate && (
+              <div className="space-y-6">
+                {/* Certificate Header */}
+                <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary-glow/10">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-6">
+                      {/* Certificate Badge */}
+                      <div className="flex flex-col items-center">
+                        <div className="w-20 h-20 rounded-full bg-gradient-to-r from-primary to-primary-glow flex items-center justify-center mb-3">
+                          <Award className="w-10 h-10 text-white" />
+                        </div>
+                        <Badge variant="secondary" className="text-xs">
+                          {selectedCertificate.level}
+                        </Badge>
+                      </div>
+
+                      {/* Certificate Info */}
+                      <div className="flex-1">
+                        <h2 className="text-2xl font-bold mb-2">{selectedCertificate.title}</h2>
+                        <p className="text-lg text-muted-foreground mb-4">{selectedCertificate.issuer}</p>
+                        
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          <div>
+                            <Label className="text-xs text-muted-foreground">Score</Label>
+                            <div className="text-xl font-bold text-green-600">{selectedCertificate.score}%</div>
+                          </div>
+                          <div>
+                            <Label className="text-xs text-muted-foreground">Completed</Label>
+                            <div className="font-medium">{new Date(selectedCertificate.completedDate).toLocaleDateString()}</div>
+                          </div>
+                          <div>
+                            <Label className="text-xs text-muted-foreground">Valid Until</Label>
+                            <div className="font-medium">{new Date(selectedCertificate.validUntil).toLocaleDateString()}</div>
+                          </div>
+                          <div>
+                            <Label className="text-xs text-muted-foreground">Certificate ID</Label>
+                            <div className="font-medium text-xs">{selectedCertificate.certificateId}</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex flex-col gap-2">
+                        <Button className="gap-2 bg-gradient-to-r from-primary to-primary-glow">
+                          <Download className="w-4 h-4" />
+                          Download
+                        </Button>
+                        <Button variant="outline" className="gap-2">
+                          <Share2 className="w-4 h-4" />
+                          Share
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Certificate Content */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Skills Earned */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Star className="w-5 h-5 text-warning" />
+                        Skills Earned
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {selectedCertificate.skills.map((skill, index) => (
+                          <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
+                            <span className="font-medium">{skill}</span>
+                            <div className="flex">
+                              {[...Array(5)].map((_, i) => (
+                                <Star 
+                                  key={i} 
+                                  className="w-4 h-4 fill-yellow-400 text-yellow-400" 
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Learning Path */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <BookOpen className="w-5 h-5 text-info" />
+                        Learning Journey
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex items-start gap-3">
+                          <div className="w-2 h-2 rounded-full bg-green-500 mt-2"></div>
+                          <div>
+                            <div className="font-medium text-sm">Course Completed</div>
+                            <div className="text-xs text-muted-foreground">
+                              {new Date(selectedCertificate.completedDate).toLocaleDateString()}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <div className="w-2 h-2 rounded-full bg-blue-500 mt-2"></div>
+                          <div>
+                            <div className="font-medium text-sm">Final Assessment</div>
+                            <div className="text-xs text-muted-foreground">
+                              Scored {selectedCertificate.score}%
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <div className="w-2 h-2 rounded-full bg-purple-500 mt-2"></div>
+                          <div>
+                            <div className="font-medium text-sm">Certificate Issued</div>
+                            <div className="text-xs text-muted-foreground">
+                              {selectedCertificate.issuer}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Certificate Verification */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <CheckCircle className="w-5 h-5 text-success" />
+                        Verification
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm">Status</span>
+                          <Badge variant="default" className="bg-green-100 text-green-800">
+                            Verified
+                          </Badge>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm">Blockchain</span>
+                          <span className="text-xs text-muted-foreground">Secured</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm">Digital Signature</span>
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                        </div>
+                        <div className="p-3 bg-muted/50 rounded-lg">
+                          <div className="text-xs text-muted-foreground mb-1">Verification Hash</div>
+                          <div className="text-xs font-mono break-all">
+                            {selectedCertificate.certificateId}-{selectedCertificate.score}-verified
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Additional Info */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <FileText className="w-5 h-5 text-accent" />
+                        Additional Information
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div>
+                          <Label className="text-sm font-medium">Category</Label>
+                          <div className="text-sm text-muted-foreground">{selectedCertificate.category}</div>
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium">Renewal</Label>
+                          <div className="text-sm text-muted-foreground">
+                            {selectedCertificate.category === 'Technical Skills' ? 'Required every 2 years' : 'Lifetime validity'}
+                          </div>
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium">Credit Hours</Label>
+                          <div className="text-sm text-muted-foreground">
+                            {Math.floor(Math.random() * 20) + 10} hours
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Action Footer */}
+                <div className="flex gap-3 pt-4 border-t">
+                  <Button className="flex-1 bg-gradient-to-r from-primary to-primary-glow">
+                    <Download className="w-4 h-4 mr-2" />
+                    Download Certificate
+                  </Button>
+                  <Button variant="outline" className="gap-2">
+                    <Share2 className="w-4 h-4" />
+                    Share on LinkedIn
+                  </Button>
+                  <Button variant="outline" onClick={() => setIsCertificateDetailOpen(false)}>
+                    Close
+                  </Button>
+                </div>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
 

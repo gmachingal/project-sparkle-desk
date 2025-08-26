@@ -68,6 +68,8 @@ const AdminCollaboration = () => {
   const [isCreateProgramOpen, setIsCreateProgramOpen] = useState(false);
   const [isViewMemberOpen, setIsViewMemberOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<any>(null);
+  const [isCertificateDetailOpen, setIsCertificateDetailOpen] = useState(false);
+  const [selectedCertificate, setSelectedCertificate] = useState<any>(null);
   
   // Enhanced Program creation states with assessments
   const [programTitle, setProgramTitle] = useState("");
@@ -1566,10 +1568,8 @@ const AdminCollaboration = () => {
                       key={cert.id} 
                       className="group hover:shadow-lg transition-all duration-200 cursor-pointer relative"
                       onClick={() => {
-                        toast({
-                          title: "Certificate Details",
-                          description: `Viewing ${cert.employee}'s ${cert.course} certificate...`,
-                        });
+                        setSelectedCertificate(cert);
+                        setIsCertificateDetailOpen(true);
                       }}
                     >
                       {/* Hover Actions */}
@@ -2439,6 +2439,250 @@ const AdminCollaboration = () => {
                     Export Report
                   </Button>
                   <Button variant="outline" onClick={() => setIsViewMemberOpen(false)}>
+                    Close
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Certificate Detail Dialog - Admin View */}
+        <Dialog open={isCertificateDetailOpen} onOpenChange={setIsCertificateDetailOpen}>
+          <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Award className="w-5 h-5 text-admin" />
+                Employee Certificate Details
+              </DialogTitle>
+            </DialogHeader>
+            
+            {selectedCertificate && (
+              <div className="space-y-6">
+                {/* Certificate Header */}
+                <Card className="border-admin/20 bg-gradient-to-br from-admin/5 to-admin-glow/10">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-6">
+                      {/* Employee Avatar */}
+                      <div className="flex flex-col items-center">
+                        <Avatar className="w-20 h-20 ring-4 ring-admin/20">
+                          <AvatarImage src={selectedCertificate.avatar} />
+                          <AvatarFallback className="bg-gradient-to-r from-admin to-admin-glow text-white text-xl">
+                            {selectedCertificate.employee.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <Badge variant="outline" className="mt-2 text-xs">
+                          {selectedCertificate.department}
+                        </Badge>
+                      </div>
+
+                      {/* Certificate Info */}
+                      <div className="flex-1">
+                        <h2 className="text-xl font-bold mb-1">{selectedCertificate.employee}</h2>
+                        <h3 className="text-lg text-muted-foreground mb-4">{selectedCertificate.course}</h3>
+                        
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          <div>
+                            <Label className="text-xs text-muted-foreground">Score</Label>
+                            <div className="text-xl font-bold text-green-600">{selectedCertificate.score}%</div>
+                          </div>
+                          <div>
+                            <Label className="text-xs text-muted-foreground">Level</Label>
+                            <div className="font-medium">{selectedCertificate.level}</div>
+                          </div>
+                          <div>
+                            <Label className="text-xs text-muted-foreground">Completed</Label>
+                            <div className="font-medium">{new Date(selectedCertificate.completedDate).toLocaleDateString()}</div>
+                          </div>
+                          <div>
+                            <Label className="text-xs text-muted-foreground">Certificate ID</Label>
+                            <div className="font-medium text-xs">{selectedCertificate.certificateId}</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex flex-col gap-2">
+                        <Button className="gap-2 bg-gradient-to-r from-admin to-admin-glow">
+                          <MessageSquare className="w-4 h-4" />
+                          Contact Employee
+                        </Button>
+                        <Button variant="outline" className="gap-2">
+                          <Download className="w-4 h-4" />
+                          Download
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Detailed Information */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Performance Metrics */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <BarChart3 className="w-5 h-5 text-admin" />
+                        Performance Metrics
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div>
+                          <div className="flex justify-between text-sm mb-1">
+                            <span>Assessment Score</span>
+                            <span className="font-bold text-green-600">{selectedCertificate.score}%</span>
+                          </div>
+                          <Progress value={selectedCertificate.score} className="h-2" />
+                        </div>
+                        <div>
+                          <div className="flex justify-between text-sm mb-1">
+                            <span>Course Completion Time</span>
+                            <span className="font-bold">
+                              {Math.floor(Math.random() * 10) + 5} days
+                            </span>
+                          </div>
+                          <Progress value={85} className="h-2" />
+                        </div>
+                        <div>
+                          <div className="flex justify-between text-sm mb-1">
+                            <span>Engagement Level</span>
+                            <span className="font-bold text-blue-600">
+                              {Math.floor(Math.random() * 20) + 80}%
+                            </span>
+                          </div>
+                          <Progress value={Math.floor(Math.random() * 20) + 80} className="h-2" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Course Details */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <BookOpen className="w-5 h-5 text-info" />
+                        Course Information
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div>
+                          <Label className="text-sm font-medium">Course Duration</Label>
+                          <div className="text-sm text-muted-foreground">
+                            {Math.floor(Math.random() * 20) + 10} hours
+                          </div>
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium">Modules Completed</Label>
+                          <div className="text-sm text-muted-foreground">
+                            {Math.floor(Math.random() * 5) + 8}/12 modules
+                          </div>
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium">Instructor</Label>
+                          <div className="text-sm text-muted-foreground">
+                            {["Dr. Sarah Wilson", "Prof. Mike Johnson", "Dr. Emily Chen"][Math.floor(Math.random() * 3)]}
+                          </div>
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium">Category</Label>
+                          <div className="text-sm text-muted-foreground">
+                            Technical Skills
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Team Impact */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <TrendingUp className="w-5 h-5 text-success" />
+                        Team Impact
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm">Skills Applied</span>
+                          <Badge variant="default" className="bg-green-100 text-green-800">
+                            Active
+                          </Badge>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm">Knowledge Sharing</span>
+                          <span className="text-xs text-muted-foreground">
+                            {Math.floor(Math.random() * 5) + 2} sessions
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm">Mentoring</span>
+                          <span className="text-xs text-muted-foreground">
+                            {Math.floor(Math.random() * 3) + 1} junior developers
+                          </span>
+                        </div>
+                        <div className="p-3 bg-muted/50 rounded-lg">
+                          <div className="text-xs text-muted-foreground mb-1">Impact Score</div>
+                          <div className="text-lg font-bold text-success">
+                            {Math.floor(Math.random() * 20) + 80}/100
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Verification & Compliance */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <CheckCircle className="w-5 h-5 text-success" />
+                        Verification
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm">Certificate Status</span>
+                          <Badge variant="default" className="bg-green-100 text-green-800">
+                            Verified
+                          </Badge>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm">Compliance</span>
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm">Manager Approval</span>
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium">Notes</Label>
+                          <div className="text-xs text-muted-foreground mt-1 p-2 bg-muted/30 rounded">
+                            Excellent performance in advanced concepts. Recommended for leadership track.
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Action Footer */}
+                <div className="flex gap-3 pt-4 border-t">
+                  <Button className="flex-1 bg-gradient-to-r from-admin to-admin-glow">
+                    <Download className="w-4 h-4 mr-2" />
+                    Download Certificate
+                  </Button>
+                  <Button variant="outline" className="gap-2">
+                    <MessageSquare className="w-4 h-4" />
+                    Send Congratulations
+                  </Button>
+                  <Button variant="outline" className="gap-2">
+                    <FileText className="w-4 h-4" />
+                    Generate Report
+                  </Button>
+                  <Button variant="outline" onClick={() => setIsCertificateDetailOpen(false)}>
                     Close
                   </Button>
                 </div>
