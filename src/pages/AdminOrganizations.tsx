@@ -12,6 +12,9 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Building2, Users, CreditCard, Settings, Plus, Edit, Trash2, ArrowLeft, Globe, Crown, RefreshCw, Copy, Check, Clock, UserPlus, UserCheck, UserX, Key, DollarSign, Calendar, AlertTriangle, TrendingUp, Shield, Target, ShieldCheck, User, MoreHorizontal, BookOpen, GraduationCap, Star, Award } from "lucide-react";
+import BrowseLearning from "@/components/learning/BrowseLearning";
+import ViewAllCertificates from "@/components/learning/ViewAllCertificates";
+import CreateLearningProgram from "@/components/CreateLearningProgram";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 
@@ -24,6 +27,13 @@ const AdminOrganizations = () => {
   const [isAddDepartmentOpen, setIsAddDepartmentOpen] = useState(false);
   const [isEditDepartmentOpen, setIsEditDepartmentOpen] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState<any>(null);
+  
+  // Learning Management Dialog States
+  const [isBrowseLibraryOpen, setIsBrowseLibraryOpen] = useState(false);
+  const [isViewCertificatesOpen, setIsViewCertificatesOpen] = useState(false);
+  const [isCreateProgramOpen, setIsCreateProgramOpen] = useState(false);
+  const [isCertificateDetailOpen, setIsCertificateDetailOpen] = useState(false);
+  const [selectedCertificate, setSelectedCertificate] = useState<any>(null);
   
   // Form states
   const [userFormData, setUserFormData] = useState({
@@ -1442,67 +1452,145 @@ const AdminOrganizations = () => {
           
           <TabsContent value="learning">
             <div className="space-y-6">
-              {/* Learning Management Header */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <GraduationCap className="w-5 h-5" />
+              {/* Enhanced Learning Management Header - Match AdminCollaboration */}
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-admin to-admin-glow bg-clip-text text-transparent">
                     Learning Management System
-                  </CardTitle>
-                  <CardDescription>Create and manage learning topics for your organization</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="flex items-center gap-2">
-                          <BookOpen className="w-4 h-4 text-blue-500" />
-                          <div>
-                            <div className="text-2xl font-bold">24</div>
-                            <div className="text-xs text-muted-foreground">Active Topics</div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                    
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4 text-green-500" />
-                          <div>
-                            <div className="text-2xl font-bold">156</div>
-                            <div className="text-xs text-muted-foreground">Total Learners</div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                    
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="flex items-center gap-2">
-                          <Award className="w-4 h-4 text-yellow-500" />
-                          <div>
-                            <div className="text-2xl font-bold">89</div>
-                            <div className="text-xs text-muted-foreground">Completed</div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                    
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="flex items-center gap-2">
-                          <Star className="w-4 h-4 text-purple-500" />
-                          <div>
-                            <div className="text-2xl font-bold">4.7</div>
-                            <div className="text-xs text-muted-foreground">Avg Rating</div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </CardContent>
-              </Card>
+                  </h2>
+                  <p className="text-muted-foreground mt-1">
+                    Create and manage learning programs, track progress, and issue certificates
+                  </p>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <Dialog open={isBrowseLibraryOpen} onOpenChange={setIsBrowseLibraryOpen}>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin"
+                      >
+                        <BookOpen className="w-4 h-4" />
+                        Browse Library
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-6xl max-h-[95vh] overflow-hidden p-0">
+                      <div className="p-6 overflow-y-auto max-h-[95vh]">
+                        <BrowseLearning />
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                  
+                  <Dialog open={isViewCertificatesOpen} onOpenChange={setIsViewCertificatesOpen}>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin"
+                      >
+                        <Award className="w-4 h-4" />
+                        View Certificates
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-6xl max-h-[95vh] overflow-hidden p-0">
+                      <DialogHeader className="p-6 pb-2">
+                        <DialogTitle>Organization Certificates</DialogTitle>
+                      </DialogHeader>
+                      <div className="px-6 pb-6 overflow-y-auto max-h-[85vh]">
+                        <ViewAllCertificates 
+                          onCertificateClick={(certificate) => {
+                            console.log("Certificate clicked from ViewAllCertificates:", certificate.title);
+                            setSelectedCertificate(certificate);
+                            setIsCertificateDetailOpen(true);
+                            setIsViewCertificatesOpen(false); // Close the main dialog
+                          }}
+                        />
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                  
+                  <Dialog open={isCreateProgramOpen} onOpenChange={setIsCreateProgramOpen}>
+                    <DialogTrigger asChild>
+                      <Button className="gap-2 bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90">
+                        <Plus className="w-4 h-4" />
+                        Create Program
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-6xl max-h-[95vh] overflow-hidden p-0">
+                      <div className="p-6 overflow-y-auto max-h-[95vh]">
+                        <CreateLearningProgram 
+                          onClose={() => setIsCreateProgramOpen(false)}
+                          onSuccess={() => {
+                            setIsCreateProgramOpen(false);
+                            toast({
+                              title: "Success",
+                              description: "Learning program created successfully"
+                            });
+                          }}
+                        />
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
+
+              {/* Learning Stats Overview */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-admin/20 flex items-center justify-center">
+                        <BookOpen className="w-5 h-5 text-admin" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Active Programs</div>
+                        <div className="text-2xl font-bold text-admin">24</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center">
+                        <GraduationCap className="w-5 h-5 text-success" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Enrollments</div>
+                        <div className="text-2xl font-bold text-success">1,247</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-warning/20 flex items-center justify-center">
+                        <Award className="w-5 h-5 text-warning" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Certificates</div>
+                        <div className="text-2xl font-bold text-warning">456</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-info/20 flex items-center justify-center">
+                        <Star className="w-5 h-5 text-info" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Avg Rating</div>
+                        <div className="text-2xl font-bold text-info">4.8</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Learning Topics Management */}
@@ -2297,6 +2385,165 @@ const AdminOrganizations = () => {
                   >
                     <Check className="w-4 h-4" />
                     Update Billing
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+        
+        {/* Certificate Detail Dialog */}
+        <Dialog open={isCertificateDetailOpen} onOpenChange={setIsCertificateDetailOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Award className="w-5 h-5 text-primary" />
+                {selectedCertificate?.course || selectedCertificate?.title}
+              </DialogTitle>
+            </DialogHeader>
+            {selectedCertificate && (
+              <div className="space-y-4">
+                {/* Employee Information - Admin Only */}
+                <div className="p-3 bg-muted/50 rounded-lg border">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-sm">{selectedCertificate.employee}</p>
+                      <p className="text-xs text-muted-foreground">{selectedCertificate.employeeRole || 'Employee'}</p>
+                    </div>
+                    <Badge variant="outline" className="text-xs">
+                      {selectedCertificate.department}
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Certificate Display */}
+                <div className="text-center p-4 border-2 border-primary/20 rounded-lg bg-gradient-to-br from-primary/5 to-primary-glow/10">
+                  <Award className="w-10 h-10 text-primary mx-auto mb-3" />
+                  <h3 className="text-base font-bold mb-2">{selectedCertificate.course || selectedCertificate.title}</h3>
+                  <div className="grid grid-cols-3 gap-3 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">ID:</span>
+                      <p className="font-mono font-medium text-xs">{selectedCertificate.certificateId || selectedCertificate.credentialId}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Score:</span>
+                      <p className="font-medium">{selectedCertificate.score}%</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Issued:</span>
+                      <p className="font-medium text-xs">{new Date(selectedCertificate.completedDate || selectedCertificate.issueDate).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Learning Details */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-sm">Learning Details</h4>
+                  <div className="p-3 bg-muted/30 rounded-lg space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Instructor:</span>
+                      <span className="font-medium">{selectedCertificate.instructor || 'Internal Training'}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Level:</span>
+                      <Badge variant="outline" className="text-xs">{selectedCertificate.level || 'Intermediate'}</Badge>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Category:</span>
+                      <span className="font-medium">{selectedCertificate.category || selectedCertificate.department}</span>
+                    </div>
+                    {selectedCertificate.description && (
+                      <div className="text-sm">
+                        <span className="text-muted-foreground">Description:</span>
+                        <p className="mt-1 text-xs leading-relaxed">{selectedCertificate.description}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Skills Acquired */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-sm">Skills Acquired</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {(selectedCertificate.skills || ['Professional Skills', 'Course Completion', 'Knowledge Assessment']).map((skill: string, index: number) => (
+                      <Badge key={index} variant="secondary" className="text-xs">
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Verification Information */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-sm">Verification</h4>
+                  <div className="p-3 bg-muted/30 rounded-lg space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Status:</span>
+                      <Badge variant="outline" className="text-xs bg-green-100 text-green-800 border-green-200">
+                        {selectedCertificate.status || 'Active'}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Verification URL:</span>
+                      <span className="font-mono text-xs text-primary">certificates.company.com/verify/{selectedCertificate.certificateId || selectedCertificate.credentialId}</span>
+                    </div>
+                    {selectedCertificate.expiryDate && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Expires:</span>
+                        <span className="font-medium">{new Date(selectedCertificate.expiryDate).toLocaleDateString()}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Additional Information */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-sm">Additional Information</h4>
+                  <div className="p-3 bg-muted/30 rounded-lg space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Course Duration:</span>
+                      <span className="font-medium">{selectedCertificate.duration || '4-6 weeks'}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Format:</span>
+                      <span className="font-medium">{selectedCertificate.format || 'Online Learning'}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">CPD Points:</span>
+                      <span className="font-medium">{selectedCertificate.cpdPoints || '10 pts'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-2">
+                  <Button 
+                    className="flex-1 gap-2" 
+                    size="sm" 
+                    onClick={() => {
+                      toast({
+                        title: "Download Started",
+                        description: `Downloading certificate: ${selectedCertificate.course || selectedCertificate.title}`,
+                      });
+                    }}
+                  >
+                    <Award className="w-3 h-3" />
+                    Download
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="flex-1 gap-2" 
+                    size="sm" 
+                    onClick={() => {
+                      navigator.clipboard.writeText(`https://certificates.company.com/verify/${selectedCertificate.certificateId || selectedCertificate.credentialId}`);
+                      toast({
+                        title: "Link Copied",
+                        description: "Certificate verification link copied to clipboard",
+                      });
+                    }}
+                  >
+                    <Award className="w-3 h-3" />
+                    Share
                   </Button>
                 </div>
               </div>
