@@ -42,12 +42,12 @@ const NewProject = () => {
   ];
 
   const teamMembers = [
-    { id: "1", name: "Sarah Chen", role: "Designer", email: "sarah@company.com" },
-    { id: "2", name: "Mike Johnson", role: "Developer", email: "mike@company.com" },
-    { id: "3", name: "Emily Davis", role: "Marketing", email: "emily@company.com" },
-    { id: "4", name: "Alex Kim", role: "PM", email: "alex@company.com" },
-    { id: "5", name: "David Liu", role: "Developer", email: "david@company.com" },
-    { id: "6", name: "Lisa Wang", role: "Designer", email: "lisa@company.com" }
+    { id: "1", name: "Sarah Chen", role: "Designer", email: "sarah@company.com", department: "Design" },
+    { id: "2", name: "Mike Johnson", role: "Developer", email: "mike@company.com", department: "Engineering" },
+    { id: "3", name: "Emily Davis", role: "Marketing", email: "emily@company.com", department: "Marketing" },
+    { id: "4", name: "Alex Kim", role: "PM", email: "alex@company.com", department: "Product" },
+    { id: "5", name: "David Liu", role: "Developer", email: "david@company.com", department: "Engineering" },
+    { id: "6", name: "Lisa Wang", role: "Designer", email: "lisa@company.com", department: "Design" }
   ];
 
   const projectColors = [
@@ -326,7 +326,7 @@ const NewProject = () => {
                         </Avatar>
                         <div className="flex-1">
                           <div className="font-medium text-sm">{member.name}</div>
-                          <div className="text-xs text-muted-foreground">{member.role}</div>
+                          <div className="text-xs text-muted-foreground">{member.role} • {member.department}</div>
                         </div>
                         {selectedMembers.includes(member.id) && (
                           <Badge variant="secondary" className="text-xs">Selected</Badge>

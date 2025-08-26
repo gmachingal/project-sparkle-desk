@@ -111,10 +111,10 @@ const CreateTask = () => {
   ];
 
   const teamMembers = [
-    { id: "1", name: "Sarah Chen", email: "sarah@company.com" },
-    { id: "2", name: "Mike Johnson", email: "mike@company.com" },
-    { id: "3", name: "Emily Davis", email: "emily@company.com" },
-    { id: "4", name: "Alex Kim", email: "alex@company.com" }
+    { id: "1", name: "Sarah Chen", email: "sarah@company.com", department: "Design" },
+    { id: "2", name: "Mike Johnson", email: "mike@company.com", department: "Engineering" },
+    { id: "3", name: "Emily Davis", email: "emily@company.com", department: "Marketing" },
+    { id: "4", name: "Alex Kim", email: "alex@company.com", department: "Product" }
   ];
 
   const addTag = () => {
@@ -404,7 +404,7 @@ const CreateTask = () => {
                             </Avatar>
                             <div>
                               <div className="font-medium">{member.name}</div>
-                              <div className="text-xs text-muted-foreground">{member.email}</div>
+                              <div className="text-xs text-muted-foreground">{member.email} • {member.department}</div>
                             </div>
                           </div>
                         </SelectItem>

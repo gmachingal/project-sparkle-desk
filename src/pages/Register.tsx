@@ -35,7 +35,8 @@ const Register = () => {
     
     // Join Organization
     joinCode: "",
-    selectedOrg: ""
+    selectedOrg: "",
+    department: ""
   });
 
   const organizationSizes = [
@@ -54,6 +55,19 @@ const Register = () => {
     { value: "retail", label: "Retail" },
     { value: "manufacturing", label: "Manufacturing" },
     { value: "consulting", label: "Consulting" },
+    { value: "other", label: "Other" }
+  ];
+
+  const departments = [
+    { value: "engineering", label: "Engineering" },
+    { value: "design", label: "Design" },
+    { value: "marketing", label: "Marketing" },
+    { value: "sales", label: "Sales" },
+    { value: "hr", label: "Human Resources" },
+    { value: "finance", label: "Finance" },
+    { value: "operations", label: "Operations" },
+    { value: "product", label: "Product Management" },
+    { value: "customer-success", label: "Customer Success" },
     { value: "other", label: "Other" }
   ];
 
@@ -225,6 +239,22 @@ const Register = () => {
                           />
                         </div>
                       </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="department">Department</Label>
+                      <Select value={formData.department} onValueChange={(value) => setFormData({ ...formData, department: value })}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select department" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {departments.map((dept) => (
+                            <SelectItem key={dept.value} value={dept.value}>
+                              {dept.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
