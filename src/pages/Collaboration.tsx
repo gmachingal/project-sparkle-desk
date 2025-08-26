@@ -2595,7 +2595,7 @@ const Collaboration = () => {
         </Dialog>
 
       </div>
-    </>
+    </div>
   );
 };
 
