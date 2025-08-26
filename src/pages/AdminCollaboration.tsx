@@ -2531,27 +2531,31 @@ const AdminCollaboration = () => {
                   </div>
                 </TabsContent>
 
-                <TabsContent value="location" className="space-y-4 mt-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Button variant="outline" className="h-24 flex-col gap-2">
-                      <Video className="w-6 h-6" />
-                      Video Call
-                      <span className="text-xs text-muted-foreground">Online meeting</span>
+                <TabsContent value="location" className="space-y-6 mt-4 overflow-y-auto max-h-[400px] px-1">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Button variant="outline" className="h-20 flex-col gap-2 text-center">
+                      <Video className="w-5 h-5" />
+                      <div>
+                        <div className="font-medium">Video Call</div>
+                        <div className="text-xs text-muted-foreground">Online meeting</div>
+                      </div>
                     </Button>
-                    <Button variant="outline" className="h-24 flex-col gap-2">
-                      <Users className="w-6 h-6" />
-                      Conference Room
-                      <span className="text-xs text-muted-foreground">Book physical room</span>
+                    <Button variant="outline" className="h-20 flex-col gap-2 text-center">
+                      <Users className="w-5 h-5" />
+                      <div>
+                        <div className="font-medium">Conference Room</div>
+                        <div className="text-xs text-muted-foreground">Book physical room</div>
+                      </div>
                     </Button>
                   </div>
                   
-                  <div>
+                  <div className="space-y-3">
                     <Label>Select Conference Room</Label>
                     <Select>
-                      <SelectTrigger className="mt-2">
+                      <SelectTrigger>
                         <SelectValue placeholder="Select conference room" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="max-w-[400px]">
                         <SelectItem value="boardroom">Boardroom (12 people)</SelectItem>
                         <SelectItem value="meeting-a">Meeting Room A (8 people)</SelectItem>
                         <SelectItem value="meeting-b">Meeting Room B (6 people)</SelectItem>
@@ -2559,6 +2563,14 @@ const AdminCollaboration = () => {
                         <SelectItem value="huddle-2">Huddle Room 2 (4 people)</SelectItem>
                       </SelectContent>
                     </Select>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <Label>Additional Location Details</Label>
+                    <textarea 
+                      className="w-full p-3 border rounded-md resize-none min-h-[80px]" 
+                      placeholder="Add building, floor, parking instructions, etc."
+                    />
                   </div>
                 </TabsContent>
 
