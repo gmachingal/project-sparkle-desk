@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -44,7 +46,15 @@ import {
   Timer,
   Star,
   PieChart,
-  Download
+  Download,
+  Edit,
+  Save,
+  X,
+  ChevronRight,
+  PlayCircle,
+  Pause,
+  CheckSquare,
+  User
 } from "lucide-react";
 
 const Teams = () => {
@@ -53,6 +63,12 @@ const Teams = () => {
   const [selectedMember, setSelectedMember] = useState<any>(null);
   const [filterDepartment, setFilterDepartment] = useState("all");
   const [isAssignTaskOpen, setIsAssignTaskOpen] = useState(false);
+  const [selectedLearner, setSelectedLearner] = useState<any>(null);
+  const [selectedLearningTopic, setSelectedLearningTopic] = useState<any>(null);
+  const [isTimeLoggingOpen, setIsTimeLoggingOpen] = useState(false);
+  const [isAssignLearningOpen, setIsAssignLearningOpen] = useState(false);
+  const [isLearningAssessmentOpen, setIsLearningAssessmentOpen] = useState(false);
+  const [timeLogData, setTimeLogData] = useState({ hours: '', notes: '', date: new Date().toISOString().split('T')[0] });
   const { toast } = useToast();
 
   // Mock team data - now focused on collaboration and workload
@@ -821,10 +837,189 @@ const Teams = () => {
                             </div>
                           </div>
                           
-                          <Button variant="outline" size="sm" className="gap-2">
-                            <Eye className="w-3 h-3" />
-                            View Details
-                          </Button>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="gap-2"
+                                onClick={() => setSelectedLearner({
+                                  ...member,
+                                  learningPath: {
+                                    currentModule: 3,
+                                    totalModules: 8,
+                                    completedLessons: 12,
+                                    totalLessons: 24,
+                                    nextDeadline: "2024-02-15",
+                                    assessmentScore: 85
+                                  }
+                                })}
+                              >
+                                <Eye className="w-3 h-3" />
+                                View Details
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                              <DialogHeader>
+                                <DialogTitle className="flex items-center gap-2">
+                                  <GraduationCap className="w-5 h-5" />
+                                  Learning Progress - {selectedLearner?.name}
+                                </DialogTitle>
+                                <DialogDescription>
+                                  Detailed learning progress and activity tracking
+                                </DialogDescription>
+                              </DialogHeader>
+                              
+                              {selectedLearner && (
+                                <div className="space-y-6">
+                                  {/* Progress Overview */}
+                                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                    <Card>
+                                      <CardContent className="p-4">
+                                        <div className="flex items-center gap-2">
+                                          <BookOpen className="w-4 h-4 text-blue-500" />
+                                          <div>
+                                            <div className="text-lg font-bold">{selectedLearner.progress}%</div>
+                                            <div className="text-xs text-muted-foreground">Overall Progress</div>
+                                          </div>
+                                        </div>
+                                      </CardContent>
+                                    </Card>
+                                    
+                                    <Card>
+                                      <CardContent className="p-4">
+                                        <div className="flex items-center gap-2">
+                                          <Timer className="w-4 h-4 text-green-500" />
+                                          <div>
+                                            <div className="text-lg font-bold">{selectedLearner.hours}h</div>
+                                            <div className="text-xs text-muted-foreground">Hours Logged</div>
+                                          </div>
+                                        </div>
+                                      </CardContent>
+                                    </Card>
+                                    
+                                    <Card>
+                                      <CardContent className="p-4">
+                                        <div className="flex items-center gap-2">
+                                          <CheckSquare className="w-4 h-4 text-orange-500" />
+                                          <div>
+                                            <div className="text-lg font-bold">{selectedLearner.learningPath?.completedLessons}/{selectedLearner.learningPath?.totalLessons}</div>
+                                            <div className="text-xs text-muted-foreground">Lessons</div>
+                                          </div>
+                                        </div>
+                                      </CardContent>
+                                    </Card>
+                                    
+                                    <Card>
+                                      <CardContent className="p-4">
+                                        <div className="flex items-center gap-2">
+                                          <Star className="w-4 h-4 text-yellow-500" />
+                                          <div>
+                                            <div className="text-lg font-bold">{selectedLearner.learningPath?.assessmentScore}%</div>
+                                            <div className="text-xs text-muted-foreground">Assessment Score</div>
+                                          </div>
+                                        </div>
+                                      </CardContent>
+                                    </Card>
+                                  </div>
+
+                                  {/* Current Learning Topic Details */}
+                                  <Card>
+                                    <CardHeader>
+                                      <CardTitle className="flex items-center gap-2">
+                                        <BookOpen className="w-5 h-5" />
+                                        Current Learning Topic: {selectedLearner.topic}
+                                      </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                        {/* Learning Path */}
+                                        <div>
+                                          <h4 className="font-medium mb-3">Learning Path Progress</h4>
+                                          <div className="space-y-3">
+                                            {[
+                                              { module: "Module 1: Introduction", status: "completed", lessons: "4/4" },
+                                              { module: "Module 2: Basic Concepts", status: "completed", lessons: "5/5" },
+                                              { module: "Module 3: Advanced Topics", status: "in-progress", lessons: "3/6" },
+                                              { module: "Module 4: Practical Applications", status: "locked", lessons: "0/5" },
+                                              { module: "Module 5: Project Work", status: "locked", lessons: "0/4" }
+                                            ].map((mod, idx) => (
+                                              <div key={idx} className="flex items-center gap-3 p-3 border rounded-lg">
+                                                <div className={cn(
+                                                  "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold",
+                                                  mod.status === 'completed' ? 'bg-green-500 text-white' :
+                                                  mod.status === 'in-progress' ? 'bg-blue-500 text-white' :
+                                                  'bg-gray-200 text-gray-500'
+                                                )}>
+                                                  {mod.status === 'completed' ? <CheckCircle className="w-3 h-3" /> : idx + 1}
+                                                </div>
+                                                <div className="flex-1">
+                                                  <p className="font-medium text-sm">{mod.module}</p>
+                                                  <p className="text-xs text-muted-foreground">Lessons: {mod.lessons}</p>
+                                                </div>
+                                                <Badge variant={
+                                                  mod.status === 'completed' ? 'default' :
+                                                  mod.status === 'in-progress' ? 'secondary' : 'outline'
+                                                }>
+                                                  {mod.status}
+                                                </Badge>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        </div>
+
+                                        {/* Time Log & Actions */}
+                                        <div className="space-y-4">
+                                          <div>
+                                            <h4 className="font-medium mb-3">Recent Learning Activity</h4>
+                                            <div className="space-y-2">
+                                              {[
+                                                { date: "2024-01-15", activity: "Completed Advanced Patterns Quiz", hours: 1.5 },
+                                                { date: "2024-01-14", activity: "Watched Tutorial: Context API", hours: 2 },
+                                                { date: "2024-01-13", activity: "Practical Exercise: Hooks", hours: 3 },
+                                                { date: "2024-01-12", activity: "Reading: Component Optimization", hours: 1 }
+                                              ].map((activity, idx) => (
+                                                <div key={idx} className="flex items-center gap-2 p-2 bg-muted/30 rounded">
+                                                  <div className="text-xs text-muted-foreground w-20">{activity.date}</div>
+                                                  <div className="flex-1 text-sm">{activity.activity}</div>
+                                                  <div className="text-xs font-medium">{activity.hours}h</div>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          </div>
+
+                                          <div className="space-y-3 pt-4 border-t">
+                                            <Button 
+                                              className="w-full gap-2" 
+                                              onClick={() => {
+                                                setIsTimeLoggingOpen(true);
+                                                setSelectedLearner(selectedLearner);
+                                              }}
+                                            >
+                                              <Timer className="w-4 h-4" />
+                                              Log Learning Time
+                                            </Button>
+                                            <Button variant="outline" className="w-full gap-2">
+                                              <PlayCircle className="w-4 h-4" />
+                                              Continue Learning
+                                            </Button>
+                                            <Button 
+                                              variant="outline" 
+                                              className="w-full gap-2"
+                                              onClick={() => setIsLearningAssessmentOpen(true)}
+                                            >
+                                              <CheckSquare className="w-4 h-4" />
+                                              Take Assessment
+                                            </Button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </CardContent>
+                                  </Card>
+                                </div>
+                              )}
+                            </DialogContent>
+                          </Dialog>
                         </div>
                       ))}
                     </div>
@@ -849,7 +1044,11 @@ const Teams = () => {
                         { title: "DevOps Fundamentals", enrolled: 4, completed: 2, hours: 52, difficulty: "Advanced", category: "DevOps" },
                         { title: "Data Analytics", enrolled: 3, completed: 3, hours: 24, difficulty: "Intermediate", category: "Analytics" }
                       ].map((topic, index) => (
-                        <div key={index} className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                        <div 
+                          key={index} 
+                          className="p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                          onClick={() => setSelectedLearningTopic(topic)}
+                        >
                           <div className="flex items-start justify-between mb-3">
                             <h4 className="font-medium text-sm">{topic.title}</h4>
                             <Badge variant="outline" className="text-xs">
@@ -965,7 +1164,12 @@ const Teams = () => {
                       <Download className="w-4 h-4" />
                       Export Progress Report
                     </Button>
-                    <Button variant="outline" className="w-full gap-2" size="sm">
+                    <Button 
+                      variant="outline" 
+                      className="w-full gap-2" 
+                      size="sm"
+                      onClick={() => setIsAssignLearningOpen(true)}
+                    >
                       <Plus className="w-4 h-4" />
                       Assign Learning Path
                     </Button>
@@ -1095,6 +1299,552 @@ const Teams = () => {
                 </Button>
                 <Button variant="outline" onClick={() => setIsAssignTaskOpen(false)}>
                   Cancel
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+        
+        {/* Learning Time Logging Dialog */}
+        <Dialog open={isTimeLoggingOpen} onOpenChange={setIsTimeLoggingOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Timer className="w-5 h-5" />
+                Log Learning Time
+              </DialogTitle>
+              <DialogDescription>
+                Track time spent on learning activities
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="learning-topic">Learning Topic</Label>
+                <Input 
+                  id="learning-topic" 
+                  value={selectedLearner?.topic || ''} 
+                  disabled 
+                  className="bg-muted"
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="log-date">Date</Label>
+                  <Input 
+                    id="log-date" 
+                    type="date" 
+                    value={timeLogData.date}
+                    onChange={(e) => setTimeLogData({...timeLogData, date: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="log-hours">Hours</Label>
+                  <Input 
+                    id="log-hours" 
+                    type="number" 
+                    step="0.25" 
+                    placeholder="2.5"
+                    value={timeLogData.hours}
+                    onChange={(e) => setTimeLogData({...timeLogData, hours: e.target.value})}
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <Label htmlFor="log-activity">Learning Activity</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select activity type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="reading">Reading Material</SelectItem>
+                    <SelectItem value="video">Watching Videos</SelectItem>
+                    <SelectItem value="practice">Hands-on Practice</SelectItem>
+                    <SelectItem value="quiz">Taking Quiz/Assessment</SelectItem>
+                    <SelectItem value="project">Project Work</SelectItem>
+                    <SelectItem value="discussion">Discussion/Q&A</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label htmlFor="log-notes">Notes</Label>
+                <Textarea 
+                  id="log-notes" 
+                  placeholder="What did you learn or work on during this session?"
+                  value={timeLogData.notes}
+                  onChange={(e) => setTimeLogData({...timeLogData, notes: e.target.value})}
+                  rows={3}
+                />
+              </div>
+              
+              <div className="flex justify-end gap-2 pt-4">
+                <Button variant="outline" onClick={() => setIsTimeLoggingOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={() => {
+                  toast({
+                    title: "Time Logged Successfully",
+                    description: `${timeLogData.hours} hours logged for ${selectedLearner?.topic}`,
+                  });
+                  setIsTimeLoggingOpen(false);
+                  setTimeLogData({ hours: '', notes: '', date: new Date().toISOString().split('T')[0] });
+                }}>
+                  <Save className="w-4 h-4 mr-2" />
+                  Log Time
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Learning Assessment Dialog */}
+        <Dialog open={isLearningAssessmentOpen} onOpenChange={setIsLearningAssessmentOpen}>
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <CheckSquare className="w-5 h-5" />
+                Learning Assessment - React Advanced Patterns
+              </DialogTitle>
+              <DialogDescription>
+                Module 3 Quiz: Test your understanding of advanced React concepts
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-6">
+              {/* Assessment Progress */}
+              <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg">
+                <div className="flex-1">
+                  <div className="flex justify-between text-sm mb-2">
+                    <span>Progress</span>
+                    <span>Question 3 of 10</span>
+                  </div>
+                  <Progress value={30} className="h-2" />
+                </div>
+                <div className="text-right">
+                  <div className="text-lg font-bold">15:32</div>
+                  <div className="text-xs text-muted-foreground">Time Remaining</div>
+                </div>
+              </div>
+
+              {/* Current Question */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Question 3 of 10</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="text-sm font-medium">
+                    Which React pattern is best suited for sharing stateful logic between components without prop drilling?
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {[
+                      { id: 'a', text: 'Higher-Order Components (HOCs)', correct: false },
+                      { id: 'b', text: 'Custom Hooks', correct: true },
+                      { id: 'c', text: 'Context API with useContext', correct: false },
+                      { id: 'd', text: 'Render Props Pattern', correct: false }
+                    ].map((option) => (
+                      <div key={option.id} className="flex items-center space-x-2">
+                        <input 
+                          type="radio" 
+                          id={option.id} 
+                          name="question3"
+                          className="h-4 w-4"
+                        />
+                        <Label htmlFor={option.id} className="text-sm cursor-pointer">
+                          {option.text}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="pt-4 border-t">
+                    <Textarea 
+                      placeholder="Optional: Explain your reasoning (bonus points for detailed explanations)"
+                      rows={3}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Navigation */}
+              <div className="flex justify-between items-center">
+                <Button variant="outline" className="gap-2">
+                  <ArrowRight className="w-4 h-4 rotate-180" />
+                  Previous Question
+                </Button>
+                
+                <div className="flex gap-2">
+                  <Button variant="outline">Save & Exit</Button>
+                  <Button className="gap-2">
+                    Next Question
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Assessment Info */}
+              <Card className="bg-blue-50 dark:bg-blue-950/20">
+                <CardContent className="p-4">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                    <div>
+                      <span className="font-medium">Total Questions:</span> 10
+                    </div>
+                    <div>
+                      <span className="font-medium">Time Limit:</span> 20 minutes
+                    </div>
+                    <div>
+                      <span className="font-medium">Passing Score:</span> 70%
+                    </div>
+                    <div>
+                      <span className="font-medium">Attempts:</span> 2/3
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Learning Topic Detail Dialog */}
+        <Dialog open={!!selectedLearningTopic} onOpenChange={() => setSelectedLearningTopic(null)}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <BookOpen className="w-5 h-5" />
+                React Advanced Patterns - Course Overview
+              </DialogTitle>
+              <DialogDescription>
+                Master advanced React concepts and architectural patterns
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-6">
+              {/* Course Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4 text-blue-500" />
+                      <div>
+                        <div className="font-bold">12</div>
+                        <div className="text-xs text-muted-foreground">Enrolled</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-green-500" />
+                      <div>
+                        <div className="font-bold">24h</div>
+                        <div className="text-xs text-muted-foreground">Duration</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2">
+                      <Star className="w-4 h-4 text-yellow-500" />
+                      <div>
+                        <div className="font-bold">4.8</div>
+                        <div className="text-xs text-muted-foreground">Rating</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2">
+                      <Award className="w-4 h-4 text-purple-500" />
+                      <div>
+                        <div className="font-bold">8</div>
+                        <div className="text-xs text-muted-foreground">Completed</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Course Content */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Course Modules</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {[
+                          {
+                            title: "Module 1: Advanced Component Patterns",
+                            lessons: ["Higher-Order Components", "Render Props", "Compound Components", "Control Props"],
+                            duration: "4h",
+                            status: "available"
+                          },
+                          {
+                            title: "Module 2: State Management Patterns",
+                            lessons: ["useReducer vs useState", "Context Optimization", "State Machines", "Custom Hooks"],
+                            duration: "5h",
+                            status: "available"
+                          },
+                          {
+                            title: "Module 3: Performance Optimization",
+                            lessons: ["React.memo", "useMemo & useCallback", "Code Splitting", "Bundle Analysis"],
+                            duration: "6h",
+                            status: "in-progress"
+                          },
+                          {
+                            title: "Module 4: Advanced Hooks",
+                            lessons: ["useLayoutEffect", "useImperativeHandle", "Custom Hook Patterns"],
+                            duration: "4h",
+                            status: "locked"
+                          },
+                          {
+                            title: "Module 5: Testing Patterns",
+                            lessons: ["Component Testing", "Hook Testing", "Integration Tests"],
+                            duration: "5h",
+                            status: "locked"
+                          }
+                        ].map((module, idx) => (
+                          <div key={idx} className="border rounded-lg p-4">
+                            <div className="flex items-center justify-between mb-3">
+                              <h4 className="font-semibold">{module.title}</h4>
+                              <div className="flex items-center gap-2">
+                                <Badge variant={
+                                  module.status === 'available' ? 'default' :
+                                  module.status === 'in-progress' ? 'secondary' : 'outline'
+                                }>
+                                  {module.status}
+                                </Badge>
+                                <span className="text-xs text-muted-foreground">{module.duration}</span>
+                              </div>
+                            </div>
+                            <div className="space-y-1">
+                              {module.lessons.map((lesson, lessonIdx) => (
+                                <div key={lessonIdx} className="flex items-center gap-2 text-sm">
+                                  <PlayCircle className="w-3 h-3 text-muted-foreground" />
+                                  <span>{lesson}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Learning Resources */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">Resources</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      {[
+                        { name: "Course Slides", type: "PDF", size: "2.4 MB" },
+                        { name: "Code Examples", type: "ZIP", size: "1.8 MB" },
+                        { name: "Reading List", type: "DOC", size: "156 KB" },
+                        { name: "Cheat Sheet", type: "PDF", size: "890 KB" }
+                      ].map((resource, idx) => (
+                        <div key={idx} className="flex items-center gap-3 p-2 border rounded">
+                          <FileText className="w-4 h-4 text-muted-foreground" />
+                          <div className="flex-1">
+                            <p className="text-sm font-medium">{resource.name}</p>
+                            <p className="text-xs text-muted-foreground">{resource.type} • {resource.size}</p>
+                          </div>
+                          <Button variant="outline" size="sm">
+                            <Download className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      ))}
+                    </CardContent>
+                  </Card>
+
+                  {/* Prerequisites */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">Prerequisites</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-3 h-3 text-green-500" />
+                          <span>JavaScript ES6+</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-3 h-3 text-green-500" />
+                          <span>React Fundamentals</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-3 h-3 text-green-500" />
+                          <span>Component Lifecycle</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <AlertCircle className="w-3 h-3 text-orange-500" />
+                          <span>TypeScript (Recommended)</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Actions */}
+                  <Card>
+                    <CardContent className="p-4 space-y-2">
+                      <Button className="w-full gap-2">
+                        <PlayCircle className="w-4 h-4" />
+                        Start Learning
+                      </Button>
+                      <Button variant="outline" className="w-full gap-2">
+                        <BookOpen className="w-4 h-4" />
+                        View Syllabus
+                      </Button>
+                      <Button variant="outline" className="w-full gap-2">
+                        <Users className="w-4 h-4" />
+                        Join Discussion
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Assign Learning Path Dialog */}
+        <Dialog open={isAssignLearningOpen} onOpenChange={setIsAssignLearningOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Target className="w-5 h-5" />
+                Assign Learning Path
+              </DialogTitle>
+              <DialogDescription>
+                Create a customized learning path for team members
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-6">
+              {/* Select Team Members */}
+              <div>
+                <Label className="text-base font-medium">Select Team Members</Label>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  {[
+                    { name: "Sarah Chen", role: "Frontend Dev", selected: true },
+                    { name: "Mike Johnson", role: "Backend Dev", selected: false },
+                    { name: "Emily Davis", role: "UI/UX Designer", selected: true },
+                    { name: "Alex Kim", role: "QA Engineer", selected: false },
+                    { name: "David Liu", role: "DevOps", selected: true },
+                    { name: "Lisa Zhang", role: "Data Analyst", selected: false }
+                  ].map((member, idx) => (
+                    <div key={idx} className="flex items-center space-x-2 p-2 border rounded">
+                      <input 
+                        type="checkbox" 
+                        id={`member-${idx}`}
+                        defaultChecked={member.selected}
+                        className="h-4 w-4"
+                      />
+                      <div>
+                        <Label htmlFor={`member-${idx}`} className="text-sm font-medium cursor-pointer">
+                          {member.name}
+                        </Label>
+                        <p className="text-xs text-muted-foreground">{member.role}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Select Learning Topics */}
+              <div>
+                <Label className="text-base font-medium">Select Learning Topics</Label>
+                <div className="space-y-2 mt-2">
+                  {[
+                    { title: "React Advanced Patterns", duration: "24h", difficulty: "Advanced", priority: true },
+                    { title: "API Security Best Practices", duration: "16h", difficulty: "Intermediate", priority: false },
+                    { title: "UI/UX Design Principles", duration: "20h", difficulty: "Beginner", priority: true },
+                    { title: "Testing Strategies", duration: "18h", difficulty: "Intermediate", priority: false }
+                  ].map((topic, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-3 border rounded">
+                      <div className="flex items-center space-x-3">
+                        <input 
+                          type="checkbox" 
+                          id={`topic-${idx}`}
+                          defaultChecked={topic.priority}
+                          className="h-4 w-4"
+                        />
+                        <div>
+                          <Label htmlFor={`topic-${idx}`} className="font-medium cursor-pointer">
+                            {topic.title}
+                          </Label>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>{topic.duration}</span>
+                            <span>•</span>
+                            <Badge variant="outline" className="text-xs">
+                              {topic.difficulty}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Learning Schedule */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="start-date">Start Date</Label>
+                  <Input id="start-date" type="date" />
+                </div>
+                <div>
+                  <Label htmlFor="target-date">Target Completion</Label>
+                  <Input id="target-date" type="date" />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="weekly-hours">Weekly Time Commitment</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select weekly hours" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="2-4">2-4 hours/week</SelectItem>
+                    <SelectItem value="4-6">4-6 hours/week</SelectItem>
+                    <SelectItem value="6-8">6-8 hours/week</SelectItem>
+                    <SelectItem value="8-10">8-10 hours/week</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="learning-notes">Additional Notes</Label>
+                <Textarea 
+                  id="learning-notes" 
+                  placeholder="Any specific goals or requirements for this learning path..."
+                  rows={3}
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-4">
+                <Button variant="outline" onClick={() => setIsAssignLearningOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={() => {
+                  toast({
+                    title: "Learning Path Assigned",
+                    description: "Learning path has been assigned to selected team members.",
+                  });
+                  setIsAssignLearningOpen(false);
+                }}>
+                  <Target className="w-4 h-4 mr-2" />
+                  Assign Learning Path
                 </Button>
               </div>
             </div>
