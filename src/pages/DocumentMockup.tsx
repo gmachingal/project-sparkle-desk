@@ -634,29 +634,29 @@ const DocumentMockup = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-6">
           {/* Primary Actions */}
           <Card className="border border-primary/10 shadow-md hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-background via-background to-primary/[0.02] hover:border-primary/20 group">
-            <CardHeader className="pb-2 px-3 pt-3">
+            <CardHeader className="pb-1 px-2.5 pt-2.5">
               <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground group-hover:text-primary transition-colors duration-200">
-                <div className="p-1 bg-primary/10 rounded group-hover:bg-primary/20 transition-colors duration-200">
+                <div className="p-0.5 bg-primary/10 rounded group-hover:bg-primary/20 transition-colors duration-200">
                   <Plus className="w-3 h-3 text-primary" />
                 </div>
                 Create Content
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 px-3 pb-3">
+            <CardContent className="space-y-1.5 px-2.5 pb-2.5">
               <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="w-full justify-start gap-2 h-8 text-xs bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-md hover:shadow-lg transition-all duration-200 font-medium">
+                  <Button className="w-full justify-start gap-2 h-7 text-xs bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-md hover:shadow-lg transition-all duration-200 font-medium">
                     <FilePlus className="w-3 h-3" />
                     New Document
                   </Button>
                 </DialogTrigger>
               </Dialog>
               
-              <div className="grid grid-cols-2 gap-1.5">
+              <div className="grid grid-cols-2 gap-1">
                 <Dialog open={isCreateSpaceDialogOpen} onOpenChange={setIsCreateSpaceDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="outline" className="justify-start gap-1.5 h-7 text-xs border hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 font-normal">
-                      <Folder className="w-3 h-3" />
+                    <Button variant="outline" className="justify-start gap-1 h-6 text-xs border hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 font-normal px-2">
+                      <Folder className="w-2.5 h-2.5" />
                       Space
                     </Button>
                   </DialogTrigger>
@@ -731,8 +731,8 @@ const DocumentMockup = () => {
 
                 <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="outline" className="justify-start gap-1.5 h-7 text-xs border hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 font-normal">
-                      <Upload className="w-3 h-3" />
+                    <Button variant="outline" className="justify-start gap-1 h-6 text-xs border hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 font-normal px-2">
+                      <Upload className="w-2.5 h-2.5" />
                       Upload
                     </Button>
                   </DialogTrigger>
