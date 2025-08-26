@@ -8,11 +8,9 @@ import { Award, Download, Share2, Calendar, CheckCircle, Trophy, Star, Eye, Filt
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const ViewAllCertificates = () => {
+const ViewAllCertificates = ({ onCertificateClick }: { onCertificateClick?: (certificate: any) => void }) => {
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCertificate, setSelectedCertificate] = useState<any>(null);
-  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const certificates = [
@@ -192,8 +190,13 @@ const ViewAllCertificates = () => {
   };
 
   const handleViewDetails = (certificate: any) => {
-    setSelectedCertificate(certificate);
-    setIsDetailDialogOpen(true);
+    console.log("Certificate clicked:", certificate.title);
+    if (onCertificateClick) {
+      console.log("Calling onCertificateClick callback");
+      onCertificateClick(certificate);
+    } else {
+      console.log("No onCertificateClick callback provided");
+    }
   };
 
   const stats = {
@@ -373,116 +376,6 @@ const ViewAllCertificates = () => {
           </CardContent>
         </Card>
       )}
-
-      {/* Certificate Detail Dialog */}
-      <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Award className="w-5 h-5 text-primary" />
-              Certificate Details
-            </DialogTitle>
-          </DialogHeader>
-          {selectedCertificate && (
-            <div className="space-y-6">
-              <div className="text-center border-2 border-primary/20 rounded-lg p-6 bg-gradient-to-br from-primary/5 to-primary-glow/10">
-                <Award className="w-16 h-16 text-primary mx-auto mb-4" />
-                <h3 className="text-xl font-bold mb-2">{selectedCertificate.title}</h3>
-                <p className="text-muted-foreground mb-4">{selectedCertificate.description}</p>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-muted-foreground">Credential ID:</span>
-                    <p className="font-mono font-medium">{selectedCertificate.credentialId}</p>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">Score:</span>
-                    <p className="font-medium">{selectedCertificate.score}%</p>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Employee Information in Detail View */}
-              <Card className="border-l-4 border-l-primary">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <Badge variant="outline" className="gap-1">
-                      Employee Information
-                    </Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="grid gap-2 md:grid-cols-3 text-sm">
-                    <div>
-                      <span className="text-muted-foreground">Name:</span>
-                      <p className="font-medium">{selectedCertificate.employee}</p>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Role:</span>
-                      <p className="font-medium">{selectedCertificate.employeeRole}</p>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Department:</span>
-                      <p className="font-medium">{selectedCertificate.department}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <h4 className="font-medium mb-2">Course Information</h4>
-                  <div className="space-y-1 text-sm">
-                    <p><span className="text-muted-foreground">Course:</span> {selectedCertificate.course}</p>
-                    <p><span className="text-muted-foreground">Instructor:</span> {selectedCertificate.instructor}</p>
-                    <p><span className="text-muted-foreground">Category:</span> {selectedCertificate.category}</p>
-                    <p><span className="text-muted-foreground">Level:</span> {selectedCertificate.level}</p>
-                  </div>
-                </div>
-                
-                <div>
-                  <h4 className="font-medium mb-2">Certification Details</h4>
-                  <div className="space-y-1 text-sm">
-                    <p><span className="text-muted-foreground">Issue Date:</span> {new Date(selectedCertificate.issueDate).toLocaleDateString()}</p>
-                    {selectedCertificate.expiryDate ? (
-                      <p><span className="text-muted-foreground">Expiry Date:</span> {new Date(selectedCertificate.expiryDate).toLocaleDateString()}</p>
-                    ) : (
-                      <p><span className="text-muted-foreground">Validity:</span> Lifetime</p>
-                    )}
-                    <p><span className="text-muted-foreground">Status:</span> <Badge className={getStatusColor(selectedCertificate.status)}>{selectedCertificate.status}</Badge></p>
-                  </div>
-                </div>
-              </div>
-              
-              <div>
-                <h4 className="font-medium mb-2">Skills Validated</h4>
-                <div className="flex flex-wrap gap-2">
-                  {selectedCertificate.skills.map((skill: string) => (
-                    <Badge key={skill} variant="secondary">{skill}</Badge>
-                  ))}
-                </div>
-              </div>
-              
-              <div className="flex gap-2">
-                <Button 
-                  className="flex-1 gap-2"
-                  onClick={() => handleDownload(selectedCertificate.credentialId, selectedCertificate.title)}
-                >
-                  <Download className="w-4 h-4" />
-                  Download PDF
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="flex-1 gap-2"
-                  onClick={() => handleShare(selectedCertificate.credentialId, selectedCertificate.title)}
-                >
-                  <Share2 className="w-4 h-4" />
-                  Share Link
-                </Button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
