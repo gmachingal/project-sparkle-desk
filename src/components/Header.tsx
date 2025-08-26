@@ -211,7 +211,7 @@ const Header = ({ userRole }: HeaderProps) => {
                 }`}
               >
                 <Building2 className="w-4 h-4" />
-                <span className="text-sm font-medium max-w-20 truncate">{getCurrentOrg()?.name}</span>
+                <span className="text-sm font-medium max-w-32 truncate">{getCurrentOrg()?.name}</span>
                 <ChevronDown className="w-3 h-3 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
