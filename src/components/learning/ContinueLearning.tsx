@@ -73,7 +73,10 @@ const ContinueLearning = () => {
       issueDate: "2024-01-15",
       score: 92,
       status: "active",
-      credentialId: "RC-2024-001-ADV"
+      credentialId: "RC-2024-001-ADV",
+      employee: "John Doe", // Current user
+      employeeRole: "Frontend Developer",
+      department: "Engineering"
     },
     {
       id: "cert-002", 
@@ -81,7 +84,10 @@ const ContinueLearning = () => {
       issueDate: "2023-11-20",
       score: 88,
       status: "active",
-      credentialId: "TS-2023-002-FUN"
+      credentialId: "TS-2023-002-FUN",
+      employee: "John Doe", // Current user
+      employeeRole: "Frontend Developer", 
+      department: "Engineering"
     },
     {
       id: "cert-003",
@@ -89,7 +95,10 @@ const ContinueLearning = () => {
       issueDate: "2023-12-10",
       score: 95,
       status: "active",
-      credentialId: "AG-2023-003-PMP"
+      credentialId: "AG-2023-003-PMP",
+      employee: "John Doe", // Current user
+      employeeRole: "Frontend Developer",
+      department: "Engineering"
     }
   ];
 
@@ -271,6 +280,20 @@ const ContinueLearning = () => {
                           </DialogTitle>
                         </DialogHeader>
                         <div className="space-y-4">
+                          {/* Employee Information */}
+                          <div className="p-3 bg-muted/50 rounded-lg border">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <p className="font-medium text-sm">{cert.employee}</p>
+                                <p className="text-xs text-muted-foreground">{cert.employeeRole}</p>
+                              </div>
+                              <Badge variant="outline" className="text-xs">
+                                {cert.department}
+                              </Badge>
+                            </div>
+                          </div>
+
+                          {/* Certificate Display */}
                           <div className="text-center p-4 border-2 border-primary/20 rounded-lg bg-gradient-to-br from-primary/5 to-primary-glow/10">
                             <Award className="w-10 h-10 text-primary mx-auto mb-3" />
                             <h3 className="text-base font-bold mb-2">{cert.title}</h3>
@@ -285,6 +308,8 @@ const ContinueLearning = () => {
                               </div>
                             </div>
                           </div>
+
+                          {/* Action Buttons */}
                           <div className="flex gap-2">
                             <Button className="flex-1 gap-2" size="sm" onClick={() => handleDownload(cert.credentialId, cert.title)}>
                               <Download className="w-3 h-3" />
