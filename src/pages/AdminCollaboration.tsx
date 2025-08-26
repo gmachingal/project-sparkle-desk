@@ -75,6 +75,7 @@ const AdminCollaboration = () => {
   const [programTitle, setProgramTitle] = useState("");
   const [programDescription, setProgramDescription] = useState("");
   const [programCategory, setProgramCategory] = useState("");
+  const [programType, setProgramType] = useState("");
   const [programDuration, setProgramDuration] = useState("");
   const [programLevel, setProgramLevel] = useState("");
   const [programCapacity, setProgramCapacity] = useState("");
@@ -1777,6 +1778,223 @@ const AdminCollaboration = () => {
                 </div>
               </div>
 
+              {/* Course Type Configuration */}
+              <Card className="border-admin/20">
+                <CardHeader>
+                  <CardTitle className="text-lg">Course Type Settings</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Configure how this program will be delivered to employees
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium">Course Type</Label>
+                    <Select value={programType} onValueChange={setProgramType}>
+                      <SelectTrigger className="mt-1 bg-background">
+                        <SelectValue placeholder="Select course type" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border shadow-lg z-50">
+                        <SelectItem value="mandatory">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 bg-destructive rounded-full"></div>
+                            <div>
+                              <div className="font-medium">Mandatory Training</div>
+                              <div className="text-xs text-muted-foreground">Required for compliance</div>
+                            </div>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="optional">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 bg-primary rounded-full"></div>
+                            <div>
+                              <div className="font-medium">Professional Development</div>
+                              <div className="text-xs text-muted-foreground">Self-paced learning</div>
+                            </div>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="certification">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 bg-warning rounded-full"></div>
+                            <div>
+                              <div className="font-medium">Certification Track</div>
+                              <div className="text-xs text-muted-foreground">Industry certification</div>
+                            </div>
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {programType === "mandatory" && (
+                    <div className="p-4 bg-destructive/5 border border-destructive/20 rounded-lg space-y-3">
+                      <div className="flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4 text-destructive" />
+                        <span className="font-medium text-sm">Mandatory Training Settings</span>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="text-sm">Completion Deadline</Label>
+                          <Input
+                            type="date"
+                            className="mt-1 bg-background"
+                            placeholder="Set deadline"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-sm">Grace Period (days)</Label>
+                          <Input
+                            type="number"
+                            placeholder="7"
+                            className="mt-1 bg-background"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="auto-assign" />
+                          <label htmlFor="auto-assign" className="text-sm">
+                            Auto-assign to new employees matching criteria
+                          </label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="manager-notifications" />
+                          <label htmlFor="manager-notifications" className="text-sm">
+                            Send notifications to managers for incomplete training
+                          </label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="escalation" />
+                          <label htmlFor="escalation" className="text-sm">
+                            Escalate to HR after deadline
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {programType === "optional" && (
+                    <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Star className="w-4 h-4 text-primary" />
+                        <span className="font-medium text-sm">Professional Development Settings</span>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="text-sm">Enrollment Period</Label>
+                          <Select>
+                            <SelectTrigger className="mt-1 bg-background">
+                              <SelectValue placeholder="Always open" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="always">Always Open</SelectItem>
+                              <SelectItem value="quarterly">Quarterly Cohorts</SelectItem>
+                              <SelectItem value="custom">Custom Schedule</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-sm">Learning Points</Label>
+                          <Input
+                            type="number"
+                            placeholder="50"
+                            className="mt-1 bg-background"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="skill-badges" />
+                          <label htmlFor="skill-badges" className="text-sm">
+                            Award skill badges upon completion
+                          </label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="peer-collaboration" />
+                          <label htmlFor="peer-collaboration" className="text-sm">
+                            Enable peer collaboration and discussion forums
+                          </label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="performance-review" />
+                          <label htmlFor="performance-review" className="text-sm">
+                            Include in performance review discussions
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {programType === "certification" && (
+                    <div className="p-4 bg-warning/5 border border-warning/20 rounded-lg space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Award className="w-4 h-4 text-warning" />
+                        <span className="font-medium text-sm">Certification Track Settings</span>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="text-sm">Certification Body</Label>
+                          <Input
+                            placeholder="e.g., AWS, Google, Microsoft"
+                            className="mt-1 bg-background"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-sm">Exam Code</Label>
+                          <Input
+                            placeholder="e.g., AWS-SAA-C03"
+                            className="mt-1 bg-background"
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="text-sm">Certification Cost</Label>
+                          <Input
+                            type="number"
+                            placeholder="300"
+                            className="mt-1 bg-background"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-sm">Validity Period</Label>
+                          <Select>
+                            <SelectTrigger className="mt-1 bg-background">
+                              <SelectValue placeholder="Select period" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="1-year">1 Year</SelectItem>
+                              <SelectItem value="2-years">2 Years</SelectItem>
+                              <SelectItem value="3-years">3 Years</SelectItem>
+                              <SelectItem value="lifetime">Lifetime</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="company-funded" />
+                          <label htmlFor="company-funded" className="text-sm">
+                            Company-funded certification exam
+                          </label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="expert-mentoring" />
+                          <label htmlFor="expert-mentoring" className="text-sm">
+                            Provide expert mentoring and exam preparation
+                          </label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="career-progression" />
+                          <label htmlFor="career-progression" className="text-sm">
+                            Link to career progression and salary bands
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
               {/* Course Selection */}
               <div>
                 <Label className="text-sm font-medium mb-3 block">Program Curriculum</Label>
@@ -2125,6 +2343,7 @@ const AdminCollaboration = () => {
                       setProgramTitle("");
                       setProgramDescription("");
                       setProgramCategory("");
+                      setProgramType("");
                       setProgramDuration("");
                       setProgramLevel("");
                       setProgramCapacity("");
