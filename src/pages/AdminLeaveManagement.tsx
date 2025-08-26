@@ -12,8 +12,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
 const AdminLeaveManagement = () => {
@@ -169,14 +169,22 @@ const AdminLeaveManagement = () => {
             <p className="text-muted-foreground mt-2">Manage employee leave requests and approvals</p>
           </div>
           <div className="flex gap-2">
-            <Button 
-              variant="outline" 
-              className="bg-admin/10 text-admin border-admin/30 hover:bg-admin/20 hover:text-admin"
-              onClick={() => window.location.href = '/leave-management'}
-            >
-              <Users className="w-4 h-4 mr-2" />
-              Employee View
-            </Button>
+            <div className="flex items-center gap-3 p-3 rounded-lg border border-admin/30 bg-admin/5">
+              <Users className="w-4 h-4 text-admin" />
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-admin">Admin View</span>
+                <span className="text-xs text-muted-foreground">Switch to employee view</span>
+              </div>
+              <Switch 
+                checked={true}
+                onCheckedChange={(checked) => {
+                  if (!checked) {
+                    window.location.href = '/leave-management';
+                  }
+                }}
+                className="data-[state=checked]:bg-admin"
+              />
+            </div>
           </div>
         </div>
 

@@ -4,11 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
-import StatsCard from "./StatsCard";
+import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ProjectCard from "./ProjectCard";
-import DailyTaskReport from "./DailyTaskReport";
+import StatsCard from "./StatsCard";
 import { 
   Users, 
   Clock, 
@@ -207,17 +207,23 @@ const AdminDashboard = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button 
-            variant="outline" 
-            className="gap-2 bg-admin/10 text-admin border-admin/30 hover:bg-admin/20 hover:text-admin" 
-            onClick={() => {
-              localStorage.setItem('preferredRole', 'user');
-              window.location.reload();
-            }}
-          >
-            <Users className="w-4 h-4" />
-            Employee View
-          </Button>
+          <div className="flex items-center gap-3 p-3 rounded-lg border border-admin/30 bg-admin/5">
+            <Users className="w-4 h-4 text-admin" />
+            <div className="flex flex-col">
+              <span className="text-sm font-medium text-admin">Admin View</span>
+              <span className="text-xs text-muted-foreground">Switch to employee view</span>
+            </div>
+            <Switch 
+              checked={true}
+              onCheckedChange={(checked) => {
+                if (!checked) {
+                  localStorage.setItem('preferredRole', 'user');
+                  window.location.reload();
+                }
+              }}
+              className="data-[state=checked]:bg-admin"
+            />
+          </div>
           <Button variant="outline" className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin" onClick={() => navigate("/admin-attendance")}>
             <BarChart3 className="w-4 h-4" />
             Reports

@@ -7,8 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
 import { 
@@ -225,10 +225,22 @@ const AdminAttendance = () => {
           </div>
           
           <div className="flex items-center gap-3">
-            <Button variant="outline" className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin" onClick={() => window.location.href = '/attendance'}>
-              <UserCheck className="w-4 h-4" />
-              Employee View
-            </Button>
+            <div className="flex items-center gap-3 p-3 rounded-lg border border-admin/30 bg-admin/5">
+              <UserCheck className="w-4 h-4 text-admin" />
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-admin">Admin View</span>
+                <span className="text-xs text-muted-foreground">Switch to employee view</span>
+              </div>
+              <Switch 
+                checked={true}
+                onCheckedChange={(checked) => {
+                  if (!checked) {
+                    window.location.href = '/attendance';
+                  }
+                }}
+                className="data-[state=checked]:bg-admin"
+              />
+            </div>
             <Button variant="outline" className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin">
               <Bell className="w-4 h-4" />
               Notifications

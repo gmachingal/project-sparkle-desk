@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import StatsCard from "./StatsCard";
+import { Switch } from "@/components/ui/switch";
 import AttendanceCard from "./AttendanceCard";
 import LeaveCard from "./LeaveCard";
-import EnhancedTaskCard from "./EnhancedTaskCard";
+import StatsCard from "./StatsCard";
 import QuickActionsDropdown from "./QuickActionsDropdown";
 import SprintOverview from "./SprintOverview";
 import DailyTaskReport from "./DailyTaskReport";
@@ -131,18 +131,23 @@ const UserDashboard = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button 
-            variant="outline" 
-            size="sm"
-            className="bg-red-100 text-red-700 border-red-300 hover:bg-red-200"
-            onClick={() => {
-              localStorage.setItem('preferredRole', 'admin');
-              window.location.reload();
-            }}
-          >
-            <Settings className="w-4 h-4 mr-2" />
-            Admin View
-          </Button>
+          <div className="flex items-center gap-3 p-3 rounded-lg border border-red-300 bg-red-50">
+            <Settings className="w-4 h-4 text-red-600" />
+            <div className="flex flex-col">
+              <span className="text-sm font-medium text-red-700">Employee View</span>
+              <span className="text-xs text-muted-foreground">Switch to admin view</span>
+            </div>
+            <Switch 
+              checked={false}
+              onCheckedChange={(checked) => {
+                if (checked) {
+                  localStorage.setItem('preferredRole', 'admin');
+                  window.location.reload();
+                }
+              }}
+              className="data-[state=checked]:bg-red-600"
+            />
+          </div>
           <QuickActionsDropdown />
           <Button variant="outline" className="gap-2" onClick={() => navigate("/time-logging")}>
             <Timer className="w-4 h-4" />

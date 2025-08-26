@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { Calendar, Clock, Plus, FileText,FileStack,CalendarHeart, User, Settings, ChevronLeft, ChevronRight } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-// Header component import - using default export
+import { Textarea } from "@/components/ui/textarea";
 import Header from "@/components/Header";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -200,14 +200,22 @@ const LeaveManagement = () => {
                 ))}
               </SelectContent>
             </Select>
-            <Button 
-              variant="outline" 
-              className="bg-red-100 text-red-700 border-red-300 hover:bg-red-200"
-              onClick={() => navigate('/admin-leave-management')}
-            >
-              <Settings className="w-4 h-4 mr-2" />
-              Admin View
-            </Button>
+            <div className="flex items-center gap-3 p-3 rounded-lg border border-red-300 bg-red-50">
+              <Settings className="w-4 h-4 text-red-600" />
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-red-700">Employee View</span>
+                <span className="text-xs text-muted-foreground">Switch to admin view</span>
+              </div>
+              <Switch 
+                checked={false}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    navigate('/admin-leave-management');
+                  }
+                }}
+                className="data-[state=checked]:bg-red-600"
+              />
+            </div>
             <Button 
               variant="outline"
               className="bg-red-100 text-red-700 border-red-300 hover:bg-red-200"

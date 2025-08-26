@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Switch } from "@/components/ui/switch";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -872,11 +872,22 @@ const Attendance = () => {
               </p>
             </div>
             {currentUser.role === 'admin' && (
-              <Button variant="outline" onClick={() => window.location.href = '/admin-attendance'}
-                className="bg-red-100 text-red-700 border-red-300 hover:bg-red-200">
-                <Settings className="h-4 w-4 mr-2" />
-                Admin View
-              </Button>
+              <div className="flex items-center gap-3 p-3 rounded-lg border border-red-300 bg-red-50">
+                <Settings className="w-4 h-4 text-red-600" />
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-red-700">Employee View</span>
+                  <span className="text-xs text-muted-foreground">Switch to admin view</span>
+                </div>
+                <Switch 
+                  checked={false}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      window.location.href = '/admin-attendance';
+                    }
+                  }}
+                  className="data-[state=checked]:bg-red-600"
+                />
+              </div>
             )}
           </div>
 
