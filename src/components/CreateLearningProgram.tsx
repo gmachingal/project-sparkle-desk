@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { 
   ChevronLeft, 
@@ -23,7 +24,8 @@ import {
   Clock,
   Upload,
   Target,
-  Calendar
+  Calendar,
+  Edit
 } from "lucide-react";
 
 interface CreateLearningProgramProps {
@@ -34,6 +36,8 @@ interface CreateLearningProgramProps {
 const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProps) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [editingAssessment, setEditingAssessment] = useState<any>(null);
+  const [editingIndex, setEditingIndex] = useState<number>(-1);
   const { toast } = useToast();
 
   // Form state
@@ -172,6 +176,42 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
       onSuccess();
       onClose();
     }
+  };
+
+  const handleEditAssessment = (assessment: any, index: number) => {
+    setEditingAssessment({ ...assessment });
+    setEditingIndex(index);
+  };
+
+  const handleSaveAssessment = () => {
+    if (editingAssessment && editingIndex >= 0) {
+      setProgramData(prev => ({
+        ...prev,
+        assessments: prev.assessments.map((assessment, index) => 
+          index === editingIndex ? editingAssessment : assessment
+        )
+      }));
+      setEditingAssessment(null);
+      setEditingIndex(-1);
+      toast({
+        title: "Assessment Updated",
+        description: "Assessment details have been successfully updated.",
+      });
+    }
+  };
+
+  const handleCreateCustomAssessment = () => {
+    const newAssessment = {
+      id: `assessment-${programData.assessments.length + 1}`,
+      title: "Custom Assessment",
+      type: "custom",
+      timeLimit: 30,
+      passingScore: 70,
+      questionCount: 10,
+      template: "custom"
+    };
+    setEditingAssessment(newAssessment);
+    setEditingIndex(-1); // -1 indicates new assessment
   };
 
   const progress = (currentStep / steps.length) * 100;
@@ -620,7 +660,13 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
                             </div>
                           </div>
                           <div className="flex gap-2">
-                            <Button variant="ghost" size="sm" className="text-xs">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="text-xs gap-1"
+                              onClick={() => handleEditAssessment(assessment, index)}
+                            >
+                              <Edit className="w-3 h-3" />
                               Edit
                             </Button>
                             <Button 
@@ -742,7 +788,7 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
                   </div>
 
                   <div className="text-center pt-2">
-                    <Button variant="outline" className="gap-2">
+                    <Button variant="outline" className="gap-2" onClick={handleCreateCustomAssessment}>
                       <Plus className="w-4 h-4" />
                       Create Custom Assessment
                     </Button>
@@ -782,7 +828,207 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      {/* Edit Assessment Dialog */}
+      <Dialog open={!!editingAssessment} onOpenChange={() => setEditingAssessment(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editingIndex === -1 ? "Create Custom Assessment" : "Edit Assessment"}
+            </DialogTitle>
+          </DialogHeader>
+          
+          {editingAssessment && (
+            <div className="space-y-6 pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-title" className="text-sm font-medium">Assessment Title *</Label>
+                  <Input
+                    id="edit-title"
+                    value={editingAssessment.title || ""}
+                    onChange={(e) => setEditingAssessment(prev => ({ ...prev, title: e.target.value }))}
+                    placeholder="Enter assessment title"
+                    className="mt-1"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="edit-type" className="text-sm font-medium">Assessment Type *</Label>
+                  <Select 
+                    value={editingAssessment.type || ""} 
+                    onValueChange={(value) => setEditingAssessment(prev => ({ ...prev, type: value }))}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="quiz">Quiz</SelectItem>
+                      <SelectItem value="exam">Exam</SelectItem>
+                      <SelectItem value="practical">Practical</SelectItem>
+                      <SelectItem value="custom">Custom</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="edit-description" className="text-sm font-medium">Description</Label>
+                <Textarea
+                  id="edit-description"
+                  value={editingAssessment.description || ""}
+                  onChange={(e) => setEditingAssessment(prev => ({ ...prev, description: e.target.value }))}
+                  placeholder="Describe the assessment objectives and content"
+                  rows={3}
+                  className="mt-1"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="edit-timeLimit" className="text-sm font-medium">Time Limit (minutes) *</Label>
+                  <Input
+                    id="edit-timeLimit"
+                    type="number"
+                    value={editingAssessment.timeLimit || ""}
+                    onChange={(e) => setEditingAssessment(prev => ({ ...prev, timeLimit: parseInt(e.target.value) || 0 }))}
+                    placeholder="30"
+                    className="mt-1"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="edit-passingScore" className="text-sm font-medium">Passing Score (%) *</Label>
+                  <Input
+                    id="edit-passingScore"
+                    type="number"
+                    value={editingAssessment.passingScore || ""}
+                    onChange={(e) => setEditingAssessment(prev => ({ ...prev, passingScore: parseInt(e.target.value) || 0 }))}
+                    placeholder="70"
+                    min="0"
+                    max="100"
+                    className="mt-1"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="edit-questionCount" className="text-sm font-medium">Number of Questions *</Label>
+                  <Input
+                    id="edit-questionCount"
+                    type="number"
+                    value={editingAssessment.questionCount || ""}
+                    onChange={(e) => setEditingAssessment(prev => ({ ...prev, questionCount: parseInt(e.target.value) || 0 }))}
+                    placeholder="10"
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-attempts" className="text-sm font-medium">Max Attempts</Label>
+                  <Select 
+                    value={editingAssessment.maxAttempts?.toString() || "1"} 
+                    onValueChange={(value) => setEditingAssessment(prev => ({ ...prev, maxAttempts: parseInt(value) }))}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select attempts" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">1 Attempt</SelectItem>
+                      <SelectItem value="2">2 Attempts</SelectItem>
+                      <SelectItem value="3">3 Attempts</SelectItem>
+                      <SelectItem value="unlimited">Unlimited</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <Label htmlFor="edit-randomize" className="text-sm font-medium">Question Order</Label>
+                  <Select 
+                    value={editingAssessment.randomizeQuestions ? "random" : "sequential"} 
+                    onValueChange={(value) => setEditingAssessment(prev => ({ ...prev, randomizeQuestions: value === "random" }))}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select order" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="sequential">Sequential</SelectItem>
+                      <SelectItem value="random">Randomized</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">Additional Settings</Label>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="edit-showResults"
+                      checked={editingAssessment.showResults || false}
+                      onCheckedChange={(checked) => setEditingAssessment(prev => ({ ...prev, showResults: checked }))}
+                    />
+                    <label htmlFor="edit-showResults" className="text-sm">Show results immediately after completion</label>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="edit-allowReview"
+                      checked={editingAssessment.allowReview || false}
+                      onCheckedChange={(checked) => setEditingAssessment(prev => ({ ...prev, allowReview: checked }))}
+                    />
+                    <label htmlFor="edit-allowReview" className="text-sm">Allow answer review before submission</label>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="edit-mandatory"
+                      checked={editingAssessment.mandatory || false}
+                      onCheckedChange={(checked) => setEditingAssessment(prev => ({ ...prev, mandatory: checked }))}
+                    />
+                    <label htmlFor="edit-mandatory" className="text-sm">Mandatory assessment (required for program completion)</label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4 border-t">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setEditingAssessment(null)}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={() => {
+                    if (editingIndex === -1) {
+                      // Add new assessment
+                      setProgramData(prev => ({
+                        ...prev,
+                        assessments: [...prev.assessments, editingAssessment]
+                      }));
+                      toast({
+                        title: "Assessment Created",
+                        description: "Custom assessment has been successfully created.",
+                      });
+                    } else {
+                      // Update existing assessment
+                      handleSaveAssessment();
+                    }
+                    setEditingAssessment(null);
+                    setEditingIndex(-1);
+                  }}
+                  className="gap-2"
+                >
+                  <CheckCircle className="w-4 h-4" />
+                  {editingIndex === -1 ? "Create Assessment" : "Save Changes"}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <div className="space-y-4">
       {/* Progress Header */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
@@ -877,8 +1123,9 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
             </Button>
           )}
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
