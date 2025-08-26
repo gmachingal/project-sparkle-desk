@@ -256,25 +256,6 @@ export function ScheduleMeetingDialog({ open, onOpenChange }: ScheduleMeetingDia
               </div>
             </div>
             
-            {/* Current Step Info */}
-            <div className="mt-4 flex items-center gap-3">
-              {(() => {
-                const currentStepData = WIZARD_STEPS.find(s => s.id === currentStep);
-                const IconComponent = currentStepData?.icon || CalendarIcon;
-                return (
-                  <>
-                    <div className="p-2 rounded-lg bg-primary text-primary-foreground">
-                      <IconComponent className="w-4 h-4" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-medium text-foreground">{currentStepData?.title}</h3>
-                      <p className="text-xs text-muted-foreground">{currentStepData?.description}</p>
-                    </div>
-                  </>
-                );
-              })()}
-            </div>
-            
             {/* Enhanced Progress Bar */}
             <div className="mt-4 space-y-2">
               <div className="flex justify-between text-xs text-muted-foreground">
