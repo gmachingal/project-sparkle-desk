@@ -57,7 +57,7 @@ import {
   User
 } from "lucide-react";
 
-const Teams = () => {
+const Collaboration = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMember, setSelectedMember] = useState<any>(null);
@@ -70,6 +70,10 @@ const Teams = () => {
   const [isLearningAssessmentOpen, setIsLearningAssessmentOpen] = useState(false);
   const [timeLogData, setTimeLogData] = useState({ hours: '', notes: '', date: new Date().toISOString().split('T')[0] });
   const { toast } = useToast();
+
+  // Mock user role - in real app this would come from auth/context
+  const [userRole, setUserRole] = useState<'admin' | 'user'>('user'); // Toggle for demo
+  const [currentUserId] = useState('1'); // Mock current user ID
 
   // Mock team data - now focused on collaboration and workload
   const teamMembers = [
@@ -230,6 +234,11 @@ const Teams = () => {
   const getFilteredMembers = () => {
     let filtered = teamMembers;
     
+    // If user view, show only current user's data
+    if (userRole === 'user') {
+      filtered = teamMembers.filter(member => member.id === currentUserId);
+    }
+    
     if (searchQuery) {
       filtered = filtered.filter(member => 
         member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -274,13 +283,21 @@ const Teams = () => {
     }
   };
 
-  const teamStats = {
+  const teamStats = userRole === 'admin' ? {
     total: teamMembers.length,
     online: teamMembers.filter(m => m.status === "online").length,
     avgWorkload: Math.round(teamMembers.reduce((acc, m) => acc + m.workload, 0) / teamMembers.length),
     totalProjects: [...new Set(teamMembers.flatMap(m => m.activeProjects))].length,
     completedTasks: teamMembers.reduce((acc, m) => acc + m.tasksCompleted, 0),
     inProgressTasks: teamMembers.reduce((acc, m) => acc + m.tasksInProgress, 0)
+  } : {
+    // User-specific stats
+    total: 1,
+    online: teamMembers.find(m => m.id === currentUserId)?.status === "online" ? 1 : 0,
+    avgWorkload: teamMembers.find(m => m.id === currentUserId)?.workload || 0,
+    totalProjects: teamMembers.find(m => m.id === currentUserId)?.activeProjects.length || 0,
+    completedTasks: teamMembers.find(m => m.id === currentUserId)?.tasksCompleted || 0,
+    inProgressTasks: teamMembers.find(m => m.id === currentUserId)?.tasksInProgress || 0
   };
 
   const handleAssignTask = (memberId: string) => {
@@ -307,14 +324,27 @@ const Teams = () => {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-              Team Collaboration
+              {userRole === 'admin' ? 'Organization Collaboration' : 'My Collaboration'}
             </h1>
             <p className="text-muted-foreground mt-1">
-              Manage workloads, track progress, and collaborate effectively
+              {userRole === 'admin' 
+                ? 'Manage organization-wide collaboration, workloads, and team performance'
+                : 'Track your progress, collaborate with team members, and manage your workload'
+              }
             </p>
           </div>
           
           <div className="flex items-center gap-3">
+            {/* Role Toggle for Demo */}
+            <Button 
+              variant="outline" 
+              onClick={() => setUserRole(userRole === 'admin' ? 'user' : 'admin')}
+              className="gap-2"
+            >
+              <User className="w-4 h-4" />
+              Switch to {userRole === 'admin' ? 'User' : 'Admin'} View
+            </Button>
+            
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="outline" className="gap-2">
@@ -347,7 +377,9 @@ const Teams = () => {
                 <Users className="w-4 h-4 text-blue-500" />
                 <div>
                   <div className="text-2xl font-bold">{teamStats.total}</div>
-                  <div className="text-xs text-muted-foreground">Team Members</div>
+                  <div className="text-xs text-muted-foreground">
+                    {userRole === 'admin' ? 'Team Members' : 'Your Profile'}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -359,7 +391,9 @@ const Teams = () => {
                 <Activity className="w-4 h-4 text-green-500" />
                 <div>
                   <div className="text-2xl font-bold">{teamStats.online}</div>
-                  <div className="text-xs text-muted-foreground">Online Now</div>
+                  <div className="text-xs text-muted-foreground">
+                    {userRole === 'admin' ? 'Online Now' : 'Status'}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -371,7 +405,9 @@ const Teams = () => {
                 <BarChart3 className={`w-4 h-4 ${getWorkloadColor(teamStats.avgWorkload)}`} />
                 <div>
                   <div className="text-2xl font-bold">{teamStats.avgWorkload}%</div>
-                  <div className="text-xs text-muted-foreground">Avg Workload</div>
+                  <div className="text-xs text-muted-foreground">
+                    {userRole === 'admin' ? 'Avg Workload' : 'My Workload'}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -383,7 +419,9 @@ const Teams = () => {
                 <Briefcase className="w-4 h-4 text-purple-500" />
                 <div>
                   <div className="text-2xl font-bold">{teamStats.totalProjects}</div>
-                  <div className="text-xs text-muted-foreground">Active Projects</div>
+                  <div className="text-xs text-muted-foreground">
+                    {userRole === 'admin' ? 'Active Projects' : 'My Projects'}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -395,7 +433,9 @@ const Teams = () => {
                 <CheckCircle className="w-4 h-4 text-green-500" />
                 <div>
                   <div className="text-2xl font-bold">{teamStats.completedTasks}</div>
-                  <div className="text-xs text-muted-foreground">Completed</div>
+                  <div className="text-xs text-muted-foreground">
+                    {userRole === 'admin' ? 'Completed' : 'My Completed'}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -407,7 +447,9 @@ const Teams = () => {
                 <Play className="w-4 h-4 text-blue-500" />
                 <div>
                   <div className="text-2xl font-bold">{teamStats.inProgressTasks}</div>
-                  <div className="text-xs text-muted-foreground">In Progress</div>
+                  <div className="text-xs text-muted-foreground">
+                    {userRole === 'admin' ? 'In Progress' : 'My Progress'}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -419,53 +461,111 @@ const Teams = () => {
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
-              Team Overview
+              {userRole === 'admin' ? 'Team Overview' : 'My Overview'}
             </TabsTrigger>
             <TabsTrigger value="workload" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
-              Workload
+              {userRole === 'admin' ? 'Team Workload' : 'My Workload'}
             </TabsTrigger>
             <TabsTrigger value="departments" className="flex items-center gap-2">
               <Briefcase className="h-4 w-4" />
-              Departments
+              {userRole === 'admin' ? 'Departments' : 'My Team'}
             </TabsTrigger>
             <TabsTrigger value="learning" className="flex items-center gap-2">
               <GraduationCap className="h-4 w-4" />
-              Learning
+              {userRole === 'admin' ? 'Learning Management' : 'My Learning'}
             </TabsTrigger>
             <TabsTrigger value="collaboration" className="flex items-center gap-2">
               <Share2 className="h-4 w-4" />
-              Collaboration
+              {userRole === 'admin' ? 'Team Collaboration' : 'My Collaboration'}
             </TabsTrigger>
           </TabsList>
 
           {/* Team Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
-            {/* Search and Filters */}
-            <div className="flex items-center gap-4">
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                <Input
-                  placeholder="Search team members..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
+            {/* Search and Filters - Admin Only */}
+            {userRole === 'admin' && (
+              <div className="flex items-center gap-4">
+                <div className="relative flex-1 max-w-md">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                  <Input
+                    placeholder="Search team members..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                
+                <Select value={filterDepartment} onValueChange={setFilterDepartment}>
+                  <SelectTrigger className="w-48">
+                    <Filter className="w-4 h-4 mr-2" />
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Departments</SelectItem>
+                    {departments.map(dept => (
+                      <SelectItem key={dept.id} value={dept.name}>{dept.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              
-              <Select value={filterDepartment} onValueChange={setFilterDepartment}>
-                <SelectTrigger className="w-48">
-                  <Filter className="w-4 h-4 mr-2" />
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Departments</SelectItem>
-                  {departments.map(dept => (
-                    <SelectItem key={dept.id} value={dept.name}>{dept.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            )}
+            
+            {/* User View - My Profile Card */}
+            {userRole === 'user' && (
+              <Card className="mb-6 border-primary/20 bg-gradient-to-r from-primary/5 to-primary-glow/5">
+                <CardHeader>
+                  <CardTitle className="text-2xl">My Profile & Progress</CardTitle>
+                  <p className="text-muted-foreground">Track your personal performance and collaborate with your team</p>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="flex items-center gap-4">
+                      <Avatar className="w-16 h-16">
+                        <AvatarFallback className="bg-primary text-primary-foreground text-xl">
+                          {teamMembers.find(m => m.id === currentUserId)?.name.split(' ').map(n => n[0]).join('') || 'AJ'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <h3 className="text-xl font-semibold">{teamMembers.find(m => m.id === currentUserId)?.name || 'Alex Johnson'}</h3>
+                        <p className="text-muted-foreground">{teamMembers.find(m => m.id === currentUserId)?.role || 'Team Lead'}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <div className={cn("w-2 h-2 rounded-full", getStatusColor(teamMembers.find(m => m.id === currentUserId)?.status || 'online'))} />
+                          <span className="text-sm text-muted-foreground capitalize">{teamMembers.find(m => m.id === currentUserId)?.status || 'online'}</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Current Workload</p>
+                        <div className="flex items-center gap-2">
+                          <Progress value={teamMembers.find(m => m.id === currentUserId)?.workload || 85} className="flex-1" />
+                          <span className={cn("font-semibold", getWorkloadColor(teamMembers.find(m => m.id === currentUserId)?.workload || 85))}>
+                            {teamMembers.find(m => m.id === currentUserId)?.workload || 85}%
+                          </span>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">This Week</p>
+                        <p className="font-medium">{teamMembers.find(m => m.id === currentUserId)?.currentCapacity || '34h / 40h'}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="text-center p-3 bg-background rounded-lg">
+                        <div className="text-2xl font-bold text-green-600">{teamMembers.find(m => m.id === currentUserId)?.tasksCompleted || 42}</div>
+                        <div className="text-xs text-muted-foreground">Completed</div>
+                      </div>
+                      <div className="text-center p-3 bg-background rounded-lg">
+                        <div className="text-2xl font-bold text-blue-600">{teamMembers.find(m => m.id === currentUserId)?.tasksInProgress || 3}</div>
+                        <div className="text-xs text-muted-foreground">In Progress</div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Team Members Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1855,4 +1955,4 @@ const Teams = () => {
   );
 };
 
-export default Teams;
+export default Collaboration;

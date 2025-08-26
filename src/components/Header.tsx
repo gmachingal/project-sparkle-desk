@@ -268,11 +268,11 @@ const Header = ({ userRole, title, subtitle, backButton, actionButton }: HeaderP
             <Button 
               variant="ghost" 
               size="sm" 
-              onClick={() => navigate("/teams")} 
-              className={`gap-2 ${isActivePage("/teams") ? (isAdminPage ? "bg-admin text-admin-foreground" : "bg-primary text-primary-foreground") : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
+              onClick={() => navigate("/collaboration")} 
+              className={`gap-2 ${isActivePage("/collaboration") ? (isAdminPage ? "bg-admin text-admin-foreground" : "bg-primary text-primary-foreground") : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
               <Users className="w-4 h-4" />
-              <span className="hidden xl:inline">Teams</span>
+              <span className="hidden xl:inline">Collaboration</span>
             </Button>
             <Button 
               variant="ghost" 
@@ -316,9 +316,9 @@ const Header = ({ userRole, title, subtitle, backButton, actionButton }: HeaderP
                 <Briefcase className="w-4 h-4" />
                 Projects
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/teams")} className="gap-2">
+              <DropdownMenuItem onClick={() => navigate("/collaboration")} className="gap-2">
                 <Users className="w-4 h-4" />
-                Teams
+                Collaboration
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate(getNavigationUrl("/attendance"))} className="gap-2">
                 <Clock className="w-4 h-4" />

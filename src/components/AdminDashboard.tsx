@@ -342,10 +342,10 @@ const AdminDashboard = () => {
                 <Button 
                   variant="outline" 
                   className="h-20 flex-col gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin"
-                  onClick={() => navigate('/teams')}
+                  onClick={() => navigate('/collaboration')}
                 >
                   <Users className="w-6 h-6" />
-                  <span className="text-xs">Teams</span>
+                  <span className="text-xs">Collaboration</span>
                 </Button>
                 <Button 
                   variant="outline" 
