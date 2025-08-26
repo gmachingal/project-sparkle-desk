@@ -638,7 +638,8 @@ const Collaboration = () => {
               </Card>
             )}
 
-            {/* Team Members Grid */}
+            {/* Team Members Grid - Admin View Only */}
+            {(currentUser.role === 'admin' && isAdminView) && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {getFilteredMembers().map((member) => (
                 <Card key={member.id} className="hover:shadow-md transition-shadow">
@@ -796,6 +797,175 @@ const Collaboration = () => {
                 </Card>
               ))}
             </div>
+            )}
+
+            {/* Personal Collaboration Content - User View */}
+            {(currentUser.role !== 'admin' || !isAdminView) && (
+              <div className="space-y-6">
+                {/* My Active Collaborations */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Share2 className="w-5 h-5" />
+                      My Active Collaborations
+                    </CardTitle>
+                    <p className="text-muted-foreground">Projects and tasks you're collaborating on</p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {[
+                        {
+                          project: "Website Redesign",
+                          collaborators: ["Sarah Chen", "David Kim"],
+                          role: "Technical Lead",
+                          progress: 75,
+                          deadline: "2 days",
+                          priority: "high"
+                        },
+                        {
+                          project: "Mobile App Development", 
+                          collaborators: ["Mike Rodriguez"],
+                          role: "Frontend Developer",
+                          progress: 45,
+                          deadline: "1 week",
+                          priority: "medium"
+                        }
+                      ].map((collab, index) => (
+                        <div key={index} className="p-4 border rounded-lg space-y-3">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h4 className="font-semibold">{collab.project}</h4>
+                              <p className="text-sm text-muted-foreground">Role: {collab.role}</p>
+                            </div>
+                            <Badge variant={collab.priority === 'high' ? 'destructive' : 'default'}>
+                              {collab.priority}
+                            </Badge>
+                          </div>
+                          
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-muted-foreground">Progress:</span>
+                            <Progress value={collab.progress} className="flex-1" />
+                            <span className="text-sm font-medium">{collab.progress}%</span>
+                          </div>
+                          
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-muted-foreground">Collaborating with:</span>
+                              <div className="flex -space-x-1">
+                                {collab.collaborators.map((name, i) => (
+                                  <Avatar key={i} className="w-6 h-6 border-2 border-background">
+                                    <AvatarFallback className="text-xs">
+                                      {name.split(' ').map(n => n[0]).join('')}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                ))}
+                              </div>
+                            </div>
+                            <span className="text-sm text-muted-foreground">Due in {collab.deadline}</span>
+                          </div>
+                          
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline" className="text-xs">
+                              <MessageSquare className="w-3 h-3 mr-1" />
+                              Chat
+                            </Button>
+                            <Button size="sm" variant="outline" className="text-xs">
+                              <FileText className="w-3 h-3 mr-1" />
+                              View Details
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* My Learning Progress */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <GraduationCap className="w-5 h-5" />
+                      My Learning Progress
+                    </CardTitle>
+                    <p className="text-muted-foreground">Track your learning and development goals</p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {[
+                        {
+                          topic: "Advanced React Patterns",
+                          category: "Technical",
+                          progress: 75,
+                          hoursLogged: 12,
+                          totalHours: 16,
+                          nextMilestone: "Complete Hooks Module",
+                          dueDate: "Next Friday"
+                        },
+                        {
+                          topic: "Leadership Skills",
+                          category: "Soft Skills", 
+                          progress: 40,
+                          hoursLogged: 8,
+                          totalHours: 20,
+                          nextMilestone: "Team Management Workshop",
+                          dueDate: "End of Month"
+                        }
+                      ].map((learning, index) => (
+                        <div key={index} className="p-4 border rounded-lg space-y-3">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h4 className="font-semibold">{learning.topic}</h4>
+                              <Badge variant="outline" className="text-xs mt-1">
+                                {learning.category}
+                              </Badge>
+                            </div>
+                            <Button size="sm" variant="outline" onClick={() => setIsTimeLoggingOpen(true)}>
+                              <Timer className="w-3 h-3 mr-1" />
+                              Log Hours
+                            </Button>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-muted-foreground">Progress</span>
+                              <span className="font-medium">{learning.progress}%</span>
+                            </div>
+                            <Progress value={learning.progress} className="h-2" />
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <span className="text-muted-foreground">Hours:</span>
+                              <span className="font-medium ml-2">{learning.hoursLogged}/{learning.totalHours}h</span>
+                            </div>
+                            <div>
+                              <span className="text-muted-foreground">Due:</span>
+                              <span className="font-medium ml-2">{learning.dueDate}</span>
+                            </div>
+                          </div>
+                          
+                          <div className="p-3 bg-muted/50 rounded-lg">
+                            <p className="text-sm text-muted-foreground">Next Milestone:</p>
+                            <p className="font-medium">{learning.nextMilestone}</p>
+                          </div>
+                          
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline" className="text-xs">
+                              <PlayCircle className="w-3 h-3 mr-1" />
+                              Continue Learning
+                            </Button>
+                            <Button size="sm" variant="outline" className="text-xs">
+                              <CheckSquare className="w-3 h-3 mr-1" />
+                              Take Assessment
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
           </TabsContent>
 
           {/* Workload Management Tab */}
