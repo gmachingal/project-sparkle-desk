@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { CalendarIcon, ArrowLeft, Trash2, Clock, Plus, Target, Upload, FileText, Image, File } from 'lucide-react';
+import { CalendarIcon, ArrowLeft, Trash2, Clock, Plus, Target, Upload, FileText, Image, File, Save } from 'lucide-react';
 import { format } from 'date-fns';
 
 const EditTask = () => {
@@ -256,14 +256,28 @@ const EditTask = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="backdrop-blur-sm bg-gradient-to-l sticky top-0 z-50 from-primary/40 via-primary-glow/60 to-primary/80  shadow-2xl shadow-black/30 drop-shadow-lg">
+      {/* Header */}
+      <div className="backdrop-blur-sm bg-gradient-to-l sticky top-0 z-50 from-primary/40 via-primary-glow/60 to-primary/80 shadow-2xl shadow-black/30 drop-shadow-lg">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
             <Button variant="outline" size="sm" onClick={() => navigate("/my-tasks")} className="gap-2">
               <ArrowLeft className="w-4 h-4" />
               Back
             </Button>
-            <h1 className="text-2xl font-bold text-white">Edit Task</h1>
+            <div>
+              <h1 className="text-2xl font-bold text-white">Edit Task</h1>
+              <p className="text-white/80 text-sm">Modify task details and settings</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="destructive" onClick={handleDelete} className="gap-2">
+              <Trash2 className="w-4 h-4" />
+              Delete
+            </Button>
+            <Button variant="default" onClick={handleSubmit} className="gap-2 bg-white text-primary hover:bg-white/90">
+              <Save className="w-4 h-4" />
+              Save Changes
+            </Button>
           </div>
         </div>
       </div>

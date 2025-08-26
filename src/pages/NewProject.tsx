@@ -136,16 +136,19 @@ const NewProject = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="backdrop-blur-sm bg-gradient-to-l sticky top-0 z-50 from-primary/40 via-primary-glow/60 to-primary/80  shadow-2xl shadow-black/30 drop-shadow-lg">
+      <div className="backdrop-blur-sm bg-gradient-to-l sticky top-0 z-50 from-primary/40 via-primary-glow/60 to-primary/80 shadow-2xl shadow-black/30 drop-shadow-lg">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
             <Button variant="outline" size="sm" onClick={() => navigate("/projects")} className="gap-2">
               <ArrowLeft className="w-4 h-4" />
               Back
             </Button>
-            <h1 className="text-2xl font-bold text-white">Create New Project</h1>
+            <div>
+              <h1 className="text-2xl font-bold text-white">Create New Project</h1>
+              <p className="text-white/80 text-sm">Set up a new project with team and milestones</p>
+            </div>
           </div>
-          <Button variant="default" onClick={handleSubmit} className="gap-2">
+          <Button variant="default" onClick={handleSubmit} className="gap-2 bg-white text-primary hover:bg-white/90">
             <Save className="w-4 h-4" />
             Create Project
           </Button>

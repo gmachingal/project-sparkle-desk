@@ -288,16 +288,23 @@ const TimeLogging = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      
-     <div className="backdrop-blur-sm bg-gradient-to-l sticky top-0 z-50 from-primary/40 via-primary-glow/60 to-primary/80  shadow-2xl shadow-black/30 drop-shadow-lg">
+      {/* Header */}
+      <div className="backdrop-blur-sm bg-gradient-to-l sticky top-0 z-50 from-primary/40 via-primary-glow/60 to-primary/80 shadow-2xl shadow-black/30 drop-shadow-lg">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
             <Button variant="outline" size="sm" onClick={() => navigate(-1)} className="gap-2">
               <ArrowLeft className="w-4 h-4" />
               Back
             </Button>
-            <h1 className="text-2xl font-bold text-white">Time Logging</h1>
+            <div>
+              <h1 className="text-2xl font-bold text-white">Time Logging</h1>
+              <p className="text-white/80 text-sm">Track time spent on tasks and projects</p>
+            </div>
           </div>
+          <Button variant="default" onClick={handleSaveAllEntries} className="gap-2 bg-white text-primary hover:bg-white/90">
+            <Save className="w-4 h-4" />
+            Save All
+          </Button>
         </div>
       </div>
       
