@@ -141,54 +141,53 @@ const TakeAssessment = () => {
         </Badge>
       </div>
 
-      <div className="grid gap-3">
+      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
         {assessments.map((assessment) => (
           <Card key={assessment.id} className={`transition-all duration-200 hover:shadow-md ${getStatusColor(assessment.status)}`}>
             <CardHeader className="pb-3">
-              <div className="flex items-start justify-between">
-                <div className="space-y-1 flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <CardTitle className="text-base">{assessment.title}</CardTitle>
-                    <Badge className={getDifficultyColor(assessment.difficulty)} variant="outline">
-                      {assessment.difficulty}
-                    </Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground line-clamp-1">{assessment.description}</p>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {assessment.duration}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <BookOpen className="w-3 h-3" />
-                      {assessment.questions} questions
-                    </span>
-                    <span>{assessment.category}</span>
-                  </div>
+              <div className="space-y-2">
+                <div className="flex items-start justify-between">
+                  <CardTitle className="text-sm leading-tight line-clamp-2">{assessment.title}</CardTitle>
+                  {assessment.status === "completed" && (
+                    <Trophy className="w-4 h-4 text-success shrink-0 ml-2" />
+                  )}
                 </div>
-                {assessment.status === "completed" && (
-                  <Trophy className="w-4 h-4 text-success ml-3" />
-                )}
+                <Badge className={getDifficultyColor(assessment.difficulty)} variant="outline">
+                  {assessment.difficulty}
+                </Badge>
+                <p className="text-xs text-muted-foreground line-clamp-2">{assessment.description}</p>
               </div>
             </CardHeader>
-            <CardContent className="pt-0">
-              <div className="flex items-center justify-between">
-                <div className="text-xs">
-                  <p className="text-muted-foreground">
-                    Attempts: {assessment.attempts}/{assessment.maxAttempts}
-                  </p>
+            <CardContent className="pt-0 space-y-3">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    {assessment.duration}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <BookOpen className="w-3 h-3" />
+                    {assessment.questions} Q
+                  </span>
                 </div>
-                <Button 
-                  onClick={() => handleStartAssessment(assessment.id)}
-                  disabled={assessment.status === "completed"}
-                  size="sm"
-                  className="gap-1"
-                >
-                  <Play className="w-3 h-3" />
-                  {assessment.status === "completed" ? "Completed" : 
-                   assessment.status === "in-progress" ? "Continue" : "Start"}
-                </Button>
+                <div className="text-xs text-muted-foreground">
+                  {assessment.category}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Attempts: {assessment.attempts}/{assessment.maxAttempts}
+                </div>
               </div>
+              
+              <Button 
+                onClick={() => handleStartAssessment(assessment.id)}
+                disabled={assessment.status === "completed"}
+                size="sm"
+                className="w-full gap-1 h-7"
+              >
+                <Play className="w-3 h-3" />
+                {assessment.status === "completed" ? "Done" : 
+                 assessment.status === "in-progress" ? "Continue" : "Start"}
+              </Button>
             </CardContent>
           </Card>
         ))}
