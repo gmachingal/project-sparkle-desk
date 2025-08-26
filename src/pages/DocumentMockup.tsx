@@ -11,7 +11,10 @@ import { CreateDocumentDialog } from "@/components/documents/CreateDocumentDialo
 import { SpacesList } from "@/components/spaces/SpacesList";
 import { SpaceDetails } from "@/components/spaces/SpaceDetails";
 import { CreateSpaceDialog } from "@/components/spaces/CreateSpaceDialog";
-
+import { ViewDocuments } from "@/components/spaces/ViewDocuments";
+import { ManageMembers } from "@/components/spaces/ManageMembers";
+import { SpaceSettings } from "@/components/spaces/SpaceSettings";
+import { SpaceAnalytics } from "@/components/spaces/SpaceAnalytics";
 import { ActivityFeed } from "@/components/common/ActivityFeed";
 import { UploadDialog } from "@/components/common/UploadDialog";
 import { SearchAndFilters } from "@/components/common/SearchAndFilters";
@@ -30,6 +33,7 @@ const DocumentMockup = () => {
   const [showEditor, setShowEditor] = useState(false);
   const [selectedSpaceDetails, setSelectedSpaceDetails] = useState<string | null>(null);
   const [selectedDocumentView, setSelectedDocumentView] = useState<string | null>(null);
+  const [spaceScreen, setSpaceScreen] = useState<"details" | "documents" | "members" | "settings" | "analytics">("details");
   const { toast } = useToast();
 
   const handleCreateDocument = () => {
@@ -76,10 +80,16 @@ const DocumentMockup = () => {
 
   const handleSpaceClick = (spaceId: string) => {
     setSelectedSpaceDetails(spaceId);
+    setSpaceScreen("details");
   };
 
   const handleBackToSpaces = () => {
     setSelectedSpaceDetails(null);
+    setSpaceScreen("details");
+  };
+
+  const handleBackToSpaceDetails = () => {
+    setSpaceScreen("details");
   };
 
   if (selectedDocumentView) {
@@ -162,12 +172,51 @@ const DocumentMockup = () => {
 
           <TabsContent value="spaces" className="space-y-6">
             {selectedSpaceDetails ? (
-              <SpaceDetails
-                space={spaces.find(s => s.id === selectedSpaceDetails)!}
-                members={spaceMembers[selectedSpaceDetails] || []}
-                analytics={spaceAnalytics[selectedSpaceDetails]}
-                onBack={handleBackToSpaces}
-              />
+              <>
+                {spaceScreen === "details" && (
+                  <SpaceDetails
+                    space={spaces.find(s => s.id === selectedSpaceDetails)!}
+                    members={spaceMembers[selectedSpaceDetails] || []}
+                    analytics={spaceAnalytics[selectedSpaceDetails]}
+                    onBack={handleBackToSpaces}
+                    onViewDocuments={() => setSpaceScreen("documents")}
+                    onManageMembers={() => setSpaceScreen("members")}
+                    onSpaceSettings={() => setSpaceScreen("settings")}
+                    onSpaceAnalytics={() => setSpaceScreen("analytics")}
+                  />
+                )}
+                {spaceScreen === "documents" && (
+                  <ViewDocuments
+                    space={spaces.find(s => s.id === selectedSpaceDetails)!}
+                    documents={documents.filter(doc => doc.tags.some(tag => 
+                      spaces.find(s => s.id === selectedSpaceDetails)?.name.toLowerCase().includes(tag.toLowerCase())
+                    ))}
+                    onBack={handleBackToSpaceDetails}
+                    onViewDocument={handleViewDocument}
+                    onEditDocument={handleEditDocument}
+                  />
+                )}
+                {spaceScreen === "members" && (
+                  <ManageMembers
+                    space={spaces.find(s => s.id === selectedSpaceDetails)!}
+                    members={spaceMembers[selectedSpaceDetails] || []}
+                    onBack={handleBackToSpaceDetails}
+                  />
+                )}
+                {spaceScreen === "settings" && (
+                  <SpaceSettings
+                    space={spaces.find(s => s.id === selectedSpaceDetails)!}
+                    onBack={handleBackToSpaceDetails}
+                  />
+                )}
+                {spaceScreen === "analytics" && (
+                  <SpaceAnalytics
+                    space={spaces.find(s => s.id === selectedSpaceDetails)!}
+                    analytics={spaceAnalytics[selectedSpaceDetails]}
+                    onBack={handleBackToSpaceDetails}
+                  />
+                )}
+              </>
             ) : (
               <>
                 <div className="flex items-center justify-between">

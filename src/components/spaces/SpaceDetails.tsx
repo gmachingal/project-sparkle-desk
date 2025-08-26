@@ -25,6 +25,10 @@ interface SpaceDetailsProps {
   members: SpaceMember[];
   analytics: SpaceAnalytics;
   onBack: () => void;
+  onViewDocuments: () => void;
+  onManageMembers: () => void;
+  onSpaceSettings: () => void;
+  onSpaceAnalytics: () => void;
 }
 
 const getVisibilityIcon = (visibility: string) => {
@@ -36,7 +40,7 @@ const getVisibilityIcon = (visibility: string) => {
   }
 };
 
-export const SpaceDetails = ({ space, members, analytics, onBack }: SpaceDetailsProps) => {
+export const SpaceDetails = ({ space, members, analytics, onBack, onViewDocuments, onManageMembers, onSpaceSettings, onSpaceAnalytics }: SpaceDetailsProps) => {
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -71,7 +75,7 @@ export const SpaceDetails = ({ space, members, analytics, onBack }: SpaceDetails
       {/* Space Actions - After clicking space */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {/* Primary Actions */}
-        <Card className="hover:shadow-md transition-shadow cursor-pointer border-blue-200 bg-blue-50/50">
+        <Card className="hover:shadow-md transition-shadow cursor-pointer border-blue-200 bg-blue-50/50" onClick={onViewDocuments}>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center">
@@ -85,7 +89,7 @@ export const SpaceDetails = ({ space, members, analytics, onBack }: SpaceDetails
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-md transition-shadow cursor-pointer border-green-200 bg-green-50/50">
+        <Card className="hover:shadow-md transition-shadow cursor-pointer border-green-200 bg-green-50/50" onClick={onManageMembers}>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-green-500 flex items-center justify-center">
@@ -99,7 +103,7 @@ export const SpaceDetails = ({ space, members, analytics, onBack }: SpaceDetails
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-md transition-shadow cursor-pointer border-purple-200 bg-purple-50/50">
+        <Card className="hover:shadow-md transition-shadow cursor-pointer border-purple-200 bg-purple-50/50" onClick={onSpaceSettings}>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-purple-500 flex items-center justify-center">
@@ -113,7 +117,7 @@ export const SpaceDetails = ({ space, members, analytics, onBack }: SpaceDetails
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-md transition-shadow cursor-pointer border-orange-200 bg-orange-50/50">
+        <Card className="hover:shadow-md transition-shadow cursor-pointer border-orange-200 bg-orange-50/50" onClick={onSpaceAnalytics}>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-orange-500 flex items-center justify-center">
