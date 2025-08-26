@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -21,6 +21,8 @@ const Header = ({ userRole }: HeaderProps) => {
   
   // Enhanced user's organizations with admin-style data structure
   const [currentOrganization, setCurrentOrganization] = useState("ORG-001");
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const userOrganizations = [
     { 
       id: "ORG-001", 
@@ -77,6 +79,17 @@ const Header = ({ userRole }: HeaderProps) => {
       description: `Now working in ${org?.name}`,
     });
     // TODO: In real app, update user context and refresh data
+  };
+
+  const handleSearchClick = () => {
+    setIsSearchExpanded(true);
+    setTimeout(() => searchInputRef.current?.focus(), 0);
+  };
+
+  const handleSearchBlur = () => {
+    if (!searchInputRef.current?.value) {
+      setIsSearchExpanded(false);
+    }
   };
 
   const getCurrentOrg = () => userOrganizations.find(org => org.id === currentOrganization);
@@ -288,13 +301,28 @@ const Header = ({ userRole }: HeaderProps) => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Compact Search */}
+          {/* Expandable Search */}
           <div className="relative hidden md:block">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              placeholder="Search..."
-              className="pl-10 w-64 bg-muted/50"
-            />
+            {!isSearchExpanded ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleSearchClick}
+                className="w-10 h-8 p-0"
+              >
+                <Search className="w-4 h-4 text-muted-foreground" />
+              </Button>
+            ) : (
+              <>
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 z-10" />
+                <Input
+                  ref={searchInputRef}
+                  placeholder="Search..."
+                  className="pl-10 w-64 bg-muted/50 transition-all duration-200"
+                  onBlur={handleSearchBlur}
+                />
+              </>
+            )}
           </div>
           
           {/* Action Buttons Group */}
