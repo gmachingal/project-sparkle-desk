@@ -6,85 +6,51 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+import { Progress } from "@/components/ui/progress";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import Header from "@/components/Header";
 import { 
   Users, 
-  Plus,
   Search,
-  Crown,
   Mail,
-  Phone,
-  MapPin,
   Calendar,
   Briefcase,
-  Settings,
-  UserPlus,
-  Building2,
-  MoreHorizontal,
-  Shield,
-  ShieldCheck,
-  User,
-  Edit,
-  Trash2,
-  DollarSign,
   Target,
   TrendingUp,
   Clock,
   Eye,
   CheckCircle,
   AlertCircle,
-  Play
+  Play,
+  BarChart3,
+  UserCheck,
+  MessageSquare,
+  Activity,
+  Award,
+  Filter,
+  ArrowRight,
+  Settings,
+  Plus,
+  CalendarDays,
+  Share2,
+  FileText,
+  Zap,
+  Coffee
 } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const Teams = () => {
-  const [activeTab, setActiveTab] = useState("members");
+  const [activeTab, setActiveTab] = useState("overview");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
-  const [isEditMemberOpen, setIsEditMemberOpen] = useState(false);
-  const [isAddDepartmentOpen, setIsAddDepartmentOpen] = useState(false);
-  const [isEditDepartmentOpen, setIsEditDepartmentOpen] = useState(false);
-  const [isDepartmentDetailsOpen, setIsDepartmentDetailsOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<any>(null);
-  const [selectedDepartment, setSelectedDepartment] = useState<any>(null);
-  const [selectedMemberForTasks, setSelectedMemberForTasks] = useState<any>(null);
-  const [currentUserRole, setCurrentUserRole] = useState("admin"); // Mock current user role
+  const [filterDepartment, setFilterDepartment] = useState("all");
+  const [isAssignTaskOpen, setIsAssignTaskOpen] = useState(false);
   const { toast } = useToast();
 
-  // Form states for adding/editing members
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    role: "",
-    department: "",
-    organization: "",
-    permissions: [] as string[],
-    skills: ""
-  });
-
-  // Mock organizations data
-  const organizations = [
-    { id: "ORG-001", name: "TechCorp Solutions" },
-    { id: "ORG-002", name: "StartupXYZ" },
-    { id: "ORG-003", name: "Enterprise Corp" }
-  ];
-
-  // Department form state
-  const [departmentFormData, setDepartmentFormData] = useState({
-    name: "",
-    description: "",
-    managerId: "",
-    budget: "",
-    location: ""
-  });
-
-  const [teamMembers, setTeamMembers] = useState([
+  // Mock team data - now focused on collaboration and workload
+  const teamMembers = [
     {
       id: "1",
       name: "Alex Johnson",
@@ -94,15 +60,20 @@ const Teams = () => {
       avatar: "",
       status: "online",
       joinDate: "Jan 2023",
-      projects: ["Website Redesign", "Mobile App"],
+      activeProjects: ["Website Redesign", "Mobile App"],
       skills: ["React", "TypeScript", "Node.js"],
-      isLead: true,
-      permissions: ["admin", "create_projects", "manage_team", "view_analytics"],
-      systemRole: "admin",
-      tasks: [
-        { id: "1", name: "Project Architecture Review", status: "in-progress", priority: "high", loggedHours: 8, estimatedHours: 12 },
-        { id: "2", name: "Team Onboarding", status: "completed", priority: "medium", loggedHours: 6, estimatedHours: 6 },
-        { id: "3", name: "Code Review Process Setup", status: "todo", priority: "medium", loggedHours: 0, estimatedHours: 4 }
+      workload: 85, // Percentage
+      currentCapacity: "34h / 40h this week",
+      tasksCompleted: 42,
+      tasksInProgress: 3,
+      collaboration: 92, // Collaboration score
+      lastActivity: "2 hours ago",
+      timezone: "PST",
+      availableUntil: "6:00 PM",
+      recentTasks: [
+        { id: "1", name: "Project Architecture Review", status: "in-progress", priority: "high", progress: 75 },
+        { id: "2", name: "Team Onboarding", status: "completed", priority: "medium", progress: 100 },
+        { id: "3", name: "Code Review Process", status: "todo", priority: "medium", progress: 0 }
       ]
     },
     {
@@ -114,14 +85,20 @@ const Teams = () => {
       avatar: "",
       status: "online",
       joinDate: "Mar 2023",
-      projects: ["Website Redesign", "Marketing Campaign"],
+      activeProjects: ["Website Redesign", "Marketing Campaign"],
       skills: ["Figma", "Sketch", "Prototyping"],
-      permissions: ["create_projects", "view_analytics"],
-      systemRole: "manager",
-      tasks: [
-        { id: "4", name: "Homepage Wireframes", status: "completed", priority: "high", loggedHours: 18, estimatedHours: 16 },
-        { id: "5", name: "Design System Update", status: "in-progress", priority: "medium", loggedHours: 12, estimatedHours: 20 },
-        { id: "6", name: "User Testing Analysis", status: "todo", priority: "low", loggedHours: 0, estimatedHours: 8 }
+      workload: 70,
+      currentCapacity: "28h / 40h this week",
+      tasksCompleted: 38,
+      tasksInProgress: 2,
+      collaboration: 88,
+      lastActivity: "30 minutes ago",
+      timezone: "EST",
+      availableUntil: "5:30 PM",
+      recentTasks: [
+        { id: "4", name: "Homepage Wireframes", status: "completed", priority: "high", progress: 100 },
+        { id: "5", name: "Design System Update", status: "in-progress", priority: "medium", progress: 60 },
+        { id: "6", name: "User Testing Analysis", status: "todo", priority: "low", progress: 0 }
       ]
     },
     {
@@ -133,14 +110,20 @@ const Teams = () => {
       avatar: "",
       status: "away",
       joinDate: "Feb 2023",
-      projects: ["Mobile App", "Data Analytics"],
+      activeProjects: ["Mobile App", "Data Analytics"],
       skills: ["Python", "PostgreSQL", "AWS"],
-      permissions: ["create_projects"],
-      systemRole: "member",
-      tasks: [
-        { id: "7", name: "API Development", status: "in-progress", priority: "high", loggedHours: 20, estimatedHours: 28 },
-        { id: "8", name: "Database Optimization", status: "completed", priority: "medium", loggedHours: 14, estimatedHours: 12 },
-        { id: "9", name: "Security Audit", status: "todo", priority: "high", loggedHours: 0, estimatedHours: 16 }
+      workload: 95,
+      currentCapacity: "38h / 40h this week",
+      tasksCompleted: 35,
+      tasksInProgress: 4,
+      collaboration: 76,
+      lastActivity: "1 hour ago",
+      timezone: "CST",
+      availableUntil: "7:00 PM",
+      recentTasks: [
+        { id: "7", name: "API Development", status: "in-progress", priority: "high", progress: 80 },
+        { id: "8", name: "Database Optimization", status: "completed", priority: "medium", progress: 100 },
+        { id: "9", name: "Security Audit", status: "todo", priority: "high", progress: 0 }
       ]
     },
     {
@@ -150,16 +133,22 @@ const Teams = () => {
       role: "Marketing Manager",
       department: "Marketing",
       avatar: "",
-      status: "offline",
+      status: "in-meeting",
       joinDate: "Dec 2022",
-      projects: ["Marketing Campaign"],
+      activeProjects: ["Marketing Campaign"],
       skills: ["Content Strategy", "SEO", "Analytics"],
-      permissions: ["create_projects", "view_analytics"],
-      systemRole: "manager",
-      tasks: [
-        { id: "10", name: "Campaign Strategy", status: "completed", priority: "high", loggedHours: 15, estimatedHours: 16 },
-        { id: "11", name: "Content Calendar", status: "in-progress", priority: "medium", loggedHours: 8, estimatedHours: 12 },
-        { id: "12", name: "Analytics Dashboard", status: "todo", priority: "low", loggedHours: 0, estimatedHours: 10 }
+      workload: 60,
+      currentCapacity: "24h / 40h this week",
+      tasksCompleted: 28,
+      tasksInProgress: 2,
+      collaboration: 94,
+      lastActivity: "Just now",
+      timezone: "PST",
+      availableUntil: "4:30 PM",
+      recentTasks: [
+        { id: "10", name: "Campaign Strategy", status: "completed", priority: "high", progress: 100 },
+        { id: "11", name: "Content Calendar", status: "in-progress", priority: "medium", progress: 45 },
+        { id: "12", name: "Analytics Dashboard", status: "todo", priority: "low", progress: 0 }
       ]
     },
     {
@@ -171,318 +160,83 @@ const Teams = () => {
       avatar: "",
       status: "online",
       joinDate: "Apr 2023",
-      projects: ["Website Redesign", "Mobile App"],
+      activeProjects: ["Website Redesign", "Mobile App"],
       skills: ["React", "CSS", "JavaScript"],
-      permissions: [],
-      systemRole: "member",
-      tasks: [
-        { id: "13", name: "Component Library", status: "in-progress", priority: "medium", loggedHours: 14, estimatedHours: 20 },
-        { id: "14", name: "Responsive Design", status: "todo", priority: "medium", loggedHours: 0, estimatedHours: 16 },
-        { id: "15", name: "Performance Optimization", status: "todo", priority: "low", loggedHours: 0, estimatedHours: 8 }
-      ]
-    },
-    {
-      id: "6",
-      name: "Lisa Wang",
-      email: "lisa@company.com",
-      role: "Product Manager",
-      department: "Product",
-      avatar: "",
-      status: "online",
-      joinDate: "Nov 2022",
-      projects: ["Mobile App", "Data Analytics"],
-      skills: ["Product Strategy", "User Research", "Agile"],
-      permissions: ["create_projects", "manage_team", "view_analytics"],
-      systemRole: "manager",
-      tasks: [
-        { id: "16", name: "Product Roadmap", status: "completed", priority: "high", loggedHours: 12, estimatedHours: 12 },
-        { id: "17", name: "User Stories Definition", status: "in-progress", priority: "high", loggedHours: 8, estimatedHours: 16 },
-        { id: "18", name: "Stakeholder Meetings", status: "in-progress", priority: "medium", loggedHours: 6, estimatedHours: 10 }
+      workload: 75,
+      currentCapacity: "30h / 40h this week",
+      tasksCompleted: 31,
+      tasksInProgress: 3,
+      collaboration: 82,
+      lastActivity: "15 minutes ago",
+      timezone: "PST",
+      availableUntil: "6:00 PM",
+      recentTasks: [
+        { id: "13", name: "Component Library", status: "in-progress", priority: "medium", progress: 70 },
+        { id: "14", name: "Responsive Design", status: "todo", priority: "medium", progress: 0 },
+        { id: "15", name: "Performance Optimization", status: "todo", priority: "low", progress: 0 }
       ]
     }
-  ]);
+  ];
 
-  const [departments, setDepartments] = useState([
+  const departments = [
     {
       id: "1",
       name: "Engineering",
-      description: "Software development and technical architecture",
-      members: teamMembers.filter(m => m.department === "Engineering").length,
-      lead: "Alex Johnson",
-      leadId: "1",
-      color: "#8B5CF6",
-      budget: 500000,
-      location: "Building A, Floor 3"
+      members: teamMembers.filter(m => m.department === "Engineering"),
+      avgWorkload: 85,
+      activeProjects: ["Website Redesign", "Mobile App", "Data Analytics"],
+      color: "#8B5CF6"
     },
     {
       id: "2",
       name: "Design",
-      description: "UI/UX design and creative direction",
-      members: teamMembers.filter(m => m.department === "Design").length,
-      lead: "Sarah Chen",
-      leadId: "2",
-      color: "#06B6D4",
-      budget: 300000,
-      location: "Building A, Floor 2"
+      members: teamMembers.filter(m => m.department === "Design"),
+      avgWorkload: 70,
+      activeProjects: ["Website Redesign", "Marketing Campaign"],
+      color: "#06B6D4"
     },
     {
       id: "3",
       name: "Marketing",
-      description: "Brand management and customer acquisition",
-      members: teamMembers.filter(m => m.department === "Marketing").length,
-      lead: "Emily Davis",
-      leadId: "4",
-      color: "#10B981",
-      budget: 400000,
-      location: "Building B, Floor 1"
-    },
-    {
-      id: "4",
-      name: "Product",
-      description: "Product strategy and roadmap",
-      members: teamMembers.filter(m => m.department === "Product").length,
-      lead: "Lisa Wang",
-      leadId: "6",
-      color: "#F59E0B",
-      budget: 350000,
-      location: "Building A, Floor 4"
+      members: teamMembers.filter(m => m.department === "Marketing"),
+      avgWorkload: 60,
+      activeProjects: ["Marketing Campaign"],
+      color: "#10B981"
     }
-  ]);
+  ];
 
   const getFilteredMembers = () => {
-    if (!searchQuery) return teamMembers;
-    return teamMembers.filter(member => 
-      member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.department.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    let filtered = teamMembers;
+    
+    if (searchQuery) {
+      filtered = filtered.filter(member => 
+        member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        member.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        member.skills.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
+    }
+    
+    if (filterDepartment !== "all") {
+      filtered = filtered.filter(member => member.department === filterDepartment);
+    }
+    
+    return filtered;
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "online": return "bg-green-500";
       case "away": return "bg-yellow-500";
+      case "in-meeting": return "bg-blue-500";
       case "offline": return "bg-gray-400";
       default: return "bg-gray-400";
     }
   };
 
-  const rolePermissions = {
-    admin: ["admin", "create_projects", "manage_team", "view_analytics", "delete_projects"],
-    manager: ["create_projects", "manage_team", "view_analytics"],
-    member: ["create_projects"],
-    viewer: ["view_analytics"]
-  };
-
-  const systemRoles = [
-    { value: "admin", label: "Admin", icon: Crown, color: "text-yellow-500" },
-    { value: "manager", label: "Manager", icon: ShieldCheck, color: "text-blue-500" },
-    { value: "member", label: "Member", icon: User, color: "text-green-500" },
-    { value: "viewer", label: "Viewer", icon: Shield, color: "text-gray-500" }
-  ];
-
-  const handleAddMember = () => {
-    if (!formData.name || !formData.email || !formData.role || !formData.department || !formData.organization) {
-      toast({
-        title: "Error",
-        description: "Please fill in all required fields",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const newMember = {
-      id: Date.now().toString(),
-      name: formData.name,
-      email: formData.email,
-      role: formData.role,
-      department: formData.department,
-      avatar: "",
-      status: "offline",
-      joinDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
-      projects: [],
-      skills: formData.skills.split(',').map(s => s.trim()).filter(s => s),
-      permissions: formData.permissions,
-      systemRole: formData.role.toLowerCase(),
-      tasks: []
-    };
-
-    setTeamMembers([...teamMembers, newMember]);
-    setFormData({
-      name: "",
-      email: "",
-      role: "",
-      department: "",
-      organization: "",
-      permissions: [],
-      skills: ""
-    });
-    setIsAddMemberOpen(false);
-    toast({
-      title: "Success",
-      description: "Team member added successfully"
-    });
-  };
-
-  const handleEditMember = (member: any) => {
-    setSelectedMember(member);
-    setFormData({
-      name: member.name,
-      email: member.email,
-      role: member.systemRole,
-      department: member.department,
-      organization: member.organization || "ORG-001", // Default to first org if not set
-      permissions: member.permissions || [],
-      skills: member.skills.join(", ")
-    });
-    setIsEditMemberOpen(true);
-  };
-
-  const handleUpdateMember = () => {
-    if (!selectedMember) return;
-
-    const updatedMembers = teamMembers.map(member => 
-      member.id === selectedMember.id 
-        ? {
-            ...member,
-            name: formData.name,
-            email: formData.email,
-            role: formData.role === "admin" ? "Team Lead" : formData.role,
-            department: formData.department,
-            permissions: formData.permissions,
-            skills: formData.skills.split(',').map(s => s.trim()).filter(s => s),
-            systemRole: formData.role,
-            isLead: formData.role === "admin"
-          }
-        : member
-    );
-
-    setTeamMembers(updatedMembers);
-    setIsEditMemberOpen(false);
-    setSelectedMember(null);
-    toast({
-      title: "Success",
-      description: "Team member updated successfully"
-    });
-  };
-
-  const handleDeleteMember = (memberId: string) => {
-    setTeamMembers(teamMembers.filter(member => member.id !== memberId));
-    toast({
-      title: "Success",
-      description: "Team member removed successfully"
-    });
-  };
-
-  const handleAddDepartment = () => {
-    if (!departmentFormData.name || !departmentFormData.managerId) {
-      toast({
-        title: "Error",
-        description: "Please fill in all required fields",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const manager = teamMembers.find(m => m.id === departmentFormData.managerId);
-    const newDepartment = {
-      id: Date.now().toString(),
-      name: departmentFormData.name,
-      description: departmentFormData.description,
-      members: 0,
-      lead: manager?.name || "",
-      leadId: departmentFormData.managerId,
-      color: `#${Math.floor(Math.random()*16777215).toString(16)}`,
-      budget: parseInt(departmentFormData.budget) || 0,
-      location: departmentFormData.location
-    };
-
-    setDepartments([...departments, newDepartment]);
-    setDepartmentFormData({ name: "", description: "", managerId: "", budget: "", location: "" });
-    setIsAddDepartmentOpen(false);
-    toast({
-      title: "Success",
-      description: "Department created successfully"
-    });
-  };
-
-  const handleEditDepartment = (department: any) => {
-    setSelectedDepartment(department);
-    setDepartmentFormData({
-      name: department.name,
-      description: department.description,
-      managerId: department.leadId,
-      budget: department.budget.toString(),
-      location: department.location
-    });
-    setIsEditDepartmentOpen(true);
-  };
-
-  const handleUpdateDepartment = () => {
-    if (!selectedDepartment) return;
-
-    const manager = teamMembers.find(m => m.id === departmentFormData.managerId);
-    const updatedDepartments = departments.map(dept => 
-      dept.id === selectedDepartment.id 
-        ? {
-            ...dept,
-            name: departmentFormData.name,
-            description: departmentFormData.description,
-            lead: manager?.name || "",
-            leadId: departmentFormData.managerId,
-            budget: parseInt(departmentFormData.budget) || 0,
-            location: departmentFormData.location
-          }
-        : dept
-    );
-
-    setDepartments(updatedDepartments);
-    setIsEditDepartmentOpen(false);
-    setSelectedDepartment(null);
-    toast({
-      title: "Success",
-      description: "Department updated successfully"
-    });
-  };
-
-  const handleDeleteDepartment = (departmentId: string) => {
-    setDepartments(departments.filter(dept => dept.id !== departmentId));
-    toast({
-      title: "Success",
-      description: "Department deleted successfully"
-    });
-  };
-
-  const handleViewDepartmentDetails = (department: any) => {
-    setSelectedDepartment(department);
-    setIsDepartmentDetailsOpen(true);
-  };
-
-  const getDepartmentMembers = (departmentName: string) => {
-    return teamMembers.filter(member => member.department === departmentName);
-  };
-
-  const getDepartmentProjects = (departmentName: string) => {
-    const deptMembers = getDepartmentMembers(departmentName);
-    const projects = [...new Set(deptMembers.flatMap(member => member.projects))];
-    return projects;
-  };
-
-  const getRoleIcon = (systemRole: string) => {
-    const role = systemRoles.find(r => r.value === systemRole);
-    return role ? role.icon : User;
-  };
-
-  const getRoleColor = (systemRole: string) => {
-    const role = systemRoles.find(r => r.value === systemRole);
-    return role ? role.color : "text-gray-500";
-  };
-
-  const teamStats = {
-    total: teamMembers.length,
-    online: teamMembers.filter(m => m.status === "online").length,
-    departments: departments.length,
-    activeProjects: [...new Set(teamMembers.flatMap(m => m.projects))].length
+  const getWorkloadColor = (workload: number) => {
+    if (workload >= 90) return "text-red-500";
+    if (workload >= 80) return "text-yellow-500";
+    return "text-green-500";
   };
 
   const getTaskStatusIcon = (status: string) => {
@@ -498,433 +252,342 @@ const Teams = () => {
     }
   };
 
-  const getTaskPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high':
-        return 'text-red-600 bg-red-50 border-red-200';
-      case 'medium':
-        return 'text-blue-600 bg-blue-50 border-blue-200';
-      case 'low':
-        return 'text-gray-600 bg-gray-50 border-gray-200';
-      default:
-        return 'text-gray-600 bg-gray-50 border-gray-200';
-    }
+  const teamStats = {
+    total: teamMembers.length,
+    online: teamMembers.filter(m => m.status === "online").length,
+    avgWorkload: Math.round(teamMembers.reduce((acc, m) => acc + m.workload, 0) / teamMembers.length),
+    totalProjects: [...new Set(teamMembers.flatMap(m => m.activeProjects))].length,
+    completedTasks: teamMembers.reduce((acc, m) => acc + m.tasksCompleted, 0),
+    inProgressTasks: teamMembers.reduce((acc, m) => acc + m.tasksInProgress, 0)
+  };
+
+  const handleAssignTask = (memberId: string) => {
+    setSelectedMember(teamMembers.find(m => m.id === memberId));
+    setIsAssignTaskOpen(true);
+  };
+
+  const quickAssignTask = () => {
+    if (!selectedMember) return;
+    
+    toast({
+      title: "Task Assigned",
+      description: `New task assigned to ${selectedMember.name}`,
+    });
+    setIsAssignTaskOpen(false);
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <div className="p-6 space-y-6">
-        <div className="flex items-center justify-between">
+      
+      <div className="container mx-auto px-4 py-8">
+        {/* Page Header */}
+        <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-              Teams
+              Team Collaboration
             </h1>
             <p className="text-muted-foreground mt-1">
-              Manage your team members and departments
+              Manage workloads, track progress, and collaborate effectively
             </p>
           </div>
-          {currentUserRole === "admin" && (
-            <Dialog open={isAddMemberOpen} onOpenChange={setIsAddMemberOpen}>
+          
+          <div className="flex items-center gap-3">
+            <Dialog>
               <DialogTrigger asChild>
-                <Button variant="hero" className="gap-2">
-                  <UserPlus className="w-4 h-4" />
-                  Add Member
+                <Button variant="outline" className="gap-2">
+                  <MessageSquare className="w-4 h-4" />
+                  Team Chat
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[600px]">
+              <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Add New Team Member</DialogTitle>
+                  <DialogTitle>Team Communication</DialogTitle>
                 </DialogHeader>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="name">Full Name *</Label>
-                      <Input
-                        id="name"
-                        value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
-                        placeholder="Enter full name"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="email">Email *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
-                        placeholder="Enter email address"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="role">System Role *</Label>
-                      <Select value={formData.role} onValueChange={(value) => {
-                        setFormData({
-                          ...formData, 
-                          role: value,
-                          permissions: rolePermissions[value as keyof typeof rolePermissions] || []
-                        });
-                      }}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select role" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {systemRoles.map((role) => {
-                            const Icon = role.icon;
-                            return (
-                              <SelectItem key={role.value} value={role.value}>
-                                <div className="flex items-center gap-2">
-                                  <Icon className={`w-4 h-4 ${role.color}`} />
-                                  {role.label}
-                                </div>
-                              </SelectItem>
-                            );
-                          })}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label htmlFor="department">Department *</Label>
-                      <Select value={formData.department} onValueChange={(value) => setFormData({...formData, department: value})}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select department" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {departments.map((dept) => (
-                            <SelectItem key={dept.name} value={dept.name}>
-                              {dept.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="organization">Organization *</Label>
-                    <Select value={formData.organization} onValueChange={(value) => setFormData({...formData, organization: value})}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select organization" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {organizations.map((org) => (
-                          <SelectItem key={org.id} value={org.id}>
-                            <div className="flex items-center gap-2">
-                              <Building2 className="w-4 h-4" />
-                              {org.name}
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="skills">Skills (comma-separated)</Label>
-                    <Input
-                      id="skills"
-                      value={formData.skills}
-                      onChange={(e) => setFormData({...formData, skills: e.target.value})}
-                      placeholder="React, TypeScript, Node.js"
-                    />
-                  </div>
-
-                  <div>
-                    <Label>Permissions</Label>
-                    <div className="grid grid-cols-2 gap-2 mt-2">
-                      {Object.entries(rolePermissions).map(([role, perms]) => (
-                        <div key={role} className="text-sm">
-                          <strong className="capitalize">{role}:</strong> {perms.join(", ")}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end gap-2">
-                    <Button variant="outline" onClick={() => setIsAddMemberOpen(false)}>
-                      Cancel
-                    </Button>
-                    <Button onClick={handleAddMember}>
-                      Add Member
-                    </Button>
-                  </div>
+                <div className="p-4 text-center text-muted-foreground">
+                  Team chat feature coming soon...
                 </div>
               </DialogContent>
             </Dialog>
-          )}
+            
+            <Button className="gap-2">
+              <Calendar className="w-4 h-4" />
+              Schedule Meeting
+            </Button>
+          </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {/* Team Stats Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-8">
           <Card>
-            <CardContent className="p-4 text-center">
-              <Users className="w-5 h-5 mx-auto text-muted-foreground mb-2" />
-              <div className="text-2xl font-bold">{teamStats.total}</div>
-              <div className="text-sm text-muted-foreground">Team Members</div>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <Users className="w-4 h-4 text-blue-500" />
+                <div>
+                  <div className="text-2xl font-bold">{teamStats.total}</div>
+                  <div className="text-xs text-muted-foreground">Team Members</div>
+                </div>
+              </div>
             </CardContent>
           </Card>
+          
           <Card>
-            <CardContent className="p-4 text-center">
-              <div className="w-5 h-5 mx-auto bg-green-500 rounded-full mb-2" />
-              <div className="text-2xl font-bold">{teamStats.online}</div>
-              <div className="text-sm text-muted-foreground">Online Now</div>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <Activity className="w-4 h-4 text-green-500" />
+                <div>
+                  <div className="text-2xl font-bold">{teamStats.online}</div>
+                  <div className="text-xs text-muted-foreground">Online Now</div>
+                </div>
+              </div>
             </CardContent>
           </Card>
+          
           <Card>
-            <CardContent className="p-4 text-center">
-              <Briefcase className="w-5 h-5 mx-auto text-muted-foreground mb-2" />
-              <div className="text-2xl font-bold">{teamStats.departments}</div>
-              <div className="text-sm text-muted-foreground">Departments</div>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <BarChart3 className={`w-4 h-4 ${getWorkloadColor(teamStats.avgWorkload)}`} />
+                <div>
+                  <div className="text-2xl font-bold">{teamStats.avgWorkload}%</div>
+                  <div className="text-xs text-muted-foreground">Avg Workload</div>
+                </div>
+              </div>
             </CardContent>
           </Card>
+          
           <Card>
-            <CardContent className="p-4 text-center">
-              <Calendar className="w-5 h-5 mx-auto text-muted-foreground mb-2" />
-              <div className="text-2xl font-bold">{teamStats.activeProjects}</div>
-              <div className="text-sm text-muted-foreground">Active Projects</div>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <Briefcase className="w-4 h-4 text-purple-500" />
+                <div>
+                  <div className="text-2xl font-bold">{teamStats.totalProjects}</div>
+                  <div className="text-xs text-muted-foreground">Active Projects</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                <div>
+                  <div className="text-2xl font-bold">{teamStats.completedTasks}</div>
+                  <div className="text-xs text-muted-foreground">Completed</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <Play className="w-4 h-4 text-blue-500" />
+                <div>
+                  <div className="text-2xl font-bold">{teamStats.inProgressTasks}</div>
+                  <div className="text-xs text-muted-foreground">In Progress</div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Search */}
-        <Card className="hover:shadow-sm hover:translate-y-0">
-          <CardContent className="p-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-              <Input
-                placeholder="Search team members..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Teams Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2 bg-muted rounded-t-lg">
-            <TabsTrigger value="members" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
-              <Users className="h-4 w-4 mr-2" />
-              Team Members</TabsTrigger>
-            <TabsTrigger value="departments" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
-              <Briefcase className="h-4 w-4 mr-2" />
-              Departments</TabsTrigger>
+        {/* Main Content Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="overview" className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              Team Overview
+            </TabsTrigger>
+            <TabsTrigger value="workload" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Workload
+            </TabsTrigger>
+            <TabsTrigger value="departments" className="flex items-center gap-2">
+              <Briefcase className="h-4 w-4" />
+              Departments
+            </TabsTrigger>
+            <TabsTrigger value="collaboration" className="flex items-center gap-2">
+              <Share2 className="h-4 w-4" />
+              Collaboration
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="members" className="space-y-4">
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {/* Team Overview Tab */}
+          <TabsContent value="overview" className="space-y-6">
+            {/* Search and Filters */}
+            <div className="flex items-center gap-4">
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <Input
+                  placeholder="Search team members..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              
+              <Select value={filterDepartment} onValueChange={setFilterDepartment}>
+                <SelectTrigger className="w-48">
+                  <Filter className="w-4 h-4 mr-2" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Departments</SelectItem>
+                  {departments.map(dept => (
+                    <SelectItem key={dept.id} value={dept.name}>{dept.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Team Members Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {getFilteredMembers().map((member) => (
-                <Card key={member.id} className="group hover:shadow-lg transition-shadow">
+                <Card key={member.id} className="hover:shadow-md transition-shadow">
                   <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Avatar className="w-8 h-8">
+                    <div className="flex items-center gap-3">
+                      <div className="relative">
+                        <Avatar className="w-12 h-12">
                           <AvatarImage src={member.avatar} />
-                          <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                          <AvatarFallback className="bg-primary text-primary-foreground">
                             {member.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
-                        <div className="min-w-0 flex-1">
-                          <h4 className="font-semibold text-sm flex items-center gap-1 truncate">
-                            {member.name}
-                            {member.isLead && <Crown className="w-3 h-3 text-yellow-500 flex-shrink-0" />}
-                          </h4>
-                          <p className="text-xs text-muted-foreground truncate">{member.role}</p>
-                        </div>
+                        <div className={cn(
+                          "absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-background",
+                          getStatusColor(member.status)
+                        )} />
                       </div>
-                      <div className="flex items-center gap-1 flex-shrink-0">
-                        <div className={`w-2 h-2 rounded-full ${getStatusColor(member.status)}`} />
-                        {currentUserRole === "admin" && (
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0">
-                                <MoreHorizontal className="w-3 h-3" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => handleEditMember(member)}>
-                                <Edit className="w-4 h-4 mr-2" />
-                                Edit
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => handleDeleteMember(member.id)}
-                                className="text-destructive"
-                              >
-                                <Trash2 className="w-4 h-4 mr-2" />
-                                Remove
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        )}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold truncate">{member.name}</h3>
+                        <p className="text-sm text-muted-foreground truncate">{member.role}</p>
+                        <Badge variant="outline" className="text-xs mt-1">
+                          {member.department}
+                        </Badge>
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-2 pt-0">
-                    <div className="flex items-center gap-2 text-xs">
-                      <Briefcase className="w-3 h-3 text-muted-foreground flex-shrink-0" />
-                      <Badge variant="outline" className="text-xs">
-                        {member.department}
-                      </Badge>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-xs">
-                      <Calendar className="w-3 h-3 text-muted-foreground flex-shrink-0" />
-                      <span className="text-muted-foreground">Joined {member.joinDate}</span>
-                    </div>
-
+                  
+                  <CardContent className="space-y-4">
+                    {/* Workload */}
                     <div>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span>Workload</span>
+                        <span className={getWorkloadColor(member.workload)}>
+                          {member.workload}%
+                        </span>
+                      </div>
+                      <Progress value={member.workload} className="h-2" />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {member.currentCapacity}
+                      </p>
+                    </div>
+
+                    {/* Current Projects */}
+                    <div>
+                      <p className="text-sm font-medium mb-2">Active Projects</p>
                       <div className="flex flex-wrap gap-1">
-                        {member.skills.slice(0, 2).map((skill, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
-                            {skill}
+                        {member.activeProjects.slice(0, 2).map((project, idx) => (
+                          <Badge key={idx} variant="secondary" className="text-xs">
+                            {project}
                           </Badge>
                         ))}
-                        {member.skills.length > 2 && (
-                          <Badge variant="secondary" className="text-xs">
-                            +{member.skills.length - 2}
+                        {member.activeProjects.length > 2 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{member.activeProjects.length - 2}
                           </Badge>
                         )}
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-2">
+                    {/* Quick Stats */}
+                    <div className="grid grid-cols-2 gap-2 text-xs">
                       <div className="flex items-center gap-1">
-                        {(() => {
-                          const RoleIcon = getRoleIcon(member.systemRole);
-                          return <RoleIcon className={`w-3 h-3 ${getRoleColor(member.systemRole)}`} />;
-                        })()}
-                        <Badge variant="outline" className={`text-xs ${getRoleColor(member.systemRole)}`}>
-                          {member.systemRole}
-                        </Badge>
+                        <CheckCircle className="w-3 h-3 text-green-500" />
+                        <span>{member.tasksCompleted} done</span>
                       </div>
-                      
+                      <div className="flex items-center gap-1">
+                        <Play className="w-3 h-3 text-blue-500" />
+                        <span>{member.tasksInProgress} active</span>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex gap-2 pt-2 border-t">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="flex-1 text-xs"
+                        onClick={() => handleAssignTask(member.id)}
+                      >
+                        <Plus className="w-3 h-3 mr-1" />
+                        Assign Task
+                      </Button>
                       <Sheet>
                         <SheetTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-6 px-2 text-xs"
-                            onClick={() => setSelectedMemberForTasks(member)}
-                          >
-                            <Eye className="w-3 h-3 mr-1" />
-                            Tasks
+                          <Button size="sm" variant="outline" className="text-xs">
+                            <Eye className="w-3 h-3" />
                           </Button>
                         </SheetTrigger>
-                        <SheetContent className="w-[400px] sm:w-[540px]">
+                        <SheetContent className="w-96">
                           <SheetHeader>
-                            <SheetTitle className="flex items-center gap-3">
-                              <Avatar className="w-10 h-10">
+                            <SheetTitle>{member.name}</SheetTitle>
+                          </SheetHeader>
+                          <div className="mt-6 space-y-4">
+                            <div className="flex items-center gap-3">
+                              <Avatar className="w-16 h-16">
                                 <AvatarImage src={member.avatar} />
                                 <AvatarFallback className="bg-primary text-primary-foreground">
                                   {member.name.split(' ').map(n => n[0]).join('')}
                                 </AvatarFallback>
                               </Avatar>
                               <div>
-                                <div className="font-semibold">{member.name}</div>
-                                <div className="text-sm text-muted-foreground">{member.role}</div>
-                              </div>
-                            </SheetTitle>
-                          </SheetHeader>
-                          
-                          <div className="mt-6 space-y-6">
-                            {/* Task Stats */}
-                            <div className="grid grid-cols-3 gap-4">
-                              <div className="text-center p-3 bg-muted/30 rounded-lg">
-                                <div className="text-2xl font-bold text-green-600">
-                                  {member.tasks?.filter(t => t.status === 'completed').length || 0}
-                                </div>
-                                <div className="text-xs text-muted-foreground">Completed</div>
-                              </div>
-                              <div className="text-center p-3 bg-muted/30 rounded-lg">
-                                <div className="text-2xl font-bold text-blue-600">
-                                  {member.tasks?.filter(t => t.status === 'in-progress').length || 0}
-                                </div>
-                                <div className="text-xs text-muted-foreground">In Progress</div>
-                              </div>
-                              <div className="text-center p-3 bg-muted/30 rounded-lg">
-                                <div className="text-2xl font-bold text-orange-600">
-                                  {member.tasks?.reduce((sum, t) => sum + t.loggedHours, 0) || 0}h
-                                </div>
-                                <div className="text-xs text-muted-foreground">Total Hours</div>
+                                <h3 className="font-semibold">{member.name}</h3>
+                                <p className="text-sm text-muted-foreground">{member.role}</p>
+                                <Badge variant="outline" className="text-xs mt-1">
+                                  {member.department}
+                                </Badge>
                               </div>
                             </div>
                             
-                            {/* Task List */}
                             <div className="space-y-3">
-                              <h4 className="font-medium flex items-center gap-2">
-                                <Target className="w-4 h-4" />
-                                Current Tasks ({member.tasks?.length || 0})
-                              </h4>
-                              
-                              <div className="space-y-2 max-h-96 overflow-y-auto">
-                                {member.tasks && member.tasks.length > 0 ? (
-                                  member.tasks.map((task) => (
-                                    <Card key={task.id} className="p-3 hover:shadow-sm transition-shadow">
-                                      <div className="flex items-start gap-3">
-                                        <div className="flex-shrink-0 mt-0.5">
-                                          {getTaskStatusIcon(task.status)}
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                          <div className="flex items-center gap-2 mb-1">
-                                            <span className="font-medium text-sm truncate">{task.name}</span>
-                                            <Badge 
-                                              variant="outline" 
-                                              className={cn("text-xs px-1.5 py-0.5", getTaskPriorityColor(task.priority))}
-                                            >
-                                              {task.priority}
-                                            </Badge>
-                                          </div>
-                                          <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
-                                            <span className="flex items-center gap-1">
-                                              <Clock className="w-3 h-3" />
-                                              {task.loggedHours}h / {task.estimatedHours}h
-                                            </span>
-                                            <span className="flex items-center gap-1">
-                                              <TrendingUp className="w-3 h-3" />
-                                              {task.estimatedHours > 0 ? Math.round((task.loggedHours / task.estimatedHours) * 100) : 0}%
-                                            </span>
-                                          </div>
-                                          <div className="w-full bg-muted rounded-full h-1.5">
-                                            <div 
-                                              className={cn(
-                                                "h-1.5 rounded-full transition-all duration-300",
-                                                task.status === 'completed' ? 'bg-green-500' :
-                                                task.status === 'in-progress' ? 'bg-blue-500' :
-                                                task.status === 'blocked' ? 'bg-red-500' : 'bg-gray-300'
-                                              )}
-                                              style={{ 
-                                                width: task.estimatedHours > 0 
-                                                  ? `${Math.min((task.loggedHours / task.estimatedHours) * 100, 100)}%`
-                                                  : '0%'
-                                              }}
-                                            />
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </Card>
-                                  ))
-                                ) : (
-                                  <div className="text-center py-8 text-muted-foreground">
-                                    <Target className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                                    <p>No tasks assigned</p>
-                                  </div>
-                                )}
+                              <div className="flex justify-between">
+                                <span className="text-sm">Availability</span>
+                                <span className="text-sm font-medium">Until {member.availableUntil}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-sm">Timezone</span>
+                                <span className="text-sm font-medium">{member.timezone}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-sm">Last Activity</span>
+                                <span className="text-sm font-medium">{member.lastActivity}</span>
                               </div>
                             </div>
-                            
-                            {/* Projects */}
+
                             <div>
-                              <h4 className="font-medium mb-2">Active Projects</h4>
-                              <div className="flex flex-wrap gap-2">
-                                {member.projects.map((project, index) => (
-                                  <Badge key={index} variant="outline" className="text-xs">
-                                    {project}
+                              <h4 className="font-medium mb-2">Skills</h4>
+                              <div className="flex flex-wrap gap-1">
+                                {member.skills.map((skill, idx) => (
+                                  <Badge key={idx} variant="secondary" className="text-xs">
+                                    {skill}
                                   </Badge>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div>
+                              <h4 className="font-medium mb-2">Recent Tasks</h4>
+                              <div className="space-y-2">
+                                {member.recentTasks.map((task) => (
+                                  <div key={task.id} className="flex items-center gap-2 p-2 border rounded">
+                                    {getTaskStatusIcon(task.status)}
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-sm truncate">{task.name}</p>
+                                      <Progress value={task.progress} className="h-1 mt-1" />
+                                    </div>
+                                  </div>
                                 ))}
                               </div>
                             </div>
@@ -938,563 +601,232 @@ const Teams = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="departments" className="space-y-4">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h3 className="text-lg font-semibold">Departments</h3>
-                <p className="text-sm text-muted-foreground">Manage organizational departments</p>
-              </div>
-              {currentUserRole === "admin" && (
-                <Dialog open={isAddDepartmentOpen} onOpenChange={setIsAddDepartmentOpen}>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" className="gap-2">
-                      <Plus className="w-4 h-4" />
-                      Add Department
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                      <DialogTitle>Create New Department</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="dept-name">Department Name</Label>
-                        <Input 
-                          id="dept-name" 
-                          placeholder="Enter department name"
-                          value={departmentFormData.name}
-                          onChange={(e) => setDepartmentFormData({...departmentFormData, name: e.target.value})}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="dept-description">Description</Label>
-                        <Textarea 
-                          id="dept-description" 
-                          placeholder="Enter description"
-                          value={departmentFormData.description}
-                          onChange={(e) => setDepartmentFormData({...departmentFormData, description: e.target.value})}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="dept-manager">Manager</Label>
-                        <Select value={departmentFormData.managerId} onValueChange={(value) => setDepartmentFormData({...departmentFormData, managerId: value})}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select manager" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {teamMembers.filter(m => m.systemRole === "admin" || m.systemRole === "manager").map((member) => (
-                              <SelectItem key={member.id} value={member.id}>
-                                {member.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label htmlFor="dept-budget">Budget</Label>
-                        <Input 
-                          id="dept-budget" 
-                          type="number" 
-                          placeholder="Enter budget"
-                          value={departmentFormData.budget}
-                          onChange={(e) => setDepartmentFormData({...departmentFormData, budget: e.target.value})}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="dept-location">Location</Label>
-                        <Input 
-                          id="dept-location" 
-                          placeholder="Enter location"
-                          value={departmentFormData.location}
-                          onChange={(e) => setDepartmentFormData({...departmentFormData, location: e.target.value})}
-                        />
-                      </div>
-                      <div className="flex gap-2 justify-end pt-4">
-                        <Button variant="outline" onClick={() => setIsAddDepartmentOpen(false)}>Cancel</Button>
-                        <Button onClick={handleAddDepartment}>Create Department</Button>
-                      </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {departments.map((dept) => (
-                <Card key={dept.name} className="group hover:shadow-lg transition-shadow">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <div 
-                          className="w-3 h-3 rounded-full" 
-                          style={{ backgroundColor: dept.color }}
-                        />
-                        {dept.name}
-                      </CardTitle>
-                      {currentUserRole === "admin" && (
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                              <MoreHorizontal className="w-4 h-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleEditDepartment(dept)}>
-                              <Edit className="w-4 h-4 mr-2" />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleDeleteDepartment(dept.id)}
-                              className="text-destructive"
-                            >
-                              <Trash2 className="w-4 h-4 mr-2" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      )}
-                    </div>
-                    <p className="text-sm text-muted-foreground">{dept.description}</p>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src="" />
-                        <AvatarFallback>
-                          {dept.lead.split(" ").map(n => n[0]).join("")}
+          {/* Workload Management Tab */}
+          <TabsContent value="workload" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Team Workload Distribution</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {teamMembers.map((member) => (
+                    <div key={member.id} className="flex items-center gap-4">
+                      <Avatar className="w-10 h-10">
+                        <AvatarImage src={member.avatar} />
+                        <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                          {member.name.split(' ').map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
-                      <div>
-                        <p className="text-sm font-medium">{dept.lead}</p>
-                        <p className="text-xs text-muted-foreground">Department Lead</p>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="font-medium">{member.name}</span>
+                          <span className={cn("text-sm font-medium", getWorkloadColor(member.workload))}>
+                            {member.workload}%
+                          </span>
+                        </div>
+                        <Progress value={member.workload} className="h-2" />
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {member.currentCapacity} • {member.tasksInProgress} active tasks
+                        </p>
                       </div>
+                      <Button 
+                        size="sm" 
+                        variant={member.workload > 85 ? "outline" : "default"}
+                        onClick={() => handleAssignTask(member.id)}
+                        disabled={member.workload > 95}
+                      >
+                        {member.workload > 85 ? "Overloaded" : "Assign Task"}
+                      </Button>
                     </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="flex items-center gap-1">
-                          <Users className="h-4 w-4" />
-                          Members
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Departments Tab */}
+          <TabsContent value="departments" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {departments.map((dept) => (
+                <Card key={dept.id}>
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div 
+                        className="w-4 h-4 rounded-full" 
+                        style={{ backgroundColor: dept.color }}
+                      />
+                      <CardTitle className="text-lg">{dept.name}</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span>Team Workload</span>
+                        <span className={getWorkloadColor(dept.avgWorkload)}>
+                          {dept.avgWorkload}%
                         </span>
-                        <Badge variant="secondary">{dept.members}</Badge>
                       </div>
-                      
-                      <div className="flex items-center justify-between text-sm">
-                        <span>Budget</span>
-                        <span className="font-medium">${dept.budget?.toLocaleString() || 'N/A'}</span>
-                      </div>
-                      
-                      <div className="flex items-center justify-between text-sm">
-                        <span>Location</span>
-                        <span className="text-muted-foreground">{dept.location || 'Not set'}</span>
+                      <Progress value={dept.avgWorkload} className="h-2" />
+                    </div>
+
+                    <div>
+                      <p className="text-sm font-medium mb-2">Team Members ({dept.members.length})</p>
+                      <div className="flex -space-x-2">
+                        {dept.members.slice(0, 4).map((member) => (
+                          <Avatar key={member.id} className="w-8 h-8 border-2 border-background">
+                            <AvatarImage src={member.avatar} />
+                            <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                              {member.name.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                        ))}
+                        {dept.members.length > 4 && (
+                          <div className="w-8 h-8 rounded-full bg-muted border-2 border-background flex items-center justify-center text-xs">
+                            +{dept.members.length - 4}
+                          </div>
+                        )}
                       </div>
                     </div>
 
-                    <div className="pt-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="w-full gap-2" 
-                        onClick={() => handleViewDepartmentDetails(dept)}
-                      >
-                        <Eye className="w-4 h-4" />
-                        View Details
-                      </Button>
+                    <div>
+                      <p className="text-sm font-medium mb-2">Active Projects</p>
+                      <div className="space-y-1">
+                        {dept.activeProjects.map((project, idx) => (
+                          <Badge key={idx} variant="secondary" className="text-xs mr-1">
+                            {project}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
+
+                    <Button variant="outline" className="w-full">
+                      View Department Details
+                    </Button>
                   </CardContent>
                 </Card>
               ))}
             </div>
+          </TabsContent>
 
-            {departments.length === 0 && (
-              <div className="text-center py-12">
-                <Briefcase className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">No departments found</h3>
-                <p className="text-muted-foreground mb-4">
-                  Get started by creating your first department
-                </p>
-                {currentUserRole === "admin" && (
-                  <Button>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Create Department
-                  </Button>
-                )}
-              </div>
-            )}
+          {/* Collaboration Tab */}
+          <TabsContent value="collaboration" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Award className="w-5 h-5" />
+                    Top Collaborators
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {teamMembers
+                      .sort((a, b) => b.collaboration - a.collaboration)
+                      .slice(0, 5)
+                      .map((member, idx) => (
+                        <div key={member.id} className="flex items-center gap-3">
+                          <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
+                            {idx + 1}
+                          </div>
+                          <Avatar className="w-8 h-8">
+                            <AvatarImage src={member.avatar} />
+                            <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                              {member.name.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <p className="font-medium text-sm">{member.name}</p>
+                            <p className="text-xs text-muted-foreground">{member.role}</p>
+                          </div>
+                          <Badge variant="secondary" className="text-xs">
+                            {member.collaboration}%
+                          </Badge>
+                        </div>
+                      ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MessageSquare className="w-5 h-5" />
+                    Recent Activity
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex gap-3">
+                      <Avatar className="w-8 h-8">
+                        <AvatarFallback className="bg-primary text-primary-foreground text-xs">AJ</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <p className="text-sm">Alex completed <strong>Project Architecture Review</strong></p>
+                        <p className="text-xs text-muted-foreground">2 hours ago</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <Avatar className="w-8 h-8">
+                        <AvatarFallback className="bg-primary text-primary-foreground text-xs">SC</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <p className="text-sm">Sarah shared wireframes with the team</p>
+                        <p className="text-xs text-muted-foreground">3 hours ago</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <Avatar className="w-8 h-8">
+                        <AvatarFallback className="bg-primary text-primary-foreground text-xs">MR</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <p className="text-sm">Mike deployed API updates to staging</p>
+                        <p className="text-xs text-muted-foreground">5 hours ago</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
 
-        {/* Edit Member Dialog */}
-        <Dialog open={isEditMemberOpen} onOpenChange={setIsEditMemberOpen}>
-          <DialogContent className="sm:max-w-[600px]">
+        {/* Quick Task Assignment Dialog */}
+        <Dialog open={isAssignTaskOpen} onOpenChange={setIsAssignTaskOpen}>
+          <DialogContent>
             <DialogHeader>
-              <DialogTitle>Edit Team Member</DialogTitle>
+              <DialogTitle>Assign Task to {selectedMember?.name}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="edit-name">Full Name *</Label>
-                  <Input
-                    id="edit-name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    placeholder="Enter full name"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="edit-email">Email *</Label>
-                  <Input
-                    id="edit-email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    placeholder="Enter email address"
-                  />
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="edit-role">System Role *</Label>
-                  <Select value={formData.role} onValueChange={(value) => {
-                    setFormData({
-                      ...formData, 
-                      role: value,
-                      permissions: rolePermissions[value as keyof typeof rolePermissions] || []
-                    });
-                  }}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {systemRoles.map((role) => {
-                        const Icon = role.icon;
-                        return (
-                          <SelectItem key={role.value} value={role.value}>
-                            <div className="flex items-center gap-2">
-                              <Icon className={`w-4 h-4 ${role.color}`} />
-                              {role.label}
-                            </div>
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="edit-department">Department *</Label>
-                  <Select value={formData.department} onValueChange={(value) => setFormData({...formData, department: value})}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select department" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {departments.map((dept) => (
-                        <SelectItem key={dept.name} value={dept.name}>
-                          {dept.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
               <div>
-                <Label htmlFor="edit-organization">Organization *</Label>
-                <Select value={formData.organization} onValueChange={(value) => setFormData({...formData, organization: value})}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select organization" />
+                <label className="text-sm font-medium">Task Title</label>
+                <Input placeholder="Enter task title..." className="mt-1" />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Priority</label>
+                <Select>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Select priority" />
                   </SelectTrigger>
                   <SelectContent>
-                    {organizations.map((org) => (
-                      <SelectItem key={org.id} value={org.id}>
-                        <div className="flex items-center gap-2">
-                          <Building2 className="w-4 h-4" />
-                          {org.name}
-                        </div>
-                      </SelectItem>
-                    ))}
+                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-
               <div>
-                <Label htmlFor="edit-skills">Skills (comma-separated)</Label>
-                <Input
-                  id="edit-skills"
-                  value={formData.skills}
-                  onChange={(e) => setFormData({...formData, skills: e.target.value})}
-                  placeholder="React, TypeScript, Node.js"
-                />
+                <label className="text-sm font-medium">Due Date</label>
+                <Input type="date" className="mt-1" />
               </div>
-
-              <div>
-                <Label>Current Permissions</Label>
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {formData.permissions.map((permission) => (
-                    <Badge key={permission} variant="secondary" className="text-xs">
-                      {permission.replace('_', ' ')}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => {
-                  setIsEditMemberOpen(false);
-                  setSelectedMember(null);
-                }}>
+              <div className="flex gap-2">
+                <Button onClick={quickAssignTask} className="flex-1">
+                  Assign Task
+                </Button>
+                <Button variant="outline" onClick={() => setIsAssignTaskOpen(false)}>
                   Cancel
                 </Button>
-                <Button onClick={handleUpdateMember}>
-                  Update Member
-                </Button>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* Edit Department Dialog */}
-        <Dialog open={isEditDepartmentOpen} onOpenChange={setIsEditDepartmentOpen}>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Edit Department</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="edit-dept-name">Department Name</Label>
-                <Input 
-                  id="edit-dept-name" 
-                  placeholder="Enter department name"
-                  value={departmentFormData.name}
-                  onChange={(e) => setDepartmentFormData({...departmentFormData, name: e.target.value})}
-                />
-              </div>
-              <div>
-                <Label htmlFor="edit-dept-description">Description</Label>
-                <Textarea 
-                  id="edit-dept-description" 
-                  placeholder="Enter description"
-                  value={departmentFormData.description}
-                  onChange={(e) => setDepartmentFormData({...departmentFormData, description: e.target.value})}
-                />
-              </div>
-              <div>
-                <Label htmlFor="edit-dept-manager">Manager</Label>
-                <Select value={departmentFormData.managerId} onValueChange={(value) => setDepartmentFormData({...departmentFormData, managerId: value})}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select manager" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {teamMembers.filter(m => m.systemRole === "admin" || m.systemRole === "manager").map((member) => (
-                      <SelectItem key={member.id} value={member.id}>
-                        {member.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="edit-dept-budget">Budget</Label>
-                <Input 
-                  id="edit-dept-budget" 
-                  type="number" 
-                  placeholder="Enter budget"
-                  value={departmentFormData.budget}
-                  onChange={(e) => setDepartmentFormData({...departmentFormData, budget: e.target.value})}
-                />
-              </div>
-              <div>
-                <Label htmlFor="edit-dept-location">Location</Label>
-                <Input 
-                  id="edit-dept-location" 
-                  placeholder="Enter location"
-                  value={departmentFormData.location}
-                  onChange={(e) => setDepartmentFormData({...departmentFormData, location: e.target.value})}
-                />
-              </div>
-              <div className="flex gap-2 justify-end pt-4">
-                <Button variant="outline" onClick={() => {
-                  setIsEditDepartmentOpen(false);
-                  setSelectedDepartment(null);
-                }}>Cancel</Button>
-                <Button onClick={handleUpdateDepartment}>Update Department</Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* Department Details Dialog */}
-        <Dialog open={isDepartmentDetailsOpen} onOpenChange={setIsDepartmentDetailsOpen}>
-          <DialogContent className="sm:max-w-[800px] max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-3">
-                <div 
-                  className="w-4 h-4 rounded-full" 
-                  style={{ backgroundColor: selectedDepartment?.color }}
-                />
-                {selectedDepartment?.name} Department Details
-              </DialogTitle>
-            </DialogHeader>
-            
-            {selectedDepartment && (
-              <div className="space-y-6">
-                {/* Department Overview */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Card>
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-                        <Users className="w-4 h-4" />
-                        Total Members
-                      </div>
-                      <div className="text-2xl font-bold">{getDepartmentMembers(selectedDepartment.name).length}</div>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-                        <Target className="w-4 h-4" />
-                        Active Projects
-                      </div>
-                      <div className="text-2xl font-bold">{getDepartmentProjects(selectedDepartment.name).length}</div>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-                        <DollarSign className="w-4 h-4" />
-                        Budget
-                      </div>
-                      <div className="text-2xl font-bold">${selectedDepartment.budget?.toLocaleString() || 'N/A'}</div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Department Information */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Department Information</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <Label className="text-sm font-medium">Description</Label>
-                      <p className="text-sm text-muted-foreground mt-1">{selectedDepartment.description}</p>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label className="text-sm font-medium">Department Lead</Label>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Avatar className="h-6 w-6">
-                            <AvatarImage src="" />
-                            <AvatarFallback className="text-xs">
-                              {selectedDepartment.lead.split(" ").map((n: string) => n[0]).join("")}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="text-sm">{selectedDepartment.lead}</span>
-                        </div>
-                      </div>
-                      
-                      <div>
-                        <Label className="text-sm font-medium">Location</Label>
-                        <div className="flex items-center gap-2 mt-1">
-                          <MapPin className="w-4 h-4 text-muted-foreground" />
-                          <span className="text-sm">{selectedDepartment.location || 'Not specified'}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Team Members */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Team Members</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      {getDepartmentMembers(selectedDepartment.name).map((member) => (
-                        <div key={member.id} className="flex items-center justify-between p-3 border rounded-lg">
-                          <div className="flex items-center gap-3">
-                            <Avatar className="h-10 w-10">
-                              <AvatarImage src={member.avatar} />
-                              <AvatarFallback>
-                                {member.name.split(" ").map((n: string) => n[0]).join("")}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <p className="font-medium">{member.name}</p>
-                                <div className={`w-2 h-2 rounded-full ${getStatusColor(member.status)}`} />
-                              </div>
-                              <p className="text-sm text-muted-foreground">{member.role}</p>
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="text-xs">
-                              {member.systemRole}
-                            </Badge>
-                            {member.skills.slice(0, 2).map((skill) => (
-                              <Badge key={skill} variant="secondary" className="text-xs">
-                                {skill}
-                              </Badge>
-                            ))}
-                            {member.skills.length > 2 && (
-                              <Badge variant="secondary" className="text-xs">
-                                +{member.skills.length - 2}
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                      
-                      {getDepartmentMembers(selectedDepartment.name).length === 0 && (
-                        <div className="text-center py-6 text-muted-foreground">
-                          No team members assigned to this department
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Active Projects */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Active Projects</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      {getDepartmentProjects(selectedDepartment.name).map((project, index) => (
-                        <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                          <div className="flex items-center gap-2">
-                            <Briefcase className="w-4 h-4 text-muted-foreground" />
-                            <span className="font-medium">{project}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Clock className="w-4 h-4 text-muted-foreground" />
-                            <span className="text-sm text-muted-foreground">In Progress</span>
-                          </div>
-                        </div>
-                      ))}
-                      
-                      {getDepartmentProjects(selectedDepartment.name).length === 0 && (
-                        <div className="text-center py-6 text-muted-foreground">
-                          No active projects assigned to this department
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <div className="flex justify-end pt-4">
-                  <Button variant="outline" onClick={() => setIsDepartmentDetailsOpen(false)}>
-                    Close
-                  </Button>
-                </div>
-              </div>
-            )}
           </DialogContent>
         </Dialog>
       </div>
