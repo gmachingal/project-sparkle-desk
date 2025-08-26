@@ -312,15 +312,9 @@ const TimeLogging = () => {
             </p>
           </div>
           
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <div className="text-sm text-muted-foreground">Total Hours Today</div>
-              <div className="text-2xl font-bold text-primary">{getTotalHoursForDay()}h</div>
-            </div>
-            <Button onClick={handleSaveAll} className="gap-2">
-              <Save className="w-4 h-4" />
-              Save All
-            </Button>
+          <div className="text-right">
+            <div className="text-sm text-muted-foreground">Total Hours Today</div>
+            <div className="text-2xl font-bold text-primary">{getTotalHoursForDay()}h</div>
           </div>
         </div>
 
