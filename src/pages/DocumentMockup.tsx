@@ -642,7 +642,7 @@ const DocumentMockup = () => {
                 Create Content
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-1.5 px-2.5 pb-1.5 pt-4">
+            <CardContent className="space-y-2.5 px-2.5 pb-1.5 pt-4">
               <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                 <DialogTrigger asChild>
                   <Button className="w-full justify-start gap-2 h-9 text-sm bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-md hover:shadow-lg transition-all duration-200 font-medium">
@@ -655,8 +655,8 @@ const DocumentMockup = () => {
               <div className="grid grid-cols-2 gap-1 pt-1">
                 <Dialog open={isCreateSpaceDialogOpen} onOpenChange={setIsCreateSpaceDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="outline" className="justify-start gap-1.5 h-8 text-sm border hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 font-normal px-3">
-                      <Folder className="w-3.5 h-3.5" />
+                    <Button variant="outline" className="justify-start gap-1.5 h-8 text-sm border-blue-200 bg-blue-50 text-blue-700 hover:border-blue-300 hover:bg-blue-100 transition-all duration-200 font-normal px-3">
+                      <Folder className="w-3.5 h-3.5 text-blue-600" />
                       Space
                     </Button>
                   </DialogTrigger>
@@ -731,8 +731,8 @@ const DocumentMockup = () => {
 
                 <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="outline" className="justify-start gap-1.5 h-8 text-sm border hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 font-normal px-3">
-                      <Upload className="w-3.5 h-3.5" />
+                    <Button variant="outline" className="justify-start gap-1.5 h-8 text-sm border-green-200 bg-green-50 text-green-700 hover:border-green-300 hover:bg-green-100 transition-all duration-200 font-normal px-3">
+                      <Upload className="w-3.5 h-3.5 text-green-600" />
                       Upload
                     </Button>
                   </DialogTrigger>
