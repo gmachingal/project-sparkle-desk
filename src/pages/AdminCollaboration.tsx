@@ -32,7 +32,9 @@ import {
   Eye,
   Bell,
   CalendarIcon,
-  AlertCircle
+  AlertCircle,
+  BookOpen,
+  Award
 } from "lucide-react";
 
 const AdminCollaboration = () => {
@@ -227,19 +229,33 @@ const AdminCollaboration = () => {
               </div>
             </div>
             
-            <Button variant="outline" className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin">
-              <Bell className="w-4 h-4" />
-              Notifications
+            <Button
+              variant="outline"
+              className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin"
+              onClick={() => toast({
+                title: "Learning Library",
+                description: "Accessing organization-wide learning resources"
+              })}
+            >
+              <BookOpen className="w-4 h-4" />
+              Browse Library
             </Button>
             
-            <Button variant="outline" className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin">
-              <Settings className="w-4 h-4" />
-              Settings
+            <Button
+              variant="outline"
+              className="gap-2 hover:bg-admin/10 border-admin/30 text-admin hover:text-admin"
+              onClick={() => toast({
+                title: "Certificates",
+                description: "Viewing all organization certificates and achievements"
+              })}
+            >
+              <Award className="w-4 h-4" />
+              View Certificates
             </Button>
             
             <Button className="gap-2 bg-gradient-to-r from-admin to-admin-glow hover:from-admin/90 hover:to-admin-glow/90">
               <Plus className="w-4 h-4" />
-              Add Team Member
+              Create Program
             </Button>
           </div>
         </div>
@@ -898,14 +914,49 @@ const AdminCollaboration = () => {
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <Button className="w-full gap-2 bg-gradient-to-r from-admin to-admin-glow">
+                    <div className="grid grid-cols-1 gap-2">
+                      <Button 
+                        className="w-full gap-2 bg-gradient-to-r from-admin to-admin-glow"
+                        onClick={() => toast({
+                          title: "Create Learning Program",
+                          description: "Setting up new organization-wide learning program"
+                        })}
+                      >
                         <Plus className="w-4 h-4" />
                         Create Learning Program
                       </Button>
-                      <Button variant="outline" className="w-full gap-2">
-                        <Star className="w-4 h-4" />
-                        View Learning Library
+                      <Button 
+                        variant="outline" 
+                        className="w-full gap-2 border-admin/30 hover:bg-admin/10"
+                        onClick={() => toast({
+                          title: "Learning Library",
+                          description: "Browsing organization learning resources and content"
+                        })}
+                      >
+                        <BookOpen className="w-4 h-4" />
+                        Browse Learning Library
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="w-full gap-2 border-admin/30 hover:bg-admin/10"
+                        onClick={() => toast({
+                          title: "All Certificates",
+                          description: "Viewing organization-wide certificates and achievements"
+                        })}
+                      >
+                        <Award className="w-4 h-4" />
+                        View All Certificates
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="w-full gap-2 border-admin/30 hover:bg-admin/10"
+                        onClick={() => toast({
+                          title: "View & Manage",
+                          description: "Managing organization learning programs and progress"
+                        })}
+                      >
+                        <Eye className="w-4 h-4" />
+                        View & Manage
                       </Button>
                     </div>
                   </div>

@@ -46,7 +46,8 @@ import {
   Mic,
   MoreHorizontal,
   Search,
-  MapPin
+  MapPin,
+  Eye
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -561,6 +562,126 @@ const Collaboration = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Quick Actions Panel */}
+        <Card className="border-primary/20 bg-gradient-to-br from-background to-muted/20 mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Activity className="w-5 h-5 text-primary" />
+              Quick Actions
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {/* Log Hours Button */}
+              <Dialog open={isLogHoursOpen} onOpenChange={setIsLogHoursOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="h-20 flex-col gap-2 border-primary/20 hover:border-primary/40 hover:bg-primary/5 group transition-all duration-300"
+                  >
+                    <Timer className="w-6 h-6 text-primary group-hover:scale-110 transition-transform" />
+                    <span className="text-sm font-medium">Log Hours</span>
+                  </Button>
+                </DialogTrigger>
+              </Dialog>
+
+              {/* Browse Learning Library Button */}
+              <Button
+                variant="outline"
+                className="h-20 flex-col gap-2 border-success/20 hover:border-success/40 hover:bg-success/5 group transition-all duration-300"
+                onClick={() => toast({
+                  title: "Learning Library",
+                  description: "Browsing comprehensive learning resources and courses"
+                })}
+              >
+                <BookOpen className="w-6 h-6 text-success group-hover:scale-110 transition-transform" />
+                <span className="text-sm font-medium">Browse Library</span>
+              </Button>
+
+              {/* View All Certificates Button */}
+              <Button
+                variant="outline"
+                className="h-20 flex-col gap-2 border-warning/20 hover:border-warning/40 hover:bg-warning/5 group transition-all duration-300"
+                onClick={() => toast({
+                  title: "Certificates",
+                  description: "Viewing all earned certificates and achievements"
+                })}
+              >
+                <Award className="w-6 h-6 text-warning group-hover:scale-110 transition-transform" />
+                <span className="text-sm font-medium">View Certificates</span>
+              </Button>
+
+              {/* Create Learning Program Button */}
+              <Button
+                variant="outline"
+                className="h-20 flex-col gap-2 border-info/20 hover:border-info/40 hover:bg-info/5 group transition-all duration-300"
+                onClick={() => toast({
+                  title: "Learning Program",
+                  description: "Creating personalized learning program"
+                })}
+              >
+                <GraduationCap className="w-6 h-6 text-info group-hover:scale-110 transition-transform" />
+                <span className="text-sm font-medium">Create Program</span>
+              </Button>
+            </div>
+
+            {/* Additional Quick Actions Row */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+              {/* Start Learning Button */}
+              <Dialog open={isStartLearningOpen} onOpenChange={setIsStartLearningOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="h-20 flex-col gap-2 border-accent/20 hover:border-accent/40 hover:bg-accent/5 group transition-all duration-300"
+                  >
+                    <Play className="w-6 h-6 text-accent group-hover:scale-110 transition-transform" />
+                    <span className="text-sm font-medium">Start Learning</span>
+                  </Button>
+                </DialogTrigger>
+              </Dialog>
+
+              {/* View & Manage Button */}
+              <Button
+                variant="outline"
+                className="h-20 flex-col gap-2 border-purple-500/20 hover:border-purple-500/40 hover:bg-purple-500/5 group transition-all duration-300"
+                onClick={() => toast({
+                  title: "View & Manage",
+                  description: "Managing your learning progress and assignments"
+                })}
+              >
+                <Eye className="w-6 h-6 text-purple-500 group-hover:scale-110 transition-transform" />
+                <span className="text-sm font-medium">View & Manage</span>
+              </Button>
+
+              {/* Share Progress Button */}
+              <Button
+                variant="outline"
+                className="h-20 flex-col gap-2 border-emerald-500/20 hover:border-emerald-500/40 hover:bg-emerald-500/5 group transition-all duration-300"
+                onClick={() => toast({
+                  title: "Progress Shared",
+                  description: "Your weekly progress has been shared with your team lead"
+                })}
+              >
+                <Share2 className="w-6 h-6 text-emerald-500 group-hover:scale-110 transition-transform" />
+                <span className="text-sm font-medium">Share Progress</span>
+              </Button>
+
+              {/* View Reports Button */}
+              <Button
+                variant="outline"
+                className="h-20 flex-col gap-2 border-blue-500/20 hover:border-blue-500/40 hover:bg-blue-500/5 group transition-all duration-300"
+                onClick={() => toast({
+                  title: "Opening Reports",
+                  description: "Redirecting to your personal reports dashboard"
+                })}
+              >
+                <BarChart3 className="w-6 h-6 text-blue-500 group-hover:scale-110 transition-transform" />
+                <span className="text-sm font-medium">View Reports</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
