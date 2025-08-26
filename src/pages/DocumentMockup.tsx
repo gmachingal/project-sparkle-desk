@@ -605,38 +605,6 @@ const DocumentMockup = () => {
           </div>
         </div>
 
-        {/* Search and Filters */}
-        <div className="flex flex-col lg:flex-row gap-6 mb-10">
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-            <Input
-              placeholder="Search documents, spaces, and content..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 h-12 text-base border-2 focus:border-primary/50"
-            />
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <Select value={selectedSpace} onValueChange={setSelectedSpace}>
-              <SelectTrigger className="w-56 h-12 border-2">
-                <SelectValue placeholder="All Spaces" />
-              </SelectTrigger>
-              <SelectContent className="bg-background border-2 shadow-xl z-50">
-                <SelectItem value="all">All Spaces</SelectItem>
-                {spaces.map((space) => (
-                  <SelectItem key={space.id} value={space.id}>
-                    <div className="flex items-center gap-3">
-                      <span className="text-lg">{space.icon}</span>
-                      <span className="font-medium">{space.name}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
         {/* Quick Actions Bar */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
           {/* Quick Actions */}
@@ -760,15 +728,46 @@ const DocumentMockup = () => {
 
               {/* Documents Tab */}
               <TabsContent value="documents" className="space-y-6">
+                {/* Documents Search and Filters */}
+                <div className="flex flex-col lg:flex-row gap-4 mb-4">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <Input
+                      placeholder="Search documents and content..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10 h-10 border"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Select value={selectedSpace} onValueChange={setSelectedSpace}>
+                      <SelectTrigger className="w-48 h-10">
+                        <SelectValue placeholder="All Spaces" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border shadow-lg z-50">
+                        <SelectItem value="all">All Spaces</SelectItem>
+                        {spaces.map((space) => (
+                          <SelectItem key={space.id} value={space.id}>
+                            <div className="flex items-center gap-2">
+                              <span>{space.icon}</span>
+                              <span>{space.name}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
                 {/* View Mode Selector - Only for Documents Tab */}
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center justify-between">
                   <h3 className="text-2xl font-bold text-foreground">All Documents</h3>
                   <div className="flex items-center bg-muted/50 rounded-lg p-1">
                     <Button 
                       variant={viewMode === "grid" ? "default" : "ghost"} 
                       size="sm" 
                       onClick={() => setViewMode("grid")}
-                      className={`h-10 px-4 rounded-md ${viewMode === "grid" ? "bg-background shadow-sm" : ""}`}
+                      className={`h-9 px-3 rounded-md text-sm ${viewMode === "grid" ? "bg-background shadow-sm" : ""}`}
                     >
                       Grid
                     </Button>
@@ -776,7 +775,7 @@ const DocumentMockup = () => {
                       variant={viewMode === "list" ? "default" : "ghost"} 
                       size="sm" 
                       onClick={() => setViewMode("list")}
-                      className={`h-10 px-4 rounded-md ${viewMode === "list" ? "bg-background shadow-sm" : ""}`}
+                      className={`h-9 px-3 rounded-md text-sm ${viewMode === "list" ? "bg-background shadow-sm" : ""}`}
                     >
                       List
                     </Button>
@@ -784,7 +783,7 @@ const DocumentMockup = () => {
                       variant={viewMode === "tree" ? "default" : "ghost"} 
                       size="sm" 
                       onClick={() => setViewMode("tree")}
-                      className={`h-10 px-4 rounded-md ${viewMode === "tree" ? "bg-background shadow-sm" : ""}`}
+                      className={`h-9 px-3 rounded-md text-sm ${viewMode === "tree" ? "bg-background shadow-sm" : ""}`}
                     >
                       Tree
                     </Button>
@@ -978,7 +977,7 @@ const DocumentMockup = () => {
                       );
 
                       return (
-                        <>
+                        <div className="space-y-6">
                           {/* Space Header */}
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4">
@@ -1109,9 +1108,10 @@ const DocumentMockup = () => {
                                         </div>
                                       </div>
                                     </CardContent>
-                                  </Card>
-                                ))}
-                              </div>
+                      </Card>
+                    ))}
+                    </div>
+                  </div>
                             </div>
 
                             {/* Space Sidebar */}
@@ -1210,13 +1210,30 @@ const DocumentMockup = () => {
                               </Card>
                             </div>
                           </div>
-                        </>
+                        </div>
                       );
-                    })()}
-                  </div>
+                    })()
                 ) : (
                   // Spaces Grid View
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-4">
+                    {/* Spaces Search */}
+                    <div className="flex items-center gap-4">
+                      <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                        <Input
+                          placeholder="Search spaces..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="pl-10 h-10 border"
+                        />
+                      </div>
+                      <Button variant="outline" className="gap-2 h-10">
+                        <Filter className="w-4 h-4" />
+                        Filter
+                      </Button>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {spaces.map((space) => (
                       <Card key={space.id} className="hover:shadow-lg transition-all duration-200 group cursor-pointer" onClick={() => handleSpaceClick(space.id)}>
                         <CardContent className="p-6">
@@ -1259,6 +1276,19 @@ const DocumentMockup = () => {
 
               {/* Recent Tab */}
               <TabsContent value="recent" className="space-y-4">
+                {/* Recent Search */}
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <Input
+                      placeholder="Search recent activity..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10 h-10 border"
+                    />
+                  </div>
+                </div>
+
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -1292,6 +1322,19 @@ const DocumentMockup = () => {
 
               {/* Starred Tab */}
               <TabsContent value="starred" className="space-y-4">
+                {/* Starred Search */}
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <Input
+                      placeholder="Search starred items..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10 h-10 border"
+                    />
+                  </div>
+                </div>
+
                 <Card>
                   <CardContent className="p-8 text-center">
                     <Star className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
