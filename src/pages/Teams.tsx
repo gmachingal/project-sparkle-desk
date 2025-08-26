@@ -38,7 +38,13 @@ import {
   Share2,
   FileText,
   Zap,
-  Coffee
+  Coffee,
+  BookOpen,
+  GraduationCap,
+  Timer,
+  Star,
+  PieChart,
+  Download
 } from "lucide-react";
 
 const Teams = () => {
@@ -394,7 +400,7 @@ const Teams = () => {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               Team Overview
@@ -406,6 +412,10 @@ const Teams = () => {
             <TabsTrigger value="departments" className="flex items-center gap-2">
               <Briefcase className="h-4 w-4" />
               Departments
+            </TabsTrigger>
+            <TabsTrigger value="learning" className="flex items-center gap-2">
+              <GraduationCap className="h-4 w-4" />
+              Learning
             </TabsTrigger>
             <TabsTrigger value="collaboration" className="flex items-center gap-2">
               <Share2 className="h-4 w-4" />
@@ -705,6 +715,267 @@ const Teams = () => {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          </TabsContent>
+          {/* Learning Module Tab */}
+          <TabsContent value="learning" className="space-y-6">
+            {/* Learning Overview Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-blue-500" />
+                    <div>
+                      <div className="text-2xl font-bold">12</div>
+                      <div className="text-xs text-muted-foreground">Active Topics</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-2">
+                    <GraduationCap className="w-4 h-4 text-green-500" />
+                    <div>
+                      <div className="text-2xl font-bold">8</div>
+                      <div className="text-xs text-muted-foreground">Completed</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-2">
+                    <Timer className="w-4 h-4 text-orange-500" />
+                    <div>
+                      <div className="text-2xl font-bold">156h</div>
+                      <div className="text-xs text-muted-foreground">Total Hours</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-2">
+                    <Star className="w-4 h-4 text-yellow-500" />
+                    <div>
+                      <div className="text-2xl font-bold">4.8</div>
+                      <div className="text-xs text-muted-foreground">Avg Rating</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Team Learning Progress */}
+              <div className="lg:col-span-2 space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BarChart3 className="w-5 h-5" />
+                      Team Learning Progress
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {[
+                        { name: "Sarah Chen", avatar: "SC", topic: "React Advanced Patterns", progress: 85, hours: 12, status: "in-progress" },
+                        { name: "Mike Johnson", avatar: "MJ", topic: "API Security Best Practices", progress: 100, hours: 8, status: "completed" },
+                        { name: "Emily Davis", avatar: "ED", topic: "UI/UX Design Principles", progress: 60, hours: 6, status: "in-progress" },
+                        { name: "Alex Kim", avatar: "AK", topic: "Testing Strategies", progress: 45, hours: 4, status: "in-progress" },
+                        { name: "David Liu", avatar: "DL", topic: "DevOps Fundamentals", progress: 90, hours: 15, status: "in-progress" },
+                        { name: "Lisa Zhang", avatar: "LZ", topic: "Data Analytics", progress: 100, hours: 10, status: "completed" }
+                      ].map((member, index) => (
+                        <div key={index} className="flex items-center gap-4 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                          <Avatar className="h-10 w-10">
+                            <AvatarFallback className="bg-primary text-primary-foreground">{member.avatar}</AvatarFallback>
+                          </Avatar>
+                          
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="font-medium">{member.name}</h4>
+                              <Badge 
+                                variant={member.status === 'completed' ? 'default' : 'secondary'}
+                                className={member.status === 'completed' ? 'bg-green-500' : ''}
+                              >
+                                {member.status === 'completed' ? 'Completed' : 'In Progress'}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-2">{member.topic}</p>
+                            <div className="flex items-center gap-4">
+                              <div className="flex-1">
+                                <div className="flex justify-between text-xs mb-1">
+                                  <span>Progress</span>
+                                  <span>{member.progress}%</span>
+                                </div>
+                                <Progress value={member.progress} className="h-2" />
+                              </div>
+                              <div className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Timer className="w-3 h-3" />
+                                {member.hours}h
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <Button variant="outline" size="sm" className="gap-2">
+                            <Eye className="w-3 h-3" />
+                            View Details
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Learning Topics Overview */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BookOpen className="w-5 h-5" />
+                      Active Learning Topics
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {[
+                        { title: "React Advanced Patterns", enrolled: 8, completed: 3, hours: 45, difficulty: "Advanced", category: "Frontend" },
+                        { title: "API Security Best Practices", enrolled: 6, completed: 4, hours: 28, difficulty: "Intermediate", category: "Security" },
+                        { title: "UI/UX Design Principles", enrolled: 5, completed: 2, hours: 32, difficulty: "Beginner", category: "Design" },
+                        { title: "Testing Strategies", enrolled: 7, completed: 1, hours: 38, difficulty: "Intermediate", category: "QA" },
+                        { title: "DevOps Fundamentals", enrolled: 4, completed: 2, hours: 52, difficulty: "Advanced", category: "DevOps" },
+                        { title: "Data Analytics", enrolled: 3, completed: 3, hours: 24, difficulty: "Intermediate", category: "Analytics" }
+                      ].map((topic, index) => (
+                        <div key={index} className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                          <div className="flex items-start justify-between mb-3">
+                            <h4 className="font-medium text-sm">{topic.title}</h4>
+                            <Badge variant="outline" className="text-xs">
+                              {topic.category}
+                            </Badge>
+                          </div>
+                          
+                          <div className="space-y-2 text-xs text-muted-foreground">
+                            <div className="flex justify-between">
+                              <span>Enrolled: {topic.enrolled}</span>
+                              <span>Completed: {topic.completed}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>Total Hours: {topic.hours}h</span>
+                              <Badge variant="secondary" className="text-xs">
+                                {topic.difficulty}
+                              </Badge>
+                            </div>
+                          </div>
+                          
+                          <div className="mt-3">
+                            <Progress value={(topic.completed / topic.enrolled) * 100} className="h-1" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Learning Analytics Sidebar */}
+              <div className="space-y-6">
+                {/* Team Learning Stats */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      <PieChart className="w-4 h-4" />
+                      Learning Analytics
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Completion Rate</span>
+                        <span className="font-semibold">67%</span>
+                      </div>
+                      <Progress value={67} className="h-2" />
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Avg. Study Time/Week</span>
+                        <span className="font-semibold">8.5h</span>
+                      </div>
+                      <Progress value={85} className="h-2" />
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Active Learners</span>
+                        <span className="font-semibold">12/18</span>
+                      </div>
+                      <Progress value={67} className="h-2" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Top Performers */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      <Award className="w-4 h-4" />
+                      Top Performers
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {[
+                        { name: "Mike Johnson", points: 280, badge: "Champion" },
+                        { name: "Lisa Zhang", points: 240, badge: "Expert" },
+                        { name: "David Liu", points: 220, badge: "Expert" }
+                      ].map((performer, index) => (
+                        <div key={index} className="flex items-center gap-3">
+                          <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold">
+                            {index + 1}
+                          </div>
+                          <Avatar className="h-8 w-8">
+                            <AvatarFallback className="text-xs">{performer.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate">{performer.name}</p>
+                            <p className="text-xs text-muted-foreground">{performer.points} points</p>
+                          </div>
+                          <Badge variant="secondary" className="text-xs">
+                            {performer.badge}
+                          </Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Learning Actions */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      <Settings className="w-4 h-4" />
+                      Quick Actions
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Button className="w-full gap-2" size="sm">
+                      <Download className="w-4 h-4" />
+                      Export Progress Report
+                    </Button>
+                    <Button variant="outline" className="w-full gap-2" size="sm">
+                      <Plus className="w-4 h-4" />
+                      Assign Learning Path
+                    </Button>
+                    <Button variant="outline" className="w-full gap-2" size="sm">
+                      <MessageSquare className="w-4 h-4" />
+                      Send Reminder
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </TabsContent>
 

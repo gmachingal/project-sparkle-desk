@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Building2, Users, CreditCard, Settings, Plus, Edit, Trash2, ArrowLeft, Globe, Crown, RefreshCw, Copy, Check, Clock, UserPlus, UserCheck, UserX, Key, DollarSign, Calendar, AlertTriangle, TrendingUp, Shield, Target, ShieldCheck, User, MoreHorizontal } from "lucide-react";
+import { Building2, Users, CreditCard, Settings, Plus, Edit, Trash2, ArrowLeft, Globe, Crown, RefreshCw, Copy, Check, Clock, UserPlus, UserCheck, UserX, Key, DollarSign, Calendar, AlertTriangle, TrendingUp, Shield, Target, ShieldCheck, User, MoreHorizontal, BookOpen, GraduationCap, Star, Award } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 
@@ -619,6 +619,7 @@ const AdminOrganizations = () => {
             <TabsTrigger value="billing" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin text-admin/70 hover:text-admin">Plans & Billing</TabsTrigger>
             <TabsTrigger value="users" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin text-admin/70 hover:text-admin">User Management</TabsTrigger>
             <TabsTrigger value="departments" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin text-admin/70 hover:text-admin">Departments</TabsTrigger>
+            <TabsTrigger value="learning" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin text-admin/70 hover:text-admin">Learning Management</TabsTrigger>
             <TabsTrigger value="join-codes" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin text-admin/70 hover:text-admin">Join Codes</TabsTrigger>
             <TabsTrigger value="registrations" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin text-admin/70 hover:text-admin">Registration Requests</TabsTrigger>
           </TabsList>
@@ -1437,6 +1438,317 @@ const AdminOrganizations = () => {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+          
+          <TabsContent value="learning">
+            <div className="space-y-6">
+              {/* Learning Management Header */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <GraduationCap className="w-5 h-5" />
+                    Learning Management System
+                  </CardTitle>
+                  <CardDescription>Create and manage learning topics for your organization</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-2">
+                          <BookOpen className="w-4 h-4 text-blue-500" />
+                          <div>
+                            <div className="text-2xl font-bold">24</div>
+                            <div className="text-xs text-muted-foreground">Active Topics</div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                    
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4 text-green-500" />
+                          <div>
+                            <div className="text-2xl font-bold">156</div>
+                            <div className="text-xs text-muted-foreground">Total Learners</div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                    
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-2">
+                          <Award className="w-4 h-4 text-yellow-500" />
+                          <div>
+                            <div className="text-2xl font-bold">89</div>
+                            <div className="text-xs text-muted-foreground">Completed</div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                    
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-2">
+                          <Star className="w-4 h-4 text-purple-500" />
+                          <div>
+                            <div className="text-2xl font-bold">4.7</div>
+                            <div className="text-xs text-muted-foreground">Avg Rating</div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Learning Topics Management */}
+                <div className="lg:col-span-2 space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="flex items-center gap-2">
+                          <BookOpen className="w-5 h-5" />
+                          Learning Topics
+                        </CardTitle>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button className="gap-2">
+                              <Plus className="w-4 h-4" />
+                              Add Topic
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-md">
+                            <DialogHeader>
+                              <DialogTitle>Create Learning Topic</DialogTitle>
+                              <DialogDescription>Add a new learning topic for your organization</DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              <div>
+                                <Label htmlFor="topic-title">Topic Title</Label>
+                                <Input id="topic-title" placeholder="e.g., React Advanced Patterns" />
+                              </div>
+                              <div>
+                                <Label htmlFor="topic-description">Description</Label>
+                                <Textarea id="topic-description" placeholder="Describe what learners will gain from this topic..." />
+                              </div>
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <Label htmlFor="difficulty">Difficulty Level</Label>
+                                  <Select>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select level" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="beginner">Beginner</SelectItem>
+                                      <SelectItem value="intermediate">Intermediate</SelectItem>
+                                      <SelectItem value="advanced">Advanced</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div>
+                                  <Label htmlFor="category">Category</Label>
+                                  <Select>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select category" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="frontend">Frontend</SelectItem>
+                                      <SelectItem value="backend">Backend</SelectItem>
+                                      <SelectItem value="devops">DevOps</SelectItem>
+                                      <SelectItem value="design">Design</SelectItem>
+                                      <SelectItem value="qa">QA/Testing</SelectItem>
+                                      <SelectItem value="security">Security</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <Label htmlFor="estimated-hours">Estimated Hours</Label>
+                                  <Input id="estimated-hours" type="number" placeholder="8" />
+                                </div>
+                                <div>
+                                  <Label htmlFor="max-participants">Max Participants</Label>
+                                  <Input id="max-participants" type="number" placeholder="20" />
+                                </div>
+                              </div>
+                              <div className="flex justify-end gap-2">
+                                <Button variant="outline">Cancel</Button>
+                                <Button>Create Topic</Button>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {[
+                          { id: 1, title: "React Advanced Patterns", description: "Learn advanced React patterns and best practices", category: "Frontend", difficulty: "Advanced", enrolled: 12, completed: 8, hours: 24, rating: 4.8, status: "active" },
+                          { id: 2, title: "API Security Best Practices", description: "Comprehensive guide to securing REST APIs", category: "Security", difficulty: "Intermediate", enrolled: 8, completed: 6, hours: 16, rating: 4.6, status: "active" },
+                          { id: 3, title: "UI/UX Design Principles", description: "Fundamentals of user interface and experience design", category: "Design", difficulty: "Beginner", enrolled: 15, completed: 12, hours: 20, rating: 4.7, status: "active" },
+                          { id: 4, title: "Testing Strategies", description: "Unit, integration, and e2e testing methodologies", category: "QA", difficulty: "Intermediate", enrolled: 10, completed: 7, hours: 18, rating: 4.5, status: "active" },
+                          { id: 5, title: "DevOps Fundamentals", description: "CI/CD, containerization, and deployment strategies", category: "DevOps", difficulty: "Advanced", enrolled: 6, completed: 4, hours: 32, rating: 4.9, status: "draft" }
+                        ].map((topic) => (
+                          <div key={topic.id} className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                            <div className="flex items-start justify-between mb-3">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <h4 className="font-semibold">{topic.title}</h4>
+                                  <Badge variant={topic.status === 'active' ? 'default' : 'secondary'}>
+                                    {topic.status}
+                                  </Badge>
+                                  <Badge variant="outline" className="text-xs">
+                                    {topic.category}
+                                  </Badge>
+                                  <Badge variant="outline" className="text-xs">
+                                    {topic.difficulty}
+                                  </Badge>
+                                </div>
+                                <p className="text-sm text-muted-foreground mb-3">{topic.description}</p>
+                                
+                                <div className="grid grid-cols-4 gap-4 text-sm">
+                                  <div className="flex items-center gap-1">
+                                    <Users className="w-3 h-3 text-muted-foreground" />
+                                    <span>{topic.enrolled} enrolled</span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <Award className="w-3 h-3 text-muted-foreground" />
+                                    <span>{topic.completed} completed</span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <Clock className="w-3 h-3 text-muted-foreground" />
+                                    <span>{topic.hours}h estimated</span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <Star className="w-3 h-3 text-muted-foreground" />
+                                    <span>{topic.rating} rating</span>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <div className="flex items-center gap-2">
+                                <Button variant="outline" size="sm">
+                                  <Edit className="w-3 h-3" />
+                                </Button>
+                                <Button variant="outline" size="sm">
+                                  <MoreHorizontal className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <Progress value={(topic.completed / topic.enrolled) * 100} className="flex-1 mr-4 h-2" />
+                              <span className="text-xs text-muted-foreground">
+                                {Math.round((topic.completed / topic.enrolled) * 100)}% completion
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Learning Analytics & Management */}
+                <div className="space-y-6">
+                  {/* Learning Categories */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-base">
+                        <Target className="w-4 h-4" />
+                        Categories
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {[
+                          { name: "Frontend", topics: 6, color: "bg-blue-500" },
+                          { name: "Backend", topics: 4, color: "bg-green-500" },
+                          { name: "DevOps", topics: 3, color: "bg-purple-500" },
+                          { name: "Design", topics: 5, color: "bg-pink-500" },
+                          { name: "QA/Testing", topics: 3, color: "bg-orange-500" },
+                          { name: "Security", topics: 3, color: "bg-red-500" }
+                        ].map((category, index) => (
+                          <div key={index} className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <div className={`w-3 h-3 rounded-full ${category.color}`} />
+                              <span className="text-sm">{category.name}</span>
+                            </div>
+                            <Badge variant="secondary" className="text-xs">
+                              {category.topics} topics
+                            </Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Learning Stats */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-base">
+                        <TrendingUp className="w-4 h-4" />
+                        Learning Analytics
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Completion Rate</span>
+                          <span className="font-semibold">73%</span>
+                        </div>
+                        <Progress value={73} className="h-2" />
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Avg. Study Time</span>
+                          <span className="font-semibold">12.5h</span>
+                        </div>
+                        <Progress value={85} className="h-2" />
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Active Learners</span>
+                          <span className="font-semibold">89/156</span>
+                        </div>
+                        <Progress value={57} className="h-2" />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Quick Actions */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-base">
+                        <Settings className="w-4 h-4" />
+                        Quick Actions
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <Button className="w-full gap-2" size="sm">
+                        <Plus className="w-4 h-4" />
+                        Bulk Import Topics
+                      </Button>
+                      <Button variant="outline" className="w-full gap-2" size="sm">
+                        <Copy className="w-4 h-4" />
+                        Export Learning Data
+                      </Button>
+                      <Button variant="outline" className="w-full gap-2" size="sm">
+                        <Settings className="w-4 h-4" />
+                        Learning Settings
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="join-codes">
