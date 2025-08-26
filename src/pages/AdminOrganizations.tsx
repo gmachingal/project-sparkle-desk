@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Building2, Users, CreditCard, Settings, Plus, Edit, Trash2, ArrowLeft, Globe, Crown, RefreshCw, Copy, Check, Clock, UserPlus, UserCheck, UserX, Key, DollarSign, Calendar, AlertTriangle, TrendingUp, Shield, Target, ShieldCheck, User, MoreHorizontal, BookOpen, GraduationCap, Star, Award } from "lucide-react";
+import { Building2, Users, CreditCard, Settings, Plus, Edit, Trash2, ArrowLeft, Globe, Crown, RefreshCw, Copy, Check, Clock, UserPlus, UserCheck, UserX, Key, DollarSign, Calendar, AlertTriangle, TrendingUp, Shield, Target, ShieldCheck, User, MoreHorizontal, BookOpen, GraduationCap, Star, Award, Download, Share2 } from "lucide-react";
 import BrowseLearning from "@/components/learning/BrowseLearning";
 import ViewAllCertificates from "@/components/learning/ViewAllCertificates";
 import CreateLearningProgram from "@/components/CreateLearningProgram";
@@ -1798,21 +1798,15 @@ const AdminOrganizations = () => {
                                 </Button>
                               </div>
                             </div>
-                            
-                            <div className="flex items-center justify-between">
-                              <Progress value={(topic.completed / topic.enrolled) * 100} className="flex-1 mr-4 h-2" />
-                              <span className="text-xs text-muted-foreground">
-                                {Math.round((topic.completed / topic.enrolled) * 100)}% completion
-                              </span>
-                            </div>
-                          </div>
-                        ))}
+                          </CardContent>
+                        </Card>
                       </div>
                     </CardContent>
                   </Card>
                 </div>
-
-                {/* Learning Analytics & Management */}
+              </div>
+            </div>
+          </TabsContent>
                 <div className="space-y-6">
                   {/* Learning Categories */}
                   <Card>
