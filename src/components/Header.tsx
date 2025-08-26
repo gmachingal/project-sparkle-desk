@@ -123,6 +123,21 @@ const Header = ({ userRole }: HeaderProps) => {
     return false;
   };
 
+  const getNavigationUrl = (basePath: string) => {
+    // If currently in admin mode, route to admin versions when they exist
+    if (isAdminPage) {
+      switch (basePath) {
+        case "/attendance":
+          return "/admin-attendance";
+        case "/leave-management":
+          return "/admin-leave-management";
+        default:
+          return basePath;
+      }
+    }
+    return basePath;
+  };
+
   const handleLogout = () => {
     // TODO: Implement actual logout logic
     navigate("/");
@@ -225,7 +240,7 @@ const Header = ({ userRole }: HeaderProps) => {
             <Button 
               variant="ghost" 
               size="sm" 
-              onClick={() => navigate("/attendance")} 
+              onClick={() => navigate(getNavigationUrl("/attendance"))}
               className={`gap-2 ${isActivePage("/attendance") ? (isAdminPage ? "bg-admin text-admin-foreground" : "bg-primary text-primary-foreground") : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
               <Clock className="w-4 h-4" />
@@ -234,7 +249,7 @@ const Header = ({ userRole }: HeaderProps) => {
             <Button 
               variant="ghost" 
               size="sm" 
-              onClick={() => navigate("/leave-management")} 
+              onClick={() => navigate(getNavigationUrl("/leave-management"))} 
               className={`gap-2 ${isActivePage("/leave-management") ? (isAdminPage ? "bg-admin text-admin-foreground" : "bg-primary text-primary-foreground") : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
               <Calendar className="w-4 h-4" />
@@ -266,11 +281,11 @@ const Header = ({ userRole }: HeaderProps) => {
                 <Users className="w-4 h-4" />
                 Teams
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/attendance")} className="gap-2">
+              <DropdownMenuItem onClick={() => navigate(getNavigationUrl("/attendance"))} className="gap-2">
                 <Clock className="w-4 h-4" />
                 Attendance
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/leave-management")} className="gap-2">
+              <DropdownMenuItem onClick={() => navigate(getNavigationUrl("/leave-management"))} className="gap-2">
                 <Calendar className="w-4 h-4" />
                 Leave Management
               </DropdownMenuItem>
