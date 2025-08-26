@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -71,9 +72,12 @@ const Collaboration = () => {
   const [timeLogData, setTimeLogData] = useState({ hours: '', notes: '', date: new Date().toISOString().split('T')[0] });
   const { toast } = useToast();
 
-  // Mock user role - in real app this would come from auth/context
-  const [userRole, setUserRole] = useState<'admin' | 'user'>('user'); // Toggle for demo
-  const [currentUserId] = useState('1'); // Mock current user ID
+  // Mock user data - in real app this would come from auth/context
+  const currentUser = {
+    name: 'John Doe',
+    id: '1',
+    role: 'admin' // Change to 'member' for regular users
+  };
 
   // Mock team data - now focused on collaboration and workload
   const teamMembers = [
@@ -235,8 +239,8 @@ const Collaboration = () => {
     let filtered = teamMembers;
     
     // If user view, show only current user's data
-    if (userRole === 'user') {
-      filtered = teamMembers.filter(member => member.id === currentUserId);
+    if (currentUser.role !== 'admin') {
+      filtered = teamMembers.filter(member => member.id === currentUser.id);
     }
     
     if (searchQuery) {
@@ -283,7 +287,7 @@ const Collaboration = () => {
     }
   };
 
-  const teamStats = userRole === 'admin' ? {
+  const teamStats = currentUser.role === 'admin' ? {
     total: teamMembers.length,
     online: teamMembers.filter(m => m.status === "online").length,
     avgWorkload: Math.round(teamMembers.reduce((acc, m) => acc + m.workload, 0) / teamMembers.length),
@@ -293,11 +297,11 @@ const Collaboration = () => {
   } : {
     // User-specific stats
     total: 1,
-    online: teamMembers.find(m => m.id === currentUserId)?.status === "online" ? 1 : 0,
-    avgWorkload: teamMembers.find(m => m.id === currentUserId)?.workload || 0,
-    totalProjects: teamMembers.find(m => m.id === currentUserId)?.activeProjects.length || 0,
-    completedTasks: teamMembers.find(m => m.id === currentUserId)?.tasksCompleted || 0,
-    inProgressTasks: teamMembers.find(m => m.id === currentUserId)?.tasksInProgress || 0
+    online: teamMembers.find(m => m.id === currentUser.id)?.status === "online" ? 1 : 0,
+    avgWorkload: teamMembers.find(m => m.id === currentUser.id)?.workload || 0,
+    totalProjects: teamMembers.find(m => m.id === currentUser.id)?.activeProjects.length || 0,
+    completedTasks: teamMembers.find(m => m.id === currentUser.id)?.tasksCompleted || 0,
+    inProgressTasks: teamMembers.find(m => m.id === currentUser.id)?.tasksInProgress || 0
   };
 
   const handleAssignTask = (memberId: string) => {
@@ -324,10 +328,10 @@ const Collaboration = () => {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-              {userRole === 'admin' ? 'Organization Collaboration' : 'My Collaboration'}
+              {currentUser.role === 'admin' ? 'Organization Collaboration' : 'My Collaboration'}
             </h1>
             <p className="text-muted-foreground mt-1">
-              {userRole === 'admin' 
+              {currentUser.role === 'admin' 
                 ? 'Manage organization-wide collaboration, workloads, and team performance'
                 : 'Track your progress, collaborate with team members, and manage your workload'
               }
@@ -335,15 +339,29 @@ const Collaboration = () => {
           </div>
           
           <div className="flex items-center gap-3">
-            {/* Role Toggle for Demo */}
-            <Button 
-              variant="outline" 
-              onClick={() => setUserRole(userRole === 'admin' ? 'user' : 'admin')}
-              className="gap-2"
-            >
-              <User className="w-4 h-4" />
-              Switch to {userRole === 'admin' ? 'User' : 'Admin'} View
-            </Button>
+            {/* Admin Switch - Same pattern as Attendance */}
+            {currentUser.role === 'admin' && (
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-primary/20 bg-gradient-to-r from-primary/5 to-primary-glow/10 hover:from-primary/10 hover:to-primary-glow/20 transition-all duration-200">
+                <div className="flex items-center gap-2">
+                  <Settings className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium text-primary">Employee</span>
+                </div>
+                <Switch 
+                  checked={false}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      // Navigate to admin collaboration view (could be separate page or state change)
+                      toast({
+                        title: "Admin View",
+                        description: "Switching to admin collaboration view...",
+                      });
+                    }
+                  }}
+                  className="data-[state=checked]:bg-admin scale-75"
+                />
+                <span className="text-sm text-muted-foreground">Admin</span>
+              </div>
+            )}
             
             <Dialog>
               <DialogTrigger asChild>
@@ -378,7 +396,7 @@ const Collaboration = () => {
                 <div>
                   <div className="text-2xl font-bold">{teamStats.total}</div>
                   <div className="text-xs text-muted-foreground">
-                    {userRole === 'admin' ? 'Team Members' : 'Your Profile'}
+                    {currentUser.role === 'admin' ? 'Team Members' : 'Your Profile'}
                   </div>
                 </div>
               </div>
@@ -392,7 +410,7 @@ const Collaboration = () => {
                 <div>
                   <div className="text-2xl font-bold">{teamStats.online}</div>
                   <div className="text-xs text-muted-foreground">
-                    {userRole === 'admin' ? 'Online Now' : 'Status'}
+                    {currentUser.role === 'admin' ? 'Online Now' : 'Status'}
                   </div>
                 </div>
               </div>
@@ -406,7 +424,7 @@ const Collaboration = () => {
                 <div>
                   <div className="text-2xl font-bold">{teamStats.avgWorkload}%</div>
                   <div className="text-xs text-muted-foreground">
-                    {userRole === 'admin' ? 'Avg Workload' : 'My Workload'}
+                    {currentUser.role === 'admin' ? 'Avg Workload' : 'My Workload'}
                   </div>
                 </div>
               </div>
@@ -420,7 +438,7 @@ const Collaboration = () => {
                 <div>
                   <div className="text-2xl font-bold">{teamStats.totalProjects}</div>
                   <div className="text-xs text-muted-foreground">
-                    {userRole === 'admin' ? 'Active Projects' : 'My Projects'}
+                    {currentUser.role === 'admin' ? 'Active Projects' : 'My Projects'}
                   </div>
                 </div>
               </div>
@@ -434,7 +452,7 @@ const Collaboration = () => {
                 <div>
                   <div className="text-2xl font-bold">{teamStats.completedTasks}</div>
                   <div className="text-xs text-muted-foreground">
-                    {userRole === 'admin' ? 'Completed' : 'My Completed'}
+                    {currentUser.role === 'admin' ? 'Completed' : 'My Completed'}
                   </div>
                 </div>
               </div>
@@ -448,7 +466,7 @@ const Collaboration = () => {
                 <div>
                   <div className="text-2xl font-bold">{teamStats.inProgressTasks}</div>
                   <div className="text-xs text-muted-foreground">
-                    {userRole === 'admin' ? 'In Progress' : 'My Progress'}
+                    {currentUser.role === 'admin' ? 'In Progress' : 'My Progress'}
                   </div>
                 </div>
               </div>
@@ -461,30 +479,30 @@ const Collaboration = () => {
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
-              {userRole === 'admin' ? 'Team Overview' : 'My Overview'}
+              {currentUser.role === 'admin' ? 'Team Overview' : 'My Overview'}
             </TabsTrigger>
             <TabsTrigger value="workload" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
-              {userRole === 'admin' ? 'Team Workload' : 'My Workload'}
+              {currentUser.role === 'admin' ? 'Team Workload' : 'My Workload'}
             </TabsTrigger>
             <TabsTrigger value="departments" className="flex items-center gap-2">
               <Briefcase className="h-4 w-4" />
-              {userRole === 'admin' ? 'Departments' : 'My Team'}
+              {currentUser.role === 'admin' ? 'Departments' : 'My Team'}
             </TabsTrigger>
             <TabsTrigger value="learning" className="flex items-center gap-2">
               <GraduationCap className="h-4 w-4" />
-              {userRole === 'admin' ? 'Learning Management' : 'My Learning'}
+              {currentUser.role === 'admin' ? 'Learning Management' : 'My Learning'}
             </TabsTrigger>
             <TabsTrigger value="collaboration" className="flex items-center gap-2">
               <Share2 className="h-4 w-4" />
-              {userRole === 'admin' ? 'Team Collaboration' : 'My Collaboration'}
+              {currentUser.role === 'admin' ? 'Team Collaboration' : 'My Collaboration'}
             </TabsTrigger>
           </TabsList>
 
           {/* Team Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
             {/* Search and Filters - Admin Only */}
-            {userRole === 'admin' && (
+            {currentUser.role === 'admin' && (
               <div className="flex items-center gap-4">
                 <div className="relative flex-1 max-w-md">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -512,7 +530,7 @@ const Collaboration = () => {
             )}
             
             {/* User View - My Profile Card */}
-            {userRole === 'user' && (
+            {currentUser.role === 'user' && (
               <Card className="mb-6 border-primary/20 bg-gradient-to-r from-primary/5 to-primary-glow/5">
                 <CardHeader>
                   <CardTitle className="text-2xl">My Profile & Progress</CardTitle>
@@ -523,15 +541,15 @@ const Collaboration = () => {
                     <div className="flex items-center gap-4">
                       <Avatar className="w-16 h-16">
                         <AvatarFallback className="bg-primary text-primary-foreground text-xl">
-                          {teamMembers.find(m => m.id === currentUserId)?.name.split(' ').map(n => n[0]).join('') || 'AJ'}
+                          {teamMembers.find(m => m.id === currentUser.id)?.name.split(' ').map(n => n[0]).join('') || 'AJ'}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <h3 className="text-xl font-semibold">{teamMembers.find(m => m.id === currentUserId)?.name || 'Alex Johnson'}</h3>
-                        <p className="text-muted-foreground">{teamMembers.find(m => m.id === currentUserId)?.role || 'Team Lead'}</p>
+                        <h3 className="text-xl font-semibold">{teamMembers.find(m => m.id === currentUser.id)?.name || 'Alex Johnson'}</h3>
+                        <p className="text-muted-foreground">{teamMembers.find(m => m.id === currentUser.id)?.role || 'Team Lead'}</p>
                         <div className="flex items-center gap-2 mt-1">
-                          <div className={cn("w-2 h-2 rounded-full", getStatusColor(teamMembers.find(m => m.id === currentUserId)?.status || 'online'))} />
-                          <span className="text-sm text-muted-foreground capitalize">{teamMembers.find(m => m.id === currentUserId)?.status || 'online'}</span>
+                          <div className={cn("w-2 h-2 rounded-full", getStatusColor(teamMembers.find(m => m.id === currentUser.id)?.status || 'online'))} />
+                          <span className="text-sm text-muted-foreground capitalize">{teamMembers.find(m => m.id === currentUser.id)?.status || 'online'}</span>
                         </div>
                       </div>
                     </div>
@@ -540,25 +558,25 @@ const Collaboration = () => {
                       <div>
                         <p className="text-sm text-muted-foreground">Current Workload</p>
                         <div className="flex items-center gap-2">
-                          <Progress value={teamMembers.find(m => m.id === currentUserId)?.workload || 85} className="flex-1" />
-                          <span className={cn("font-semibold", getWorkloadColor(teamMembers.find(m => m.id === currentUserId)?.workload || 85))}>
-                            {teamMembers.find(m => m.id === currentUserId)?.workload || 85}%
+                          <Progress value={teamMembers.find(m => m.id === currentUser.id)?.workload || 85} className="flex-1" />
+                          <span className={cn("font-semibold", getWorkloadColor(teamMembers.find(m => m.id === currentUser.id)?.workload || 85))}>
+                            {teamMembers.find(m => m.id === currentUser.id)?.workload || 85}%
                           </span>
                         </div>
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">This Week</p>
-                        <p className="font-medium">{teamMembers.find(m => m.id === currentUserId)?.currentCapacity || '34h / 40h'}</p>
+                        <p className="font-medium">{teamMembers.find(m => m.id === currentUser.id)?.currentCapacity || '34h / 40h'}</p>
                       </div>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-3">
                       <div className="text-center p-3 bg-background rounded-lg">
-                        <div className="text-2xl font-bold text-green-600">{teamMembers.find(m => m.id === currentUserId)?.tasksCompleted || 42}</div>
+                        <div className="text-2xl font-bold text-green-600">{teamMembers.find(m => m.id === currentUser.id)?.tasksCompleted || 42}</div>
                         <div className="text-xs text-muted-foreground">Completed</div>
                       </div>
                       <div className="text-center p-3 bg-background rounded-lg">
-                        <div className="text-2xl font-bold text-blue-600">{teamMembers.find(m => m.id === currentUserId)?.tasksInProgress || 3}</div>
+                        <div className="text-2xl font-bold text-blue-600">{teamMembers.find(m => m.id === currentUser.id)?.tasksInProgress || 3}</div>
                         <div className="text-xs text-muted-foreground">In Progress</div>
                       </div>
                     </div>
