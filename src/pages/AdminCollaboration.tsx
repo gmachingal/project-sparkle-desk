@@ -1714,7 +1714,86 @@ const AdminCollaboration = () => {
                   </div>
                 </div>
 
-                {/* Action Buttons - Exact Match to User View */}
+                {/* Learning Details */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-sm">Learning Details</h4>
+                  <div className="p-3 bg-muted/30 rounded-lg space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Instructor:</span>
+                      <span className="font-medium">{selectedCertificate.instructor || 'Internal Training'}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Level:</span>
+                      <Badge variant="outline" className="text-xs">{selectedCertificate.level || 'Intermediate'}</Badge>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Category:</span>
+                      <span className="font-medium">{selectedCertificate.category || selectedCertificate.department}</span>
+                    </div>
+                    {selectedCertificate.description && (
+                      <div className="text-sm">
+                        <span className="text-muted-foreground">Description:</span>
+                        <p className="mt-1 text-xs leading-relaxed">{selectedCertificate.description}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Skills Acquired */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-sm">Skills Acquired</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {(selectedCertificate.skills || ['Professional Skills', 'Course Completion', 'Knowledge Assessment']).map((skill, index) => (
+                      <Badge key={index} variant="secondary" className="text-xs">
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Verification Information */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-sm">Verification</h4>
+                  <div className="p-3 bg-muted/30 rounded-lg space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Status:</span>
+                      <Badge variant="outline" className="text-xs bg-green-100 text-green-800 border-green-200">
+                        {selectedCertificate.status || 'Active'}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Verification URL:</span>
+                      <span className="font-mono text-xs text-primary">certificates.company.com/verify/{selectedCertificate.certificateId || selectedCertificate.credentialId}</span>
+                    </div>
+                    {selectedCertificate.expiryDate && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Expires:</span>
+                        <span className="font-medium">{new Date(selectedCertificate.expiryDate).toLocaleDateString()}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Additional Information */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-sm">Additional Information</h4>
+                  <div className="p-3 bg-muted/30 rounded-lg space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Course Duration:</span>
+                      <span className="font-medium">{selectedCertificate.duration || '4-6 weeks'}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Format:</span>
+                      <span className="font-medium">{selectedCertificate.format || 'Online Learning'}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">CPD Points:</span>
+                      <span className="font-medium">{selectedCertificate.cpdPoints || '10 pts'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
                 <div className="flex gap-2">
                   <Button 
                     className="flex-1 gap-2" 
