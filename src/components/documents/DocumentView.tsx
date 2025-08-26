@@ -32,6 +32,10 @@ export const DocumentView = ({ document, onBack, onEdit }: DocumentViewProps) =>
         {/* Document View Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
+            <Button variant="back" onClick={onBack}>
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+
             <h1 className="text-3xl font-bold">{document.title}</h1>
             <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
