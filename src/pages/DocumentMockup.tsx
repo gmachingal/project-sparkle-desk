@@ -959,20 +959,71 @@ const DocumentMockup = () => {
                 )}
               </TabsContent>
 
-              {/* Spaces Tab */}
               <TabsContent value="spaces" className="space-y-4">
                 {selectedSpaceDetails ? (
-                  // Space Details View
                   <div className="space-y-6">
-                    const space = spaces.find(s => s.id === selectedSpaceDetails);
-                    const members = spaceMembers[selectedSpaceDetails as keyof typeof spaceMembers] || [];
-                    const analytics = spaceAnalytics[selectedSpaceDetails as keyof typeof spaceAnalytics];
-                    const spaceDocuments = documents.filter(doc => 
-                      selectedSpaceDetails === 'product' ? doc.tags.includes('Product') || doc.tags.includes('PRD') :
-                      selectedSpaceDetails === 'engineering' ? doc.tags.includes('API') || doc.tags.includes('Backend') :
-                      selectedSpaceDetails === 'marketing' ? doc.tags.includes('Brand') || doc.tags.includes('Design') :
-                      selectedSpaceDetails === 'hr' ? doc.tags.includes('HR') || doc.tags.includes('Policy') :
-                      false
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <Button variant="outline" size="sm" onClick={handleBackToSpaces} className="gap-2">
+                          <ArrowLeft className="w-4 h-4" />
+                          Back to Spaces
+                        </Button>
+                        <h2 className="text-2xl font-bold">Space Details</h2>
+                      </div>
+                      <Button className="gap-2">
+                        <Plus className="w-4 h-4" />
+                        Add Document
+                      </Button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <Card>
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2">
+                            <FileText className="w-5 h-5 text-primary" />
+                            <div>
+                              <p className="text-2xl font-bold">5</p>
+                              <p className="text-sm text-muted-foreground">Documents</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2">
+                            <Users className="w-5 h-5 text-primary" />
+                            <div>
+                              <p className="text-2xl font-bold">8</p>
+                              <p className="text-sm text-muted-foreground">Members</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2">
+                            <Eye className="w-5 h-5 text-primary" />
+                            <div>
+                              <p className="text-2xl font-bold">1,420</p>
+                              <p className="text-sm text-muted-foreground">Views</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2">
+                            <TrendingUp className="w-5 h-5 text-green-500" />
+                            <div>
+                              <p className="text-2xl font-bold">+12%</p>
+                              <p className="text-sm text-muted-foreground">Growth</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+                ) : (
                     );
 
                     return (
