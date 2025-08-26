@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
@@ -25,11 +28,17 @@ import {
   Star,
   Clock,
   AlertCircle,
-  Plus
+  Plus,
+  BookOpen,
+  Award
 } from "lucide-react";
 
 const Collaboration = () => {
   const [activeTab, setActiveTab] = useState("overview");
+  const [isLogHoursOpen, setIsLogHoursOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
+  const [loggedHours, setLoggedHours] = useState("");
+  const [logDescription, setLogDescription] = useState("");
   const { toast } = useToast();
 
   // Check for admin state on component mount
@@ -109,6 +118,35 @@ const Collaboration = () => {
     inProgressTasks: myProfile.tasksInProgress,
     workload: myProfile.workload,
     collaborationScore: myProfile.collaboration
+  };
+
+  const handleLogHours = () => {
+    if (!loggedHours || !selectedCourse) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    toast({
+      title: "Hours Logged Successfully",
+      description: `${loggedHours} hours logged for ${selectedCourse}`,
+    });
+
+    // Reset form
+    setLoggedHours("");
+    setLogDescription("");
+    setSelectedCourse(null);
+    setIsLogHoursOpen(false);
+  };
+
+  const handleStartAssessment = (courseName: string) => {
+    toast({
+      title: "Assessment Started",
+      description: `Starting assessment for ${courseName}`,
+    });
   };
 
   return (
@@ -409,7 +447,69 @@ const Collaboration = () => {
           <TabsContent value="learning" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>My Learning & Development</CardTitle>
+                <CardTitle className="flex items-center justify-between">
+                  My Learning & Development
+                  <Dialog open={isLogHoursOpen} onOpenChange={setIsLogHoursOpen}>
+                    <DialogTrigger asChild>
+                      <Button className="gap-2">
+                        <Clock className="w-4 h-4" />
+                        Log Hours
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Log Learning Hours</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor="course-select">Select Course</Label>
+                          <select
+                            id="course-select"
+                            className="w-full p-2 border rounded-md bg-background"
+                            value={selectedCourse || ""}
+                            onChange={(e) => setSelectedCourse(e.target.value)}
+                          >
+                            <option value="">Choose a course...</option>
+                            <option value="Advanced React Patterns">Advanced React Patterns</option>
+                            <option value="Leadership Fundamentals">Leadership Fundamentals</option>
+                            <option value="TypeScript Mastery">TypeScript Mastery</option>
+                            <option value="Project Management">Project Management</option>
+                          </select>
+                        </div>
+                        <div>
+                          <Label htmlFor="hours">Hours Spent</Label>
+                          <Input
+                            id="hours"
+                            type="number"
+                            step="0.5"
+                            min="0.5"
+                            max="12"
+                            placeholder="e.g., 2.5"
+                            value={loggedHours}
+                            onChange={(e) => setLoggedHours(e.target.value)}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="description">Description (Optional)</Label>
+                          <Input
+                            id="description"
+                            placeholder="What did you learn or practice?"
+                            value={logDescription}
+                            onChange={(e) => setLogDescription(e.target.value)}
+                          />
+                        </div>
+                        <div className="flex gap-3">
+                          <Button onClick={handleLogHours} className="flex-1">
+                            Log Hours
+                          </Button>
+                          <Button variant="outline" onClick={() => setIsLogHoursOpen(false)} className="flex-1">
+                            Cancel
+                          </Button>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </CardTitle>
                 <p className="text-muted-foreground">Track your learning progress and skill development</p>
               </CardHeader>
               <CardContent>
@@ -426,8 +526,26 @@ const Collaboration = () => {
                           <span>Progress</span>
                           <span>65%</span>
                         </div>
-                        <Progress value={65} className="mb-2" />
-                        <p className="text-xs text-muted-foreground">4 of 7 modules completed</p>
+                        <Progress value={65} className="mb-3" />
+                        <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
+                          <span>4 of 7 modules completed</span>
+                          <span>12.5h logged</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="flex-1 gap-1"
+                            onClick={() => handleStartAssessment("Advanced React Patterns")}
+                          >
+                            <Award className="w-3 h-3" />
+                            Take Assessment
+                          </Button>
+                          <Button size="sm" variant="outline" className="flex-1 gap-1">
+                            <BookOpen className="w-3 h-3" />
+                            Continue Learning
+                          </Button>
+                        </div>
                       </div>
                       
                       <div className="p-4 border rounded-lg">
@@ -439,8 +557,57 @@ const Collaboration = () => {
                           <span>Progress</span>
                           <span>0%</span>
                         </div>
-                        <Progress value={0} className="mb-2" />
-                        <p className="text-xs text-muted-foreground">0 of 5 modules completed</p>
+                        <Progress value={0} className="mb-3" />
+                        <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
+                          <span>0 of 5 modules completed</span>
+                          <span>0h logged</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="flex-1 gap-1"
+                            disabled
+                          >
+                            <Award className="w-3 h-3" />
+                            Assessment Locked
+                          </Button>
+                          <Button size="sm" className="flex-1 gap-1">
+                            <BookOpen className="w-3 h-3" />
+                            Start Learning
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="p-4 border rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <h5 className="font-medium">TypeScript Mastery</h5>
+                          <Badge variant="default">Completed</Badge>
+                        </div>
+                        <div className="flex justify-between text-sm mb-2">
+                          <span>Progress</span>
+                          <span>100%</span>
+                        </div>
+                        <Progress value={100} className="mb-3" />
+                        <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
+                          <span>6 of 6 modules completed</span>
+                          <span>24.5h logged</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="flex-1 gap-1"
+                            onClick={() => handleStartAssessment("TypeScript Mastery")}
+                          >
+                            <Award className="w-3 h-3" />
+                            Retake Assessment
+                          </Button>
+                          <Button size="sm" variant="outline" className="flex-1 gap-1" disabled>
+                            <BookOpen className="w-3 h-3" />
+                            Completed
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -453,37 +620,89 @@ const Collaboration = () => {
                         <div className="text-sm text-blue-600">Courses Completed</div>
                       </div>
                       <div className="p-3 bg-green-50 rounded-lg">
-                        <div className="text-lg font-bold text-green-700">45h</div>
-                        <div className="text-sm text-green-600">Learning Hours</div>
+                        <div className="text-lg font-bold text-green-700">47.5h</div>
+                        <div className="text-sm text-green-600">Total Hours Logged</div>
                       </div>
                       <div className="p-3 bg-purple-50 rounded-lg">
                         <div className="text-lg font-bold text-purple-700">8</div>
-                        <div className="text-sm text-purple-600">Certificates</div>
+                        <div className="text-sm text-purple-600">Certificates Earned</div>
                       </div>
                       <div className="p-3 bg-orange-50 rounded-lg">
                         <div className="text-lg font-bold text-orange-700">95%</div>
-                        <div className="text-sm text-orange-600">Completion Rate</div>
+                        <div className="text-sm text-orange-600">Assessment Average</div>
                       </div>
                     </div>
                     
                     <div className="space-y-3">
-                      <h5 className="font-medium">Recent Achievements</h5>
+                      <h5 className="font-medium">Recent Learning Activity</h5>
                       <div className="space-y-2">
                         <div className="flex items-center gap-3 p-2 bg-muted rounded">
-                          <Star className="w-4 h-4 text-yellow-500" />
+                          <Clock className="w-4 h-4 text-blue-500" />
                           <div>
-                            <div className="text-sm font-medium">React Expert</div>
-                            <div className="text-xs text-muted-foreground">Completed advanced React course</div>
+                            <div className="text-sm font-medium">2.5 hours logged</div>
+                            <div className="text-xs text-muted-foreground">Advanced React Patterns - Today</div>
                           </div>
                         </div>
                         <div className="flex items-center gap-3 p-2 bg-muted rounded">
-                          <Star className="w-4 h-4 text-yellow-500" />
+                          <Award className="w-4 h-4 text-green-500" />
                           <div>
-                            <div className="text-sm font-medium">Team Player</div>
-                            <div className="text-xs text-muted-foreground">100% collaboration score this month</div>
+                            <div className="text-sm font-medium">Assessment completed</div>
+                            <div className="text-xs text-muted-foreground">TypeScript Mastery - Score: 92%</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 p-2 bg-muted rounded">
+                          <BookOpen className="w-4 h-4 text-purple-500" />
+                          <div>
+                            <div className="text-sm font-medium">Module completed</div>
+                            <div className="text-xs text-muted-foreground">React Hooks Deep Dive - Yesterday</div>
                           </div>
                         </div>
                       </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <h5 className="font-medium">Achievements & Badges</h5>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="flex items-center gap-2 p-2 bg-yellow-50 rounded">
+                          <Star className="w-4 h-4 text-yellow-500" />
+                          <div>
+                            <div className="text-xs font-medium">React Expert</div>
+                            <div className="text-xs text-muted-foreground">Completed advanced course</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 p-2 bg-green-50 rounded">
+                          <Star className="w-4 h-4 text-green-500" />
+                          <div>
+                            <div className="text-xs font-medium">Fast Learner</div>
+                            <div className="text-xs text-muted-foreground">50+ hours this month</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 p-2 bg-purple-50 rounded">
+                          <Star className="w-4 h-4 text-purple-500" />
+                          <div>
+                            <div className="text-xs font-medium">Assessment Ace</div>
+                            <div className="text-xs text-muted-foreground">90%+ average score</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 p-2 bg-blue-50 rounded">
+                          <Star className="w-4 h-4 text-blue-500" />
+                          <div>
+                            <div className="text-xs font-medium">Consistent</div>
+                            <div className="text-xs text-muted-foreground">Daily learning streak</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Button className="w-full gap-2" variant="outline">
+                        <BookOpen className="w-4 h-4" />
+                        Browse Learning Library
+                      </Button>
+                      <Button className="w-full gap-2" variant="outline">
+                        <Award className="w-4 h-4" />
+                        View All Certificates
+                      </Button>
                     </div>
                   </div>
                 </div>
