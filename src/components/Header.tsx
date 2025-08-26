@@ -129,15 +129,6 @@ const Header = ({ userRole }: HeaderProps) => {
             <Button 
               variant="ghost" 
               size="sm" 
-              onClick={() => navigate("/departments")} 
-              className={`gap-2 ${isActivePage("/departments") ? "bg-primary text-primary-foreground" : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
-            >
-              <Building2 className="w-4 h-4" />
-              <span className="hidden xl:inline">Departments</span>
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
               onClick={() => navigate("/attendance")} 
               className={`gap-2 ${isActivePage("/attendance") ? "bg-primary text-primary-foreground" : "hover:bg-background/90 hover:text-foreground hover:shadow-sm"}`}
             >
@@ -178,10 +169,6 @@ const Header = ({ userRole }: HeaderProps) => {
               <DropdownMenuItem onClick={() => navigate("/teams")} className="gap-2">
                 <Users className="w-4 h-4" />
                 Teams
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/departments")} className="gap-2">
-                <Building2 className="w-4 h-4" />
-                Departments
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate("/attendance")} className="gap-2">
                 <Clock className="w-4 h-4" />

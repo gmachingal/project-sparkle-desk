@@ -11,7 +11,6 @@ import NotFound from "./pages/NotFound";
 import MyTasks from "./pages/MyTasks";
 import Projects from "./pages/Projects";
 import Teams from "./pages/Teams";
-import Departments from "./pages/Departments";
 import EditProject from "./pages/EditProject";
 import EditTask from "./pages/EditTask";
 import TaskView from "./pages/TaskView";
@@ -49,7 +48,6 @@ const App = () => (
           <Route path="/my-tasks" element={<MyTasks />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/teams" element={<Teams />} />
-          <Route path="/departments" element={<Departments />} />
           <Route path="/create-task" element={<CreateTask />} />
           <Route path="/new-project" element={<NewProject />} />
           <Route path="/settings" element={<Settings />} />
