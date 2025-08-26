@@ -323,7 +323,7 @@ const LeaveManagement = () => {
         </div>
 
         <Tabs defaultValue="balance" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:w-[400px] bg-muted rounded-t-lg h-12">
+          <TabsList className="grid w-full grid-cols-3 bg-muted rounded-t-lg">
             <TabsTrigger value="balance" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium gap-2">
               <FileText className="h-4 w-4 mr-2" />
               Leave Balance</TabsTrigger>

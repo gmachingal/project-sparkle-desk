@@ -304,7 +304,7 @@ const SprintTaskManager: React.FC<SprintTaskManagerProps> = ({
 
           {/* Tabs for different views */}
           <Tabs defaultValue="backlog" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 lg:w-[300px] rounded-t-lg h-12">
+            <TabsList className="grid w-full grid-cols-2 rounded-t-lg">
               <TabsTrigger value="backlog">Add to Sprint ({backlogTasks.length})</TabsTrigger>
               <TabsTrigger value="move">Move Between Sprints ({sprintTasks.length})</TabsTrigger>
             </TabsList>
