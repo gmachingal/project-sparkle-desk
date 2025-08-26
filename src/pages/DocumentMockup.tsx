@@ -1155,6 +1155,117 @@ const DocumentMockup = () => {
                             </div>
                           </div>
 
+                          {/* Space Quick Actions */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <Card className="hover:shadow-lg transition-all duration-200 border-blue-200 bg-blue-50/50">
+                              <CardContent className="p-4">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="p-2 bg-blue-500 rounded-lg">
+                                    <FileText className="w-4 h-4 text-white" />
+                                  </div>
+                                  <h3 className="font-medium text-sm">View Documents</h3>
+                                </div>
+                                <p className="text-xs text-muted-foreground mb-3">Browse all documents in this space</p>
+                                <Button size="sm" className="w-full h-8 text-xs bg-blue-600 hover:bg-blue-700">
+                                  Open Documents
+                                </Button>
+                              </CardContent>
+                            </Card>
+
+                            <Card className="hover:shadow-lg transition-all duration-200 border-green-200 bg-green-50/50">
+                              <CardContent className="p-4">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="p-2 bg-green-500 rounded-lg">
+                                    <UserPlus className="w-4 h-4 text-white" />
+                                  </div>
+                                  <h3 className="font-medium text-sm">Manage Members</h3>
+                                </div>
+                                <p className="text-xs text-muted-foreground mb-3">Add or remove space members</p>
+                                <Button size="sm" className="w-full h-8 text-xs bg-green-600 hover:bg-green-700">
+                                  Manage Team
+                                </Button>
+                              </CardContent>
+                            </Card>
+
+                            <Card className="hover:shadow-lg transition-all duration-200 border-purple-200 bg-purple-50/50">
+                              <CardContent className="p-4">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="p-2 bg-purple-500 rounded-lg">
+                                    <Settings className="w-4 h-4 text-white" />
+                                  </div>
+                                  <h3 className="font-medium text-sm">Space Settings</h3>
+                                </div>
+                                <p className="text-xs text-muted-foreground mb-3">Configure space preferences</p>
+                                <Button size="sm" className="w-full h-8 text-xs bg-purple-600 hover:bg-purple-700">
+                                  Open Settings
+                                </Button>
+                              </CardContent>
+                            </Card>
+
+                            <Card className="hover:shadow-lg transition-all duration-200 border-orange-200 bg-orange-50/50">
+                              <CardContent className="p-4">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="p-2 bg-orange-500 rounded-lg">
+                                    <TrendingUp className="w-4 h-4 text-white" />
+                                  </div>
+                                  <h3 className="font-medium text-sm">Analytics</h3>
+                                </div>
+                                <p className="text-xs text-muted-foreground mb-3">View space activity metrics</p>
+                                <Button size="sm" className="w-full h-8 text-xs bg-orange-600 hover:bg-orange-700">
+                                  View Analytics
+                                </Button>
+                              </CardContent>
+                            </Card>
+                          </div>
+
+                          {/* Secondary Actions */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <Card className="hover:shadow-lg transition-all duration-200 border-indigo-200 bg-indigo-50/50">
+                              <CardContent className="p-4">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="p-2 bg-indigo-500 rounded-lg">
+                                    <Plus className="w-4 h-4 text-white" />
+                                  </div>
+                                  <h3 className="font-medium text-sm">New Document</h3>
+                                </div>
+                                <p className="text-xs text-muted-foreground mb-3">Create a new document in this space</p>
+                                <Button size="sm" className="w-full h-8 text-xs bg-indigo-600 hover:bg-indigo-700">
+                                  Create Document
+                                </Button>
+                              </CardContent>
+                            </Card>
+
+                            <Card className="hover:shadow-lg transition-all duration-200 border-teal-200 bg-teal-50/50">
+                              <CardContent className="p-4">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="p-2 bg-teal-500 rounded-lg">
+                                    <Share className="w-4 h-4 text-white" />
+                                  </div>
+                                  <h3 className="font-medium text-sm">Share Space</h3>
+                                </div>
+                                <p className="text-xs text-muted-foreground mb-3">Share space with external users</p>
+                                <Button size="sm" className="w-full h-8 text-xs bg-teal-600 hover:bg-teal-700">
+                                  Share Space
+                                </Button>
+                              </CardContent>
+                            </Card>
+
+                            <Card className="hover:shadow-lg transition-all duration-200 border-pink-200 bg-pink-50/50">
+                              <CardContent className="p-4">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="p-2 bg-pink-500 rounded-lg">
+                                    <Archive className="w-4 h-4 text-white" />
+                                  </div>
+                                  <h3 className="font-medium text-sm">Archive Space</h3>
+                                </div>
+                                <p className="text-xs text-muted-foreground mb-3">Archive or delete this space</p>
+                                <Button size="sm" variant="outline" className="w-full h-8 text-xs border-pink-300 text-pink-600 hover:bg-pink-50">
+                                  Archive
+                                </Button>
+                              </CardContent>
+                            </Card>
+                          </div>
+
                           {/* Space Stats */}
                           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <Card>
