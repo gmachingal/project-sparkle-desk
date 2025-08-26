@@ -367,10 +367,10 @@ const Header = ({ userRole }: HeaderProps) => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    variant="ghost"
+                    variant="outline"
                     size="sm"
                     onClick={handleSearchClick}
-                    className="w-10 h-9 p-0 hover:bg-background/90 hover:shadow-sm"
+                    className="w-10 h-9 p-0 border-muted-foreground/20 hover:border-muted-foreground/40 hover:bg-background/90 hover:shadow-sm"
                   >
                     <Search className="w-5 h-5 text-foreground/70 hover:text-foreground transition-colors" />
                   </Button>
@@ -406,7 +406,7 @@ const Header = ({ userRole }: HeaderProps) => {
             
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="relative">
+                <Button variant="outline" size="sm" className="relative border-muted-foreground/20 hover:border-muted-foreground/40 hover:bg-background/90 hover:shadow-sm">
                   <Bell className="w-4 h-4" />
                   {unreadCount > 0 && (
                     <Badge className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-xs bg-destructive text-destructive-foreground">
