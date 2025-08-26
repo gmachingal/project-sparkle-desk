@@ -6,10 +6,13 @@ import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Play, Pause, BookOpen, Clock, CheckCircle, Star, TrendingUp, Award, Trophy, Download, Share2, Eye } from "lucide-react";
+import StartCourse from "./StartCourse";
 
 const ContinueLearning = () => {
   const [playingCourse, setPlayingCourse] = useState<string | null>(null);
   const [selectedCertificate, setSelectedCertificate] = useState<any>(null);
+  const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  const [showCourseViewer, setShowCourseViewer] = useState(false);
   const { toast } = useToast();
 
   const inProgressCourses = [
@@ -90,20 +93,9 @@ const ContinueLearning = () => {
     }
   ];
 
-  const handlePlayPause = (courseId: string) => {
-    if (playingCourse === courseId) {
-      setPlayingCourse(null);
-      toast({
-        title: "Learning Paused",
-        description: "Your progress has been saved",
-      });
-    } else {
-      setPlayingCourse(courseId);
-      toast({
-        title: "Resuming Learning",
-        description: "Continue where you left off",
-      });
-    }
+  const handlePlayPause = (course: any) => {
+    setSelectedCourse(course);
+    setShowCourseViewer(true);
   };
 
   const handleDownload = (certId: string, title: string) => {
@@ -120,6 +112,18 @@ const ContinueLearning = () => {
       description: "Certificate verification link copied to clipboard",
     });
   };
+
+  if (showCourseViewer && selectedCourse) {
+    return (
+      <StartCourse 
+        course={selectedCourse} 
+        onBack={() => {
+          setShowCourseViewer(false);
+          setSelectedCourse(null);
+        }} 
+      />
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -145,7 +149,7 @@ const ContinueLearning = () => {
                   <div className="flex items-start justify-between">
                     <CardTitle className="text-sm leading-tight line-clamp-2">{course.title}</CardTitle>
                     <Button
-                      onClick={() => handlePlayPause(course.id)}
+                      onClick={() => handlePlayPause(course)}
                       variant={playingCourse === course.id ? "secondary" : "default"}
                       size="sm"
                       className="gap-1 h-7 shrink-0 ml-2"

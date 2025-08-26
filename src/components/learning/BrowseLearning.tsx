@@ -6,10 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Search, BookOpen, Clock, Star, Users, Play, Plus } from "lucide-react";
+import EnrollCourse from "./EnrollCourse";
 
 const BrowseLearning = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  const [showEnrollment, setShowEnrollment] = useState(false);
   const { toast } = useToast();
 
   const categories = [
@@ -84,12 +87,22 @@ const BrowseLearning = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const handleEnrollCourse = (courseId: string, courseName: string) => {
-    toast({
-      title: "Enrolled Successfully!",
-      description: `You have been enrolled in "${courseName}"`,
-    });
+  const handleEnrollCourse = (course: any) => {
+    setSelectedCourse(course);
+    setShowEnrollment(true);
   };
+
+  if (showEnrollment && selectedCourse) {
+    return (
+      <EnrollCourse 
+        course={selectedCourse} 
+        onBack={() => {
+          setShowEnrollment(false);
+          setSelectedCourse(null);
+        }} 
+      />
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -188,7 +201,7 @@ const BrowseLearning = () => {
               <Button 
                 size="sm"
                 className="w-full gap-1 h-7"
-                onClick={() => handleEnrollCourse(course.id, course.title)}
+                onClick={() => handleEnrollCourse(course)}
               >
                 <Plus className="w-3 h-3" />
                 Enroll

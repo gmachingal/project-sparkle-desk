@@ -5,12 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { Clock, BookOpen, Trophy, ChevronRight, Play, Target } from "lucide-react";
+import AssessmentQuiz from "./AssessmentQuiz";
 
 const TakeAssessment = () => {
-  const [selectedAssessment, setSelectedAssessment] = useState<string | null>(null);
-  const [isAssessmentStarted, setIsAssessmentStarted] = useState(false);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<string[]>([]);
+  const [selectedAssessment, setSelectedAssessment] = useState<any>(null);
+  const [showQuiz, setShowQuiz] = useState(false);
   const { toast } = useToast();
 
   const assessments = [
@@ -101,32 +100,21 @@ const TakeAssessment = () => {
       return;
     }
 
-    setSelectedAssessment(assessmentId);
-    setIsAssessmentStarted(true);
-    setCurrentQuestion(0);
-    setAnswers([]);
+    setSelectedAssessment(assessment);
+    setShowQuiz(true);
   };
 
-  const handleAnswerSelect = (answerIndex: number) => {
-    const newAnswers = [...answers];
-    newAnswers[currentQuestion] = answerIndex.toString();
-    setAnswers(newAnswers);
-  };
-
-  const handleNextQuestion = () => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(prev => prev + 1);
-    } else {
-      // Complete assessment
-      const score = Math.floor(Math.random() * 30) + 70; // Mock score
-      toast({
-        title: "Assessment Completed!",
-        description: `Your score: ${score}%`,
-      });
-      setIsAssessmentStarted(false);
-      setSelectedAssessment(null);
-    }
-  };
+  if (showQuiz && selectedAssessment) {
+    return (
+      <AssessmentQuiz 
+        assessment={selectedAssessment} 
+        onBack={() => {
+          setShowQuiz(false);
+          setSelectedAssessment(null);
+        }} 
+      />
+    );
+  }
 
   return (
     <div className="space-y-4">
