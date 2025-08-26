@@ -71,34 +71,61 @@ const ContinueLearning = () => {
       id: "cert-001",
       title: "React Advanced Patterns",
       issueDate: "2024-01-15",
+      expiryDate: "2026-01-15",
       score: 92,
       status: "active",
       credentialId: "RC-2024-001-ADV",
       employee: "John Doe", // Current user
       employeeRole: "Frontend Developer",
-      department: "Engineering"
+      department: "Engineering",
+      instructor: "Sarah Johnson",
+      level: "Advanced",
+      category: "Frontend Development",
+      description: "This certification validates advanced React development skills including custom hooks, performance optimization, and testing strategies.",
+      skills: ["React", "Hooks", "Performance", "Testing"],
+      duration: "6 weeks",
+      format: "Online Learning",
+      cpdPoints: "15 pts"
     },
     {
       id: "cert-002", 
       title: "TypeScript Fundamentals",
       issueDate: "2023-11-20",
+      expiryDate: "2025-11-20",
       score: 88,
       status: "active",
       credentialId: "TS-2023-002-FUN",
       employee: "John Doe", // Current user
       employeeRole: "Frontend Developer", 
-      department: "Engineering"
+      department: "Engineering",
+      instructor: "Mark Davis",
+      level: "Intermediate",
+      category: "Programming",
+      description: "Demonstrates proficiency in TypeScript fundamentals including type definitions, interfaces, and advanced type features.",
+      skills: ["TypeScript", "Interfaces", "Generics", "Type Safety"],
+      duration: "4 weeks",
+      format: "Online Learning",
+      cpdPoints: "12 pts"
     },
     {
       id: "cert-003",
       title: "Agile Project Management", 
       issueDate: "2023-12-10",
+      expiryDate: "2025-12-10",
       score: 95,
       status: "active",
       credentialId: "AG-2023-003-PMP",
       employee: "John Doe", // Current user
       employeeRole: "Frontend Developer",
-      department: "Engineering"
+      department: "Engineering",
+      instructor: "Emily Chen",
+      level: "Intermediate",
+      category: "Project Management",
+      description: "Certifies understanding of Agile methodologies and Scrum framework for effective project management.",
+      skills: ["Agile", "Scrum", "Sprint Planning", "Team Leadership"],
+      duration: "5 weeks",
+      format: "Online Learning",
+      cpdPoints: "14 pts"
     }
   ];
 
@@ -305,6 +332,85 @@ const ContinueLearning = () => {
                               <div>
                                 <span className="text-muted-foreground">Score:</span>
                                 <p className="font-medium">{cert.score}%</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Learning Details */}
+                          <div className="space-y-3">
+                            <h4 className="font-medium text-sm">Learning Details</h4>
+                            <div className="p-3 bg-muted/30 rounded-lg space-y-2">
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="text-muted-foreground">Instructor:</span>
+                                <span className="font-medium">{cert.instructor || 'Internal Training'}</span>
+                              </div>
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="text-muted-foreground">Level:</span>
+                                <Badge variant="outline" className="text-xs">{cert.level || 'Intermediate'}</Badge>
+                              </div>
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="text-muted-foreground">Category:</span>
+                                <span className="font-medium">{cert.category || cert.department}</span>
+                              </div>
+                              {cert.description && (
+                                <div className="text-sm">
+                                  <span className="text-muted-foreground">Description:</span>
+                                  <p className="mt-1 text-xs leading-relaxed">{cert.description}</p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Skills Acquired */}
+                          <div className="space-y-3">
+                            <h4 className="font-medium text-sm">Skills Acquired</h4>
+                            <div className="flex flex-wrap gap-2">
+                              {(cert.skills || ['Professional Skills', 'Course Completion', 'Knowledge Assessment']).map((skill, index) => (
+                                <Badge key={index} variant="secondary" className="text-xs">
+                                  {skill}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Verification Information */}
+                          <div className="space-y-3">
+                            <h4 className="font-medium text-sm">Verification</h4>
+                            <div className="p-3 bg-muted/30 rounded-lg space-y-2">
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="text-muted-foreground">Status:</span>
+                                <Badge variant="outline" className="text-xs bg-green-100 text-green-800 border-green-200">
+                                  {cert.status || 'Active'}
+                                </Badge>
+                              </div>
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="text-muted-foreground">Verification URL:</span>
+                                <span className="font-mono text-xs text-primary">certificates.company.com/verify/{cert.credentialId}</span>
+                              </div>
+                              {cert.expiryDate && (
+                                <div className="flex items-center justify-between text-sm">
+                                  <span className="text-muted-foreground">Expires:</span>
+                                  <span className="font-medium">{new Date(cert.expiryDate).toLocaleDateString()}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Additional Information */}
+                          <div className="space-y-3">
+                            <h4 className="font-medium text-sm">Additional Information</h4>
+                            <div className="p-3 bg-muted/30 rounded-lg space-y-2">
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="text-muted-foreground">Course Duration:</span>
+                                <span className="font-medium">{cert.duration || '4-6 weeks'}</span>
+                              </div>
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="text-muted-foreground">Format:</span>
+                                <span className="font-medium">{cert.format || 'Online Learning'}</span>
+                              </div>
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="text-muted-foreground">CPD Points:</span>
+                                <span className="font-medium">{cert.cpdPoints || '10 pts'}</span>
                               </div>
                             </div>
                           </div>
