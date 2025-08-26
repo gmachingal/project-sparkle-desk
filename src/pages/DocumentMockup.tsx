@@ -641,20 +641,32 @@ const DocumentMockup = () => {
           {/* Main Content */}
           <div className="xl:col-span-4">
             <Tabs defaultValue="documents" className="space-y-8">
-              <TabsList className="grid w-full grid-cols-4 h-14 p-1 bg-muted/50">
-                <TabsTrigger value="documents" className="flex items-center gap-3 h-12 text-base font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <TabsList className="grid w-full grid-cols-4 h-14 p-1 bg-muted/30 border border-border/50">
+                <TabsTrigger 
+                  value="documents" 
+                  className="flex items-center gap-3 h-12 text-base font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200"
+                >
                   <FileText className="w-5 h-5" />
                   Documents
                 </TabsTrigger>
-                <TabsTrigger value="spaces" className="flex items-center gap-3 h-12 text-base font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                <TabsTrigger 
+                  value="spaces" 
+                  className="flex items-center gap-3 h-12 text-base font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200"
+                >
                   <FolderOpen className="w-5 h-5" />
                   Spaces
                 </TabsTrigger>
-                <TabsTrigger value="recent" className="flex items-center gap-3 h-12 text-base font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                <TabsTrigger 
+                  value="recent" 
+                  className="flex items-center gap-3 h-12 text-base font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200"
+                >
                   <Clock className="w-5 h-5" />
                   Recent
                 </TabsTrigger>
-                <TabsTrigger value="starred" className="flex items-center gap-3 h-12 text-base font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                <TabsTrigger 
+                  value="starred" 
+                  className="flex items-center gap-3 h-12 text-base font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-200"
+                >
                   <Star className="w-5 h-5" />
                   Starred
                 </TabsTrigger>
