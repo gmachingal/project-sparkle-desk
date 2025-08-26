@@ -24,7 +24,12 @@ export const DocumentView = ({ document, onBack, onEdit }: DocumentViewProps) =>
         {/* Document View Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" onClick={onBack} className="gap-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={onBack} 
+              className="gap-2 text-muted-foreground hover:text-foreground -ml-2"
+            >
               <ArrowLeft className="w-4 h-4" />
               Back to Documents
             </Button>
