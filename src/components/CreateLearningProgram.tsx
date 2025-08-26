@@ -25,7 +25,11 @@ import {
   Upload,
   Target,
   Calendar,
-  Edit
+  Edit,
+  Link,
+  FileText,
+  Video,
+  Trash2
 } from "lucide-react";
 
 interface CreateLearningProgramProps {
@@ -1531,6 +1535,336 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
                     </CardContent>
                   </Card>
                 )}
+              </div>
+
+              {/* Course Content Resources */}
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">Course Resources</Label>
+                
+                {/* URLs Section */}
+                <Card className="border">
+                  <CardContent className="p-4">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Link className="w-4 h-4 text-primary" />
+                          <Label className="text-sm font-medium">URLs & Links</Label>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const newUrl = { id: Date.now(), title: "", url: "", description: "" };
+                            setEditingCourse(prev => ({
+                              ...prev,
+                              urls: [...(prev.urls || []), newUrl]
+                            }));
+                          }}
+                          className="gap-1 text-xs"
+                        >
+                          <Plus className="w-3 h-3" />
+                          Add URL
+                        </Button>
+                      </div>
+
+                      {editingCourse.urls && editingCourse.urls.length > 0 ? (
+                        <div className="space-y-2">
+                          {editingCourse.urls.map((urlItem: any, index: number) => (
+                            <div key={urlItem.id} className="grid grid-cols-1 md:grid-cols-12 gap-2 items-end">
+                              <div className="md:col-span-4">
+                                <Input
+                                  value={urlItem.title}
+                                  onChange={(e) => {
+                                    const updatedUrls = [...editingCourse.urls];
+                                    updatedUrls[index] = { ...urlItem, title: e.target.value };
+                                    setEditingCourse(prev => ({ ...prev, urls: updatedUrls }));
+                                  }}
+                                  placeholder="Link title"
+                                  className="text-sm"
+                                />
+                              </div>
+                              <div className="md:col-span-4">
+                                <Input
+                                  value={urlItem.url}
+                                  onChange={(e) => {
+                                    const updatedUrls = [...editingCourse.urls];
+                                    updatedUrls[index] = { ...urlItem, url: e.target.value };
+                                    setEditingCourse(prev => ({ ...prev, urls: updatedUrls }));
+                                  }}
+                                  placeholder="https://example.com"
+                                  className="text-sm"
+                                />
+                              </div>
+                              <div className="md:col-span-3">
+                                <Input
+                                  value={urlItem.description}
+                                  onChange={(e) => {
+                                    const updatedUrls = [...editingCourse.urls];
+                                    updatedUrls[index] = { ...urlItem, description: e.target.value };
+                                    setEditingCourse(prev => ({ ...prev, urls: updatedUrls }));
+                                  }}
+                                  placeholder="Description"
+                                  className="text-sm"
+                                />
+                              </div>
+                              <div className="md:col-span-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    const updatedUrls = editingCourse.urls.filter((_: any, i: number) => i !== index);
+                                    setEditingCourse(prev => ({ ...prev, urls: updatedUrls }));
+                                  }}
+                                  className="text-destructive h-8 w-8 p-0"
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-muted-foreground text-center py-2">No URLs added yet</p>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Documents Section */}
+                <Card className="border">
+                  <CardContent className="p-4">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-primary" />
+                          <Label className="text-sm font-medium">Documents</Label>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const newDoc = { id: Date.now(), title: "", type: "pdf", description: "", file: null };
+                            setEditingCourse(prev => ({
+                              ...prev,
+                              documents: [...(prev.documents || []), newDoc]
+                            }));
+                          }}
+                          className="gap-1 text-xs"
+                        >
+                          <Plus className="w-3 h-3" />
+                          Add Document
+                        </Button>
+                      </div>
+
+                      {editingCourse.documents && editingCourse.documents.length > 0 ? (
+                        <div className="space-y-2">
+                          {editingCourse.documents.map((doc: any, index: number) => (
+                            <div key={doc.id} className="grid grid-cols-1 md:grid-cols-12 gap-2 items-end">
+                              <div className="md:col-span-4">
+                                <Input
+                                  value={doc.title}
+                                  onChange={(e) => {
+                                    const updatedDocs = [...editingCourse.documents];
+                                    updatedDocs[index] = { ...doc, title: e.target.value };
+                                    setEditingCourse(prev => ({ ...prev, documents: updatedDocs }));
+                                  }}
+                                  placeholder="Document title"
+                                  className="text-sm"
+                                />
+                              </div>
+                              <div className="md:col-span-2">
+                                <Select
+                                  value={doc.type}
+                                  onValueChange={(value) => {
+                                    const updatedDocs = [...editingCourse.documents];
+                                    updatedDocs[index] = { ...doc, type: value };
+                                    setEditingCourse(prev => ({ ...prev, documents: updatedDocs }));
+                                  }}
+                                >
+                                  <SelectTrigger className="text-sm">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="pdf">PDF</SelectItem>
+                                    <SelectItem value="word">Word Doc</SelectItem>
+                                    <SelectItem value="excel">Excel</SelectItem>
+                                    <SelectItem value="powerpoint">PowerPoint</SelectItem>
+                                    <SelectItem value="other">Other</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              <div className="md:col-span-3">
+                                <Input
+                                  type="file"
+                                  onChange={(e) => {
+                                    const updatedDocs = [...editingCourse.documents];
+                                    updatedDocs[index] = { ...doc, file: e.target.files?.[0] || null };
+                                    setEditingCourse(prev => ({ ...prev, documents: updatedDocs }));
+                                  }}
+                                  className="text-sm"
+                                  accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                                />
+                              </div>
+                              <div className="md:col-span-2">
+                                <Input
+                                  value={doc.description}
+                                  onChange={(e) => {
+                                    const updatedDocs = [...editingCourse.documents];
+                                    updatedDocs[index] = { ...doc, description: e.target.value };
+                                    setEditingCourse(prev => ({ ...prev, documents: updatedDocs }));
+                                  }}
+                                  placeholder="Notes"
+                                  className="text-sm"
+                                />
+                              </div>
+                              <div className="md:col-span-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    const updatedDocs = editingCourse.documents.filter((_: any, i: number) => i !== index);
+                                    setEditingCourse(prev => ({ ...prev, documents: updatedDocs }));
+                                  }}
+                                  className="text-destructive h-8 w-8 p-0"
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-muted-foreground text-center py-2">No documents added yet</p>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Videos Section */}
+                <Card className="border">
+                  <CardContent className="p-4">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Video className="w-4 h-4 text-primary" />
+                          <Label className="text-sm font-medium">Videos</Label>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const newVideo = { id: Date.now(), title: "", source: "upload", url: "", description: "", file: null };
+                            setEditingCourse(prev => ({
+                              ...prev,
+                              videos: [...(prev.videos || []), newVideo]
+                            }));
+                          }}
+                          className="gap-1 text-xs"
+                        >
+                          <Plus className="w-3 h-3" />
+                          Add Video
+                        </Button>
+                      </div>
+
+                      {editingCourse.videos && editingCourse.videos.length > 0 ? (
+                        <div className="space-y-3">
+                          {editingCourse.videos.map((video: any, index: number) => (
+                            <Card key={video.id} className="border-dashed">
+                              <CardContent className="p-3">
+                                <div className="space-y-3">
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    <Input
+                                      value={video.title}
+                                      onChange={(e) => {
+                                        const updatedVideos = [...editingCourse.videos];
+                                        updatedVideos[index] = { ...video, title: e.target.value };
+                                        setEditingCourse(prev => ({ ...prev, videos: updatedVideos }));
+                                      }}
+                                      placeholder="Video title"
+                                      className="text-sm"
+                                    />
+                                    <div className="flex gap-2">
+                                      <Select
+                                        value={video.source}
+                                        onValueChange={(value) => {
+                                          const updatedVideos = [...editingCourse.videos];
+                                          updatedVideos[index] = { ...video, source: value };
+                                          setEditingCourse(prev => ({ ...prev, videos: updatedVideos }));
+                                        }}
+                                      >
+                                        <SelectTrigger className="text-sm">
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          <SelectItem value="upload">Upload File</SelectItem>
+                                          <SelectItem value="youtube">YouTube</SelectItem>
+                                          <SelectItem value="vimeo">Vimeo</SelectItem>
+                                          <SelectItem value="url">Direct URL</SelectItem>
+                                        </SelectContent>
+                                      </Select>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => {
+                                          const updatedVideos = editingCourse.videos.filter((_: any, i: number) => i !== index);
+                                          setEditingCourse(prev => ({ ...prev, videos: updatedVideos }));
+                                        }}
+                                        className="text-destructive"
+                                      >
+                                        <Trash2 className="w-3 h-3" />
+                                      </Button>
+                                    </div>
+                                  </div>
+
+                                  {video.source === "upload" ? (
+                                    <Input
+                                      type="file"
+                                      onChange={(e) => {
+                                        const updatedVideos = [...editingCourse.videos];
+                                        updatedVideos[index] = { ...video, file: e.target.files?.[0] || null };
+                                        setEditingCourse(prev => ({ ...prev, videos: updatedVideos }));
+                                      }}
+                                      className="text-sm"
+                                      accept="video/*"
+                                    />
+                                  ) : (
+                                    <Input
+                                      value={video.url}
+                                      onChange={(e) => {
+                                        const updatedVideos = [...editingCourse.videos];
+                                        updatedVideos[index] = { ...video, url: e.target.value };
+                                        setEditingCourse(prev => ({ ...prev, videos: updatedVideos }));
+                                      }}
+                                      placeholder={
+                                        video.source === "youtube" ? "YouTube URL or video ID" :
+                                        video.source === "vimeo" ? "Vimeo URL" :
+                                        "Video URL"
+                                      }
+                                      className="text-sm"
+                                    />
+                                  )}
+
+                                  <Input
+                                    value={video.description}
+                                    onChange={(e) => {
+                                      const updatedVideos = [...editingCourse.videos];
+                                      updatedVideos[index] = { ...video, description: e.target.value };
+                                      setEditingCourse(prev => ({ ...prev, videos: updatedVideos }));
+                                    }}
+                                    placeholder="Video description (optional)"
+                                    className="text-sm"
+                                  />
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-muted-foreground text-center py-2">No videos added yet</p>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
 
               <div className="flex justify-end gap-3 pt-4 border-t">
