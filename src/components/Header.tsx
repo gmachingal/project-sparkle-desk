@@ -112,7 +112,15 @@ const Header = ({ userRole }: HeaderProps) => {
   ];
   
   const isActivePage = (path: string) => {
-    return location.pathname === path || (path === "/dashboard" && location.pathname === "/");
+    const currentPath = location.pathname;
+    if (path === "/dashboard" && currentPath === "/") return true;
+    if (currentPath === path) return true;
+    
+    // Check for admin versions of pages
+    if (path === "/attendance" && (currentPath.includes("attendance") || currentPath.includes("admin-attendance"))) return true;
+    if (path === "/leave-management" && (currentPath.includes("leave") || currentPath.includes("admin-leave"))) return true;
+    
+    return false;
   };
 
   const handleLogout = () => {
