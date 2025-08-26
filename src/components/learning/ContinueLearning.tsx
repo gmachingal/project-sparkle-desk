@@ -3,11 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Play, Pause, BookOpen, Clock, CheckCircle, RotateCcw, Star, TrendingUp } from "lucide-react";
+import { Play, Pause, BookOpen, Clock, CheckCircle, Star, TrendingUp, Award, Trophy, Download, Share2, Eye } from "lucide-react";
 
 const ContinueLearning = () => {
   const [playingCourse, setPlayingCourse] = useState<string | null>(null);
+  const [selectedCertificate, setSelectedCertificate] = useState<any>(null);
   const { toast } = useToast();
 
   const inProgressCourses = [
@@ -61,41 +63,30 @@ const ContinueLearning = () => {
     }
   ];
 
-  const recentlyCompleted = [
+  const certificates = [
     {
-      id: "git-workflow",
-      title: "Git Workflow Mastery",
-      completedDate: "2 days ago",
+      id: "cert-001",
+      title: "React Advanced Patterns",
+      issueDate: "2024-01-15",
       score: 92,
-      certificate: true,
-      category: "Development Tools"
+      status: "active",
+      credentialId: "RC-2024-001-ADV"
     },
     {
-      id: "api-design",
-      title: "RESTful API Design",
-      completedDate: "1 week ago",
+      id: "cert-002", 
+      title: "TypeScript Fundamentals",
+      issueDate: "2023-11-20",
       score: 88,
-      certificate: true,
-      category: "Backend Development"
-    }
-  ];
-
-  const recommendations = [
-    {
-      id: "node-microservices",
-      title: "Node.js Microservices Architecture",
-      reason: "Based on your completion of RESTful API Design",
-      difficulty: "Advanced",
-      duration: "12 hours",
-      rating: 4.9
+      status: "active",
+      credentialId: "TS-2023-002-FUN"
     },
     {
-      id: "react-testing",
-      title: "React Testing with Jest & Testing Library",
-      reason: "Complements your Advanced React Patterns course",
-      difficulty: "Intermediate",
-      duration: "8 hours",
-      rating: 4.8
+      id: "cert-003",
+      title: "Agile Project Management", 
+      issueDate: "2023-12-10",
+      score: 95,
+      status: "active",
+      credentialId: "AG-2023-003-PMP"
     }
   ];
 
@@ -115,43 +106,44 @@ const ContinueLearning = () => {
     }
   };
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case "Beginner": return "bg-green-100 text-green-800 border-green-200";
-      case "Intermediate": return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "Advanced": return "bg-red-100 text-red-800 border-red-200";
-      default: return "bg-gray-100 text-gray-800 border-gray-200";
-    }
+  const handleDownload = (certId: string, title: string) => {
+    toast({
+      title: "Download Started",
+      description: `Downloading certificate: ${title}`,
+    });
+  };
+
+  const handleShare = (certId: string, title: string) => {
+    navigator.clipboard.writeText(`https://certificates.company.com/verify/${certId}`);
+    toast({
+      title: "Link Copied", 
+      description: "Certificate verification link copied to clipboard",
+    });
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Continue Learning</h2>
-          <p className="text-muted-foreground">Pick up where you left off</p>
+          <h2 className="text-2xl font-bold">My Learning Dashboard</h2>
+          <p className="text-muted-foreground">Track your progress and continue your learning journey</p>
         </div>
         <Badge variant="outline" className="gap-1">
           <TrendingUp className="w-3 h-3" />
-          {inProgressCourses.length} In Progress
+          {inProgressCourses.length} Active Courses
         </Badge>
       </div>
 
-      {/* In Progress Courses */}
+      {/* Current Courses */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold">In Progress</h3>
+        <h3 className="text-lg font-semibold">Continue Learning</h3>
         <div className="grid gap-4">
           {inProgressCourses.map((course) => (
             <Card key={course.id} className="transition-all duration-200 hover:shadow-md">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <CardTitle className="text-lg">{course.title}</CardTitle>
-                      <Badge className={getDifficultyColor(course.difficulty)}>
-                        {course.difficulty}
-                      </Badge>
-                    </div>
+                    <CardTitle className="text-lg">{course.title}</CardTitle>
                     <p className="text-sm text-muted-foreground">{course.description}</p>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <span>By {course.instructor}</span>
@@ -213,71 +205,108 @@ const ContinueLearning = () => {
         </div>
       </div>
 
-      {/* Recently Completed */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Recently Completed</h3>
-        <div className="grid gap-4 md:grid-cols-2">
-          {recentlyCompleted.map((course) => (
-            <Card key={course.id} className="border-success/50 bg-success/5">
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <h4 className="font-medium">{course.title}</h4>
-                    <p className="text-sm text-muted-foreground">{course.category}</p>
-                    <p className="text-sm text-muted-foreground">Completed {course.completedDate}</p>
-                  </div>
-                  <div className="text-right space-y-1">
-                    <CheckCircle className="w-5 h-5 text-success ml-auto" />
-                    <Badge variant="outline" className="text-xs">
-                      Score: {course.score}%
-                    </Badge>
-                  </div>
-                </div>
-                {course.certificate && (
-                  <Button variant="outline" size="sm" className="w-full mt-3 gap-2">
-                    <BookOpen className="w-3 h-3" />
-                    View Certificate
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
+      {/* Quick Stats & Certificates */}
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Learning Stats */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Learning Stats</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-center p-3 bg-primary/5 rounded-lg">
+                <div className="text-2xl font-bold text-primary">12</div>
+                <div className="text-sm text-muted-foreground">Courses</div>
+              </div>
+              <div className="text-center p-3 bg-success/5 rounded-lg">
+                <div className="text-2xl font-bold text-success">47.5h</div>
+                <div className="text-sm text-muted-foreground">Hours</div>
+              </div>
+              <div className="text-center p-3 bg-warning/5 rounded-lg">
+                <div className="text-2xl font-bold text-warning">{certificates.length}</div>
+                <div className="text-sm text-muted-foreground">Certificates</div>
+              </div>
+              <div className="text-center p-3 bg-info/5 rounded-lg">
+                <div className="text-2xl font-bold text-info">95%</div>
+                <div className="text-sm text-muted-foreground">Avg Score</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-      {/* Recommendations */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Recommended for You</h3>
-        <div className="grid gap-4 md:grid-cols-2">
-          {recommendations.map((course) => (
-            <Card key={course.id} className="border-primary/20 bg-primary/5">
-              <CardContent className="p-4">
-                <div className="space-y-3">
-                  <div>
-                    <h4 className="font-medium">{course.title}</h4>
-                    <p className="text-sm text-muted-foreground mt-1">{course.reason}</p>
+        {/* Recent Certificates */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>My Certificates</CardTitle>
+              <Badge variant="outline" className="gap-1">
+                <Trophy className="w-3 h-3" />
+                {certificates.length} Earned
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {certificates.slice(0, 3).map((cert) => (
+                <div key={cert.id} className="flex items-center justify-between p-2 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Award className="w-5 h-5 text-primary" />
+                    <div>
+                      <p className="font-medium text-sm">{cert.title}</p>
+                      <p className="text-xs text-muted-foreground">{new Date(cert.issueDate).toLocaleDateString()}</p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <Badge className={getDifficultyColor(course.difficulty)} variant="outline">
-                      {course.difficulty}
-                    </Badge>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {course.duration}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Star className="w-3 h-3 fill-current text-yellow-500" />
-                      {course.rating}
-                    </span>
+                  <div className="flex gap-1">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="ghost" size="sm" onClick={() => setSelectedCertificate(cert)}>
+                          <Eye className="w-3 h-3" />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle className="flex items-center gap-2">
+                            <Award className="w-5 h-5 text-primary" />
+                            {cert.title}
+                          </DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div className="text-center p-6 border-2 border-primary/20 rounded-lg bg-gradient-to-br from-primary/5 to-primary-glow/10">
+                            <Award className="w-12 h-12 text-primary mx-auto mb-4" />
+                            <h3 className="text-lg font-bold mb-2">{cert.title}</h3>
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                              <div>
+                                <span className="text-muted-foreground">ID:</span>
+                                <p className="font-mono font-medium">{cert.credentialId}</p>
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground">Score:</span>
+                                <p className="font-medium">{cert.score}%</p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button className="flex-1 gap-2" onClick={() => handleDownload(cert.credentialId, cert.title)}>
+                              <Download className="w-4 h-4" />
+                              Download
+                            </Button>
+                            <Button variant="outline" className="flex-1 gap-2" onClick={() => handleShare(cert.credentialId, cert.title)}>
+                              <Share2 className="w-4 h-4" />
+                              Share
+                            </Button>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                    <Button variant="ghost" size="sm" onClick={() => handleDownload(cert.credentialId, cert.title)}>
+                      <Download className="w-3 h-3" />
+                    </Button>
                   </div>
-                  <Button variant="outline" size="sm" className="w-full">
-                    Start Learning
-                  </Button>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

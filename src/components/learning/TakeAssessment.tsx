@@ -21,9 +21,7 @@ const TakeAssessment = () => {
       duration: "15 min",
       questions: 10,
       difficulty: "Beginner",
-      passingScore: 80,
-      category: "Frontend Development",
-      estimatedTime: "15-20 minutes",
+      category: "Frontend",
       attempts: 2,
       maxAttempts: 3,
       status: "available"
@@ -35,9 +33,7 @@ const TakeAssessment = () => {
       duration: "25 min",
       questions: 15,
       difficulty: "Advanced",
-      passingScore: 85,
       category: "Programming",
-      estimatedTime: "25-30 minutes",
       attempts: 0,
       maxAttempts: 3,
       status: "available"
@@ -49,26 +45,10 @@ const TakeAssessment = () => {
       duration: "20 min",
       questions: 12,
       difficulty: "Intermediate",
-      passingScore: 75,
-      category: "Project Management",
-      estimatedTime: "20-25 minutes",
+      category: "Management",
       attempts: 1,
       maxAttempts: 3,
       status: "in-progress"
-    },
-    {
-      id: "security-basics",
-      title: "Cybersecurity Awareness",
-      description: "Essential security practices and threat identification",
-      duration: "10 min",
-      questions: 8,
-      difficulty: "Beginner",
-      passingScore: 90,
-      category: "Security",
-      estimatedTime: "10-15 minutes",
-      attempts: 3,
-      maxAttempts: 3,
-      status: "completed"
     }
   ];
 
@@ -148,65 +128,6 @@ const TakeAssessment = () => {
     }
   };
 
-  if (isAssessmentStarted && selectedAssessment) {
-    const currentQ = questions[currentQuestion];
-    const progress = ((currentQuestion + 1) / questions.length) * 100;
-
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold">Assessment in Progress</h2>
-            <p className="text-muted-foreground">Question {currentQuestion + 1} of {questions.length}</p>
-          </div>
-          <Badge variant="outline" className="gap-1">
-            <Clock className="w-3 h-3" />
-            Time Remaining: 12:45
-          </Badge>
-        </div>
-
-        <Progress value={progress} className="h-2" />
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">{currentQ.question}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {currentQ.options.map((option, index) => (
-              <Button
-                key={index}
-                variant={answers[currentQuestion] === index.toString() ? "default" : "outline"}
-                className="w-full justify-start h-auto p-4 text-left"
-                onClick={() => handleAnswerSelect(index)}
-              >
-                <span className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs">
-                    {String.fromCharCode(65 + index)}
-                  </span>
-                  {option}
-                </span>
-              </Button>
-            ))}
-          </CardContent>
-        </Card>
-
-        <div className="flex justify-between">
-          <Button variant="outline" disabled={currentQuestion === 0}>
-            Previous
-          </Button>
-          <Button 
-            onClick={handleNextQuestion}
-            disabled={!answers[currentQuestion]}
-            className="gap-2"
-          >
-            {currentQuestion === questions.length - 1 ? "Submit Assessment" : "Next Question"}
-            <ChevronRight className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -242,10 +163,7 @@ const TakeAssessment = () => {
                       <BookOpen className="w-3 h-3" />
                       {assessment.questions} questions
                     </span>
-                    <span className="flex items-center gap-1">
-                      <Target className="w-3 h-3" />
-                      {assessment.passingScore}% to pass
-                    </span>
+                    <span>Category: {assessment.category}</span>
                   </div>
                 </div>
                 {assessment.status === "completed" && (
@@ -259,7 +177,6 @@ const TakeAssessment = () => {
                   <p className="text-muted-foreground">
                     Attempts: {assessment.attempts}/{assessment.maxAttempts}
                   </p>
-                  <p className="text-muted-foreground">Category: {assessment.category}</p>
                 </div>
                 <Button 
                   onClick={() => handleStartAssessment(assessment.id)}

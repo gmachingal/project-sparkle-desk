@@ -83,7 +83,7 @@ const Collaboration = () => {
   const [isViewCertificatesOpen, setIsViewCertificatesOpen] = useState(false);
   const [isCertificateDetailOpen, setIsCertificateDetailOpen] = useState(false);
   const [selectedCertificate, setSelectedCertificate] = useState<any>(null);
-  const [activeLearningTab, setActiveLearningTab] = useState("continue");
+  const [activeLearningTab, setActiveLearningTab] = useState("dashboard");
   
   // Form states
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
@@ -944,39 +944,28 @@ const Collaboration = () => {
               </CardHeader>
               <CardContent>
                 <Tabs value={activeLearningTab} onValueChange={setActiveLearningTab} className="w-full">
-                  <TabsList className="grid w-full grid-cols-4">
-                    <TabsTrigger value="continue" className="gap-2">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="dashboard" className="gap-2">
                       <Play className="w-4 h-4" />
-                      Continue Learning
+                      Learning Dashboard
                     </TabsTrigger>
-                    <TabsTrigger value="browse" className="gap-2">
+                    <TabsTrigger value="explore" className="gap-2">
                       <BookOpen className="w-4 h-4" />
-                      Browse Learning
-                    </TabsTrigger>
-                    <TabsTrigger value="assessment" className="gap-2">
-                      <Award className="w-4 h-4" />
-                      Take Assessment
-                    </TabsTrigger>
-                    <TabsTrigger value="certificates" className="gap-2">
-                      <Trophy className="w-4 h-4" />
-                      View All Certificates
+                      Explore & Assess
                     </TabsTrigger>
                   </TabsList>
                   
-                  <TabsContent value="continue" className="mt-6">
+                  <TabsContent value="dashboard" className="mt-6">
                     <ContinueLearning />
                   </TabsContent>
                   
-                  <TabsContent value="browse" className="mt-6">
-                    <BrowseLearning />
-                  </TabsContent>
-                  
-                  <TabsContent value="assessment" className="mt-6">
-                    <TakeAssessment />
-                  </TabsContent>
-                  
-                  <TabsContent value="certificates" className="mt-6">
-                    <ViewAllCertificates />
+                  <TabsContent value="explore" className="mt-6">
+                    <div className="space-y-8">
+                      <BrowseLearning />
+                      <div className="border-t pt-8">
+                        <TakeAssessment />
+                      </div>
+                    </div>
                   </TabsContent>
                 </Tabs>
               </CardContent>
