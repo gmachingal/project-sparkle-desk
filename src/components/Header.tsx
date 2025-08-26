@@ -203,9 +203,11 @@ const Header = ({ userRole, title, subtitle, backButton, actionButton }: HeaderP
 
   return (
     <header className={`backdrop-blur-sm sticky top-0 z-50 border-border/50 shadow-2xl shadow-black/30 drop-shadow-lg ${
-      isAdminPage 
-        ? 'bg-gradient-to-r from-admin/35 via-admin-glow/45 to-admin/60' 
-        : 'bg-gradient-to-r from-primary/35 via-primary-glow/45 to-primary/60'
+      title 
+        ? 'bg-gradient-to-l from-primary/40 via-primary-glow/60 to-primary/80'
+        : isAdminPage 
+          ? 'bg-gradient-to-r from-admin/35 via-admin-glow/45 to-admin/60' 
+          : 'bg-gradient-to-r from-primary/35 via-primary-glow/45 to-primary/60'
     }`}>
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-4">
