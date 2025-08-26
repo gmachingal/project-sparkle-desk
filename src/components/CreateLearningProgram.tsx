@@ -574,236 +574,59 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
       case 5:
         return (
           <div className="space-y-6">
-            <div>
-              <Label className="text-sm font-medium mb-3 block">Program Assessments *</Label>
-              
-              {/* Assessment Creation Form */}
-              <Card className="border-primary/20 bg-primary/5">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <Award className="w-4 h-4 text-primary" />
-                    Create New Assessment
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* Assessment Basic Details */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-sm font-medium">Assessment Title *</Label>
-                      <Input
-                        placeholder="e.g., React Fundamentals Quiz"
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-sm font-medium">Assessment Type</Label>
-                      <Select>
-                        <SelectTrigger className="mt-1">
-                          <SelectValue placeholder="Select type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="quiz">Multiple Choice Quiz</SelectItem>
-                          <SelectItem value="practical">Practical Exercise</SelectItem>
-                          <SelectItem value="essay">Essay Questions</SelectItem>
-                          <SelectItem value="mixed">Mixed Format</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
+            {/* Header */}
+            <div className="text-center">
+              <h3 className="text-lg font-semibold">Program Assessments</h3>
+              <p className="text-sm text-muted-foreground">
+                Add tests and quizzes to evaluate learner progress
+              </p>
+            </div>
 
-                  <div>
-                    <Label className="text-sm font-medium">Description</Label>
-                    <Textarea
-                      placeholder="Describe what this assessment covers..."
-                      rows={2}
-                      className="mt-1"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <Label className="text-sm font-medium">Time Limit (minutes)</Label>
-                      <Input
-                        type="number"
-                        placeholder="30"
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-sm font-medium">Passing Score (%)</Label>
-                      <Input
-                        type="number"
-                        placeholder="70"
-                        min="0"
-                        max="100"
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-sm font-medium">Max Attempts</Label>
-                      <Input
-                        type="number"
-                        placeholder="3"
-                        min="1"
-                        className="mt-1"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Questions Section */}
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium">Questions</Label>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="gap-1"
-                      >
-                        <Plus className="w-3 h-3" />
-                        Add Question
-                      </Button>
-                    </div>
-
-                    {/* Sample Questions - You can make this dynamic */}
-                    <Card className="border">
-                      <CardContent className="p-4 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <Label className="text-sm font-medium">Question 1</Label>
-                          <Button variant="ghost" size="sm">Remove</Button>
-                        </div>
-
-                        <Textarea
-                          placeholder="Enter your question here..."
-                          rows={2}
-                          className="w-full"
-                        />
-
-                        <div className="space-y-2">
-                          <Label className="text-sm font-medium">Answer Options</Label>
-                          {[1, 2, 3, 4].map((option) => (
-                            <div key={option} className="flex gap-2 items-center">
-                              <Checkbox />
-                              <Input
-                                placeholder={`Option ${option}`}
-                                className="flex-1"
-                              />
-                            </div>
-                          ))}
-                        </div>
-
-                        <div>
-                          <Label className="text-sm font-medium">Explanation (Optional)</Label>
-                          <Textarea
-                            placeholder="Explain why this answer is correct..."
-                            rows={2}
-                            className="mt-1"
-                          />
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card className="border">
-                      <CardContent className="p-4 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <Label className="text-sm font-medium">Question 2</Label>
-                          <Button variant="ghost" size="sm">Remove</Button>
-                        </div>
-
-                        <Textarea
-                          placeholder="Enter your question here..."
-                          rows={2}
-                          className="w-full"
-                        />
-
-                        <div className="space-y-2">
-                          <Label className="text-sm font-medium">Answer Options</Label>
-                          {[1, 2, 3, 4].map((option) => (
-                            <div key={option} className="flex gap-2 items-center">
-                              <Checkbox />
-                              <Input
-                                placeholder={`Option ${option}`}
-                                className="flex-1"
-                              />
-                            </div>
-                          ))}
-                        </div>
-
-                        <div>
-                          <Label className="text-sm font-medium">Explanation (Optional)</Label>
-                          <Textarea
-                            placeholder="Explain why this answer is correct..."
-                            rows={2}
-                            className="mt-1"
-                          />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  {/* Add Assessment Button */}
-                  <div className="flex gap-2 pt-4 border-t">
-                    <Button 
-                      variant="outline" 
-                      className="gap-2"
-                      onClick={() => {
-                        // Mock adding assessment with details
-                        setProgramData(prev => ({
-                          ...prev,
-                          assessments: [
-                            ...prev.assessments,
-                            {
-                              id: `assessment-${prev.assessments.length + 1}`,
-                              title: "Sample Assessment",
-                              type: "quiz",
-                              description: "A comprehensive test of knowledge",
-                              questions: 2,
-                              timeLimit: 30,
-                              passingScore: 70,
-                              maxAttempts: 3
-                            }
-                          ]
-                        }));
-                      }}
-                    >
-                      <Plus className="w-4 h-4" />
-                      Add Assessment to Program
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      Save as Draft
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Created Assessments List */}
-              {programData.assessments.length > 0 && (
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium">Created Assessments ({programData.assessments.length})</Label>
+            {/* Created Assessments List */}
+            {programData.assessments.length > 0 && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-medium">Added Assessments ({programData.assessments.length})</Label>
+                  <Badge variant="outline" className="text-xs">
+                    {programData.assessments.length} assessment{programData.assessments.length !== 1 ? 's' : ''} added
+                  </Badge>
+                </div>
+                
+                <div className="grid gap-3">
                   {programData.assessments.map((assessment, index) => (
-                    <Card key={assessment.id} className="border">
+                    <Card key={assessment.id} className="border-l-4 border-l-primary">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-warning/10 rounded-md flex items-center justify-center">
-                              <Award className="w-4 h-4 text-warning" />
+                            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                              <Award className="w-5 h-5 text-primary" />
                             </div>
                             <div>
-                              <h4 className="font-medium text-sm">{assessment.title}</h4>
-                              <p className="text-xs text-muted-foreground">
-                                {assessment.questions} questions • {assessment.timeLimit} min • {assessment.passingScore}% to pass
-                              </p>
-                              {assessment.description && (
-                                <p className="text-xs text-muted-foreground mt-1">{assessment.description}</p>
-                              )}
+                              <h4 className="font-medium">{assessment.title}</h4>
+                              <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
+                                <span className="flex items-center gap-1">
+                                  <Clock className="w-3 h-3" />
+                                  {assessment.timeLimit || 30} min
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <CheckCircle className="w-3 h-3" />
+                                  {assessment.passingScore || 70}% to pass
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Target className="w-3 h-3" />
+                                  {assessment.questionCount || 10} questions
+                                </span>
+                              </div>
                             </div>
                           </div>
                           <div className="flex gap-2">
-                            <Button variant="ghost" size="sm">
-                              <span className="text-xs">Edit</span>
+                            <Button variant="ghost" size="sm" className="text-xs">
+                              Edit
                             </Button>
                             <Button 
                               variant="ghost" 
                               size="sm"
+                              className="text-xs text-destructive"
                               onClick={() => {
                                 setProgramData(prev => ({
                                   ...prev,
@@ -811,7 +634,7 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
                                 }));
                               }}
                             >
-                              <span className="text-xs">Remove</span>
+                              Remove
                             </Button>
                           </div>
                         </div>
@@ -819,10 +642,137 @@ const CreateLearningProgram = ({ onClose, onSuccess }: CreateLearningProgramProp
                     </Card>
                   ))}
                 </div>
-              )}
+              </div>
+            )}
 
-              {errors.assessments && <p className="text-xs text-destructive mt-2">{errors.assessments}</p>}
-            </div>
+            {/* Quick Add Assessment */}
+            <Card className="border-dashed border-2 border-primary/30 bg-primary/5">
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  <div className="text-center">
+                    <Award className="w-12 h-12 mx-auto text-primary mb-3" />
+                    <h4 className="font-medium text-lg">Add New Assessment</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Choose from ready-made templates or create from scratch
+                    </p>
+                  </div>
+
+                  {/* Quick Templates */}
+                  <div className="grid gap-3 md:grid-cols-3">
+                    <Card 
+                      className="cursor-pointer transition-all hover:shadow-md border-primary/20 hover:border-primary/40"
+                      onClick={() => {
+                        setProgramData(prev => ({
+                          ...prev,
+                          assessments: [
+                            ...prev.assessments,
+                            {
+                              id: `assessment-${prev.assessments.length + 1}`,
+                              title: "Quick Knowledge Check",
+                              type: "quiz",
+                              timeLimit: 15,
+                              passingScore: 70,
+                              questionCount: 5,
+                              template: "knowledge-check"
+                            }
+                          ]
+                        }));
+                      }}
+                    >
+                      <CardContent className="p-4 text-center">
+                        <CheckCircle className="w-8 h-8 mx-auto text-success mb-2" />
+                        <h5 className="font-medium text-sm">Quick Check</h5>
+                        <p className="text-xs text-muted-foreground">5 questions • 15 min</p>
+                      </CardContent>
+                    </Card>
+
+                    <Card 
+                      className="cursor-pointer transition-all hover:shadow-md border-primary/20 hover:border-primary/40"
+                      onClick={() => {
+                        setProgramData(prev => ({
+                          ...prev,
+                          assessments: [
+                            ...prev.assessments,
+                            {
+                              id: `assessment-${prev.assessments.length + 1}`,
+                              title: "Comprehensive Test",
+                              type: "exam",
+                              timeLimit: 45,
+                              passingScore: 75,
+                              questionCount: 20,
+                              template: "comprehensive"
+                            }
+                          ]
+                        }));
+                      }}
+                    >
+                      <CardContent className="p-4 text-center">
+                        <BookOpen className="w-8 h-8 mx-auto text-primary mb-2" />
+                        <h5 className="font-medium text-sm">Full Test</h5>
+                        <p className="text-xs text-muted-foreground">20 questions • 45 min</p>
+                      </CardContent>
+                    </Card>
+
+                    <Card 
+                      className="cursor-pointer transition-all hover:shadow-md border-primary/20 hover:border-primary/40"
+                      onClick={() => {
+                        setProgramData(prev => ({
+                          ...prev,
+                          assessments: [
+                            ...prev.assessments,
+                            {
+                              id: `assessment-${prev.assessments.length + 1}`,
+                              title: "Practical Assignment",
+                              type: "practical",
+                              timeLimit: 120,
+                              passingScore: 80,
+                              questionCount: 3,
+                              template: "practical"
+                            }
+                          ]
+                        }));
+                      }}
+                    >
+                      <CardContent className="p-4 text-center">
+                        <Settings className="w-8 h-8 mx-auto text-warning mb-2" />
+                        <h5 className="font-medium text-sm">Practical</h5>
+                        <p className="text-xs text-muted-foreground">3 tasks • 2 hours</p>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  <div className="text-center pt-2">
+                    <Button variant="outline" className="gap-2">
+                      <Plus className="w-4 h-4" />
+                      Create Custom Assessment
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Assessment Requirements */}
+            {programData.assessments.length === 0 && (
+              <Card className="bg-muted/30">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 text-warning mt-0.5" />
+                    <div>
+                      <h4 className="font-medium text-sm">Assessment Required</h4>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Add at least one assessment to measure learner progress and completion.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {errors.assessments && (
+              <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+                <p className="text-sm text-destructive">{errors.assessments}</p>
+              </div>
+            )}
           </div>
         );
 
