@@ -300,43 +300,80 @@ export function ScheduleMeetingDialog({ open, onOpenChange }: ScheduleMeetingDia
           </DialogHeader>
         </div>
         
-        {/* Step Indicators */}
-        <div className="px-6 py-3 border-b bg-muted/20 shrink-0">
-          <div className="flex items-center justify-between">
-            {WIZARD_STEPS.map((step, index) => (
-              <div key={step.id} className="flex items-center">
-                <div className="flex items-center">
-                  <div className={`
-                    w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200
-                    ${getStepStatus(step.id) === 'completed' 
-                      ? 'bg-primary text-primary-foreground' 
-                      : getStepStatus(step.id) === 'current'
-                      ? 'bg-primary/20 text-primary border-2 border-primary'
-                      : 'bg-muted text-muted-foreground'
-                    }
-                  `}>
-                    {getStepStatus(step.id) === 'completed' ? (
-                      <Check className="w-4 h-4" />
-                    ) : (
-                      step.id
+        {/* Enhanced Step Indicators */}
+        <div className="px-6 py-4 border-b bg-gradient-to-r from-muted/30 to-transparent shrink-0">
+          <div className="relative">
+            {/* Step Navigation */}
+            <div className="flex items-center justify-between relative">
+              {WIZARD_STEPS.map((step, index) => {
+                const IconComponent = step.icon;
+                const status = getStepStatus(step.id);
+                const isLast = index === WIZARD_STEPS.length - 1;
+                
+                return (
+                  <div key={step.id} className="flex items-center relative z-10">
+                    {/* Step Circle */}
+                    <div className="flex flex-col items-center">
+                      <div className={`
+                        relative w-12 h-12 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 shadow-sm
+                        ${status === 'completed' 
+                          ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-green-200' 
+                          : status === 'current'
+                          ? 'bg-gradient-to-br from-primary to-primary-glow text-primary-foreground shadow-primary/20 scale-110'
+                          : 'bg-gradient-to-br from-muted to-muted-foreground/20 text-muted-foreground'
+                        }
+                      `}>
+                        {status === 'completed' ? (
+                          <Check className="w-5 h-5" />
+                        ) : (
+                          <IconComponent className="w-5 h-5" />
+                        )}
+                        
+                        {/* Pulse animation for current step */}
+                        {status === 'current' && (
+                          <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping" />
+                        )}
+                      </div>
+                      
+                      {/* Step Info */}
+                      <div className="mt-3 text-center max-w-[100px]">
+                        <div className={`text-xs font-medium leading-tight ${
+                          status === 'current' ? 'text-primary' : 
+                          status === 'completed' ? 'text-green-600' : 'text-muted-foreground'
+                        }`}>
+                          {step.title}
+                        </div>
+                        <div className="text-[10px] text-muted-foreground mt-1 hidden sm:block">
+                          {step.description}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Connecting Line */}
+                    {!isLast && (
+                      <div className="absolute top-6 left-12 w-full h-0.5 -z-10">
+                        <div className={`h-full transition-all duration-500 ${
+                          status === 'completed' ? 'bg-gradient-to-r from-green-500 to-primary' : 'bg-muted'
+                        }`} />
+                      </div>
                     )}
                   </div>
-                  <div className="ml-2 hidden sm:block">
-                    <div className={`text-sm font-medium ${
-                      getStepStatus(step.id) === 'current' ? 'text-primary' : 'text-muted-foreground'
-                    }`}>
-                      {step.title}
-                    </div>
-                    <div className="text-xs text-muted-foreground">{step.description}</div>
-                  </div>
-                </div>
-                {index < WIZARD_STEPS.length - 1 && (
-                  <div className={`hidden sm:block w-8 h-0.5 mx-4 ${
-                    getStepStatus(step.id) === 'completed' ? 'bg-primary' : 'bg-muted'
-                  }`} />
-                )}
-              </div>
-            ))}
+                );
+              })}
+            </div>
+            
+            {/* Progress Line Background */}
+            <div className="absolute top-6 left-6 right-6 h-0.5 bg-muted -z-20" />
+          </div>
+          
+          {/* Mobile Step Counter */}
+          <div className="sm:hidden mt-4 text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-background border">
+              <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              <span className="text-xs font-medium">
+                {WIZARD_STEPS.find(s => s.id === currentStep)?.title}
+              </span>
+            </div>
           </div>
         </div>
 
