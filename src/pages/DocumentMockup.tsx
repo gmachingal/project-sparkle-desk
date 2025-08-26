@@ -568,7 +568,7 @@ const DocumentMockup = () => {
       <Header />
       
       <div className="container mx-auto px-6 py-10">
-        {/* Page Header */}
+        {/* Clean Page Header */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
           <div className="space-y-2">
             <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
@@ -577,31 +577,6 @@ const DocumentMockup = () => {
             <p className="text-lg text-muted-foreground">
               Create, collaborate, and share knowledge across your organization
             </p>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <Dialog open={isTemplateDialogOpen} onOpenChange={setIsTemplateDialogOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="gap-2 h-11 px-6 border-2 hover:border-primary/50">
-                  <BookOpen className="w-4 h-4" />
-                  Templates
-                </Button>
-              </DialogTrigger>
-            </Dialog>
-            
-            <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-              <DialogTrigger asChild>
-                <Button className="gap-2 h-11 px-6 bg-gradient-to-r from-primary to-primary-glow hover:from-primary-glow hover:to-primary shadow-lg shadow-primary/25">
-                  <Plus className="w-4 h-4" />
-                  Create Document
-                </Button>
-              </DialogTrigger>
-            </Dialog>
-            
-            <Button variant="outline" onClick={handleEditDocument} className="gap-2 h-11 px-6 border-2 hover:border-primary/50">
-              <Edit className="w-4 h-4" />
-              Open Editor
-            </Button>
           </div>
         </div>
 
@@ -637,58 +612,75 @@ const DocumentMockup = () => {
           </div>
         </div>
 
-        {/* Quick Actions Bar */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-          {/* Quick Actions */}
-          <Card className="border shadow-sm">
-            <CardHeader className="pb-2 px-3 pt-3">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <Plus className="w-4 h-4 text-primary" />
-                Quick Actions
+        {/* Enhanced Quick Actions Bar */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Primary Actions */}
+          <Card className="border-2 border-primary/20 shadow-lg bg-gradient-to-br from-background to-primary/5">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg font-bold flex items-center gap-2">
+                <Plus className="w-5 h-5 text-primary" />
+                Create Content
               </CardTitle>
             </CardHeader>
-            <CardContent className="px-3 pb-3">
-              <div className="grid grid-cols-2 gap-1.5">
-                <Button variant="outline" className="justify-start gap-1.5 h-8 text-xs border hover:border-primary/50" onClick={() => setIsCreateDialogOpen(true)}>
-                  <FilePlus className="w-3 h-3" />
-                  Create
-                </Button>
-                <Button variant="outline" className="justify-start gap-1.5 h-8 text-xs border hover:border-primary/50">
+            <CardContent className="space-y-3">
+              <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="w-full justify-start gap-3 h-11 bg-primary hover:bg-primary/90 text-primary-foreground shadow-md">
+                    <FilePlus className="w-4 h-4" />
+                    New Document
+                  </Button>
+                </DialogTrigger>
+              </Dialog>
+              
+              <Button variant="outline" onClick={handleEditDocument} className="w-full justify-start gap-3 h-11 border-2 hover:border-primary/50 hover:bg-primary/5">
+                <Edit className="w-4 h-4" />
+                Open Editor
+              </Button>
+              
+              <div className="grid grid-cols-2 gap-2">
+                <Button variant="outline" className="justify-start gap-2 h-9 text-sm hover:bg-primary/5">
                   <Folder className="w-3 h-3" />
                   Space
                 </Button>
-                <Button variant="outline" className="justify-start gap-1.5 h-8 text-xs border hover:border-primary/50">
+                <Button variant="outline" className="justify-start gap-2 h-9 text-sm hover:bg-primary/5">
                   <Upload className="w-3 h-3" />
                   Upload
-                </Button>
-                <Button variant="outline" className="justify-start gap-1.5 h-8 text-xs border hover:border-primary/50" onClick={handleEditDocument}>
-                  <Edit className="w-3 h-3" />
-                  Editor
                 </Button>
               </div>
             </CardContent>
           </Card>
 
-          {/* Popular Templates */}
-          <Card className="border shadow-sm">
-            <CardHeader className="pb-2 px-3 pt-3">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <BookOpen className="w-4 h-4 text-primary" />
-                Templates
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="px-3 pb-3">
-              <div className="grid grid-cols-2 gap-1.5">
-                {templates.slice(0, 4).map((template) => (
-                  <div key={template.id} className="flex items-center gap-1.5 p-1.5 rounded hover:bg-muted/50 transition-colors cursor-pointer">
-                    <template.icon className="w-3 h-3 text-primary flex-shrink-0" />
-                    <div className="min-w-0 flex-1">
-                      <p className="font-medium text-xs truncate leading-tight">{template.name}</p>
-                      <p className="text-xs text-muted-foreground truncate">{template.category}</p>
-                    </div>
-                  </div>
-                ))}
+          {/* Templates */}
+          <Card className="border shadow-md">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg font-bold flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-primary" />
+                  Templates
+                </CardTitle>
+                <Dialog open={isTemplateDialogOpen} onOpenChange={setIsTemplateDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10">
+                      View All
+                    </Button>
+                  </DialogTrigger>
+                </Dialog>
               </div>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {templates.slice(0, 4).map((template) => (
+                <div 
+                  key={template.id} 
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer border hover:border-primary/20"
+                  onClick={() => handleUseTemplate(template.id)}
+                >
+                  <template.icon className="w-4 h-4 text-primary flex-shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium text-sm truncate">{template.name}</p>
+                    <p className="text-xs text-muted-foreground">{template.category}</p>
+                  </div>
+                </div>
+              ))}
             </CardContent>
           </Card>
 
