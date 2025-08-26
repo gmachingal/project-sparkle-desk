@@ -343,9 +343,6 @@ export function ScheduleMeetingDialog({ open, onOpenChange }: ScheduleMeetingDia
                         }`}>
                           {step.title}
                         </div>
-                        <div className="text-[10px] text-muted-foreground mt-1 hidden sm:block">
-                          {step.description}
-                        </div>
                       </div>
                     </div>
                     
