@@ -652,11 +652,11 @@ const DocumentMockup = () => {
                 </DialogTrigger>
               </Dialog>
               
-              <div className="grid grid-cols-2 gap-1">
+              <div className="grid grid-cols-2 gap-1 pt-1">
                 <Dialog open={isCreateSpaceDialogOpen} onOpenChange={setIsCreateSpaceDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="outline" className="justify-start gap-1 h-6 text-xs border hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 font-normal px-2">
-                      <Folder className="w-2.5 h-2.5" />
+                    <Button variant="outline" className="justify-start gap-1.5 h-8 text-sm border hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 font-normal px-3">
+                      <Folder className="w-3.5 h-3.5" />
                       Space
                     </Button>
                   </DialogTrigger>
@@ -731,8 +731,8 @@ const DocumentMockup = () => {
 
                 <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="outline" className="justify-start gap-1 h-6 text-xs border hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 font-normal px-2">
-                      <Upload className="w-2.5 h-2.5" />
+                    <Button variant="outline" className="justify-start gap-1.5 h-8 text-sm border hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 font-normal px-3">
+                      <Upload className="w-3.5 h-3.5" />
                       Upload
                     </Button>
                   </DialogTrigger>
