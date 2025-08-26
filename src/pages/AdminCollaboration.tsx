@@ -1694,11 +1694,11 @@ const AdminCollaboration = () => {
                   </div>
                 </div>
 
-                {/* Certificate Display - Exact Match to User View */}
+                {/* Certificate Display */}
                 <div className="text-center p-4 border-2 border-primary/20 rounded-lg bg-gradient-to-br from-primary/5 to-primary-glow/10">
                   <Award className="w-10 h-10 text-primary mx-auto mb-3" />
                   <h3 className="text-base font-bold mb-2">{selectedCertificate.title}</h3>
-                  <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="grid grid-cols-3 gap-3 text-sm">
                     <div>
                       <span className="text-muted-foreground">ID:</span>
                       <p className="font-mono font-medium text-xs">{selectedCertificate.credentialId}</p>
@@ -1706,6 +1706,10 @@ const AdminCollaboration = () => {
                     <div>
                       <span className="text-muted-foreground">Score:</span>
                       <p className="font-medium">{selectedCertificate.score}%</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Issued:</span>
+                      <p className="font-medium text-xs">{new Date(selectedCertificate.issueDate).toLocaleDateString()}</p>
                     </div>
                   </div>
                 </div>
