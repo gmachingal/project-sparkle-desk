@@ -298,10 +298,10 @@ const AdminAttendance = () => {
         {/* Enhanced Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <div className="relative">
-            <TabsList className="grid w-full grid-cols-5 bg-gradient-to-r from-card to-card/80 border shadow-sm h-12">
+            <TabsList className="grid w-full grid-cols-5 bg-gradient-to-r from-admin/10 to-admin-glow/10 border border-admin/20 shadow-sm h-12">
               <TabsTrigger 
                 value="overview" 
-                className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium transition-all duration-200 hover:bg-muted/50"
+                className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium transition-all duration-200 hover:bg-admin/10 text-admin/70 hover:text-admin"
               >
                 <div className="flex items-center gap-2">
                   <UserCheck className="w-4 h-4" />
@@ -310,7 +310,7 @@ const AdminAttendance = () => {
               </TabsTrigger>
               <TabsTrigger 
                 value="muster" 
-                className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium transition-all duration-200 hover:bg-muted/50"
+                className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium transition-all duration-200 hover:bg-admin/10 text-admin/70 hover:text-admin"
               >
                 <div className="flex items-center gap-2">
                   <FileText className="w-4 h-4" />
@@ -319,7 +319,7 @@ const AdminAttendance = () => {
               </TabsTrigger>
               <TabsTrigger 
                 value="requests" 
-                className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium transition-all duration-200 hover:bg-muted/50"
+                className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium transition-all duration-200 hover:bg-admin/10 text-admin/70 hover:text-admin"
               >
                 <div className="flex items-center gap-2">
                   <Bell className="w-4 h-4" />
@@ -333,7 +333,7 @@ const AdminAttendance = () => {
               </TabsTrigger>
               <TabsTrigger 
                 value="locations" 
-                className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium transition-all duration-200 hover:bg-muted/50"
+                className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium transition-all duration-200 hover:bg-admin/10 text-admin/70 hover:text-admin"
               >
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4" />
@@ -342,7 +342,7 @@ const AdminAttendance = () => {
               </TabsTrigger>
               <TabsTrigger 
                 value="reports" 
-                className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium transition-all duration-200 hover:bg-muted/50"
+                className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground font-medium transition-all duration-200 hover:bg-admin/10 text-admin/70 hover:text-admin"
               >
                 <div className="flex items-center gap-2">
                   <BarChart3 className="w-4 h-4" />
