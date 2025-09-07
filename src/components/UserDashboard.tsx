@@ -11,6 +11,7 @@ import EnhancedTaskCard from "./EnhancedTaskCard";
 import QuickActionsDropdown from "./QuickActionsDropdown";
 import SprintOverview from "./SprintOverview";
 import DailyTaskReport from "./DailyTaskReport";
+import ProjectsWithSprints from "./ProjectsWithSprints";
 import { 
   CheckSquare, 
   Clock, 
@@ -265,7 +266,7 @@ const UserDashboard = () => {
         </TabsContent>
 
         <TabsContent value="projects" className="space-y-6">
-          <SprintOverview />
+          <ProjectsWithSprints />
         </TabsContent>
       </Tabs>
     </div>
