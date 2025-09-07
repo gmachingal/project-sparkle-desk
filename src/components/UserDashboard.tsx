@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import AttendanceCard from "./AttendanceCard";
 import StatsCard from "./StatsCard";
 import LeaveCard from "./LeaveCard";
@@ -22,7 +23,12 @@ import {
   Settings,
   BarChart3,
   Calendar,
-  FolderOpen
+  FolderOpen,
+  Bell,
+  Users,
+  AlertTriangle,
+  Star,
+  Activity
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -126,6 +132,45 @@ const UserDashboard = () => {
     }
   };
 
+  // Mock data for Overview tab
+  const recentActivity = [
+    { id: 1, type: 'task_completed', message: 'Completed "Review code changes"', time: '2 hours ago', icon: CheckSquare },
+    { id: 2, type: 'comment', message: 'Sarah commented on "Website Redesign"', time: '4 hours ago', icon: Users },
+    { id: 3, type: 'deadline', message: 'Task due tomorrow: "Update documentation"', time: '1 day ago', icon: AlertTriangle },
+    { id: 4, type: 'milestone', message: 'Milestone "Backend API" reached 60%', time: '2 days ago', icon: Target }
+  ];
+
+  const upcomingDeadlines = [
+    { id: 1, task: 'Review code changes', project: 'Website Redesign', due: 'Today', priority: 'high' },
+    { id: 2, task: 'Update documentation', project: 'Mobile App', due: 'Tomorrow', priority: 'medium' },
+    { id: 3, task: 'Client meeting prep', project: 'Marketing Campaign', due: 'Dec 1', priority: 'high' },
+  ];
+
+  const recentProjects = [
+    { id: 1, name: 'Website Redesign', progress: 75, status: 'active', members: 4 },
+    { id: 2, name: 'Mobile App', progress: 45, status: 'active', members: 3 },
+    { id: 3, name: 'Marketing Campaign', progress: 30, status: 'planning', members: 2 },
+  ];
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'high': return 'text-red-600 bg-red-50 border-red-200';
+      case 'medium': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+      case 'low': return 'text-green-600 bg-green-50 border-green-200';
+      default: return 'text-gray-600 bg-gray-50 border-gray-200';
+    }
+  };
+
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case 'task_completed': return CheckSquare;
+      case 'comment': return Users;
+      case 'deadline': return AlertTriangle;
+      case 'milestone': return Target;
+      default: return Activity;
+    }
+  };
+
   return (
     <div className="p-6 space-y-6 min-h-screen bg-background">
       <div className="flex items-center justify-between">
@@ -198,6 +243,7 @@ const UserDashboard = () => {
 
         <TabsContent value="overview" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Quick Actions */}
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Quick Actions</CardTitle>
@@ -222,6 +268,7 @@ const UserDashboard = () => {
               </CardContent>
             </Card>
             
+            {/* Today's Focus */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-lg">Today's Focus</CardTitle>
@@ -232,6 +279,95 @@ const UserDashboard = () => {
               <CardContent className="space-y-3">
                 {recentTasks.slice(0, 2).map((task) => (
                   <EnhancedTaskCard key={task.id} task={task} size="compact" />
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Second Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Recent Activity */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Bell className="w-5 h-5" />
+                  Recent Activity
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {recentActivity.map((activity) => {
+                  const IconComponent = getActivityIcon(activity.type);
+                  return (
+                    <div key={activity.id} className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50">
+                      <IconComponent className="w-4 h-4 text-muted-foreground mt-0.5" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm">{activity.message}</p>
+                        <p className="text-xs text-muted-foreground">{activity.time}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </CardContent>
+            </Card>
+
+            {/* Upcoming Deadlines */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5" />
+                  Upcoming Deadlines
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {upcomingDeadlines.map((deadline) => (
+                  <div key={deadline.id} className="flex items-center justify-between p-2 rounded-lg border">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{deadline.task}</p>
+                      <p className="text-xs text-muted-foreground">{deadline.project}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className={`text-xs ${getPriorityColor(deadline.priority)}`}>
+                        {deadline.priority}
+                      </Badge>
+                      <span className="text-xs text-muted-foreground">{deadline.due}</span>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Recent Projects */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <FolderOpen className="w-5 h-5" />
+                  Recent Projects
+                </CardTitle>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/projects')}>
+                  View All
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {recentProjects.map((project) => (
+                  <div key={project.id} className="p-3 rounded-lg border space-y-2">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-sm font-medium">{project.name}</h4>
+                      <Badge variant="outline" className="text-xs">
+                        {project.status}
+                      </Badge>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-muted-foreground">Progress</span>
+                        <span className="font-medium">{project.progress}%</span>
+                      </div>
+                      <Progress value={project.progress} className="h-2" />
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Users className="w-3 h-3" />
+                      <span>{project.members} members</span>
+                    </div>
+                  </div>
                 ))}
               </CardContent>
             </Card>
