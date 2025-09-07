@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AttendanceCard from "./AttendanceCard";
 import StatsCard from "./StatsCard";
 import LeaveCard from "./LeaveCard";
@@ -17,12 +18,16 @@ import {
   TrendingUp,
   Plus,
   Timer,
-  Settings
+  Settings,
+  BarChart3,
+  Calendar,
+  FolderOpen
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("overview");
 
   // Mock user data
   const userStats = [
@@ -162,48 +167,107 @@ const UserDashboard = () => {
         </div>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats Overview - Always visible */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {userStats.map((stat, index) => (
           <StatsCard key={index} {...stat} />
         ))}
       </div>
 
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Attendance Card */}
-        <div>
-          <AttendanceCard {...attendanceData} />
-        </div>
+      {/* Tabbed Content */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="overview" className="gap-2">
+            <BarChart3 className="w-4 h-4" />
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="tasks" className="gap-2">
+            <CheckSquare className="w-4 h-4" />
+            Tasks
+          </TabsTrigger>
+          <TabsTrigger value="attendance" className="gap-2">
+            <Calendar className="w-4 h-4" />
+            Time & Leave
+          </TabsTrigger>
+          <TabsTrigger value="projects" className="gap-2">
+            <FolderOpen className="w-4 h-4" />
+            Projects
+          </TabsTrigger>
+        </TabsList>
 
-        {/* Leave Balance Card */}
-        <div>
-          <LeaveCard {...leaveData} />
-        </div>
+        <TabsContent value="overview" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-2 gap-4">
+                <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => navigate("/create-task")}>
+                  <Plus className="w-5 h-5" />
+                  <span className="text-sm">New Task</span>
+                </Button>
+                <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => navigate("/time-logging")}>
+                  <Timer className="w-5 h-5" />
+                  <span className="text-sm">Log Time</span>
+                </Button>
+                <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => navigate("/projects")}>
+                  <FolderOpen className="w-5 h-5" />
+                  <span className="text-sm">Projects</span>
+                </Button>
+                <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => navigate("/my-tasks")}>
+                  <CheckSquare className="w-5 h-5" />
+                  <span className="text-sm">My Tasks</span>
+                </Button>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-lg">Today's Focus</CardTitle>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/my-tasks')}>
+                  View All
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {recentTasks.slice(0, 2).map((task) => (
+                  <EnhancedTaskCard key={task.id} task={task} size="compact" />
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
 
-        {/* Today's Focus Card */}
-        <div>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg">Today's Focus</CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => navigate('/my-tasks')}>
-                View All
-              </Button>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {recentTasks.slice(0, 3).map((task) => (
-                <EnhancedTaskCard key={task.id} task={task} size="compact" />
-              ))}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+        <TabsContent value="tasks" className="space-y-6">
+          <div className="grid grid-cols-1 gap-6">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-lg">My Tasks</CardTitle>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/my-tasks')}>
+                  View All
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {recentTasks.map((task) => (
+                  <EnhancedTaskCard key={task.id} task={task} size="compact" />
+                ))}
+              </CardContent>
+            </Card>
+            
+            <DailyTaskReport />
+          </div>
+        </TabsContent>
 
-      {/* Daily Task Report and Sprint Overview Row */}
-      <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <DailyTaskReport />
-        <SprintOverview />
-      </div>
+        <TabsContent value="attendance" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <AttendanceCard {...attendanceData} />
+            <LeaveCard {...leaveData} />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="projects" className="space-y-6">
+          <SprintOverview />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
