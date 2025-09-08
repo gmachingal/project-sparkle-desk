@@ -262,6 +262,88 @@ const AdminDashboard = () => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
+          {/* Analytics Dashboard - First Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Team Performance Chart */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-admin" />
+                  Team Performance Trend
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {[
+                    { week: 'Week 1', productivity: 92, color: 'bg-green-500' },
+                    { week: 'Week 2', productivity: 88, color: 'bg-green-400' },
+                    { week: 'Week 3', productivity: 95, color: 'bg-green-600' },
+                    { week: 'Week 4', productivity: 87, color: 'bg-yellow-500' },
+                    { week: 'Week 5', productivity: 94, color: 'bg-green-500' }
+                  ].map((week) => (
+                    <div key={week.week} className="flex items-center gap-3">
+                      <span className="text-sm font-medium w-16">{week.week}</span>
+                      <div className="flex-1 flex items-center gap-2">
+                        <Progress value={week.productivity} className="flex-1 h-3" />
+                        <span className="text-xs font-medium w-8">{week.productivity}%</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Department Distribution */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Users className="w-5 h-5 text-admin" />
+                  Department Distribution
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {departmentAttendance.slice(0, 4).map((dept) => (
+                    <div key={dept.department} className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded bg-admin"></div>
+                          <span>{dept.department}</span>
+                        </div>
+                        <span className="font-medium">{dept.present}/{dept.total}</span>
+                      </div>
+                      <Progress value={dept.percentage} className="h-2" />
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Recent Activities */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-admin" />
+                  Recent Activities
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {recentActivities.slice(0, 5).map((activity, index) => (
+                    <div key={index} className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50">
+                      {getActivityIcon(activity.type)}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm">{activity.action}</p>
+                        <p className="text-xs text-muted-foreground">{activity.time}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Second Row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Today's Attendance */}
             <Card>
