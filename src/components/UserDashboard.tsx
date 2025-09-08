@@ -242,6 +242,73 @@ const UserDashboard = () => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
+          {/* Charts Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Task Completion Trend */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5" />
+                  Task Completion Trend
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64 w-full">
+                  <div className="space-y-2">
+                    {[
+                      { day: 'Mon', completed: 4, total: 6 },
+                      { day: 'Tue', completed: 3, total: 5 },
+                      { day: 'Wed', completed: 6, total: 7 },
+                      { day: 'Thu', completed: 5, total: 6 },
+                      { day: 'Fri', completed: 4, total: 4 },
+                      { day: 'Sat', completed: 2, total: 3 },
+                      { day: 'Sun', completed: 1, total: 2 }
+                    ].map((day, index) => (
+                      <div key={day.day} className="flex items-center gap-3">
+                        <span className="text-sm font-medium w-8">{day.day}</span>
+                        <div className="flex-1 flex items-center gap-2">
+                          <Progress value={(day.completed / day.total) * 100} className="flex-1 h-3" />
+                          <span className="text-xs text-muted-foreground w-12">{day.completed}/{day.total}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Time Distribution */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Clock className="w-5 h-5" />
+                  Time Distribution (This Week)
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {[
+                    { category: 'Development', hours: 24, color: 'bg-primary', percentage: 60 },
+                    { category: 'Meetings', hours: 8, color: 'bg-blue-500', percentage: 20 },
+                    { category: 'Documentation', hours: 6, color: 'bg-green-500', percentage: 15 },
+                    { category: 'Testing', hours: 2, color: 'bg-yellow-500', percentage: 5 }
+                  ].map((item) => (
+                    <div key={item.category} className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          <div className={`w-3 h-3 rounded ${item.color}`}></div>
+                          <span>{item.category}</span>
+                        </div>
+                        <span className="font-medium">{item.hours}h</span>
+                      </div>
+                      <Progress value={item.percentage} className="h-2" />
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
           {/* Today's Focus */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
