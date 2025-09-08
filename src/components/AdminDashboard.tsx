@@ -275,11 +275,11 @@ const AdminDashboard = () => {
               <CardContent>
                 <div className="space-y-3">
                   {[
-                    { week: 'Week 1', productivity: 92, color: 'bg-green-500' },
-                    { week: 'Week 2', productivity: 88, color: 'bg-green-400' },
-                    { week: 'Week 3', productivity: 95, color: 'bg-green-600' },
-                    { week: 'Week 4', productivity: 87, color: 'bg-yellow-500' },
-                    { week: 'Week 5', productivity: 94, color: 'bg-green-500' }
+                    { week: 'Week 1', productivity: 92, color: 'bg-red-500' },
+                    { week: 'Week 2', productivity: 88, color: 'bg-red-400' },
+                    { week: 'Week 3', productivity: 95, color: 'bg-red-600' },
+                    { week: 'Week 4', productivity: 87, color: 'bg-red-300' },
+                    { week: 'Week 5', productivity: 94, color: 'bg-red-500' }
                   ].map((week) => (
                     <div key={week.week} className="flex items-center gap-3">
                       <span className="text-sm font-medium w-16">{week.week}</span>
@@ -307,7 +307,7 @@ const AdminDashboard = () => {
                     <div key={dept.department} className="space-y-2">
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 rounded bg-admin"></div>
+                          <div className="w-3 h-3 rounded bg-red-500"></div>
                           <span>{dept.department}</span>
                         </div>
                         <span className="font-medium">{dept.present}/{dept.total}</span>
