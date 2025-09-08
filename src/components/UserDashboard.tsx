@@ -242,47 +242,20 @@ const UserDashboard = () => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Quick Actions */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="grid grid-cols-2 gap-4">
-                <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => navigate("/create-task")}>
-                  <Plus className="w-5 h-5" />
-                  <span className="text-sm">New Task</span>
-                </Button>
-                <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => navigate("/time-logging")}>
-                  <Timer className="w-5 h-5" />
-                  <span className="text-sm">Log Time</span>
-                </Button>
-                <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => navigate("/projects")}>
-                  <FolderOpen className="w-5 h-5" />
-                  <span className="text-sm">Projects</span>
-                </Button>
-                <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => navigate("/my-tasks")}>
-                  <CheckSquare className="w-5 h-5" />
-                  <span className="text-sm">My Tasks</span>
-                </Button>
-              </CardContent>
-            </Card>
-            
-            {/* Today's Focus */}
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="text-lg">Today's Focus</CardTitle>
-                <Button variant="ghost" size="sm" onClick={() => navigate('/my-tasks')}>
-                  View All
-                </Button>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {recentTasks.slice(0, 2).map((task) => (
-                  <EnhancedTaskCard key={task.id} task={task} size="compact" />
-                ))}
-              </CardContent>
-            </Card>
-          </div>
+          {/* Today's Focus */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-lg">Today's Focus</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => navigate('/my-tasks')}>
+                View All
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {recentTasks.slice(0, 2).map((task) => (
+                <EnhancedTaskCard key={task.id} task={task} size="compact" />
+              ))}
+            </CardContent>
+          </Card>
 
           {/* Second Row */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
