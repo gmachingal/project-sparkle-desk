@@ -242,8 +242,8 @@ const UserDashboard = () => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          {/* Charts Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Charts and Focus Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Task Completion Trend */}
             <Card>
               <CardHeader>
@@ -282,7 +282,7 @@ const UserDashboard = () => {
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Clock className="w-5 h-5" />
-                  Time Distribution (This Week)
+                  Time Distribution
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -307,22 +307,22 @@ const UserDashboard = () => {
                 </div>
               </CardContent>
             </Card>
-          </div>
 
-          {/* Today's Focus */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg">Today's Focus</CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => navigate('/my-tasks')}>
-                View All
-              </Button>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {recentTasks.slice(0, 2).map((task) => (
-                <EnhancedTaskCard key={task.id} task={task} size="compact" />
-              ))}
-            </CardContent>
-          </Card>
+            {/* Today's Focus */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-lg">Today's Focus</CardTitle>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/my-tasks')}>
+                  View All
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {recentTasks.slice(0, 2).map((task) => (
+                  <EnhancedTaskCard key={task.id} task={task} size="compact" />
+                ))}
+              </CardContent>
+            </Card>
+          </div>
 
           {/* Second Row */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
