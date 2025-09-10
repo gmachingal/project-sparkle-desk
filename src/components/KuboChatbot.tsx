@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Bot, Send, Minimize2, Maximize2, X } from "lucide-react";
+import kuboLogo from "@/assets/kubo-logo.png";
 
 interface Message {
   id: string;
@@ -95,7 +96,8 @@ const KuboChatbot = ({ isOpen, onClose }: KuboChatbotProps) => {
         <DialogHeader className="p-4 pb-2 border-b bg-gradient-to-r from-primary/10 to-primary-glow/10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Avatar className="h-8 w-8 bg-primary">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={kuboLogo} alt="Kubo" />
                 <AvatarFallback className="bg-primary text-primary-foreground">
                   <Bot className="h-4 w-4" />
                 </AvatarFallback>
@@ -141,7 +143,8 @@ const KuboChatbot = ({ isOpen, onClose }: KuboChatbotProps) => {
                   >
                     <div className={`flex gap-2 max-w-[80%] ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                       {message.sender === 'kubo' && (
-                        <Avatar className="h-6 w-6 bg-primary">
+                        <Avatar className="h-6 w-6">
+                          <AvatarImage src={kuboLogo} alt="Kubo" />
                           <AvatarFallback className="bg-primary text-primary-foreground">
                             <Bot className="h-3 w-3" />
                           </AvatarFallback>
