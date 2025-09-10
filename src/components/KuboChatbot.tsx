@@ -90,7 +90,7 @@ const KuboChatbot = ({ isOpen, onClose }: KuboChatbotProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={`max-w-md h-[600px] p-0 gap-0 ${isMinimized ? 'h-16' : 'h-[600px]'} transition-all duration-300`}>
+      <DialogContent className={`max-w-md h-[600px] p-0 gap-0 ${isMinimized ? 'h-16' : 'h-[600px]'} transition-all duration-300 [&>button]:hidden`}>
         {/* Header */}
         <DialogHeader className="p-4 pb-2 border-b bg-gradient-to-r from-primary/10 to-primary-glow/10">
           <div className="flex items-center justify-between">
