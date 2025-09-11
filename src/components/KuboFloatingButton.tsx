@@ -14,7 +14,7 @@ const KuboFloatingButton = () => {
         <TooltipTrigger asChild>
           <div
             onClick={() => setIsChatOpen(true)}
-            className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-2xl transform hover:scale-110 transition-all duration-200 z-40 hover:shadow-primary/30 cursor-pointer overflow-hidden"
+            className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-2xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/30 transform hover:scale-110 transition-all duration-200 z-40 cursor-pointer overflow-hidden"
           >
             <img src={kuboLogo} alt="Kubo" className="h-full w-full object-cover scale-110" />
           </div>
