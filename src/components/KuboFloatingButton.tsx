@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Bot } from "lucide-react";
+
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import KuboChatbot from "./KuboChatbot";
-import kuboIcon from "@/assets/kubo-icon.png";
+const kuboLogo = "/lovable-uploads/9eec875c-3ab9-4fe6-a0a5-e3fc81400d0d.png";
 
 const KuboFloatingButton = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -17,7 +17,7 @@ const KuboFloatingButton = () => {
             className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-2xl bg-gradient-to-r from-primary to-primary-glow hover:from-primary-glow hover:to-primary transform hover:scale-110 transition-all duration-200 z-40 border-2 border-white/20 hover:shadow-primary/30 p-2"
             size="sm"
           >
-            <img src={kuboIcon} alt="Kubo" className="h-full w-full object-contain" />
+            <img src={kuboLogo} alt="Kubo" className="h-full w-full object-contain" />
           </Button>
         </TooltipTrigger>
         <TooltipContent side="left" className="mr-4">
