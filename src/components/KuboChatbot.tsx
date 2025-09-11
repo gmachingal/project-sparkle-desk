@@ -96,8 +96,8 @@ const KuboChatbot = ({ isOpen, onClose }: KuboChatbotProps) => {
         <DialogHeader className="p-4 pb-2 border-b bg-gradient-to-r from-primary/10 to-primary-glow/10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Avatar className="h-10 w-10">
-                <AvatarImage src={kuboLogo} alt="Kubo" className="object-contain" />
+              <Avatar className="h-10 w-10 bg-white border border-primary/20">
+                <AvatarImage src={kuboLogo} alt="Kubo" className="object-cover" />
                 <AvatarFallback className="bg-primary text-primary-foreground">
                   <Bot className="h-5 w-5" />
                 </AvatarFallback>
@@ -143,8 +143,8 @@ const KuboChatbot = ({ isOpen, onClose }: KuboChatbotProps) => {
                   >
                     <div className={`flex gap-2 max-w-[80%] ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                       {message.sender === 'kubo' && (
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={kuboLogo} alt="Kubo" className="object-contain" />
+                        <Avatar className="h-8 w-8 bg-white border border-primary/20">
+                          <AvatarImage src={kuboLogo} alt="Kubo" className="object-cover" />
                           <AvatarFallback className="bg-primary text-primary-foreground">
                             <Bot className="h-4 w-4" />
                           </AvatarFallback>
