@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import kubxylnsLogo from "@/assets/kubxylns-logo-bigger-font.png";
+import kubxylnsLogo from "@/assets/repose-logo-bigger-font.png";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);

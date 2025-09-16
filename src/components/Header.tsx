@@ -11,7 +11,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import kubxylnsLogo from "@/assets/kubxylns-logo-bigger-font.png";
+import kubxylnsLogo from "@/assets/repose-logo-bigger-font.png";
 
 interface HeaderProps {
   userRole?: 'admin' | 'user';
