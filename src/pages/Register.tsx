@@ -138,7 +138,7 @@ const Register = () => {
               <div className="p-3 bg-primary/10 rounded-full">
                 <Building2 className="w-8 h-8 text-primary" />
               </div>
-              <h1 className="text-3xl font-bold">Join Repose</h1>
+              <h1 className="text-3xl font-bold">Join <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">KubXylns</span></h1>
             </div>
             <p className="text-muted-foreground text-lg">
               Create your organization or join an existing one to get started

@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import reposeLogo from "@/assets/repose-logo-bigger-font.png";
+import kubxylnsLogo from "@/assets/repose-logo-bigger-font.png";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -31,8 +31,8 @@ const Login = () => {
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <img 
-              src={reposeLogo} 
-              alt="Repose Logo" 
+              src={kubxylnsLogo} 
+              alt="KubXylns Logo" 
               className="w-24 h-24 object-contain shadow-xl border border-white/30 rounded-lg"
             />
           </div>
@@ -172,7 +172,7 @@ const Login = () => {
 
         {/* Footer */}
         <div className="text-center mt-8 text-xs text-muted-foreground">
-          <p>&copy; 2024 Repose. All rights reserved.</p>
+          <p>&copy; 2024 KubXylns. All rights reserved.</p>
         </div>
       </div>
     </div>

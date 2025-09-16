@@ -11,7 +11,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import reposeLogo from "@/assets/repose-logo-bigger-font.png";
+import kubxylnsLogo from "@/assets/repose-logo-bigger-font.png";
 
 interface HeaderProps {
   userRole?: 'admin' | 'user';
@@ -231,8 +231,8 @@ const Header = ({ userRole, title, subtitle, backButton, actionButton }: HeaderP
           ) : (
             <div className="flex items-center cursor-pointer" onClick={() => navigate("/dashboard")}>
               <img 
-                src={reposeLogo} 
-                alt="Repose" 
+                src={kubxylnsLogo} 
+                alt="KubXylns" 
                 className="w-10 h-10 object-contain shadow-lg border border-white/20 rounded-lg"
               />
             </div>
