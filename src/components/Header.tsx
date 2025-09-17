@@ -233,7 +233,7 @@ const Header = ({ userRole, title, subtitle, backButton, actionButton }: HeaderP
               <img 
                 src={kubxylnsLogo} 
                 alt="KubXlns" 
-                className="w-10 h-10 object-contain shadow-lg border border-white/20 rounded-lg"
+                className="w-14 h-14 object-contain shadow-lg border border-white/20 rounded-lg"
               />
             </div>
           )}
