@@ -33,7 +33,7 @@ const Login = () => {
             <img 
               src={kubxylnsLogo} 
               alt="KubXlns Logo" 
-              className="w-24 h-24 object-contain shadow-xl border border-white/30 rounded-lg"
+              className="w-32 h-32 object-contain shadow-xl border border-white/30 rounded-lg"
             />
           </div>
           <p className="text-muted-foreground text-sm mt-2">
