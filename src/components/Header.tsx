@@ -232,7 +232,7 @@ const Header = ({ userRole, title, subtitle, backButton, actionButton }: HeaderP
             <div className="flex items-center cursor-pointer" onClick={() => navigate("/dashboard")}>
               <img 
                 src={kubxylnsLogo} 
-                alt="KubXylns" 
+                alt="KubXlns" 
                 className="w-10 h-10 object-contain shadow-lg border border-white/20 rounded-lg"
               />
             </div>

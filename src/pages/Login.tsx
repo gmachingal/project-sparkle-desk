@@ -32,7 +32,7 @@ const Login = () => {
           <div className="flex justify-center mb-4">
             <img 
               src={kubxylnsLogo} 
-              alt="KubXylns Logo" 
+              alt="KubXlns Logo" 
               className="w-24 h-24 object-contain shadow-xl border border-white/30 rounded-lg"
             />
           </div>
@@ -172,7 +172,7 @@ const Login = () => {
 
         {/* Footer */}
         <div className="text-center mt-8 text-xs text-muted-foreground">
-          <p>&copy; 2024 KubXylns. All rights reserved.</p>
+          <p>&copy; 2024 KubXlns. All rights reserved.</p>
         </div>
       </div>
     </div>

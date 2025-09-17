@@ -479,7 +479,7 @@ const AdminOrganizations = () => {
       id: Date.now().toString(),
       orgId,
       code,
-      createdBy: "admin@kubxylns.com",
+      createdBy: "admin@kubxlns.com",
       createdAt: new Date().toISOString().split('T')[0],
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 days
       usageCount: 0,
