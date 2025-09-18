@@ -544,7 +544,7 @@ const AdminOrganizations = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="sticky top-0 z-50 border-b backdrop-blur-sm bg-gradient-to-r from-admin/35 via-admin-glow/45 to-admin/60 shadow-2xl shadow-black/30 drop-shadow-lg">
+      <div className="sticky top-0 z-50 border-b backdrop-blur-sm bg-gradient-to-r from-admin/80 via-admin-glow/85 to-admin/90 shadow-2xl shadow-black/30 drop-shadow-lg">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")} className="gap-2">
@@ -552,8 +552,8 @@ const AdminOrganizations = () => {
               Back
             </Button>
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-admin to-admin-glow bg-clip-text text-transparent">Organization Management</h1>
-              <p className="font-bold">Manage organizations, licenses, and features</p>
+              <h1 className="text-2xl font-bold text-white">Organization Management</h1>
+              <p className="font-bold text-white/90">Manage organizations, licenses, and features</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
