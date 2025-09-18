@@ -544,7 +544,7 @@ const AdminOrganizations = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="border-b backdrop-blur-sm bg-gradient-to-r from-admin/35 via-admin-glow/45 to-admin/60 shadow-2xl shadow-black/30 drop-shadow-lg">
+      <div className="sticky top-0 z-50 border-b backdrop-blur-sm bg-gradient-to-r from-admin/35 via-admin-glow/45 to-admin/60 shadow-2xl shadow-black/30 drop-shadow-lg">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")} className="gap-2">
@@ -620,7 +620,7 @@ const AdminOrganizations = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <div className="max-w-7xl mx-auto p-6 pt-8 space-y-6">
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="rounded-t-lg">
             <TabsTrigger value="overview" className="data-[state=active]:bg-admin data-[state=active]:text-admin-foreground data-[state=active]:border-admin text-admin/70 hover:text-admin">Overview</TabsTrigger>
